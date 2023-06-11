@@ -9,6 +9,7 @@ import store from "../../../reducers";
 import { AnalyticTrack } from "../../../lib/segment";
 import { isAdmin } from "../../../utils/isAdmin";
 import { fetchStore } from "../../../actions/preload";
+import { WarehousePush } from "../../../lib/warehouse";
 
 const emap = (v) => {
   v = Math.min(1 / v, 10);
@@ -20,6 +21,7 @@ export const MicroStore = () => {
   const [tab, setTab] = useState("sthome");
   const [page, setPage] = useState(0);
   const [opapp, setOpapp] = useState({});
+  const user = useSelector((state) => state.user);
 
   const totab = (e) => {
     var x = e.target && e.target.dataset.action;
@@ -65,6 +67,7 @@ export const MicroStore = () => {
   const app_click = async (data) => {
     setOpapp(data);
     setPage(2);
+    WarehousePush('open store', user.id, data);
     AnalyticTrack(`open store`, {
       name: data.title,
       timestamp: new Date(),
