@@ -5,7 +5,9 @@ const ModalSelectVendor = (props) => {
 
   const [vendors, setVendors] = useState([]);
   const [vendorChoosen, setVendorChoose] = useState({ id: null });
-
+  const user = useSelector(state => state.user)
+  
+  const hasPayment = user?.user_metadata?.hasPayment
   useEffect(() => {}, []);
 
   const handleInstallApp = () => {
@@ -17,7 +19,9 @@ const ModalSelectVendor = (props) => {
     // setVendorChoose(vendorFound);
   };
 
-  const installApp = () => {};
+  const installApp = () => {
+    
+  };
 
   const renderVendorInfo = (data) => {
     // TODO handle filter
@@ -88,7 +92,7 @@ const ModalSelectVendor = (props) => {
         className="instbtn h-[32px] max-w-[120px] absolute bottom-0 right-0 border-none z-10"
         onClick={installApp}
       >
-        {" "}
+        {hasPayment ? 'Payment' : 'Free trail'}
         Get{" "}
       </button>
     </div>
