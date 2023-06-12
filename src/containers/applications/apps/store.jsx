@@ -67,7 +67,7 @@ export const MicroStore = () => {
   const app_click = async (data) => {
     setOpapp(data);
     setPage(2);
-    WarehousePush('open store', user.id, data);
+    WarehousePush("open store", user.id, data);
     AnalyticTrack(`open store`, {
       name: data.title,
       timestamp: new Date(),
