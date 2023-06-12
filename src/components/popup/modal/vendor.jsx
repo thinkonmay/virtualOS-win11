@@ -8,6 +8,7 @@ const ModalSelectVendor = (props) => {
   const user = useSelector(state => state.user)
   
   const hasPayment = user?.user_metadata?.hasPayment
+
   useEffect(() => {}, []);
 
   const handleInstallApp = () => {
@@ -20,7 +21,7 @@ const ModalSelectVendor = (props) => {
   };
 
   const installApp = () => {
-    
+
   };
 
   const renderVendorInfo = (data) => {
@@ -93,7 +94,6 @@ const ModalSelectVendor = (props) => {
         onClick={installApp}
       >
         {hasPayment ? 'Payment' : 'Free trail'}
-        Get{" "}
       </button>
     </div>
   );
