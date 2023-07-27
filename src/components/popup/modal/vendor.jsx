@@ -17,7 +17,7 @@ const ModalSelectVendor = (props) => {
 
   const handleChooseVendor = (vendorId) => {
     const vendorFound = vendors.find(
-      (vendor) => vendor.app_template_id == vendorId
+      (vendor) => vendor.app_template_id == vendorId,
     );
     setVendorChoose(vendorFound);
   };
@@ -51,7 +51,7 @@ const ModalSelectVendor = (props) => {
           >
             {typeof data[key] == "object" && renderVendorInfo(data[key])}
           </div>
-        </div>
+        </div>,
       );
     }
 

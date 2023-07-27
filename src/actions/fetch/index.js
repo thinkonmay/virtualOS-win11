@@ -30,7 +30,7 @@ export const FetchAuthorizedWorkers = async () => {
       headers: await getCredentialHeader(),
       method: "POST",
       body: JSON.stringify({ use_case: "web" }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -42,7 +42,7 @@ export const FetchUserApplication = async () => {
       headers: await getCredentialHeader(),
       method: "POST",
       body: JSON.stringify({}),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -57,7 +57,7 @@ export const DeactivateWorkerSession = async (worker_session_id) => {
       body: JSON.stringify({
         worker_session_id: worker_session_id,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -74,7 +74,7 @@ export const CreateWorkerSession = async (worker_profile_id) => {
         soudcard_name: null,
         monitor_name: null,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -90,7 +90,7 @@ export const DownloadApplication = async (app_template_id) => {
         action: "SETUP",
         app_template_id: app_template_id,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -106,7 +106,7 @@ export const StartApplication = async (storage_id) => {
         action: "START",
         storage_id: storage_id,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -121,7 +121,7 @@ export const AccessApplication = async (storage_id) => {
         action: "ACCESS",
         storage_id: storage_id,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -137,7 +137,7 @@ export const DeleteApplication = async (storage_id) => {
         action: "DELETE",
         storage_id: storage_id,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -153,7 +153,7 @@ export const StopApplication = async (storage_id) => {
         action: "STOP",
         storage_id: storage_id,
       }),
-    }
+    },
   );
   if (error != null) throw error;
   return data;
@@ -174,7 +174,7 @@ export const FetchApplicationTemplates = async (id) => {
     .select("id,hardware_metadata")
     .in(
       "id",
-      app_template_query.data.map((x) => x.resource_id)
+      app_template_query.data.map((x) => x.resource_id),
     );
   if (vendor_resource_query.error != null) return vendor_resource_query.error;
 
@@ -196,9 +196,8 @@ export const RegisterProxy = async () => {
   const { data, error } = await supabase.functions.invoke("proxy_register", {
     body: JSON.stringify(body),
     headers: {
-      access_token: (
-        await supabase.auth.getSession()
-      ).data?.session?.access_token,
+      access_token: (await supabase.auth.getSession()).data?.session
+        ?.access_token,
     },
   });
   if (error != null) throw error;
@@ -209,9 +208,8 @@ export const Keygen = async () => {
   const { data, error } = await supabase.functions.invoke("user_keygen", {
     body: JSON.stringify({}),
     headers: {
-      access_token: (
-        await supabase.auth.getSession()
-      ).data?.session?.access_token,
+      access_token: (await supabase.auth.getSession()).data?.session
+        ?.access_token,
     },
   });
   if (error != null) throw error;

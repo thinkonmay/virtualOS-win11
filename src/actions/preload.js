@@ -99,16 +99,18 @@ export const fetchWorker = async () => {
 };
 
 export const fetchStore = async () => {
-
-  const resp = await fetch(`${import.meta.env.VITE_SUPABASE_VIRT_URL}/rest/v1/stores?select=*`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_VIRT_ANON_KEY}`,
-      "apikey": `${import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY}`
-    }
-  })
-  const data = await resp.json()
+  const resp = await fetch(
+    `${import.meta.env.VITE_SUPABASE_VIRT_URL}/rest/v1/stores?select=*`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_VIRT_ANON_KEY}`,
+        apikey: `${import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    },
+  );
+  const data = await resp.json();
 
   const content = {
     games: [],
