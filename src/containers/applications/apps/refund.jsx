@@ -4,7 +4,6 @@ import { Icon, Image, ToolBar, LazyComponent } from "../../../utils/general";
 import "./assets/store.scss";
 import { useTranslation } from "react-i18next";
 
-
 export const RefundApp = () => {
   const wnapp = useSelector((state) => state.apps.refund);
   const user = useSelector((state) => state.user);
@@ -13,34 +12,34 @@ export const RefundApp = () => {
 
   const listSubs = [
     {
-      title: 'Trial',
-      for: 'Week',
+      title: "Trial",
+      for: "Week",
       hours: 20,
-      gpu: 'RTX 3060ti',
-      ram: '16GB',
-      price: '75k'
+      gpu: "RTX 3060ti",
+      ram: "16GB",
+      price: "75k",
     },
     {
-      title: 'Start',
-      for: 'Month',
+      title: "Start",
+      for: "Month",
       hours: 100,
-      gpu: 'RTX 3060ti',
-      ram: '16GB',
-      price: '250k'
+      gpu: "RTX 3060ti",
+      ram: "16GB",
+      price: "250k",
     },
     {
-      title: 'Standard',
-      for: 'Month',
+      title: "Standard",
+      for: "Month",
       hours: 150,
-      gpu: 'RTX 3060ti',
-      ram: '16GB',
-      price: '300k'
-    }
-  ]
+      gpu: "RTX 3060ti",
+      ram: "16GB",
+      price: "300k",
+    },
+  ];
   return (
     <div
       className="refundApp floatTab dpShad"
-      data-size={wnapp.size == "full" ? 'mini' : wnapp.size}
+      data-size={wnapp.size == "full" ? "mini" : wnapp.size}
       id={wnapp.icon + "App"}
       data-max={wnapp.max}
       style={{
@@ -55,7 +54,10 @@ export const RefundApp = () => {
         size={wnapp.size}
         name="Payment"
       />
-      <div className=" flex flex-col p-[24px] win11Scroll overflow-y-scroll" data-dock="true">
+      <div
+        className=" flex flex-col p-[24px] win11Scroll overflow-y-scroll"
+        data-dock="true"
+      >
         <h6 className="text-center text-[24px] mb-[14px]">Refund</h6>
         <div className="flex flex-col gap-[8px]">
           <div className="flex gap-[8px]">
@@ -79,8 +81,13 @@ export const RefundApp = () => {
         </div>
 
         <div>
-          <h6 className="text-left text-[20px] mb-[14px] mt-[32px]">Điều kiện</h6>
-          <p className="mb-4">1. Tài khoản nhận tiền bắt buộc phải trùng với tài khoản đã chuyển tiền trước đây</p>
+          <h6 className="text-left text-[20px] mb-[14px] mt-[32px]">
+            Điều kiện
+          </h6>
+          <p className="mb-4">
+            1. Tài khoản nhận tiền bắt buộc phải trùng với tài khoản đã chuyển
+            tiền trước đây
+          </p>
           <p>2:</p>
           <div className="flex">
             <div className="br flex-1 flex flex-col items-center ">
@@ -102,11 +109,10 @@ export const RefundApp = () => {
           </div>
         </div>
 
-       
-        <button className="!text-[14px] !py-3 mt-5 instbtn border-none !w-[120px] self-end ">Xác nhận</button>
+        <button className="!text-[14px] !py-3 mt-5 instbtn border-none !w-[120px] self-end ">
+          Xác nhận
+        </button>
       </div>
     </div>
   );
 };
-
-

@@ -71,7 +71,7 @@ export const log = async ({
 
     case "createSub":
       const { value: formValues } = await Swal.fire({
-        title: 'Multiple inputs',
+        title: "Multiple inputs",
         html:
           '<div className="flex items-center gap-2"><span>Email</span><input id="email" class="swal2-input"/></div>' +
           `
@@ -89,16 +89,16 @@ export const log = async ({
         focusConfirm: false,
         preConfirm: () => {
           return {
-            email: document.getElementById('email').value,
-            plan : document.getElementById('plan').value
-          }
-        }
-      })
-      return formValues
-    break;
-    case "modifySub": 
+            email: document.getElementById("email").value,
+            plan: document.getElementById("plan").value,
+          };
+        },
+      });
+      return formValues;
+      break;
+    case "modifySub":
       const { value } = await Swal.fire({
-        title: 'Modify Subscription',
+        title: "Modify Subscription",
         html:
           '<div className="flex items-center gap-2"><span>Email</span><input id="email" class="swal2-input"/></div>' +
           `
@@ -114,20 +114,20 @@ export const log = async ({
         focusConfirm: false,
         preConfirm: () => {
           return {
-            email:  document.getElementById('email').value,
-            action :  document.getElementById('action').value
-          }
-        }
-      })
-      return value
-    break;
+            email: document.getElementById("email").value,
+            action: document.getElementById("action").value,
+          };
+        },
+      });
+      return value;
+      break;
     default:
       break;
   }
 };
 
 export class Log {
-  constructor() { }
+  constructor() {}
   loading(title, content, time, icon) {
     Swal.fire({
       title: title ?? "Loading!",

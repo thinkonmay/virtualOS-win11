@@ -20,8 +20,7 @@ export const AboutWin = () => {
     localStorage.setItem("openAboutThinkmay", false);
     localStorage.removeItem("openAboutThinkmay2");
     //dispatch({ type: "DESKABOUT", payload: false });
-    dispatch({ type: "ABOUT", payload: 'close'});
-
+    dispatch({ type: "ABOUT", payload: "close" });
   };
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -36,13 +35,14 @@ export const AboutWin = () => {
   });
   return (
     <div
-    data-max={wnapp.max}
-    data-hide={wnapp.hide}
-    style={{
-    ...(wnapp.size == "cstm" ? wnapp.dim : null),
-    zIndex: wnapp.z,
-    }}
-    className="aboutApp floatTab dpShad aboutAnimation">
+      data-max={wnapp.max}
+      data-hide={wnapp.hide}
+      style={{
+        ...(wnapp.size == "cstm" ? wnapp.dim : null),
+        zIndex: wnapp.z,
+      }}
+      className="aboutApp floatTab dpShad aboutAnimation"
+    >
       <div className="text-xl font-semibold text-center my-4">
         Hướng dẫn sử dụng^^
       </div>
@@ -54,8 +54,8 @@ export const AboutWin = () => {
               LƯU Ý: Đây là giao diện không phải RemotePC
             </strong>
             <p>
-              <strong>B1:</strong> <strong>Install</strong> tựa game yêu
-              thích trong Store, nhưng game màu vàng là được chơi free.{" "}
+              <strong>B1:</strong> <strong>Install</strong> tựa game yêu thích
+              trong Store, nhưng game màu vàng là được chơi free.{" "}
             </p>
 
             <div className="wrapper-img mt-[24px]">
@@ -79,9 +79,9 @@ export const AboutWin = () => {
           </div>
           <div className="keen-slider__slide number-slide4">
             <p>
-              <strong>B3:</strong> Để <strong>tắt máy</strong> và lưu lại
-              data: Click <strong>Pause App</strong>(click chuột phải, hoặc
-              giữ icon trên mobile){" "}
+              <strong>B3:</strong> Để <strong>tắt máy</strong> và lưu lại data:
+              Click <strong>Pause App</strong>(click chuột phải, hoặc giữ icon
+              trên mobile){" "}
             </p>
 
             <div className="wrapper-img mt-[20px]">
@@ -120,9 +120,7 @@ export const AboutWin = () => {
         <div className="dots ">
           <div className="flex items-center">
             {[
-              ...Array(
-                instanceRef.current.track.details.slides.length,
-              ).keys(),
+              ...Array(instanceRef.current.track.details.slides.length).keys(),
             ].map((idx) => {
               return (
                 <button
@@ -130,9 +128,7 @@ export const AboutWin = () => {
                   onClick={() => {
                     instanceRef.current?.moveToIdx(idx);
                   }}
-                  className={
-                    "dot" + (currentSlide === idx ? " active" : "")
-                  }
+                  className={"dot" + (currentSlide === idx ? " active" : "")}
                 ></button>
               );
             })}

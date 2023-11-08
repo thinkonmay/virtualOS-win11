@@ -66,7 +66,12 @@ const Taskbar = () => {
     <div className="taskbar" data-mobile={isMobile()}>
       <div className="tasksCont" data-menu="task" data-side={tasks.align}>
         <div className="tsbar" onMouseOut={hidePrev}>
-          <Icon className="tsIcon tsIconInvert" src="home" width={24} click="STARTOGG" />
+          <Icon
+            className="tsIcon tsIconInvert"
+            src="home"
+            width={24}
+            click="STARTOGG"
+          />
 
           {tasks.apps.map((task, i) => {
             var isHidden = apps[task.icon].hide;
@@ -119,34 +124,31 @@ const Taskbar = () => {
         </div>
       </div>
       <div className="taskright">
-        {
-          !isMobile() ? (
-            <>
-              <div
-                className="px-2 prtclk handcr hvlight flex"
-                onClick={clickDispatch}
-                data-action="BANDTOGG"
-              >
-                <Icon fafa="faChevronUp" width={10} />
-              </div>
-              <div
-                className="prtclk handcr my-1 px-1 hvlight flex rounded"
-                onClick={clickDispatch}
-                data-action="PANETOGG"
-              >
-                <Icon className="taskIcon" src="wifi" ui width={16} />
-                <Icon
-                  className="taskIcon"
-                  src={"audio" + tasks.audio}
-                  ui
-                  width={16}
-                />
-                <Battery />
-              </div>
-            </>
-          )
-            : null
-        }
+        {!isMobile() ? (
+          <>
+            <div
+              className="px-2 prtclk handcr hvlight flex"
+              onClick={clickDispatch}
+              data-action="BANDTOGG"
+            >
+              <Icon fafa="faChevronUp" width={10} />
+            </div>
+            <div
+              className="prtclk handcr my-1 px-1 hvlight flex rounded"
+              onClick={clickDispatch}
+              data-action="PANETOGG"
+            >
+              <Icon className="taskIcon" src="wifi" ui width={16} />
+              <Icon
+                className="taskIcon"
+                src={"audio" + tasks.audio}
+                ui
+                width={16}
+              />
+              <Battery />
+            </div>
+          </>
+        ) : null}
         <div
           className="taskDate m-1 handcr prtclk rounded hvlight"
           onClick={clickDispatch}
@@ -166,10 +168,9 @@ const Taskbar = () => {
             })}
           </div>
         </div>
-        {
-          isMobile() ? null :
-            <Icon className="graybd my-4" ui width={6} click="SHOWDSK" pr />
-        }
+        {isMobile() ? null : (
+          <Icon className="graybd my-4" ui width={6} click="SHOWDSK" pr />
+        )}
       </div>
     </div>
   );

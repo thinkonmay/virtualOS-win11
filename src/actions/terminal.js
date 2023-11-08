@@ -19,12 +19,12 @@ const wrapper = async (func) => {
 
 export const RegisterProxyWithCatch = () =>
   wrapper(async () => {
-    return
+    return;
 
     await RegisterProxy();
   });
 export const KeygenWithCatch = () =>
   wrapper(async () => {
-    return 0
+    return 0;
     await Keygen();
   });

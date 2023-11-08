@@ -51,10 +51,9 @@ const wrapper = async (func, appType) => {
 
     return result;
   } catch (err) {
-
-    let contentErr = err
+    let contentErr = err;
     if (err?.error != undefined || err?.code != undefined) {
-      contentErr = formatError(err?.error, err?.code)
+      contentErr = formatError(err?.error, err?.code);
     }
 
     await log({
@@ -69,11 +68,9 @@ const wrapper = async (func, appType) => {
 export const deleteStore = async (app) => {
   if (!isAdmin()) return;
 
-  const {error} = await virtapi(`stores?id=eq.${app.id}`, 'DELETE');
-  if (error) 
-    throw error
-    
-  
+  const { error } = await virtapi(`stores?id=eq.${app.id}`, "DELETE");
+  if (error) throw error;
+
   await log({
     error: null,
     type: "confirm",
@@ -150,12 +147,16 @@ export const startApp = async (appInput) =>
       }
 
       {
-        const { data: resource, error } = await virtapi("rpc/binding_resource", 'POST',{
-          volume_id: payload.volume_id,
-        });
+        const { data: resource, error } = await virtapi(
+          "rpc/binding_resource",
+          "POST",
+          {
+            volume_id: payload.volume_id,
+          },
+        );
         if (error) throw error;
-        else if (resource.at(0).desired_state == 'PAUSED') 
-          throw { error: "Timeout !", code: '6' }; // TODO
+        else if (resource.at(0).desired_state == "PAUSED")
+          throw { error: "Timeout !", code: "6" }; // TODO
       }
 
       await sleep(10 * 1000);
@@ -221,7 +222,8 @@ export const stopVolume = (e) =>
     return "success";
   });
 
-export const ReleaseApp = async ({ vol_speed,
+export const ReleaseApp = async ({
+  vol_speed,
   vol_availability,
   gpu_model,
   desc,
@@ -233,7 +235,8 @@ export const ReleaseApp = async ({ vol_speed,
   cluster_id,
 }) => {
   wrapper(async () => {
-    console.log(vol_availability,
+    console.log(
+      vol_availability,
       gpu_model,
       desc,
       store_id,
@@ -241,10 +244,11 @@ export const ReleaseApp = async ({ vol_speed,
       ram,
       vdriver,
       hidevm,
-      cluster_id,);
-    if (desc == "") throw ('Description is not empty!')
+      cluster_id,
+    );
+    if (desc == "") throw "Description is not empty!";
 
-    const { code,error } = await SupabaseFuncInvoke("configure_application", {
+    const { code, error } = await SupabaseFuncInvoke("configure_application", {
       action: "RELEASE",
       store_id: parseInt(store_id),
       desc: desc,
@@ -256,15 +260,15 @@ export const ReleaseApp = async ({ vol_speed,
         vcpus: parseInt(vcpus),
         ram: parseInt(ram),
         vdriver: vdriver,
-        hidevm: hidevm
-      }
+        hidevm: hidevm,
+      },
     });
 
     if (error) throw error;
 
-    store.dispatch({ type: "CLOSE_MODAL" })
+    store.dispatch({ type: "CLOSE_MODAL" });
 
-    return
+    return;
   });
 };
 
@@ -281,7 +285,7 @@ export const PatchApp = async (app) => {
     });
     Swal.close();
 
-    const { code,error } = await SupabaseFuncInvoke("configure_application", {
+    const { code, error } = await SupabaseFuncInvoke("configure_application", {
       action: "PATCH",
       app_id: app.id,
       desc: text,

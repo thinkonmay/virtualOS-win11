@@ -298,37 +298,37 @@ const DetailPage = ({ app }) => {
   const [Options, SetOptions] = useState([]);
   const user = useSelector((state) => state.user);
 
-  const region = [
-    'Hà Nội',
-    'India'
-  ]
+  const region = ["Hà Nội", "India"];
 
   useEffect(() => {
     (async () => {
-      const {data,error} = await virtapi(`rpc/get_app_from_store`,"POST", { store_id: `${app.id}` })
-      if (error) 
-        throw error
+      const { data, error } = await virtapi(`rpc/get_app_from_store`, "POST", {
+        store_id: `${app.id}`,
+      });
+      if (error) throw error;
 
-      const subscription = await supabase.from("subscriptions").select("account_id, metadata").eq("account_id", user.id)
+      const subscription = await supabase
+        .from("subscriptions")
+        .select("account_id, metadata")
+        .eq("account_id", user.id);
       let user_region;
-      switch(JSON.stringify(subscription.data.at(0).metadata)){
-        case '{}': // thinkmay internal user
-          user_region = region[0]
-        break;
+      switch (JSON.stringify(subscription.data.at(0).metadata)) {
+        case "{}": // thinkmay internal user
+          user_region = region[0];
+          break;
         case '{"referal":{"email":"kmrjay730@gmail.com","account_id":"30739186-d473-4349-9a35-8e15980c155a"}}':
-          user_region = region[1]
-        break;
+          user_region = region[1];
+          break;
       }
       for (let index = 0; index < data.length; index++) {
         const option = data[index];
         for (let index = 0; index < option.available.length; index++) {
           if (option.available[index].available.gpus.includes(option.gpu)) {
-              if (await valideUserAccess(['admin', 'fullstack'])){
-                SetOptions((old) => [...old, option]);
-              }
-              else if (user_region == option.region){
-                SetOptions((old) => [...old, option]);
-              }
+            if (await valideUserAccess(["admin", "fullstack"])) {
+              SetOptions((old) => [...old, option]);
+            } else if (user_region == option.region) {
+              SetOptions((old) => [...old, option]);
+            }
             break;
           }
         }

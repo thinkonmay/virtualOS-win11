@@ -19,15 +19,15 @@ export const scanCodeApps = {
   "League of Legends": true,
   "GTA V": true,
   "Devil May Cry5": true,
-  "Naraka": true,
+  Naraka: true,
   "Resident Evil 4": true,
   "Red Dead Redemption 2": true,
   "Elden Ring": true,
-  "God of War": true
+  "God of War": true,
 };
 
 export const localStorageKey = {
-  user: 'USER1',
-  store: 'STORE',
-  app: 'APP'
-}
+  user: "USER1",
+  store: "STORE",
+  app: "APP",
+};

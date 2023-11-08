@@ -11,11 +11,10 @@ export const StartMenu = () => {
   const user = useSelector((state) => state.user);
   const usageTime = user?.usageTime?.at(0) ?? {};
   const { t, i18n } = useTranslation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const start = useSelector((state) => state.startmenu);
   const thm = useSelector((state) => state.setting.person.theme);
   var icon = thm == "light" ? "sun" : "moon";
-
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString("en-GB", {
@@ -67,7 +66,7 @@ export const StartMenu = () => {
                   ui={true}
                   src={icon}
                   width={14}
-                //invert={pnstates[idx] ? true : null}
+                  //invert={pnstates[idx] ? true : null}
                 />
               </div>
             </div>
@@ -86,8 +85,8 @@ export const StartMenu = () => {
                 <span>
                   {usageTime.total_time
                     ? usageTime?.total_time.toFixed(1) +
-                    "/" +
-                    usageTime?.package
+                      "/" +
+                      usageTime?.package
                     : "Invalid"}
                 </span>
               </div>
@@ -95,29 +94,28 @@ export const StartMenu = () => {
           </div>
         </div>
 
-       
-        {user?.id ?
+        {user?.id ? (
           <div className="flex gap-4 mt-0 mb-[8px] ml-auto mr-[14px] md:mt-4 md:mb-[24px]">
-            <button className="instbtn border-none !text-[14px] !p-3"
-              onClick={
-                () => {
-                  dispatch({ type: "PMAPP", payload: 'full' });
-                  dispatch({ type: "STARTHID" })
-                }
-              }>
+            <button
+              className="instbtn border-none !text-[14px] !p-3"
+              onClick={() => {
+                dispatch({ type: "PMAPP", payload: "full" });
+                dispatch({ type: "STARTHID" });
+              }}
+            >
               Thanh Toán
             </button>
-            <button className="instbtn border-none !text-[14px] !p-3 !bg-red-500"
-              onClick={
-                () => {
-                  dispatch({ type: "RFAPP", payload: 'full' });
-                  dispatch({ type: "STARTHID" })
-                }
-              }>
+            <button
+              className="instbtn border-none !text-[14px] !p-3 !bg-red-500"
+              onClick={() => {
+                dispatch({ type: "RFAPP", payload: "full" });
+                dispatch({ type: "STARTHID" });
+              }}
+            >
               Hủy Gói
             </button>
           </div>
-          : null}
+        ) : null}
 
         <div className="menuBar">
           <div

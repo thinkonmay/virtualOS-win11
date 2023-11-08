@@ -104,32 +104,30 @@ const ModalEditOrInsert = (props) => {
 
   async function handleUpdateApp(app) {
     const { id, name, icon, description, feature, screenshoots } = app;
-    const {error} = await virtapi(`stores?id=eq.${id}`, "PATCH", {
-        name: name,
-        icon: icon,
-        metadata: {
-          description: description,
-          feature: feature,
-          screenshoots: screenshoots,
-        },
+    const { error } = await virtapi(`stores?id=eq.${id}`, "PATCH", {
+      name: name,
+      icon: icon,
+      metadata: {
+        description: description,
+        feature: feature,
+        screenshoots: screenshoots,
       },
-    );
+    });
 
-    if (error) 
-      throw error
+    if (error) throw error;
   }
 
   async function handleInsertApp(newData) {
     const { name, icon, description, type, feature, screenshoots } = newData;
     const resp = await virtapi(`stores`, "POST", {
-        name: name,
-        icon: icon,
-        type: type,
-        metadata: {
-          description: description,
-          feature: feature,
-          screenshoots: screenshoots,
-        },
+      name: name,
+      icon: icon,
+      type: type,
+      metadata: {
+        description: description,
+        feature: feature,
+        screenshoots: screenshoots,
+      },
     });
 
     if (resp.status != 200) throw await resp.text();

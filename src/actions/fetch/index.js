@@ -18,63 +18,76 @@ const getCredentialHeader = async () => {
 };
 
 export const FetchAuthorizedWorkers = async () => {
-  const { data, code, error } = await SupabaseFuncInvoke("worker_profile_render");
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "worker_profile_render",
+  );
   if (error != null) throw error;
   return data;
 };
 export const FetchUserApplication = async () => {
-  const { data, code, error } = await SupabaseFuncInvoke( "user_application_fetch" );
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "user_application_fetch",
+  );
   if (error != null) throw error;
   return data;
 };
 
 export const DeactivateWorkerSession = async (worker_session_id) => {
-  const { data, code, error } = await SupabaseFuncInvoke("worker_session_deactivate", {
-    worker_session_id: worker_session_id,
-  });
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "worker_session_deactivate",
+    {
+      worker_session_id: worker_session_id,
+    },
+  );
   if (error != null) throw error;
   return data;
 };
 
 export const CreateWorkerSession = async (worker_profile_id) => {
-  const { data, code, error } = await SupabaseFuncInvoke("worker_session_create", {
-    worker_id: worker_profile_id,
-  });
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "worker_session_create",
+    {
+      worker_id: worker_profile_id,
+    },
+  );
 
   if (error != null) throw error;
   return data;
 };
 
 /**
- * 
- * @param {string} email 
- * @param {'month' | 'week'} plan 
- * @returns 
+ *
+ * @param {string} email
+ * @param {'month' | 'week'} plan
+ * @returns
  */
-export const AddSubscription = async (email,plan) => {
+export const AddSubscription = async (email, plan) => {
   const { data, code, error } = await SupabaseFuncInvoke("add_subscription", {
-    email, plan
+    email,
+    plan,
   });
   if (error != null) throw error;
   return data;
 };
 
 /**
- * 
- * @param {'CANCEL' | 'RENEW' | 'UPGRADE'} action 
- * @param {string} email 
- * @returns 
+ *
+ * @param {'CANCEL' | 'RENEW' | 'UPGRADE'} action
+ * @param {string} email
+ * @returns
  */
-export const ModifySubscription = async (action,email) => {
-  const { data, code, error } = await SupabaseFuncInvoke("modify_subscription", {
-    email,action
-  });
+export const ModifySubscription = async (action, email) => {
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "modify_subscription",
+    {
+      email,
+      action,
+    },
+  );
 
   if (error != null) throw error;
   return data;
 };
-
-
 
 export const DownloadApplication = async (
   app_template_id,
@@ -82,68 +95,79 @@ export const DownloadApplication = async (
   speed,
   safe,
 ) => {
-  const { data: result, code, error } = await SupabaseFuncInvoke("launch_application", {
+  const {
+    data: result,
+    code,
+    error,
+  } = await SupabaseFuncInvoke("launch_application", {
     action: "SETUP",
     app_template_id: app_template_id,
-    option: { availability, speed, safe, },
+    option: { availability, speed, safe },
   });
   if (error != null) {
-    throw { error, code }
+    throw { error, code };
   }
   // TODO
   for (let i = 0; i < 100; i++) {
-    const { data, error } = await virtapi(`rpc/fetch_resource_state`, 'POST', { id: result.resource_id });
+    const { data, error } = await virtapi(`rpc/fetch_resource_state`, "POST", {
+      id: result.resource_id,
+    });
 
-    if (error)
-      throw error;
+    if (error) throw error;
     else if (data.length == 0)
-      throw { error: 'Resource not found!', code: '5' } //resources not found
-    else if (data.at(0).current_state == 'QUEUED' && data.at(0).previous_state != 'NULL')
-      throw { error: 'Installing timeout!', code: '6' } //lanching timeout 
-    else if (data.at(0).current_state == 'RUNNING')
-      break;
+      throw { error: "Resource not found!", code: "5" }; //resources not found
+    else if (
+      data.at(0).current_state == "QUEUED" &&
+      data.at(0).previous_state != "NULL"
+    )
+      throw { error: "Installing timeout!", code: "6" }; //lanching timeout
+    else if (data.at(0).current_state == "RUNNING") break;
 
     await sleep(10 * 1000);
   }
 
-  const { data: bindingData, error: bindingError } = await virtapi(`rpc/binding_volume`, 'POST', { resource_id: result.resource_id });
-  if (bindingError)
-    throw error;
+  const { data: bindingData, error: bindingError } = await virtapi(
+    `rpc/binding_volume`,
+    "POST",
+    { resource_id: result.resource_id },
+  );
+  if (bindingError) throw error;
 
-  const elements = bindingData
+  const elements = bindingData;
   for (let i = 0; i < 100; i++) {
-    let pass = true
+    let pass = true;
     for (let index = 0; index < elements.length; index++) {
       const element = elements[index];
-      const { data, error } = await virtapi(`rpc/binding_storage`, 'POST', element);
-      if (error)
-        throw error;
+      const { data, error } = await virtapi(
+        `rpc/binding_storage`,
+        "POST",
+        element,
+      );
+      if (error) throw error;
 
-      if (data.length == 0)
-        throw new Error(`volume not found`)
-      else if (data.at(0).storage_id == null)
-        pass = false
+      if (data.length == 0) throw new Error(`volume not found`);
+      else if (data.at(0).storage_id == null) pass = false;
     }
 
-    if (pass)
-      break
+    if (pass) break;
 
     await sleep(10 * 1000);
   }
-
 
   return result;
 };
 
 export const StartApplication = async (storage_id) => {
-
-  const { data, code, error } = await SupabaseFuncInvoke("request_application", {
-    action: "START",
-    storage_id: storage_id,
-  });
-  console.log(data, code, error, 'starrt app');
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "request_application",
+    {
+      action: "START",
+      storage_id: storage_id,
+    },
+  );
+  console.log(data, code, error, "starrt app");
   if (error != null) {
-    throw { error, code }
+    throw { error, code };
   }
 
   return data;
@@ -155,8 +179,7 @@ export const AccessApplication = async (input) => {
     action: "ACCESS",
     storage_id: storage_id,
   });
-  if (error != null)
-    throw { error, code }
+  if (error != null) throw { error, code };
 
   return data;
 };
@@ -167,43 +190,45 @@ export const ResetApplication = async (input) => {
     action: "RESET",
     storage_id: storage_id,
   });
-  if (error != null)
-    throw { error, code }
+  if (error != null) throw { error, code };
 
   return data;
 };
 
 export const DeleteApplication = async (storage_id) => {
-  const { data, code, error } = await SupabaseFuncInvoke( "request_application", {
-    action: "DELETE",
-    storage_id: storage_id,
-  });
-  if (error != null)
-    throw { error, code };
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "request_application",
+    {
+      action: "DELETE",
+      storage_id: storage_id,
+    },
+  );
+  if (error != null) throw { error, code };
   return data;
 };
 
 export const StopApplication = async (storage_id) => {
-
-  const { data, code, error } = await SupabaseFuncInvoke("request_application", {
-    action: "STOP",
-    storage_id: storage_id,
-  });
-  if (error != null)
-    throw { error, code };
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "request_application",
+    {
+      action: "STOP",
+      storage_id: storage_id,
+    },
+  );
+  if (error != null) throw { error, code };
 
   return data;
 };
 
 export const StopVolume = async (volume_id) => {
-
-  const { data, code, error } = await SupabaseFuncInvoke("configure_application", {
-    action: "STOP_VOLUME",
-    volume_id: volume_id,
-  });
-  if (error != null)
-    throw { error, code };
-
+  const { data, code, error } = await SupabaseFuncInvoke(
+    "configure_application",
+    {
+      action: "STOP_VOLUME",
+      volume_id: volume_id,
+    },
+  );
+  if (error != null) throw { error, code };
 
   return data;
 };
@@ -245,8 +270,7 @@ export const FetchApplicationTemplates = async (id) => {
     .filter((x) => x != undefined);
 };
 
-
-export const SupabaseFuncInvoke = async (funcName,body) => {
+export const SupabaseFuncInvoke = async (funcName, body) => {
   try {
     const credential = await getCredentialHeader();
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -264,7 +288,6 @@ export const SupabaseFuncInvoke = async (funcName,body) => {
       const res = await response.json();
       return { error: res.message, code: res.code, data: null };
     }
-
 
     const data = await response.json();
     return { data, error: null };

@@ -146,8 +146,8 @@ i[data-flip="true"] {
   top: 0;
   overflow: hidden;
 }
-.desktop[data-mobile="true"]{
-  width: calc(100vw - 52px); 
+.desktop[data-mobile="true"] {
+  width: calc(100vw - 52px);
   height: 100vh;
 }
 .dpShad {

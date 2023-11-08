@@ -401,8 +401,8 @@ const defState = {
       {
         name: "Modify",
         action: "MODIFY_SUB",
-        payload: "open"
-      }
+        payload: "open",
+      },
     ],
     worker_session: [
       {

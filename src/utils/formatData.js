@@ -3,8 +3,8 @@ import { virtapi } from "../supabase/createClient";
 export function formatWorkerRenderTree(data) {
   const tree = data.tree;
   const newData = { Account: RenderBranch(tree) };
-  newData.Account.info.spid = "%worker%"
-  newData.Account.name = tree.type
+  newData.Account.info.spid = "%worker%";
+  newData.Account.name = tree.type;
   return newData;
 }
 
@@ -67,11 +67,14 @@ export async function formatAppRenderTree(data) {
         localStorage.getItem(`app_metadata_from_volume_${storage.id}`) ?? `[]`,
       );
       if (icons?.length == 0 || icons?.length == undefined) {
-        const {data,error} = await virtapi(`rpc/get_app_metadata_from_volume`, 'POST' ,{
-            deploy_as: `${storage.id}` 
-          })
-        if (error) 
-          return
+        const { data, error } = await virtapi(
+          `rpc/get_app_metadata_from_volume`,
+          "POST",
+          {
+            deploy_as: `${storage.id}`,
+          },
+        );
+        if (error) return;
 
         icons = data;
         localStorage.setItem(

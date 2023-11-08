@@ -12,7 +12,7 @@ import {
   connectSession,
   viewDetail,
   createSubscription,
-  modifySubscription
+  modifySubscription,
 } from "./worker";
 import { deleteApp, openApp } from "./app";
 import { fetchApp } from "./preload";
@@ -177,7 +177,7 @@ export const changeTheme = () => {
   var thm = store.getState().setting.person.theme,
     thm = thm == "light" ? "dark" : "light";
   var icon = thm == "light" ? "sun" : "moon";
-  localStorage.setItem("theme", thm)
+  localStorage.setItem("theme", thm);
   document.body.dataset.theme = thm;
   store.dispatch({ type: "STNGTHEME", payload: thm });
   store.dispatch({ type: "PANETHEM", payload: icon });
@@ -220,9 +220,9 @@ export const menuDispatch = async (event, menu) => {
   else if (type === "STOPVOLUME") ActionExternal.stopVolume(event);
   else if (type === "CREATE_SUB") createSubscription(event);
   else if (type === "MODIFY_SUB") modifySubscription(event);
-  else if (type === "RELEASE_APP") store.dispatch({ type: 'ADMIN_RELEASE_APP', payload: { event } });
-
-    //App menu action
+  else if (type === "RELEASE_APP")
+    store.dispatch({ type: "ADMIN_RELEASE_APP", payload: { event } });
+  //App menu action
   else if (type === "OPEN_APP") ActionExternal.openApp(externalAppData);
   else if (type === "OPEN_APP_NEWTAB")
     ActionExternal.openApp(externalAppData, "new_tab");

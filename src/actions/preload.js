@@ -10,7 +10,7 @@ import {
 import { localStorageKey } from "../data/constant";
 
 const loadSettings = async () => {
-  let thm = localStorage.getItem('theme')
+  let thm = localStorage.getItem("theme");
   thm = thm == "light" ? "light" : "dark";
   var icon = thm == "light" ? "sun" : "moon";
 
@@ -25,8 +25,6 @@ const loadSettings = async () => {
   store.dispatch({ type: "STNGTHEME", payload: thm });
   store.dispatch({ type: "PANETHEM", payload: icon });
   store.dispatch({ type: "WALLSET", payload: thm == "light" ? 0 : 1 });
-
-
 };
 
 export const fetchApp = async () => {
@@ -65,7 +63,7 @@ export const fetchApp = async () => {
 export const fetchWorker = async () => {
   const user = store.getState()?.user;
   if (!user?.id) return;
-  if (await isAllowWorkerProfileFetch() == false) return;
+  if ((await isAllowWorkerProfileFetch()) == false) return;
 
   try {
     const { timestamp, payload } = JSON.parse(localStorage.getItem("WORKER"));
@@ -124,7 +122,7 @@ export const fetchStore = async () => {
     return;
   } catch {}
 
-  const {data,error} = await virtapi(`rpc/fetch_store`, "GET" );
+  const { data, error } = await virtapi(`rpc/fetch_store`, "GET");
   if (error) throw error;
 
   const content = {
@@ -160,7 +158,9 @@ export const fetchStore = async () => {
 
 export const fetchUser = async () => {
   try {
-    const { timestamp, payload } = JSON.parse(localStorage.getItem(localStorageKey.user));
+    const { timestamp, payload } = JSON.parse(
+      localStorage.getItem(localStorageKey.user),
+    );
     if (Math.abs(new Date().getTime() - timestamp) > 10 * 1000)
       throw new Error("outdated");
 
@@ -181,33 +181,33 @@ export const fetchUser = async () => {
   {
     const { data, error } = await supabase.rpc("validate_user_access", {
       user_account_id: user?.id,
-      plan_name: ['week', 'month', 'fullstack', 'admin']
+      plan_name: ["week", "month", "fullstack", "admin"],
     });
     if (error) throw error;
 
-    payloadUser = { ...payloadUser, greenlist: data }
+    payloadUser = { ...payloadUser, greenlist: data };
 
-    console.log(payloadUser, 'payloadd');
+    console.log(payloadUser, "payloadd");
   }
 
   {
-    const { data, error} = await supabase.rpc("validate_user_access", {
+    const { data, error } = await supabase.rpc("validate_user_access", {
       user_account_id: user?.id,
-      plan_name: ['fullstack', 'remote', 'admin']
+      plan_name: ["fullstack", "remote", "admin"],
     });
     if (error) throw error;
 
-    payloadUser = { ...payloadUser, whitelist: data }
+    payloadUser = { ...payloadUser, whitelist: data };
   }
 
   {
-    const { data, error} = await supabase.rpc("validate_user_access", {
+    const { data, error } = await supabase.rpc("validate_user_access", {
       user_account_id: user?.id,
-      plan_name: ['admin']
+      plan_name: ["admin"],
     });
     if (error) throw error;
 
-    payloadUser = { ...payloadUser, admin: data }
+    payloadUser = { ...payloadUser, admin: data };
   }
 
   if (payloadUser?.greenlist == true) {
@@ -233,9 +233,5 @@ export const fetchUser = async () => {
 
 export const preload = async () => {
   await Promise.all([fetchUser(), loadSettings()]);
-  await Promise.all([
-    fetchWorker(),
-    fetchStore(),
-    fetchApp()
-  ]);
+  await Promise.all([fetchWorker(), fetchStore(), fetchApp()]);
 };

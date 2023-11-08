@@ -5,7 +5,7 @@ import { isMobile } from "../utils/checking";
 var dev = "";
 
 const defState = {};
-const openGuideline = localStorage.getItem("openAboutThinkmay") ?? 'true';
+const openGuideline = localStorage.getItem("openAboutThinkmay") ?? "true";
 
 for (var i = 0; i < allApps.length; i++) {
   defState[allApps[i].icon] = allApps[i];
@@ -20,7 +20,7 @@ for (var i = 0; i < allApps.length; i++) {
     defState[allApps[i].icon].z = 1;
   }
 
-  if (allApps[i].icon === "about" && openGuideline == 'true') {
+  if (allApps[i].icon === "about" && openGuideline == "true") {
     defState[allApps[i].icon].hide = false;
     defState[allApps[i].icon].max = null;
     defState[allApps[i].icon].size = "full";

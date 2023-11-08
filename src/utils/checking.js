@@ -21,21 +21,21 @@ export const valideUserAccess = async (plan) => {
   console.log(plan);
   const { data, error } = await supabase.rpc("validate_user_access", {
     user_account_id: user?.id,
-    plan_name: plan
+    plan_name: plan,
   });
   if (error) throw error;
   return data;
-}
+};
 
 export const isAllowWorkerProfileFetch = async () => {
   const user = store.getState().user;
   const { data, error } = await supabase.rpc("validate_user_access", {
     user_account_id: user?.id,
-    plan_name: ['fullstack','remote','admin']
+    plan_name: ["fullstack", "remote", "admin"],
   });
   if (error) throw error;
   return data;
-}
+};
 
 export const isMobile = () => {
   let check = false;
