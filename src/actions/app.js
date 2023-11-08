@@ -1,7 +1,7 @@
 import store from "../reducers";
 import { log } from "../lib/log";
 import { fetchApp, fetchStore, fetchWorker } from "./preload";
-import { supabase } from "../supabase/createClient";
+import { supabase, virtapi } from "../supabase/createClient";
 import {
   AccessApplication,
   ResetApplication,
@@ -17,6 +17,7 @@ import i18next from "i18next";
 import { sleep } from "../utils/sleep";
 import { openRemotePage } from "./remote";
 import { isAdmin } from "../utils/checking";
+import { formatError } from "../utils/formatErr";
 
 export const formatEvent = (event) => {
   const pid = event.target.dataset.pid;
@@ -49,40 +50,30 @@ const wrapper = async (func, appType) => {
     });
 
     return result;
-  } catch (error) {
+  } catch (err) {
+
+    let contentErr = err
+    if (err?.error != undefined || err?.code != undefined) {
+      contentErr = formatError(err?.error, err?.code)
+    }
+
     await log({
       type: "error",
-      content: error,
+      content: contentErr,
     });
 
-    return error;
+    return err;
   }
 };
 
 export const deleteStore = async (app) => {
   if (!isAdmin()) return;
 
-  const { data, error } = await supabase.from("constant").select("value->virt");
-  if (error) throw error;
-
-  const url = data.at(0)?.virt.url;
-  const key = data.at(0)?.virt.anon_key;
-  if (url == undefined || key == undefined) return;
-
-  const resp = await fetch(`${url}/rest/v1/stores?id=eq.${app.id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-      apikey: key,
-      // "refer": "return=minimal"
-    },
-  });
-
-  console.log(resp);
-
-  if (resp.status != 204 || 200 || 201) throw await resp.text();
-
+  const {error} = await virtapi(`stores?id=eq.${app.id}`, 'DELETE');
+  if (error) 
+    throw error
+    
+  
   await log({
     error: null,
     type: "confirm",
@@ -138,7 +129,7 @@ export const installApp = (payload) =>
       payload.speed,
       payload.safe,
     );
-    await sleep(60 * 1000);
+
     await fetchApp();
   }, "installApp");
 
@@ -150,12 +141,22 @@ export const startApp = async (appInput) =>
 
     await StartApplication(payload.storage_id);
     for (let i = 0; i < 100; i++) {
-      let { data, error } = await supabase.rpc("setup_status", {
-        volume_id: payload.volume_id,
-      });
+      {
+        let { data, error } = await supabase.rpc("setup_status", {
+          volume_id: payload.volume_id,
+        });
+        if (error) throw error;
+        if (data == true) break;
+      }
 
-      if (error) throw error;
-      if (data == true) break;
+      {
+        const { data: resource, error } = await virtapi("rpc/binding_resource", 'POST',{
+          volume_id: payload.volume_id,
+        });
+        if (error) throw error;
+        else if (resource.at(0).desired_state == 'PAUSED') 
+          throw { error: "Timeout !", code: '6' }; // TODO
+      }
 
       await sleep(10 * 1000);
     }
@@ -169,7 +170,18 @@ export const pauseApp = async (appInput) =>
     if (payload.status != "RUNNING") throw i18next.t("error.PAUSED");
 
     await StopApplication(payload.storage_id);
-    await sleep(60 * 1000);
+    for (let i = 0; i < 100; i++) {
+      {
+        let { data, error } = await supabase.rpc("setup_status", {
+          volume_id: payload.volume_id,
+        });
+        if (error) throw error;
+        if (data == false) break;
+      }
+
+      await sleep(10 * 1000);
+    }
+
     await fetchApp();
   }, "pauseApp");
 
@@ -232,7 +244,7 @@ export const ReleaseApp = async ({ vol_speed,
       cluster_id,);
     if (desc == "") throw ('Description is not empty!')
 
-    const { error } = await SupabaseFuncInvoke("configure_application", {
+    const { code,error } = await SupabaseFuncInvoke("configure_application", {
       action: "RELEASE",
       store_id: parseInt(store_id),
       desc: desc,
@@ -269,7 +281,7 @@ export const PatchApp = async (app) => {
     });
     Swal.close();
 
-    const { error } = await SupabaseFuncInvoke("configure_application", {
+    const { code,error } = await SupabaseFuncInvoke("configure_application", {
       action: "PATCH",
       app_id: app.id,
       desc: text,

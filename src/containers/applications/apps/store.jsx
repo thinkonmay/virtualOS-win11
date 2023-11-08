@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Image, ToolBar, LazyComponent } from "../../../utils/general";
-import "./assets/store.scss";
 import { deleteStore } from "../../../actions/app";
 import { useTranslation } from "react-i18next";
 import { fetchStore } from "../../../actions/preload";
 import { installApp } from "../../../actions/app";
 import { PatchApp, ReleaseApp } from "../../../actions/app";
-import store from "../../../reducers";
-import { supabase } from "../../../supabase/createClient";
 import { isAdmin, isGreenList, isMobile } from "../../../utils/checking";
+import { virtapi } from "../../../supabase/createClient";
 import Swal from "sweetalert2";
 import { valideUserAccess } from "../../../utils/checking.js";
+import "./assets/store.scss";
 
 const emap = (v) => {
   v = Math.min(1 / v, 10);
@@ -306,26 +305,9 @@ const DetailPage = ({ app }) => {
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase
-        .from("constant")
-        .select("value->virt");
-      if (error) throw error;
-
-      const url = data.at(0)?.virt.url;
-      const key = data.at(0)?.virt.anon_key;
-      if (url == undefined || key == undefined) return;
-
-      const options = await (
-        await fetch(`${url}/rest/v1/rpc/get_app_from_store`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${key}`,
-            apikey: key,
-          },
-          body: JSON.stringify({ store_id: `${app.id}` }),
-        })
-      ).json();
+      const {data,error} = await virtapi(`rpc/get_app_from_store`,"POST", { store_id: `${app.id}` })
+      if (error) 
+        throw error
 
       const subscription = await supabase.from("subscriptions").select("account_id, metadata").eq("account_id", user.id)
       let user_region;
@@ -337,9 +319,8 @@ const DetailPage = ({ app }) => {
           user_region = region[1]
         break;
       }
-
-      for (let index = 0; index < options.length; index++) {
-        const option = options[index];
+      for (let index = 0; index < data.length; index++) {
+        const option = data[index];
         for (let index = 0; index < option.available.length; index++) {
           if (option.available[index].available.gpus.includes(option.gpu)) {
               if (await valideUserAccess(['admin', 'fullstack'])){
