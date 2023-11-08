@@ -11,7 +11,7 @@ import store from "../../../reducers";
 import { supabase } from "../../../supabase/createClient";
 import { isAdmin, isGreenList, isMobile } from "../../../utils/checking";
 import Swal from "sweetalert2";
-import { isWhiteList } from "../../../utils/checking.js";
+import { valideUserAccess } from "../../../utils/checking.js";
 
 const emap = (v) => {
   v = Math.min(1 / v, 10);
@@ -329,12 +329,11 @@ const DetailPage = ({ app }) => {
 
       const subscription = await supabase.from("subscriptions").select("account_id, metadata").eq("account_id", user.id)
       let user_region;
-
-      switch(subscription.data.at(0).metadata){
+      switch(JSON.stringify(subscription.data.at(0).metadata)){
         case '{}': // thinkmay internal user
           user_region = region[0]
         break;
-        case '{"referal":{"email":"kmrjay730@gmail.com","account_id":"30739186-d473-4349-9a35-8e15980c155a"}':
+        case '{"referal":{"email":"kmrjay730@gmail.com","account_id":"30739186-d473-4349-9a35-8e15980c155a"}}':
           user_region = region[1]
         break;
       }
@@ -343,10 +342,12 @@ const DetailPage = ({ app }) => {
         const option = options[index];
         for (let index = 0; index < option.available.length; index++) {
           if (option.available[index].available.gpus.includes(option.gpu)) {
-              if (isWhiteList())
+              if (await valideUserAccess(['admin', 'fullstack'])){
                 SetOptions((old) => [...old, option]);
-              else if (user_region == option.region)
+              }
+              else if (user_region == option.region){
                 SetOptions((old) => [...old, option]);
+              }
             break;
           }
         }
