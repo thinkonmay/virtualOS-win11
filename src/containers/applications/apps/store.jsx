@@ -7,7 +7,7 @@ import { fetchStore } from "../../../actions/preload";
 import { installApp } from "../../../actions/app";
 import { PatchApp, ReleaseApp } from "../../../actions/app";
 import { isAdmin, isGreenList, isMobile } from "../../../utils/checking";
-import { virtapi } from "../../../supabase/createClient";
+import { virtapi, supabase } from "../../../supabase/createClient";
 import Swal from "sweetalert2";
 import { valideUserAccess } from "../../../utils/checking.js";
 import "./assets/store.scss";
