@@ -11,10 +11,10 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@segment/analytics-next": "^1.62.0",
-    "@sentry/react": "^7.92.0",
-    "@sentry/tracing": "^7.92.0",
-    "@supabase/supabase-js": "^2.39.2",
+    "@segment/analytics-next": "^1.63.0",
+    "@sentry/react": "^7.93.0",
+    "@sentry/tracing": "^7.93.0",
+    "@supabase/supabase-js": "^2.39.3",
     "@tauri-apps/api": "^1.5.3",
     "@widgetbot/react-embed": "1.5.0",
     "@win11react/react-canvas-draw": "1.2.2",
@@ -39,7 +39,7 @@
     "react-scripts": "^5.0.1",
     "redux": "^4.2.1",
     "sass": "^1.69.7",
-    "sweetalert2": "^11.10.2",
+    "sweetalert2": "^11.10.3",
     "translation-check": "^1.1.0"
   },
   "scripts": {
