@@ -265,3 +265,11 @@ export const showWorkerDetail = (id) => {
         })
     );
 };
+export const showPatchAppModal = () => {
+    appDispatch(
+        popup_open({
+            type: 'patch_app_modal',
+            data: ''
+        })
+    );
+};

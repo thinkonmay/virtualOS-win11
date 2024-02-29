@@ -55,7 +55,10 @@ interface NewSubscription {
     price: string;
     additional_time: number;
 }
-
+interface IPatchApp {
+    app_id: number,
+    desc: string,
+}
 export const workerAsync = {
     fetch_worker: createAsyncThunk('fetch_worker', async (): Promise<any> => {
         return await CacheRequest('worker', 90, async () => {
@@ -271,12 +274,12 @@ export const workerAsync = {
     ),
     patch_app: createAsyncThunk(
         'patch_app',
-        async (app_id: number, { getState }): Promise<any> => {
-            let desc = `patch app ${new Date().toUTCString()}`;
+        async (patchAppInputs: IPatchApp, { getState }): Promise<any> => {
+            const { app_id, desc } = patchAppInputs
             let cluster_id = '09793ad1-82e5-46ad-8183-f72e7e9fe85c';
             await PatchApp({
                 app_id,
-                desc,
+                desc: desc + ` ${new Date().toUTCString()}`,
                 cluster_id
             });
         }

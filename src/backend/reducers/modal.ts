@@ -34,7 +34,11 @@ type PopupData =
     | {
           type: 'worker_modal';
           data: any;
-      };
+    }
+    | {
+        type: 'patch_app_modal';
+        data: any;
+    };
 
 type Data = {
     data_stack: PopupData[];
