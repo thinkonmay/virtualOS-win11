@@ -82,6 +82,13 @@ const initialState: Data = {
             name: [Contents.EXTERNAL_TAB],
             state: 'old_version',
             action: 'remote/remote_version'
+        },
+        {
+            ui: true,
+            src: 'FaMousePointer',
+            name: [Contents.RELATIVE_MOUSE],
+            state: 'relative_mouse',
+            action: 'remote/relative_mouse'
         }
     ],
     notifications: [],
@@ -152,7 +159,10 @@ export const sidepaneAsync = {
                 const { data, error } = await supabase
                     .from('generic_events')
                     .select('timestamp,value,name')
-                    .eq('type', 'MESSAGE');
+                    .order('timestamp', { ascending: false })
+                    .eq('type', 'MESSAGE')
+                    .limit(10);
+
                 if (error) throw error;
 
                 return data

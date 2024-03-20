@@ -9,12 +9,14 @@ type Data = User & {
     stat?: UsageTime;
 };
 interface UsageTime {
-    plan_name: string,
+    plan_name: string;
     start_time: string;
     end_time: string;
 
     total_time: number;
     daily_usage: string;
+    additional_time: string;
+    plan_usage_time: string;
 }
 const initialState: Data = {
     id: 'unknown',
@@ -23,7 +25,7 @@ const initialState: Data = {
     created_at: 'unknown',
     app_metadata: {},
     user_metadata: {},
-    plans: [],
+    plans: []
 };
 
 export const userAsync = {
@@ -91,7 +93,7 @@ export const userSlice = createSlice({
                 state.id = action.payload.id;
                 state.email = action.payload.email;
                 state.plans = action.payload.plans;
-                state.stat = action.payload.stat ;
+                state.stat = action.payload.stat;
             }
         });
     }

@@ -30,9 +30,13 @@ type PopupData =
     | {
           type: 'user_config';
           data: any;
+      }
+    | {
+          type: 'worker_modal';
+          data: any;
     }
     | {
-        type: 'worker_modal';
+        type: 'patch_app_modal';
         data: any;
     };
 

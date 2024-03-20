@@ -19,8 +19,8 @@ import './back.scss';
 import { UserEvents } from '../../backend/reducers/fetch/analytics';
 import { supabase, virtapi } from '../../backend/reducers/fetch/createClient';
 import { Contents } from '../../backend/reducers/locales';
-import './getstarted.scss';
 import { sleep } from '../../backend/utils/sleep';
+import './getstarted.scss';
 
 export const Background = () => {
     const wall = useAppSelector((state) => state.wallpaper);
@@ -34,11 +34,15 @@ export const Background = () => {
     );
 };
 
-export const BootScreen = () => {
+export const BootScreen = ({ loadingText }) => {
+    const t = useAppSelector((state) => state.globals.translation);
     return (
         <div className="bootscreen">
             <div>
                 <Image src="asset/bootlogo" w={180} />
+                <div className="text-l font-semibold text-gray-100">
+                    {t[loadingText]}
+                </div>
                 <div className="mt-48" id="loader">
                     <svg
                         className="progressRing"
@@ -64,7 +68,7 @@ export const LockScreen = () => {
         setLock(true);
     };
 
-    const proceed = async () => {
+    const proceed = async (provider) => {
         if (user.id != 'unknown') {
             setUnLock(true);
             dispatch(wall_unlock());
@@ -72,7 +76,7 @@ export const LockScreen = () => {
             return;
         }
 
-        await login();
+        await login(provider);
     };
 
     return (
@@ -116,11 +120,43 @@ export const LockScreen = () => {
                 <div className="mt-2 text-2xl font-medium text-gray-200">
                     {user?.email ?? ''}
                 </div>
-                <div
-                    className="flex items-center mt-6 signInBtn"
-                    onClick={proceed}
+                {/*<
                 >
                     {user.id != 'unknown' ? ' Enter' : 'Continue with Google'}
+                </>*/}
+
+                <div className="ctn_btn_login mt-8">
+                    {user?.id != 'unknown' ? (
+                        <div
+                            className="flex items-center mt-6 signInBtn"
+                            onClick={proceed}
+                        >
+                            Enter
+                        </div>
+                    ) : (
+                        <>
+                            <span className="text-base text-white font-medium">
+                                Continue with
+                            </span>
+                            <div className="flex gap-[8px]">
+                                {/* <button className="base fb_button">
+                                        <Icon src="facebook1" width={64} />
+                                    </button> */}
+                                <button
+                                    className="base discord_button"
+                                    onClick={() => proceed('discord')}
+                                >
+                                    <Icon src="discord" width={64} />
+                                </button>
+                                <button
+                                    className="base gg_button"
+                                    onClick={() => proceed('google')}
+                                >
+                                    <Icon src="google" width={64} />
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
 
@@ -160,6 +196,9 @@ export const Getstarted = ({}) => {
     const [orderNumberDemo, setOrderNumberDemo] = useState(1);
     const [waitTimeDemo, setWaitTimeDemo] = useState(5);
     const [isDemoAllowed, setDemoAllowed] = useState(true);
+    const [selectLoginOption, setSelectLoginOption] = useState(
+        'DEMO' | 'INUSE'
+    );
 
     const nextPage = () =>
         setPageNo((old) => {
@@ -235,7 +274,7 @@ export const Getstarted = ({}) => {
                 setOrderNumberDemo(999);
                 setWaitTimeDemo(999);
                 setDemoAllowed(false);
-                break;
+                return;
         }
 
         while (true) {
@@ -243,10 +282,34 @@ export const Getstarted = ({}) => {
                 user_id: id
             });
 
+            if (error) {
+                return new Error(
+                    `Failed to found this user in current demo ${error.message}`
+                );
+            }
+
+            if (data.length == 0) {
+                return new Error(
+                    `Not found this user in current demo ${error.message}`
+                );
+            }
+
             setOrderNumberDemo(data[0]['your_order_number']);
             setWaitTimeDemo(data[0]['will_demo_in']);
 
+            if (data[0]['will_demo_in'] < 10) {
+                break;
+            }
+
             await sleep(15 * 1000);
+        }
+    };
+
+    const login_process = async (provider) => {
+        if (selectLoginOption == 'INUSE') {
+            login(provider);
+        } else if (selectLoginOption == 'DEMO') {
+            LoginAndDemo(provider);
         }
     };
 
@@ -352,6 +415,7 @@ export const Getstarted = ({}) => {
                 startDemo={startDemo}
                 waitTimeDemo={waitTimeDemo}
                 isDemoAllowed={isDemoAllowed}
+                endSurvey={endSurvey}
             />
         </>
     );
@@ -382,22 +446,59 @@ export const Getstarted = ({}) => {
         </>
     );
 
-    const Signup = () => (
-        <>
-            <div className="no_button base" onClick={login}>
-                {t[Contents.HAVE_ACCOUNT]}
-                {', '}
-                {t[Contents.SIGN_IN]}
+    const Signup = () =>
+        selectLoginOption ? (
+            <div className="ctn_login_btn">
+                <span className="text-base">Continue with</span>
+                <div className="flex gap-[8px]">
+                    {/* <button className="base fb_button" onClick={() => login_process("facebook")}>
+                        <Icon src="facebook1" width={40} />
+                    </button> */}
+                    <button
+                        className="base discord_button"
+                        onClick={() => login_process('discord')}
+                    >
+                        <Icon src="discord" width={40} />
+                    </button>
+                    <button
+                        className="base gg_button"
+                        onClick={() => login_process('google')}
+                    >
+                        <Icon src="google" width={40} />
+                    </button>
+                </div>
             </div>
-            <div className="yes_button base" onClick={LoginAndDemo}>
-                {t[Contents.DEMO]}
-            </div>
-        </>
-    );
+        ) : (
+            <>
+                <div
+                    className="no_button base"
+                    onClick={() => setSelectLoginOption('INUSE')}
+
+                    // login
+                >
+                    {t[Contents.HAVE_ACCOUNT]}
+                    {', '}
+                    {t[Contents.SIGN_IN]}
+                </div>
+                <div
+                    className="yes_button base"
+                    onClick={() => setSelectLoginOption('DEMO')}
+                    // LoginAndDemo
+                >
+                    {t[Contents.DEMO]}
+                </div>
+            </>
+        );
 
     const Logo = () => (
         <div className="left">
-            <img alt="left image" id="left_img" src="logo_white.png" />
+            <div className="grid grid-col pb-20">
+                <img alt="left image" id="left_img" src="logo_white.png" />
+                <div className="header" style={{ paddingTop: 0 }}>
+                    {t[Contents.THINKMAY_HEADER]}
+                </div>
+                <div className="header_sml">{t[Contents.THINKMAY_DESC]}</div>
+            </div>
         </div>
     );
 
@@ -407,7 +508,19 @@ export const Getstarted = ({}) => {
             content: (
                 <>
                     <div className="left">
-                        <img id="left_img" src="logo_white.png" />
+                        <div className="grid grid-col pb-20">
+                            <img
+                                alt="left image"
+                                id="left_img"
+                                src="logo_white.png"
+                            />
+                            <div className="header" style={{ paddingTop: 0 }}>
+                                {t[Contents.THINKMAY_HEADER]}
+                            </div>
+                            <div className="header_sml">
+                                {t[Contents.THINKMAY_DESC]}
+                            </div>
+                        </div>
                     </div>
                     <div className="right">
                         <div className="header">
@@ -595,7 +708,12 @@ export const Getstarted = ({}) => {
     );
 };
 
-const StartDemoBtn = ({ startDemo, waitTimeDemo, isDemoAllowed }) => {
+const StartDemoBtn = ({
+    startDemo,
+    waitTimeDemo,
+    isDemoAllowed,
+    endSurvey
+}) => {
     const [isDemoStarted, setIsDemoStarted] = useState(false);
     const [countdown, setCountdown] = useState(parseInt(waitTimeDemo * 60));
     const t = useAppSelector((state) => state.globals.translation);
@@ -629,7 +747,11 @@ const StartDemoBtn = ({ startDemo, waitTimeDemo, isDemoAllowed }) => {
                     {t[Contents.READ_USER_MANUAL]} {countdown}s
                 </div>
             ) : (
-                <div className="no_button base" style={{ right: '39px' }}>
+                <div
+                    className="no_button base"
+                    style={{ right: '39px' }}
+                    onClick={endSurvey}
+                >
                     {t[Contents.EXPLORE_WEB]}
                 </div>
             )}
@@ -725,6 +847,10 @@ export const Survey = () => {
     const Logo = () => (
         <div className="left">
             <img alt="left image" id="left_img" src="logo_white.png" />
+            <div className="header" style={{ paddingTop: 0 }}>
+                {t[Contents.THINKMAY_HEADER]}
+            </div>
+            <div className="header_sml">{t[Contents.THINKMAY_DESC]}</div>
         </div>
     );
 

@@ -7,6 +7,9 @@ export enum Contents {
     PAYMENT_FOLLOW_UP_CONTENT,
     PAYMENT_FOLLOW_UP_DONE,
 
+    BOOTING,
+    ROTATE_PHONE,
+
     ABOUT_OPENSOURCE,
     ABOUT_NOTMICROSOFT,
     ABOUT_CREATIVE,
@@ -125,6 +128,7 @@ export enum Contents {
     RESET_VIDEO,
     HOMESCREEN,
     FULLSCREEN,
+    RELATIVE_MOUSE,
     SCAN_CODE,
     EXTERNAL_TAB,
     QUALITY,
@@ -162,7 +166,11 @@ export enum Contents {
     FB_DETAIL,
     DEMO_QUEUED,
     DEMO_NOTE,
-    ALREADY_DEMO
+    ALREADY_DEMO,
+    THINKMAY_HEADER,
+    THINKMAY_DESC,
+    PLAN_USAGE_TIME,
+    ADDITIONAL_TIME
 }
 
 export function language() {
@@ -279,6 +287,18 @@ export function language() {
 
     en.set(Contents.STORE_FREE, 'FREE');
     vn.set(Contents.STORE_FREE, 'FREE');
+
+    en.set(Contents.BOOTING, 'Your device is booting');
+    vn.set(Contents.BOOTING, 'Thinkmay đang khởi động, bạn đợi chút nhé');
+
+    en.set(
+        Contents.ROTATE_PHONE,
+        'Please rotate your phone horizontally to continue'
+    );
+    vn.set(
+        Contents.ROTATE_PHONE,
+        'Hãy xoay ngang màn hình để tiếp tục sử dụng'
+    );
 
     en.set(Contents.STORE_OWNED, 'Owned');
     vn.set(Contents.STORE_OWNED, 'Owned');
@@ -713,6 +733,9 @@ export function language() {
     en.set(Contents.FULLSCREEN, 'Fullscreen');
     vn.set(Contents.FULLSCREEN, 'Toàn màn hình');
 
+    en.set(Contents.RELATIVE_MOUSE, 'Gaming mode');
+    vn.set(Contents.RELATIVE_MOUSE, 'Chế độ gaming');
+
     en.set(Contents.SCAN_CODE, 'Fix keyboard');
     vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
 
@@ -819,5 +842,20 @@ export function language() {
     en.set(Contents.ALREADY_DEMO, 'You are already demo services');
     vn.set(Contents.ALREADY_DEMO, 'Bạn đã demo rồi 😎');
 
+    en.set(Contents.THINKMAY_HEADER, 'Thinkmay - Cloud PC');
+    vn.set(Contents.THINKMAY_HEADER, 'Thinkmay - Cloud PC');
+
+    en.set(
+        Contents.THINKMAY_DESC,
+        'Play AAA Games, professionally graphic work on any device.'
+    );
+    vn.set(
+        Contents.THINKMAY_DESC,
+        'Chơi game khủng, làm đồ họa nặng trên mọi thiết bị.'
+    );
+    en.set(Contents.PLAN_USAGE_TIME, 'Plan usage time');
+    vn.set(Contents.PLAN_USAGE_TIME, 'Thời gian của gói');
+    en.set(Contents.ADDITIONAL_TIME, 'Additional time');
+    vn.set(Contents.ADDITIONAL_TIME, 'Thời gian cộng thêm');
     return t;
 }

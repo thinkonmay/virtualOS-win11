@@ -175,7 +175,7 @@ function menu_conversion(menu: MenuOption): MenuOpt {
                     },
                     {
                         name: 'Patch',
-                        action: 'patch_app'
+                        action: 'showPatchAppModal',
                     }
                 ]
             };

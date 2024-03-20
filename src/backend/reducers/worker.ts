@@ -53,8 +53,12 @@ interface NewSubscription {
     plan: string;
     free: string;
     price: string;
+    additional_time: number;
 }
-
+interface IPatchApp {
+    app_id: number,
+    desc: string,
+}
 export const workerAsync = {
     fetch_worker: createAsyncThunk('fetch_worker', async (): Promise<any> => {
         return await CacheRequest('worker', 90, async () => {
@@ -88,10 +92,7 @@ export const workerAsync = {
     ),
     delete_volume: createAsyncThunk(
         'delete_volume',
-        async (
-            { volume_id }: { volume_id: string },
-            { getState }
-        ): Promise<any> => {
+        async (volume_id: string, { getState }): Promise<any> => {
             volume_id = volume_id.split(' ').at(-1);
             await DeleteVolume(volume_id);
         }
@@ -99,7 +100,7 @@ export const workerAsync = {
     default_os_volume: createAsyncThunk(
         'default_os_volume',
         async (volume_id: string, { getState }): Promise<any> => {
-            let cluster_id = '';
+            let cluster_id = '09793ad1-82e5-46ad-8183-f72e7e9fe85c';
             await SetDefaultOsVolume(volume_id, cluster_id);
         }
     ),
@@ -113,11 +114,11 @@ export const workerAsync = {
         'fork_volume',
         async (volume_id: string, { getState }): Promise<any> => {
             volume_id = volume_id.split(' ').at(-1);
-            let cluster_id = 'todo';
-            let gpu_model = 'todo';
-            let vcpus = 'todo';
-            let ram = 'todo';
-            let description = 'todo';
+            let cluster_id = '09793ad1-82e5-46ad-8183-f72e7e9fe85c';
+            let gpu_model = 'RTX 3060Ti';
+            let vcpus = '8';
+            let ram = '8';
+            let description = `fork volume ${new Date().toUTCString()}`;
             await ForkVolume(
                 volume_id,
                 cluster_id,
@@ -194,13 +195,14 @@ export const workerAsync = {
     create_subscription: createAsyncThunk(
         'create_subscription',
         async (data: NewSubscription): Promise<any> => {
-            const { email, plan, free, price } = data;
+            const { email, plan, free, price, additional_time } = data;
 
             await AddSubscription({
                 email,
                 plan,
                 free,
-                price
+                price,
+                additional_time
             });
         }
     ),
@@ -245,15 +247,17 @@ export const workerAsync = {
     release_app: createAsyncThunk(
         'release_app',
         async (store_id: number, { getState }): Promise<any> => {
-            let vol_speed = '';
-            let vol_availability = '';
-            let gpu_model = '';
-            let desc = '';
-            let vcpus = '';
-            let ram = '';
-            let vdriver = '';
-            let hidevm = '';
-            let cluster_id = '';
+            let vol_speed = 'HOT';
+            let vol_availability = 'HA';
+
+            let vdriver = true;
+            let hidevm = false;
+
+            let desc = `release ${new Date().toUTCString()}`;
+            let cluster_id = '09793ad1-82e5-46ad-8183-f72e7e9fe85c';
+            let gpu_model = 'RTX 3060Ti';
+            let vcpus = '8';
+            let ram = '8';
             await ConfigureApplication({
                 vol_speed,
                 vol_availability,
@@ -270,12 +274,12 @@ export const workerAsync = {
     ),
     patch_app: createAsyncThunk(
         'patch_app',
-        async (app_id: number, { getState }): Promise<any> => {
-            let desc = '';
-            let cluster_id = '';
+        async (patchAppInputs: IPatchApp, { getState }): Promise<any> => {
+            const { app_id, desc } = patchAppInputs
+            let cluster_id = '09793ad1-82e5-46ad-8183-f72e7e9fe85c';
             await PatchApp({
                 app_id,
-                desc,
+                desc: desc + ` ${new Date().toUTCString()}`,
                 cluster_id
             });
         }
@@ -327,7 +331,6 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.fetch_worker,
                 hander: (state, action) => {
-                    state.cpath = initialState.cpath;
                     state.data = action.payload;
                     const paths = state.cpath
                         .split('/')
@@ -351,6 +354,58 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.access_worker,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.release_app,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.patch_app,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.cancel_subscription,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.adjust_subscription,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.renew_subscription,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.create_subscription,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.upgrade_subscription,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.fork_volume,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.access_storage,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.delete_storage,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.stop_storage,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.stop_volume,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.delete_volume,
                 hander: (state, action) => {}
             }
         );
