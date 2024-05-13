@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - pocketbase
+  workflow_dispatch:
 
 jobs:
     publish-tauri:
