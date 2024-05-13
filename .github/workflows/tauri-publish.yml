@@ -29,11 +29,10 @@ jobs:
               with:
                 ref: pocketbase
 
-            # -----TODO SUBMODULE CONFIG------
-            # - uses: actions/checkout@v4
-            #   with:
-            #     submodule: recursive
-            #     token: ${{ secrets.PAT_TOKEN }}
+            - uses: actions/checkout@v4
+              with:
+                submodule: recursive
+                token: ${{ secrets.PAT_TOKEN }}
 
 
             - name: install dependencies (ubuntu only)
