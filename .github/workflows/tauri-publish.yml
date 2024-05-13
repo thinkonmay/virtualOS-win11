@@ -26,6 +26,15 @@ jobs:
         runs-on: ${{ matrix.settings.platform }}
         steps:
             - uses: actions/checkout@v4
+              with:
+                ref: pocketbase
+
+            # -----TODO SUBMODULE CONFIG------
+            # - uses: actions/checkout@v4
+            #   with:
+            #     submodule: recursive
+            #     token: ${{ secrets.PAT_TOKEN }}
+
 
             - name: install dependencies (ubuntu only)
               if: matrix.settings.platform == 'ubuntu-22.04' # This must match the platform value defined above.
@@ -49,17 +58,15 @@ jobs:
                       ${{ matrix.settings.platform == 'macos-latest' &&
                       'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-            # - name: Rust cache
-            #   uses: swatinem/rust-cache@v2
-            #   with:
-            #       workspaces: './src-tauri -> target'
+            - name: Rust cache
+              uses: swatinem/rust-cache@v2
+              with:
+                  workspaces: './src-tauri -> target'
 
             - name: install frontend dependencies
               # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
               run: npm install # change this to npm or pnpm depending on which one you use.
 
-            - name: show cargo.toml config
-              run: cat ./src-tauri/Cargo.toml
 
             - uses: tauri-apps/tauri-action@v0
               env:
