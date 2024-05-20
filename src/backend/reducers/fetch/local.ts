@@ -41,7 +41,37 @@ async function internalFetch<T>(
         : `https://${address}/${command}`;
 
     if (client != null) {
-        if (command == 'info') {
+        if (command == 'new') {
+            const evtSource = new WebSocket( userHttp(address)
+                ? `ws://${address}:${WS_PORT}/${command}`
+                : `wss://${address}/${command}`);
+
+            let opened = false
+            let result : Error | T | undefined = undefined
+
+            evtSource.onopen = () => opened = true
+            evtSource.onerror = () => result = new Error("SSE connection closed")
+            evtSource.onmessage = (event: MessageEvent<string>) => {
+                if (event.data == 'ping') {
+                    // ignore ping message
+                } else if (event.data.includes('__ERROR__')) {
+                    result = new Error(event.data.split(":").splice(0,1).join(":"))
+                } else {
+                    result = JSON.parse(event.data) as T
+                }
+            }
+
+            while (!opened && !(result instanceof Error)) 
+                await new Promise(r => setTimeout(r,100))
+            if (result instanceof Error)
+                throw result
+
+            evtSource.send(body)
+            while (result == undefined) 
+                await new Promise(r => setTimeout(r,1000))
+
+            return result
+        } else if (command == 'info') {
             const { data, ok } = await client.get<T>(url, {
                 timeout: { secs: 3, nanos: 0 },
                 responseType: ResponseType.JSON
