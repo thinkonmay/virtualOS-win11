@@ -160,11 +160,10 @@ export const workerAsync = {
                     appDispatch(popup_close());
                     appDispatch(
                         popup_open({
-                            type: 'notify',
+                            type: 'complete',
                             data: {
-                                loading: false,
-                                title: 'Connect to PC',
-                                text: [Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]
+                                success: false,
+                                content: resp?.message ?? 'Reload and try again'
                             }
                         })
                     );
