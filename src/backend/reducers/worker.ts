@@ -29,6 +29,7 @@ import {
 } from './fetch/local';
 import { BuilderHelper } from './helper';
 import { Contents } from './locales';
+import { UserEvents } from './fetch/analytics';
 
 type WorkerType = {
     data: any;
@@ -57,7 +58,7 @@ export const workerAsync = {
                 fetch_local_worker(
                     window.location.host.includes('localhost') ||
                         window.location.host.includes('tauri.localhost')
-                        ? 'supabase.thinkmay.net'
+                        ? 'play.thinkmay.net'
                         : window.location.host
                 )
             );
@@ -66,6 +67,7 @@ export const workerAsync = {
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
+            const email = (getState() as RootState).user.email;
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
@@ -79,8 +81,8 @@ export const workerAsync = {
             }>();
             const volume_id = all.at(0)?.local_id;
 
-            for (let i = 0; i < 100; i++) {
-                let node = new RenderNode(
+            for (let i = 0; i < 2; i++) {
+                const node = new RenderNode(
                     (getState() as RootState).worker.data
                 );
 
@@ -117,6 +119,13 @@ export const workerAsync = {
                     result.type == 'vm_worker' &&
                     result.data.length > 0
                 ) {
+                    UserEvents({
+                        type: 'remote/exit_queue_list',
+                        payload: {
+                            email,
+                            end_at: new Date().toISOString()
+                        }
+                    });
                     await appDispatch(vm_session_access(result.data.at(0).id));
                     appDispatch(popup_close());
                     return;
@@ -124,6 +133,13 @@ export const workerAsync = {
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
+                    UserEvents({
+                        type: 'remote/exit_queue_list',
+                        payload: {
+                            email,
+                            end_at: new Date().toISOString()
+                        }
+                    });
                     await appDispatch(vm_session_create(result.id));
                     appDispatch(popup_close());
                     return;
