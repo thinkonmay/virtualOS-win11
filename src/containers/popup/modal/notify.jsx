@@ -4,9 +4,32 @@ import { TbLoader3 } from 'react-icons/tb';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
-export function notify({ data: { title, tips, loading, text } }) {
+const TIME_RUN_OUT_OF_GPU = 20 * 1000; //sec
+export function notify({ data: { title, tips = true, loading = true, text } }) {
     const t = useAppSelector((state) => state.globals.translation);
     const [textTrans, setTextTrans] = useState('');
+    const [isLaterThan15s, setIsLaterThan15s] = useState(false);
+
+    useEffect(() => {
+        let interval;
+        if (title == 'Connect to PC') {
+            const referenceTime = new Date();
+            const laterTime = new Date(
+                referenceTime.getTime() + TIME_RUN_OUT_OF_GPU
+            ); 
+
+            interval = setInterval(() => {
+                const currentTime = new Date();
+                if (currentTime > laterTime) {
+                    setIsLaterThan15s(true);
+                    setTextTrans(t[Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]);
+                    clearInterval(interval);
+                }
+            }, 3000);
+        }
+
+        return () => clearInterval(interval);
+    }, [title]);
     useEffect(() => {
         setTextTrans(t[text]);
     }, [text]);
@@ -16,12 +39,12 @@ export function notify({ data: { title, tips, loading, text } }) {
             <div className="notify-icon">
                 <TbLoader3 className="animate-spin" />
             </div>
-            <p className="text-center text-[1.2rem] mb-[24px]">
+            <p className="text-center text-[1.2rem] mb-[16px]">
                 {title ?? 'Please wait...'}
             </p>
             {textTrans ? <p>{textTrans} </p> : null}
-            {loading ?? true ? <LoadingProgressBar /> : null}
-            {tips ?? true ? <Protip /> : null}
+            {loading && !isLaterThan15s ? <LoadingProgressBar /> : null}
+            {tips ? <Protip /> : null}
         </div>
     );
 }
@@ -83,9 +106,9 @@ const Protip = () => {
         };
     }, []);
     return (
-        <div className="mt-[14px]">
+        <div className="mt-[24px]">
             <strong>Pro tip:</strong>
-            <p>{listDemoTip[currentTip]}</p>
+            <p className="mt-[8px]">{listDemoTip[currentTip]}</p>
         </div>
     );
 };
