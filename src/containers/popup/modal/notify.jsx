@@ -4,7 +4,7 @@ import { TbLoader3 } from 'react-icons/tb';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
-const TIME_RUN_OUT_OF_GPU = 20 * 1000; //sec
+const TIME_RUN_OUT_OF_GPU = 120 * 1000; //sec
 export function notify({ data: { title, tips = true, loading = true, text } }) {
     const t = useAppSelector((state) => state.globals.translation);
     const [textTrans, setTextTrans] = useState('');
@@ -16,7 +16,7 @@ export function notify({ data: { title, tips = true, loading = true, text } }) {
             const referenceTime = new Date();
             const laterTime = new Date(
                 referenceTime.getTime() + TIME_RUN_OUT_OF_GPU
-            ); 
+            );
 
             interval = setInterval(() => {
                 const currentTime = new Date();
@@ -25,7 +25,7 @@ export function notify({ data: { title, tips = true, loading = true, text } }) {
                     setTextTrans(t[Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]);
                     clearInterval(interval);
                 }
-            }, 3000);
+            }, 6000);
         }
 
         return () => clearInterval(interval);
