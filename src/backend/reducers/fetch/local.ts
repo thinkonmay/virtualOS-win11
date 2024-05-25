@@ -152,12 +152,13 @@ export async function StartVirtdaemon(
     };
 
     let running = true;
-    async () => {
+    (async () => {
+        await new Promise((r) => setTimeout(r, 1000));
         while (running) {
-            await new Promise((r) => setTimeout(r, 3000));
-            await internalFetch<{}>(address, '_new', req).catch(console.log);
+            internalFetch<{}>(address, '_new', req).catch(console.log);
+            await new Promise((r) => setTimeout(r, 1000));
         }
-    };
+    })();
 
     let resp: Error | StartRequest = new Error('unable to request');
     try {
