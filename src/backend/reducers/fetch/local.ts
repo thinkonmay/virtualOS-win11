@@ -137,7 +137,7 @@ export type StartRequest = {
 export async function StartVirtdaemon(
     computer: Computer,
     volume_id?: string
-): Promise<any> {
+): Promise<Error | StartRequest> {
     const { address } = computer;
 
     const id = crypto.randomUUID();
@@ -151,14 +151,19 @@ export async function StartVirtdaemon(
         }
     };
 
-    const interval = setInterval(
-        () => internalFetch<StartRequest>(address, '_new', req),
-        3000
-    );
-    const resp = await internalFetch(address, 'new', req);
-    clearInterval(interval);
-    if (resp instanceof Error) return resp;
+    let running = true;
+    async () => {
+        while (running) {
+            await new Promise((r) => setTimeout(r, 3000));
+            await internalFetch<{}>(address, '_new', req).catch(console.log);
+        }
+    };
 
+    let resp: Error | StartRequest = new Error('unable to request');
+    try {
+        resp = await internalFetch<StartRequest>(address, 'new', req);
+    } catch {}
+    running = false;
     return resp;
 }
 
