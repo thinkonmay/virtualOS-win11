@@ -14,17 +14,17 @@ import { RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { AxisType } from '../../../src-tauri/core/models/hid.model';
 import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
 import { convertJSKey } from '../../../src-tauri/core/utils/convert';
+import { getVolumeIdByEmail } from '../actions';
 import { sleep } from '../utils/sleep';
 import { isMobile } from './../utils/checking';
 import { CAUSE, pb, supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
-import { getVolumeIdByEmail } from '../actions';
 
 const size = () =>
     client != null
         ? client.video.video.videoHeight * client.video.video.videoWidth
         : 1920 * 1080;
-export const MAX_BITRATE = () => (20000 / (1920 * 1080)) * size();
+export const MAX_BITRATE = () => (10000 / (1920 * 1080)) * size();
 export const MIN_BITRATE = () => (1000 / (1920 * 1080)) * size();
 export const MAX_FRAMERATE = 240;
 export const MIN_FRAMERATE = 40;

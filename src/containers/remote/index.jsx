@@ -74,7 +74,6 @@ export const Remote = () => {
                 autoPlay
                 muted
                 playsInline
-                objectfit={'contain'}
                 loop
             ></video>
             <audio

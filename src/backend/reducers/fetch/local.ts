@@ -137,7 +137,7 @@ export type StartRequest = {
 export async function StartVirtdaemon(
     computer: Computer,
     volume_id?: string
-): Promise<any> {
+): Promise<Error | StartRequest> {
     const { address } = computer;
 
     const id = crypto.randomUUID();
@@ -146,19 +146,25 @@ export async function StartVirtdaemon(
         vm: {
             GPUs: ['GA104 [GeForce RTX 3060 Ti Lite Hash Rate]'],
             Volumes: volume_id != undefined ? [volume_id] : [],
-            CPU: '16',
+            CPU: '12',
             RAM: '16'
         }
     };
 
-    const interval = setInterval(
-        () => internalFetch<StartRequest>(address, '_new', req),
-        3000
-    );
-    const resp = await internalFetch(address, 'new', req);
-    clearInterval(interval);
-    if (resp instanceof Error) return resp;
+    let running = true;
+    (async () => {
+        await new Promise((r) => setTimeout(r, 1000));
+        while (running) {
+            internalFetch<{}>(address, '_new', req).catch(console.log);
+            await new Promise((r) => setTimeout(r, 1000));
+        }
+    })();
 
+    let resp: Error | StartRequest = new Error('unable to request');
+    try {
+        resp = await internalFetch<StartRequest>(address, 'new', req);
+    } catch {}
+    running = false;
     return resp;
 }
 

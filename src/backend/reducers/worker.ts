@@ -81,7 +81,10 @@ export const workerAsync = {
             }>();
             const volume_id = all.at(0)?.local_id;
 
-            for (let i = 0; i < 2; i++) {
+            const now = () => new Date().getTime() / 1000 / 60;
+            const start = now();
+            while (now() - start < 180) {
+                // 3 hours
                 const node = new RenderNode(
                     (getState() as RootState).worker.data
                 );

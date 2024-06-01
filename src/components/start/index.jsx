@@ -389,7 +389,7 @@ export const SidePane = () => {
                                         max="100"
                                         value={remote.bitrate}
                                     />
-                                    <span>20mbs</span>
+                                    <span>10mbs</span>
                                 </div>
                             </div>
 

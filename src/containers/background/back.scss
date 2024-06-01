@@ -13,23 +13,7 @@
   transition: all 0.2s ease;
 }
 
-.remote {
-  object-fit: contain;
-  width: 100vw;
-  height: 100vh;
-  //background-color: var(--wintheme);
-  background-color: rgb(0, 0, 0);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  transition: all 0.2s ease;
-}
 
-@media (1px < width < 1024px) {
-  .remote {
-    object-fit: contain;
-  }
-}
 
 .bootscreen {
   position: absolute;

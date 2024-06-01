@@ -376,7 +376,7 @@ export function language() {
     );
     vn.set(
         Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY,
-        'Hệ thống đang hết máy, sẽ thông báo & tự động kết nối khi có máy trống. Bạn giữ tab và đợi xíu ạ!'
+        'Hệ thống đang hết máy, sẽ tự động kết nối & thông báo khi có máy trống. Vui lòng giữ tab!'
     );
 
     en.set(Contents.NOT_READY, "Installing, wait 3-5' until game logo appears");
