@@ -118,11 +118,11 @@ function App() {
             window.oncontextmenu = (ev) => ev.preventDefault();
         } else {
             window.oncontextmenu = ctxmenu;
-            window.onclick = afterMath;
+            window.onclick = (e) => { afterMath(e) };
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => {});
+        job?.catch(() => { });
 
         const handleState = () => {
             const fullscreen =
