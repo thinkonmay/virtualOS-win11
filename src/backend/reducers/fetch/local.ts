@@ -1,5 +1,6 @@
 import { Body, Client, ResponseType, getClient } from '@tauri-apps/api/http';
 import { Child, Command } from '@tauri-apps/api/shell';
+import { pb } from './createClient';
 
 export const WS_PORT = 60000;
 const TurnCredential = () => {
@@ -36,6 +37,8 @@ async function internalFetch<T>(
     command: string,
     body?: any
 ): Promise<T | Error> {
+    const token = pb.authStore.token;
+    const user = pb.authStore.model.id;
     const url = userHttp(address)
         ? `http://${address}:${WS_PORT}/${command}`
         : `https://${address}/${command}`;
@@ -44,6 +47,7 @@ async function internalFetch<T>(
         if (command == 'info') {
             const { data, ok } = await client.get<T>(url, {
                 timeout: { secs: 3, nanos: 0 },
+                headers: { Authorization: token, User: user },
                 responseType: ResponseType.JSON
             });
 
@@ -52,6 +56,8 @@ async function internalFetch<T>(
             return data;
         } else {
             const { data, ok } = await client.post<T>(url, Body.json(body), {
+                timeout: { secs: 60 * 60 * 24, nanos: 0 },
+                headers: { Authorization: token, User: user },
                 responseType: ResponseType.JSON
             });
 
@@ -61,13 +67,17 @@ async function internalFetch<T>(
         }
     } else {
         if (command == 'info') {
-            const resp = await fetch(url);
+            const resp = await fetch(url, {
+                method: 'GET',
+                headers: { Authorization: token, User: user }
+            });
             if (!resp.ok) return new Error('fail to request');
 
             return await resp.json();
         } else {
             const resp = await fetch(url, {
                 method: 'POST',
+                headers: { Authorization: token, User: user },
                 body: JSON.stringify(body)
             });
 
