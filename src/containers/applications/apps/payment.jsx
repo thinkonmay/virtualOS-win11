@@ -28,34 +28,35 @@ export const PaymentApp = () => {
     const [ListSubs, setListSubs] = useState([
         {
             highlight: false,
-            title: 'Tiết kiệm',
-            price_in_vnd: '299',
-            total_time: '110',
-            name: 'week',
-            period: 'tháng',
-            description: 'Khởi đầu với Cloud PC',
-            bonus: ['130GB dung lượng', '16GB ram', 'RTX 3060TI']
+            title: 'Gói giờ',
+            price_in_vnd: '8',
+            //total_time: '110',
+            under_price: 'Lần đầu, bạn cần mua ít nhất 20h.',
+
+            name: 'hour_01',
+            period: 'h',
+            bonus: ['RTX 3060TI', '16GB ram', '130GB dung lượng', 'Không giới hạn thời gian mỗi session']
         },
         {
             highlight: true,
-            title: 'Tối ưu',
-            price_in_vnd: '369',
-            total_time: '160',
-            name: 'month',
+            title: 'Tiết kiệm',
+            price_in_vnd: '299',
+            total_time: '150',
+            under_price: 'Giới hạn 150h sử dụng trong tháng',
+            name: 'month_01',
             period: 'tháng',
-            description: 'Thoải mái sử dụng',
-            bonus: ['200GB dung lượng', '16GB ram', 'RTX 3060TI']
+            bonus: ['Cấu hình giống gói giờ', 'Không giới hạn thời gian mỗi session'],
+            storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
         },
         {
             highlight: false,
-            title: 'Super',
-            price_in_vnd: '899',
-            description: 'Tối ưu & tiết kiệm nhất',
-            period: '3 tháng',
-            total_time: '125',
-
-            name: 'Enterprise',
-            bonus: ['130GB dung lượng', '16GB ram', 'RTX 3060TI']
+            title: 'Unlimited',
+            price_in_vnd: '1699',
+            period: 'tháng',
+            total_time: 'Không giới hạn',
+            under_price: 'Không giới hạn giờ sử dụng',
+            name: 'month_01',
+            bonus: ['Không hàng chờ', 'Cấu hình giống gói giờ', '250GB dung lượng', 'Không giới hạn thời gian mỗi session',]
         }
     ]);
 
@@ -97,7 +98,7 @@ export const PaymentApp = () => {
                             onClose={() => setPaypage(null)}
                         />
                     ) : (
-                        <div className="paymentContent ">
+                        <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
                             {ListSubs.map((sub, index) => (
                                 <div key={index} className="sub relative">
                                     {sub.highlight ? (
@@ -109,31 +110,28 @@ export const PaymentApp = () => {
                                     ) : null}
 
                                     <div className="flex flex-col overflow-hidden border h-full rounded-[4px]">
-                                        <div className="bg-surface-100 px-8 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
-                                            <div className="mb-2 flex items-center gap-2">
+                                        <div className="bg-surface-100 px-4 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
+                                            <div className="flex items-center gap-2">
                                                 <div className="flex items-center gap-2">
-                                                    <h3 className="text-brand-600 text-2xl font-normal uppercase flex items-center gap-4 font-mono">
+                                                    <p className=" uppercase flex items-center gap-4 font-mono">
                                                         {sub.title}
-                                                    </h3>
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <p className="text-foreground-light my-4 text-sm border-b border-default pb-4 2xl:pr-4">
-                                                {sub.description}
-                                            </p>
 
                                             <hr className="border-[#504646]" />
-                                            <div className=" text-foreground flex items-baseline text-5xl font-normal lg:text-4xl xl:text-4xl border-b border-default min-h-[175px] pt-10">
+                                            <div className=" text-foreground flex items-center text-lg min-h-[116px]">
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-end gap-2">
                                                         <div>
                                                             <div className="flex items-end">
                                                                 {
                                                                     <>
-                                                                        <p className="mt-2 gradient-text-500 pb-1 text-5xl">
+                                                                        <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
                                                                             {sub.price_in_vnd
                                                                                 ? `${sub.price_in_vnd}k VND`
                                                                                 : `\$${sub.price}`}
-                                                                        </p>
+                                                                        </h3>
                                                                         <p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                                             /{' '}
                                                                             {
@@ -145,13 +143,9 @@ export const PaymentApp = () => {
                                                             </div>
                                                             <p className="-mt-2">
                                                                 <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                                                    {sub.title ==
-                                                                    'Enterprise'
-                                                                        ? 'charge based on number of account'
-                                                                        : sub.title ==
-                                                                            'one year plan'
-                                                                          ? `Unlimited remote usage`
-                                                                          : `Giới hạn ${sub.total_time} giờ sử dụng trong tháng`}
+                                                                    {
+                                                                        sub.under_price
+                                                                    }
                                                                 </span>
                                                             </p>
                                                         </div>
@@ -161,8 +155,8 @@ export const PaymentApp = () => {
                                             <hr className="border-[#504646]" />
                                         </div>
                                         <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-8 xl:px-4 2xl:px-8 py-6 ">
-                                            <p className="text-foreground-light text-[13px] mt-2 mb-4">
-                                                Bắt đầu với:
+                                            <p className="text-foreground-light text-[13px] mt-2 mb-2">
+                                                Chi tiết:
                                             </p>
 
                                             {sub.bonus.map((x, i) => (
@@ -171,7 +165,7 @@ export const PaymentApp = () => {
                                                     role="list"
                                                     className="text-[13px] text-foreground-lighter"
                                                 >
-                                                    <li className="flex items-center py-2 first:mt-0">
+                                                    <li className="flex items-center py-[8px] first:mt-0">
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             width="18"
@@ -187,15 +181,40 @@ export const PaymentApp = () => {
                                                         >
                                                             <polyline points="20 6 9 17 4 12"></polyline>
                                                         </svg>
-                                                        <span className="text-foreground mb-0 ml-3 ">
+                                                        <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
                                                             {x}
                                                         </span>
                                                     </li>
                                                 </ul>
                                             ))}
 
+                                            {
+                                                sub.storage ?
+                                                    <p className="text-foreground-light text-[13px] mt-8 mb-2">
+                                                        Dung lượng mua thêm:
+                                                    </p>
+                                                    : null
+                                            }
+
+                                            <ul
+                                                role="list"
+                                                className="list-decimal text-[13px] text-foreground-lighter"
+                                            >
+
+                                                {sub.storage?.map((x, i) => (
+                                                    <li key={i} className="flex items-center py-[8px] first:mt-0">
+                                                        <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
+                                                            {x}
+                                                        </span>
+                                                    </li>
+
+                                                ))}
+
+
+                                            </ul>
+
                                             <div className="flex flex-col gap-6 mt-auto prose">
-                                                <div className="space-y-2 mt-12">
+                                                <div className="space-y-2">
                                                     <p className="text-[13px] whitespace-pre-wrap">
                                                         {/* Free projects are paused after 1 week of inactivity. */}
                                                     </p>
@@ -269,10 +288,10 @@ const Payment = ({ onClose, price }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
