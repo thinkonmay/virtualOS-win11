@@ -35,7 +35,12 @@ export const PaymentApp = () => {
 
             name: 'hour_01',
             period: 'h',
-            bonus: ['RTX 3060TI', '16GB ram', '130GB dung lượng', 'Không giới hạn thời gian mỗi session']
+            bonus: [
+                'RTX 3060TI',
+                '16GB ram',
+                '130GB dung lượng',
+                'Không giới hạn thời gian mỗi session'
+            ]
         },
         {
             highlight: true,
@@ -45,7 +50,10 @@ export const PaymentApp = () => {
             under_price: 'Giới hạn 150h sử dụng trong tháng',
             name: 'month_01',
             period: 'tháng',
-            bonus: ['Cấu hình giống gói giờ', 'Không giới hạn thời gian mỗi session'],
+            bonus: [
+                'Cấu hình giống gói giờ',
+                'Không giới hạn thời gian mỗi session'
+            ],
             storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
         },
         {
@@ -56,7 +64,12 @@ export const PaymentApp = () => {
             total_time: 'Không giới hạn',
             under_price: 'Không giới hạn giờ sử dụng',
             name: 'month_01',
-            bonus: ['Không hàng chờ', 'Cấu hình giống gói giờ', '250GB dung lượng', 'Không giới hạn thời gian mỗi session',]
+            bonus: [
+                'Không hàng chờ',
+                'Cấu hình giống gói giờ',
+                '250GB dung lượng',
+                'Không giới hạn thời gian mỗi session'
+            ]
         }
     ]);
 
@@ -188,29 +201,26 @@ export const PaymentApp = () => {
                                                 </ul>
                                             ))}
 
-                                            {
-                                                sub.storage ?
-                                                    <p className="text-foreground-light text-[13px] mt-8 mb-2">
-                                                        Dung lượng mua thêm:
-                                                    </p>
-                                                    : null
-                                            }
+                                            {sub.storage ? (
+                                                <p className="text-foreground-light text-[13px] mt-8 mb-2">
+                                                    Dung lượng mua thêm:
+                                                </p>
+                                            ) : null}
 
                                             <ul
                                                 role="list"
                                                 className="list-decimal text-[13px] text-foreground-lighter"
                                             >
-
                                                 {sub.storage?.map((x, i) => (
-                                                    <li key={i} className="flex items-center py-[8px] first:mt-0">
+                                                    <li
+                                                        key={i}
+                                                        className="flex items-center py-[8px] first:mt-0"
+                                                    >
                                                         <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
                                                             {x}
                                                         </span>
                                                     </li>
-
                                                 ))}
-
-
                                             </ul>
 
                                             <div className="flex flex-col gap-6 mt-auto prose">
@@ -288,10 +298,10 @@ const Payment = ({ onClose, price }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                    ? prevPage()
-                    : e.key == 'ArrowRight'
-                        ? nextPage()
-                        : null;
+                  ? prevPage()
+                  : e.key == 'ArrowRight'
+                    ? nextPage()
+                    : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);

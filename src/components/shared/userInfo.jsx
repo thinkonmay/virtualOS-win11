@@ -16,7 +16,6 @@ function UserInfo() {
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
-
     const formatDate = (dateStr) => {
         return new Date(dateStr).toLocaleDateString('en-GB', {
             month: 'numeric',
@@ -27,23 +26,19 @@ function UserInfo() {
 
     const additionalTime = stats?.additional_time ?? 0;
     const planUsageTime = stats?.plan_hour ?? 0;
-    const _planName = stats?.plan_name ?? ''
+    const _planName = stats?.plan_name ?? '';
     //const totalTime = +planUsageTime + +additionalTime;
 
+    const totalTime = useMemo(() => {
+        let total = 0;
+        if (_planName == 'hour_01') {
+            total = +additionalTime;
+        } else {
+            total = +planUsageTime + +additionalTime;
+        }
 
-    const totalTime = useMemo(
-        () => {
-            let total = 0
-            if (_planName == 'hour_01') {
-                total = +additionalTime
-            }
-            else {
-                total = +planUsageTime + +additionalTime
-            }
-
-            return total
-        }, [_planName]
-    )
+        return total;
+    }, [_planName]);
 
     const renderPlanName = (planName) => {
         let name = '';
@@ -51,34 +46,25 @@ function UserInfo() {
             name = 'Cơ bản';
         } else if (planName == 'month_02') {
             name = 'Tiêu chuẩn';
-        }
-        else if (planName == 'hour_01') {
+        } else if (planName == 'hour_01') {
             name = 'Gói giờ';
         }
         return name;
     };
 
     const PlanMonth = () => {
-
-
         return (
             <div className="restWindow w-full  flex flex-col ">
                 <div className="w-full flex gap-4 justify-between mt-1">
-                    <span className="text-left">
-                        {t[Contents.PLAN_NAME]}
-                    </span>
+                    <span className="text-left">{t[Contents.PLAN_NAME]}</span>
                     <span>{renderPlanName(stats?.plan_name)}</span>
                 </div>
                 <div className="w-full flex gap-4 justify-between mt-1">
-                    <span className="text-left">
-                        {t[Contents.STARTAT]}
-                    </span>
+                    <span className="text-left">{t[Contents.STARTAT]}</span>
                     <span>{formatDate(stats?.start_time)}</span>
                 </div>
                 <div className="w-full flex gap-4 justify-between mt-1">
-                    <span className="text-left">
-                        {t[Contents.ENDAT]}
-                    </span>
+                    <span className="text-left">{t[Contents.ENDAT]}</span>
                     <span>{formatDate(stats?.end_time)}</span>
                 </div>
                 <div className="w-full flex gap-4 justify-between mt-3 items-end">
@@ -95,29 +81,21 @@ function UserInfo() {
                 </div>
                 <hr className="my-[14px]" />
                 <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
-                    <span className="text-left">
-                        {t[Contents.TIME]}
-                    </span>
+                    <span className="text-left">{t[Contents.TIME]}</span>
                     <span>
-                        {stats?.usage_hour
-                            ? stats?.usage_hour.toFixed(1)
-                            : 0}
-                        h / {totalTime + 'h'}
+                        {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h
+                        / {totalTime + 'h'}
                     </span>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     const PlanHours = () => {
-
-
         return (
             <div className="restWindow w-full  flex flex-col ">
                 <div className="w-full flex gap-4 justify-between mt-1">
-                    <span className="text-left">
-                        {t[Contents.PLAN_NAME]}:
-                    </span>
+                    <span className="text-left">{t[Contents.PLAN_NAME]}:</span>
                     <span>{renderPlanName(stats?.plan_name)}</span>
                 </div>
                 {/*<div className="w-full flex gap-4 justify-between mt-1">
@@ -133,29 +111,21 @@ function UserInfo() {
                     <span>{formatDate(stats?.end_time)}</span>
                 </div>*/}
                 <div className="w-full flex gap-4 justify-between mt-3 items-end">
-                    <span className="text-left">
-                        Time:
-                    </span>
+                    <span className="text-left">Time:</span>
                     <span>{additionalTime}h</span>
                 </div>
 
                 <hr className="my-[14px]" />
                 <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
-                    <span className="text-left">
-                        {t[Contents.TIME]}:
-                    </span>
+                    <span className="text-left">{t[Contents.TIME]}:</span>
                     <span>
-                        {stats?.usage_hour
-                            ? stats?.usage_hour.toFixed(1)
-                            : 0}
-                        h / {totalTime + 'h'}
+                        {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h
+                        / {totalTime + 'h'}
                     </span>
                 </div>
-
-
             </div>
-        )
-    }
+        );
+    };
     return (
         <div className="userManager">
             <div className="stmenu  p-[14px]">
@@ -184,17 +154,13 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                            //invert={pnstates[idx] ? true : null}
+                                //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>
 
                     {/* here */}
-                    {
-                        _planName == 'hour_01' ?
-                            <PlanHours />
-                            : <PlanMonth />
-                    }
+                    {_planName == 'hour_01' ? <PlanHours /> : <PlanMonth />}
                 </div>
             </div>
 

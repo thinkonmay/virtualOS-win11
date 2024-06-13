@@ -416,7 +416,7 @@ export const SidePane = () => {
                                         max="100"
                                         value={remote.framerate}
                                     />
-                                    <span>240</span>
+                                    <span>120</span>
                                 </div>
                             </div>
                         </div>
