@@ -5,8 +5,8 @@ export const CustomJoyStick = ({ draggable, className, size = 100 }) => {
         <div className={className}>
             <Joystick
                 size={size}
-                baseColor="rgba(0, 0, 0, 0.1)"
-                stickColor="rgba(255, 255, 255, 0.22"
+                baseColor="rgba(0, 0, 0, 0.2)"
+                stickColor="rgba(255, 255, 255,0.5"
                 disabled={draggable === 'draggable'}
             />
         </div>
