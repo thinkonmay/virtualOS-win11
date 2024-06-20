@@ -1,5 +1,11 @@
-import { useEffect, useLayoutEffect, useState, useTransition } from 'react';
-import Draggable from 'react-draggable';
+import {
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+    useTransition
+} from 'react';
+import Draggable, { DraggableCore } from 'react-draggable'; // Both at the same time
 import { MdArrowLeft, MdArrowRight } from 'react-icons/md';
 import { useAppSelector } from '../../../../backend/reducers';
 import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
@@ -159,7 +165,7 @@ export const ButtonGroupRight = (props) => {
 
     return (
         <>
-            <Draggable
+            <DraggableCore
                 disabled={props.draggable !== 'draggable'}
                 position={{ x: posBtn.funcBtn.x, y: posBtn.funcBtn.y }}
                 onStop={handleStop}
@@ -174,7 +180,7 @@ export const ButtonGroupRight = (props) => {
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
-            </Draggable>
+            </DraggableCore>
             <Draggable
                 disabled={props.draggable !== 'draggable'}
                 position={{ x: posBtn.ybxa.x, y: posBtn.ybxa.y }}
@@ -267,6 +273,10 @@ export const ButtonGroupLeft = (props) => {
         (state) => state.sidepane.mobileControl.gamepadSetting.isDefaultPos
     );
 
+    const dpad = useRef(null);
+    const joystick = useRef(null);
+    const funcBtn = useRef(null);
+    const ls = useRef(null);
     const [posBtn, setPosBtn] = useState(defaultButtonGroupLeftValue);
 
     useEffect(() => {

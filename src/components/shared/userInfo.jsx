@@ -6,6 +6,7 @@ import {
     user_delete
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
+import { externalLink } from '../../backend/utils/constant';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
@@ -29,6 +30,7 @@ function UserInfo() {
     const _planName = stats?.plan_name ?? '';
     //const totalTime = +planUsageTime + +additionalTime;
 
+    console.log(user);
     const totalTime = useMemo(() => {
         let total = 0;
         if (_planName == 'hour_01') {
@@ -123,20 +125,38 @@ function UserInfo() {
                         / {totalTime + 'h'}
                     </span>
                 </div>
+
+                <p></p>
             </div>
         );
     };
     return (
         <div className="userManager">
-            <div className="stmenu  p-[14px]">
-                <div className="pinnedApps mt-[16px] text-center font-semibold pb-1 flex items-center justify-center gap-2">
-                    <span>{user.email ?? 'Admin'}</span>
-                    <Icon
-                        className="quickIcon"
-                        //ui={true}
-                        src={'active'}
-                        width={14}
-                    />
+            <div className="stmenu  p-[14px] pt-2">
+                <div>
+                    <div className="pinnedApps mt-[16px] text-center font-semibold pb-1 flex items-center justify-center gap-2">
+                        <span>{user.email ?? 'Admin'}</span>
+                        <Icon
+                            className="quickIcon"
+                            //ui={true}
+                            src={'active'}
+                            width={14}
+                        />
+                    </div>
+                    {user.isExpired ? (
+                        <p className="text-red-600 mb-4 mt-1 text-right">
+                            Vui lòng{' '}
+                            <a
+                                href={externalLink.FACEBOOK_LINK}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline font-semibold"
+                            >
+                                gia hạn
+                            </a>{' '}
+                            để tiếp tục sử dụng
+                        </p>
+                    ) : null}
                 </div>
                 <div className="h-full flex flex-col p-2" data-dock="true">
                     <div className="w-full flex gap-4 justify-between my-[8px] ">

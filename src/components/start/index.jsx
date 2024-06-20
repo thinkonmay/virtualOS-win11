@@ -32,7 +32,6 @@ import {
     customClickDispatch
 } from '../../backend/utils/dispatch';
 import { sleep } from '../../backend/utils/sleep';
-import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
 import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
@@ -433,7 +432,7 @@ export const SidePane = () => {
             {isMobile() ? (
                 <>
                     <VirtKeyboard></VirtKeyboard>
-                    <VirtualGamepad></VirtualGamepad>
+                    {/*<VirtualGamepad></VirtualGamepad>*/}
                 </>
             ) : null}
         </>

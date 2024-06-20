@@ -2,10 +2,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { pb, supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
-import { store } from '.';
 
 type Data = RecordModel & {
     stat?: UsageTime;
+    isExpired: boolean;
+    isNearbyEndTime: boolean;
+    isNearbyUsageHour: boolean;
 };
 interface UsageTime {
     start_time: string;
@@ -22,7 +24,10 @@ const initialState: Data = {
     email: '',
     collectionName: '',
     created: '',
-    updated: ''
+    updated: '',
+    isExpired: false,
+    isNearbyEndTime: false,
+    isNearbyUsageHour: false
 };
 
 export const userAsync = {
@@ -50,7 +55,7 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        user_update: (state, action: PayloadAction<RecordModel>) => {
+        user_update: (state, action: PayloadAction<RecordModel & Data>) => {
             state.id = action.payload.id;
             state.collectionId = action.payload.collectionId;
             state.collectionName = action.payload.collectionName;
@@ -58,6 +63,11 @@ export const userSlice = createSlice({
             state.updated = action.payload.updated;
             state.email = action.payload.email;
             state.expand = action.payload.expand;
+        },
+        user_check_sub: (state, action) => {
+            state.isExpired = action.payload.isExpired;
+            state.isNearbyEndTime = action.payload.isNearbyEndTime;
+            state.isNearbyUsageHour = action.payload.isNearbyUsageHour;
         },
         user_delete: (state) => {
             state.id = initialState.id;
