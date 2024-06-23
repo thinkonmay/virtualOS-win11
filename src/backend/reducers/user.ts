@@ -5,9 +5,9 @@ import { BuilderHelper } from './helper';
 
 type Data = RecordModel & {
     stat?: UsageTime;
-    isExpired: boolean;
-    isNearbyEndTime: boolean;
-    isNearbyUsageHour: boolean;
+    isExpired?: boolean;
+    isNearbyEndTime?: boolean;
+    isNearbyUsageHour?: boolean;
 };
 interface UsageTime {
     start_time: string;
