@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
     appDispatch,
+    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -26,7 +26,7 @@ export const ConnectApp = () => {
         },
         text: ''
     });
-    const user = useSelector((state) => state.user);
+    const user = useAppSelector((state) => state.user);
 
     const emailSplit = () => {
         let result = '';
@@ -68,6 +68,14 @@ export const ConnectApp = () => {
         }
     ];
     const connect = () => {
+
+        console.log(user.isExpired);
+
+        if (user.isExpired) {
+            appDispatch(popup_open({ type: 'warning', data: {} }))
+
+        }
+        return
         appDispatch(wait_and_claim_volume());
     };
 
