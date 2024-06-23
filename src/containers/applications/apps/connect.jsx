@@ -68,12 +68,10 @@ export const ConnectApp = () => {
         }
     ];
     const connect = () => {
-        console.log(user.isExpired);
-
         if (user.isExpired) {
             appDispatch(popup_open({ type: 'warning', data: {} }));
+            return;
         }
-        return;
         appDispatch(wait_and_claim_volume());
     };
 
