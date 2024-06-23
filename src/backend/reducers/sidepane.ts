@@ -197,15 +197,16 @@ const initialState: Data = {
                 src: 'MdOutlineSportsEsports',
                 name: [Contents.OPEN_GAMEPAD],
                 state: 'gamePadOpen',
-                action: 'sidepane/toggle_gamepad'
-            },
-            {
-                ui: true,
-                src: 'MdOutlineSettingsInputComponent',
-                name: [Contents.ADJUST_GAMEPAD],
-                state: 'network.airplane',
+                //action: 'sidepane/toggle_gamepad'
                 action: 'sidepane/toggle_gamepad_setting'
             },
+            //{
+            //    ui: true,
+            //    src: 'MdOutlineSettingsInputComponent',
+            //    name: [Contents.ADJUST_GAMEPAD],
+            //    state: 'network.airplane',
+            //    action: 'sidepane/toggle_gamepad_setting'
+            //},
             {
                 ui: true,
                 src: 'MdOutlineLink',
