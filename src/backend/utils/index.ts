@@ -55,14 +55,14 @@ const apps: AppData[] = [
         action: 'apps/app_toggle',
         payload: 'usermanager'
     },
-    //{
-    //    name: 'Store',
-    //    id: 'store',
-    //    action: 'apps/app_toggle',
-    //    payload: 'store',
-    //    size: 'mini'
+    {
+        name: 'Store',
+        id: 'store',
+        action: 'apps/app_toggle',
+        payload: 'store',
+        size: 'mini'
 
-    //},
+    },
     {
         name: 'Connect YourPC',
         id: 'connectPc',
@@ -91,18 +91,19 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: ['Store'],
+    taskbar: [
+        //'Store'
+    ],
     desktop: [
         //'Worker Profile',
         //'Browser',
         'Local Connect',
         'Discord',
         'Thinkmay Fanpage',
-        'Store',
+        //'Store',
         'Connect YourPC',
         'Đăng ký dịch vụ',
         'Your Info',
-        "Store"
     ]
 };
 
