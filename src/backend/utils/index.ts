@@ -55,6 +55,14 @@ const apps: AppData[] = [
         action: 'apps/app_toggle',
         payload: 'usermanager'
     },
+    //{
+    //    name: 'Store',
+    //    id: 'store',
+    //    action: 'apps/app_toggle',
+    //    payload: 'store',
+    //    size: 'mini'
+
+    //},
     {
         name: 'Connect YourPC',
         id: 'connectPc',
@@ -93,7 +101,8 @@ var { taskbar, desktop } = {
         'Store',
         'Connect YourPC',
         'Đăng ký dịch vụ',
-        'Your Info'
+        'Your Info',
+        "Store"
     ]
 };
 

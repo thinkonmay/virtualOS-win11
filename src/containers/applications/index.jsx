@@ -8,6 +8,7 @@ export * from './apps/edge';
 export * from './apps/feedback';
 export * from './apps/payment';
 export * from './apps/settings';
+export * from './apps/store';
 export * from './apps/usermanager';
 export * from './apps/worker';
 
