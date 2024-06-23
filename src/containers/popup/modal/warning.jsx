@@ -22,7 +22,9 @@ export function warning({ data: { success, content } }) {
                 <button
                     style={{ padding: '6px 14px' }}
                     className=" text-base font-medium rounded-md"
-                    onClick={() => { appDispatch(popup_close()) }}
+                    onClick={() => {
+                        appDispatch(popup_close());
+                    }}
                 >
                     Đóng
                 </button>

@@ -185,14 +185,12 @@ const initialState = {
             name: 'Genshin',
             icon: 'Store'
         }
-
     ],
     games: [
         {
             name: 'Genshin1',
             icon: 'Store'
         }
-
     ]
 };
 

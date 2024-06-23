@@ -61,7 +61,6 @@ const apps: AppData[] = [
         action: 'apps/app_toggle',
         payload: 'store',
         size: 'mini'
-
     },
     {
         name: 'Connect YourPC',
@@ -103,7 +102,7 @@ var { taskbar, desktop } = {
         //'Store',
         'Connect YourPC',
         'Đăng ký dịch vụ',
-        'Your Info',
+        'Your Info'
     ]
 };
 
