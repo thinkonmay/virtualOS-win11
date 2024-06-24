@@ -352,7 +352,7 @@ export const sidepaneSlice = createSlice({
             state.mobileControl.gamepadSetting.btnSize = action.payload;
         },
         toggle_gamepad_draggable: (state, action) => {
-            state.mobileControl.gamePadHide = !state.mobileControl.gamePadHide;
+            state.mobileControl.gamePadHide = false;
             const prev = state.mobileControl.gamepadSetting.draggable;
             if (prev == 'static') {
                 state.mobileControl.gamepadSetting.draggable = 'draggable';
