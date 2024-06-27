@@ -30,7 +30,6 @@ function UserInfo() {
     const _planName = stats?.plan_name ?? '';
     //const totalTime = +planUsageTime + +additionalTime;
 
-    console.log(user);
     const totalTime = useMemo(() => {
         let total = 0;
         if (_planName == 'hour_01') {
@@ -49,7 +48,9 @@ function UserInfo() {
         } else if (planName == 'month_02') {
             name = 'Tiêu chuẩn';
         } else if (planName == 'hour_01') {
-            name = 'Gói giờ';
+            name = 'Gói giờ ';
+        } else if (planName == 'hour_02') {
+            name = 'Gói giờ lẻ';
         }
         return name;
     };
@@ -120,7 +121,7 @@ function UserInfo() {
                 <hr className="my-[14px]" />
                 <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
                     <span className="text-left">{t[Contents.TIME]}:</span>
-                    <span>
+                    <span className='text-right'>
                         {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h
                         / {totalTime + 'h'}
                     </span>
@@ -174,13 +175,13 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                                //invert={pnstates[idx] ? true : null}
+                            //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>
 
                     {/* here */}
-                    {_planName == 'hour_01' ? <PlanHours /> : <PlanMonth />}
+                    {_planName.includes('hour') ? <PlanHours /> : <PlanMonth />}
                 </div>
             </div>
 

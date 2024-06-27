@@ -37,15 +37,25 @@ export const userAsync = {
 
         payloadUser = result.items.at(0) ?? initialState;
 
-        const { data, error } = await supabase.rpc('get_user_info', {
+        const { data, error } = await supabase.rpc('get_user_infov2', {
             email: payloadUser.email
         });
 
+        const userStats = await supabase.rpc('get_user_stats', {
+            email: payloadUser.email
+        });
         if (error != null) {
             console.log(`Not found infor subscription of ${payloadUser.email}`);
         }
+        if (userStats.error != null) {
+            console.log(`Not found stat subscription of ${payloadUser.email}`);
+        }
 
-        payloadUser.stat = data.at(0) ?? null;
+        const stat = {
+            ...data.at(0),
+            ...userStats.data.at(0)
+        }
+        payloadUser.stat = stat
 
         return payloadUser;
     })
