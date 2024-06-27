@@ -48,6 +48,12 @@ code {
     monospace;
 }
 
+button {
+  outline: none;
+  border: unset;
+  cursor: pointer;
+}
+
 .App {
   position: relative;
   overflow: hidden;

@@ -2,14 +2,14 @@ import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
 import './index.scss';
 
 export default function YBXA(props) {
-    const { size, className } = props;
+    const { size, className, ...rest } = props;
 
     const onTouch = (e, type, index) => {
         gamePadBtnCallback(index, type);
     };
 
     return (
-        <div className={`ybxa ${className}`}>
+        <div className={`ybxa ${className}`} {...rest}>
             <div
                 className="mainContent"
                 style={{ width: `${size ?? 20}px`, height: `${size ?? 20}px` }}

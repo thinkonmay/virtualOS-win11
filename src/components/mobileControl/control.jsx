@@ -171,9 +171,6 @@ const MobileControl = ({
                     )}
                 </button>
             </div>
-
-            {/*<VirtKeyboard />
-            <VirtualGamepad />*/}
         </>
     );
 };

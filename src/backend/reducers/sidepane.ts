@@ -197,15 +197,16 @@ const initialState: Data = {
                 src: 'MdOutlineSportsEsports',
                 name: [Contents.OPEN_GAMEPAD],
                 state: 'gamePadOpen',
-                action: 'sidepane/toggle_gamepad'
-            },
-            {
-                ui: true,
-                src: 'MdOutlineSettingsInputComponent',
-                name: [Contents.ADJUST_GAMEPAD],
-                state: 'network.airplane',
+                //action: 'sidepane/toggle_gamepad'
                 action: 'sidepane/toggle_gamepad_setting'
             },
+            //{
+            //    ui: true,
+            //    src: 'MdOutlineSettingsInputComponent',
+            //    name: [Contents.ADJUST_GAMEPAD],
+            //    state: 'network.airplane',
+            //    action: 'sidepane/toggle_gamepad_setting'
+            //},
             {
                 ui: true,
                 src: 'MdOutlineLink',
@@ -351,7 +352,7 @@ export const sidepaneSlice = createSlice({
             state.mobileControl.gamepadSetting.btnSize = action.payload;
         },
         toggle_gamepad_draggable: (state, action) => {
-            state.mobileControl.gamePadHide = !state.mobileControl.gamePadHide;
+            state.mobileControl.gamePadHide = false;
             const prev = state.mobileControl.gamepadSetting.draggable;
             if (prev == 'static') {
                 state.mobileControl.gamepadSetting.draggable = 'draggable';

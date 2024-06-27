@@ -6,6 +6,7 @@ import {
     user_delete
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
+import { externalLink } from '../../backend/utils/constant';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
@@ -47,7 +48,9 @@ function UserInfo() {
         } else if (planName == 'month_02') {
             name = 'Tiêu chuẩn';
         } else if (planName == 'hour_01') {
-            name = 'Gói giờ';
+            name = 'Gói giờ ';
+        } else if (planName == 'hour_02') {
+            name = 'Gói giờ lẻ';
         }
         return name;
     };
@@ -118,25 +121,43 @@ function UserInfo() {
                 <hr className="my-[14px]" />
                 <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
                     <span className="text-left">{t[Contents.TIME]}:</span>
-                    <span>
+                    <span className='text-right'>
                         {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h
                         / {totalTime + 'h'}
                     </span>
                 </div>
+
+                <p></p>
             </div>
         );
     };
     return (
         <div className="userManager">
-            <div className="stmenu  p-[14px]">
-                <div className="pinnedApps mt-[16px] text-center font-semibold pb-1 flex items-center justify-center gap-2">
-                    <span>{user.email ?? 'Admin'}</span>
-                    <Icon
-                        className="quickIcon"
-                        //ui={true}
-                        src={'active'}
-                        width={14}
-                    />
+            <div className="stmenu  p-[14px] pt-2">
+                <div>
+                    <div className="pinnedApps mt-[16px] text-center font-semibold pb-1 flex items-center justify-center gap-2">
+                        <span>{user.email ?? 'Admin'}</span>
+                        <Icon
+                            className="quickIcon"
+                            //ui={true}
+                            src={'active'}
+                            width={14}
+                        />
+                    </div>
+                    {user.isExpired ? (
+                        <p className="text-red-600 mb-4 mt-1 text-right">
+                            Vui lòng{' '}
+                            <a
+                                href={externalLink.FACEBOOK_LINK}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline font-semibold"
+                            >
+                                gia hạn
+                            </a>{' '}
+                            để tiếp tục sử dụng
+                        </p>
+                    ) : null}
                 </div>
                 <div className="h-full flex flex-col p-2" data-dock="true">
                     <div className="w-full flex gap-4 justify-between my-[8px] ">
@@ -154,13 +175,13 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                                //invert={pnstates[idx] ? true : null}
+                            //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>
 
                     {/* here */}
-                    {_planName == 'hour_01' ? <PlanHours /> : <PlanMonth />}
+                    {_planName.includes('hour') ? <PlanHours /> : <PlanMonth />}
                 </div>
             </div>
 
