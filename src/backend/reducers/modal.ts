@@ -20,6 +20,15 @@ type PopupData =
               tips?: boolean;
               text?: any;
           };
+      }
+    | {
+          type: 'warning';
+          data: {
+              title?: string;
+              loading: boolean;
+              tips?: boolean;
+              text?: any;
+          };
       };
 
 type Data = {
@@ -27,7 +36,12 @@ type Data = {
 };
 
 const initialState: Data = {
-    data_stack: []
+    data_stack: [
+        //    {
+        //    type: '',
+        //    data: {}
+        //}
+    ]
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';

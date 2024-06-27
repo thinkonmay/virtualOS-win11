@@ -9,14 +9,16 @@ import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
 import './index.scss';
 
 const DPad = (props) => {
-    const { size } = props;
+    const { size, ...rest } = props;
     const onTouch = (e, type, index) => {
         gamePadBtnCallback(index, type);
     };
     return (
         <div
+
             className="dpad"
             style={{ width: `${size ?? 20}px`, height: `${size ?? 20}px` }}
+            {...rest}
         >
             <button
                 className="defaultButton top"
