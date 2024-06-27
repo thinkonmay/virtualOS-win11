@@ -14,6 +14,7 @@ import {
     sidepane_panethem,
     store,
     sync,
+    user_check_sub,
     wall_set,
     worker_refresh
 } from '../reducers';
@@ -86,6 +87,43 @@ const fetchMessage = async () => {
     await appDispatch(fetch_message(email));
 };
 
+export const checkTimeUsage = () => {
+    const subInfo = store.getState().user?.stat;
+
+    const totalTime = +(subInfo?.plan_hour + subInfo?.additional_time);
+    let isExpired = false;
+    const now = new Date();
+
+    // Check if now is within 2 days of end_time
+    const endTime = new Date(subInfo?.end_time);
+    const twoDaysBeforeEndTime = new Date(endTime);
+    twoDaysBeforeEndTime.setDate(endTime.getDate() - 2);
+
+    // Check if now is between twoDaysBeforeEndTime and endTime
+    const isNearbyEndTime = now >= twoDaysBeforeEndTime && now <= endTime;
+
+    // Check if usage_hour is within 2 hours of 2 * plan_hour
+
+    const isNearbyUsageHour = Math.abs(subInfo?.usage_hour - totalTime) <= 2;
+
+    if (now > endTime || subInfo?.usage_hour - totalTime >= 0) {
+        isExpired = true;
+    }
+
+    appDispatch(
+        user_check_sub({
+            isNearbyEndTime,
+            isNearbyUsageHour,
+            isExpired
+        })
+    );
+    return {
+        isNearbyEndTime: isNearbyEndTime,
+        isNearbyUsageHour: isNearbyUsageHour,
+        isExpired
+    };
+};
+
 export const preload = async () => {
     await fetchUser(),
         await Promise.all([
@@ -95,6 +133,7 @@ export const preload = async () => {
             fetchMessage()
         ]);
 
+    checkTimeUsage();
     setInterval(check_worker, 30 * 1000);
     setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 100);

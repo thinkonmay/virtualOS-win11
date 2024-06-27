@@ -34,7 +34,7 @@ export function RightFuncButton(props) {
 }
 
 export function LeftFuncButton(props) {
-    const { size = 50, className } = props;
+    const { size = 50, className, ...rest } = props;
     const buttonSize = {
         width: size,
         height: size
@@ -43,7 +43,7 @@ export function LeftFuncButton(props) {
         gamePadBtnCallback(index, type);
     };
     return (
-        <div className={`leftFuncBtn ${className}`}>
+        <div {...rest} className={`leftFuncBtn ${className}`}>
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}

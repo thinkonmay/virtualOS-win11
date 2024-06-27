@@ -56,6 +56,13 @@ const apps: AppData[] = [
         payload: 'usermanager'
     },
     {
+        name: 'Store',
+        id: 'store',
+        action: 'apps/app_toggle',
+        payload: 'store',
+        size: 'mini'
+    },
+    {
         name: 'Connect YourPC',
         id: 'connectPc',
         action: 'apps/app_toggle',
@@ -83,14 +90,16 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: ['Store'],
+    taskbar: [
+        //'Store'
+    ],
     desktop: [
-        'Worker Profile',
-        'Browser',
+        //'Worker Profile',
+        //'Browser',
         'Local Connect',
         'Discord',
         'Thinkmay Fanpage',
-        'Store',
+        //'Store',
         'Connect YourPC',
         'Đăng ký dịch vụ',
         'Your Info'

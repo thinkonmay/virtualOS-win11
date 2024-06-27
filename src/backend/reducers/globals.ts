@@ -1,5 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { BuilderHelper } from './helper';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Contents, Languages, language } from './locales';
 
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -179,7 +178,20 @@ const initialState = {
     ],
 
     service_available: false,
-    translation: {} as TranslationResult
+    translation: {} as TranslationResult,
+
+    apps: [
+        {
+            name: 'Genshin',
+            icon: 'Store'
+        }
+    ],
+    games: [
+        {
+            name: 'Genshin1',
+            icon: 'Store'
+        }
+    ]
 };
 
 export const globalSlice = createSlice({
