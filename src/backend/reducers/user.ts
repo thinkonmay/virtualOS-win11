@@ -54,8 +54,8 @@ export const userAsync = {
         const stat = {
             ...data.at(0),
             ...userStats.data.at(0)
-        }
-        payloadUser.stat = stat
+        };
+        payloadUser.stat = stat;
 
         return payloadUser;
     })
