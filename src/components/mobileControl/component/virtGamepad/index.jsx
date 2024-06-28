@@ -243,7 +243,6 @@ export const ButtonGroupRight = (props) => {
                     ref={subBtnRef}
                     className="containerSubButton"
                     id="subBtn"
-                    ref={subBtnRef}
                 >
                     <div
                         className="centerButton"
