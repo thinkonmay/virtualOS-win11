@@ -15,7 +15,6 @@ const DPad = (props) => {
     };
     return (
         <div
-
             className="dpad"
             style={{ width: `${size ?? 20}px`, height: `${size ?? 20}px` }}
             {...rest}

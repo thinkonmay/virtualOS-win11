@@ -6,6 +6,7 @@ import {
     change_framerate,
     check_worker,
     fetch_message,
+    fetch_store,
     fetch_user,
     have_focus,
     loose_focus,
@@ -40,8 +41,15 @@ const loadSettings = async () => {
 
 const fetchUser = async () => {
     await appDispatch(fetch_user());
+
+    const stat = store.getState().user.stat;
+
     appDispatch(app_toggle('usermanager'));
+
     appDispatch(app_toggle('connectPc'));
+    if (stat.plan_name == 'hour_02') {
+        appDispatch(app_toggle('store'));
+    }
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());
@@ -87,6 +95,9 @@ const fetchMessage = async () => {
     await appDispatch(fetch_message(email));
 };
 
+const fetchStore = async () => {
+    await appDispatch(fetch_store());
+};
 export const checkTimeUsage = () => {
     const subInfo = store.getState().user?.stat;
 
@@ -130,7 +141,8 @@ export const preload = async () => {
             loadSettings(),
             fetchApp(),
             fetchSetting(),
-            fetchMessage()
+            fetchMessage(),
+            fetchStore()
         ]);
 
     checkTimeUsage();

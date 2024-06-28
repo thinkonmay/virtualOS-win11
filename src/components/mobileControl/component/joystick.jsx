@@ -1,29 +1,27 @@
 import { Joystick } from 'react-joystick-component/build/lib/Joystick';
 
 export const CustomJoyStick = ({
-
     draggable,
     className,
     size = 100,
-    moveCallback = () => { }
-    , ...rest }) => {
-
+    moveCallback = () => {},
+    ...rest
+}) => {
     const move = (event) => {
-        if (draggable === 'draggable') return
+        if (draggable === 'draggable') return;
 
-        if (event.type == "move") {
+        if (event.type == 'move') {
             //if (!enableJT) {
             //    moveCallback(0, 0);
             //    return;
             //}
             moveCallback(event.x, -event.y);
-        } else if (event.type == "stop") {
+        } else if (event.type == 'stop') {
             //setenableJT(false);
             moveCallback(0, 0);
-        } else if (event.type == "start") {
+        } else if (event.type == 'start') {
             //setenableJT(true);
             moveCallback(0, 0);
-
         }
     };
     return (

@@ -99,7 +99,7 @@ var { taskbar, desktop } = {
         'Local Connect',
         'Discord',
         'Thinkmay Fanpage',
-        //'Store',
+        'Store',
         'Connect YourPC',
         'Đăng ký dịch vụ',
         'Your Info'

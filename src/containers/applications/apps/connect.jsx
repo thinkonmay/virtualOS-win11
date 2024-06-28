@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+    app_toggle,
     appDispatch,
     popup_open,
     useAppSelector,
@@ -68,10 +69,38 @@ export const ConnectApp = () => {
         }
     ];
     const connect = () => {
+        if (stats == null) {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content:
+                            'Bạn chưa đăng ký dịch vụ. Đăng ký ngay bên trong website hoặc nhắn tin qua Facebook Thinkmay',
+                        success: false
+                    }
+                })
+            );
+            appDispatch(app_toggle('payment'));
+            return;
+        }
+        if (stats?.plan_name == 'hour_02') {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content:
+                            'Tài khoản của bạn chỉ tải được game trong Store',
+                        success: false
+                    }
+                })
+            );
+            return;
+        }
         if (user.isExpired) {
             appDispatch(popup_open({ type: 'warning', data: {} }));
             return;
         }
+
         appDispatch(wait_and_claim_volume());
     };
 
