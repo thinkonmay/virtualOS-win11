@@ -121,7 +121,7 @@ function UserInfo() {
                 <hr className="my-[14px]" />
                 <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
                     <span className="text-left">{t[Contents.TIME]}:</span>
-                    <span className='text-right'>
+                    <span className="text-right">
                         {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h
                         / {totalTime + 'h'}
                     </span>
@@ -175,7 +175,7 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                            //invert={pnstates[idx] ? true : null}
+                                //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>

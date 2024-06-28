@@ -187,157 +187,127 @@ export const SidePane = () => {
                 <div className="mainContent">
                     <div className="quickSettings ">
                         <div className="listBtn">
-                            {
-                                isMobile()
-                                    ? sidepane.mobileControl.buttons.map(
-                                        (qk, idx) => {
-                                            return (
-                                                <div
-                                                    key={idx}
-                                                    className="qkGrp"
-                                                >
-                                                    <div
-                                                        style={{
-                                                            ...qk.style
-                                                        }}
-                                                        className="qkbtn handcr prtclk"
-                                                        onClick={
-                                                            clickDispatch
-                                                        }
-                                                        data-action={
-                                                            qk.action
-                                                        }
-                                                        data-payload={
-                                                            qk.payload ||
-                                                            qk.state
-                                                        }
-                                                        data-state={
-                                                            pnstates[idx]
-                                                        }
-                                                    >
-                                                        {Object.keys(
-                                                            md
-                                                        ).includes(qk.src) ? (
-                                                            (() => {
-                                                                const WinApp =
-                                                                    md[
-                                                                    qk.src
-                                                                    ];
-                                                                return (
-                                                                    <WinApp />
-                                                                );
-                                                            })()
-                                                        ) : Object.keys(
+                            {isMobile()
+                                ? sidepane.mobileControl.buttons.map(
+                                      (qk, idx) => {
+                                          return (
+                                              <div key={idx} className="qkGrp">
+                                                  <div
+                                                      style={{
+                                                          ...qk.style
+                                                      }}
+                                                      className="qkbtn handcr prtclk"
+                                                      onClick={clickDispatch}
+                                                      data-action={qk.action}
+                                                      data-payload={
+                                                          qk.payload || qk.state
+                                                      }
+                                                      data-state={pnstates[idx]}
+                                                  >
+                                                      {Object.keys(md).includes(
+                                                          qk.src
+                                                      ) ? (
+                                                          (() => {
+                                                              const WinApp =
+                                                                  md[qk.src];
+                                                              return <WinApp />;
+                                                          })()
+                                                      ) : Object.keys(
                                                             fi
-                                                        ).includes(
-                                                            qk.src
-                                                        ) ? (
-                                                            (() => {
-                                                                const WinApp =
-                                                                    fi[
-                                                                    qk.src
-                                                                    ];
-                                                                return (
-                                                                    <WinApp />
-                                                                );
-                                                            })()
-                                                        ) : Object.keys(
+                                                        ).includes(qk.src) ? (
+                                                          (() => {
+                                                              const WinApp =
+                                                                  fi[qk.src];
+                                                              return <WinApp />;
+                                                          })()
+                                                      ) : Object.keys(
                                                             fa
-                                                        ).includes(
-                                                            qk.src
-                                                        ) ? (
-                                                            (() => {
-                                                                const WinApp =
-                                                                    fa[
-                                                                    qk.src
-                                                                    ];
-                                                                return (
-                                                                    <WinApp />
-                                                                );
-                                                            })()
-                                                        ) : (
-                                                            <Icon
-                                                                className="quickIcon"
-                                                                ui={qk.ui}
-                                                                src={qk.src}
-                                                                width={14}
-                                                                invert={
-                                                                    pnstates[
-                                                                        idx
-                                                                    ]
-                                                                        ? true
-                                                                        : null
-                                                                }
-                                                            />
-                                                        )}
-                                                    </div>
-                                                    <div className="qktext">
-                                                        {t[qk.name]}
-                                                    </div>
-                                                </div>
-                                            );
-                                        }
-                                    )
-                                    : sidepane.quicks.map((qk, idx) => {
-                                        return (
-                                            <div key={idx} className="qkGrp">
-                                                <div
-                                                    style={{
-                                                        ...qk.style
-                                                    }}
-                                                    className="qkbtn handcr prtclk"
-                                                    onClick={clickDispatch}
-                                                    data-action={qk.action}
-                                                    data-payload={
-                                                        qk.payload || qk.state
-                                                    }
-                                                    data-state={pnstates[idx]}
-                                                >
-                                                    {Object.keys(md).includes(
+                                                        ).includes(qk.src) ? (
+                                                          (() => {
+                                                              const WinApp =
+                                                                  fa[qk.src];
+                                                              return <WinApp />;
+                                                          })()
+                                                      ) : (
+                                                          <Icon
+                                                              className="quickIcon"
+                                                              ui={qk.ui}
+                                                              src={qk.src}
+                                                              width={14}
+                                                              invert={
+                                                                  pnstates[idx]
+                                                                      ? true
+                                                                      : null
+                                                              }
+                                                          />
+                                                      )}
+                                                  </div>
+                                                  <div className="qktext">
+                                                      {t[qk.name]}
+                                                  </div>
+                                              </div>
+                                          );
+                                      }
+                                  )
+                                : sidepane.quicks.map((qk, idx) => {
+                                      return (
+                                          <div key={idx} className="qkGrp">
+                                              <div
+                                                  style={{
+                                                      ...qk.style
+                                                  }}
+                                                  className="qkbtn handcr prtclk"
+                                                  onClick={clickDispatch}
+                                                  data-action={qk.action}
+                                                  data-payload={
+                                                      qk.payload || qk.state
+                                                  }
+                                                  data-state={pnstates[idx]}
+                                              >
+                                                  {Object.keys(md).includes(
+                                                      qk.src
+                                                  ) ? (
+                                                      (() => {
+                                                          const WinApp =
+                                                              md[qk.src];
+                                                          return <WinApp />;
+                                                      })()
+                                                  ) : Object.keys(fi).includes(
                                                         qk.src
                                                     ) ? (
-                                                        (() => {
-                                                            const WinApp =
-                                                                md[qk.src];
-                                                            return <WinApp />;
-                                                        })()
-                                                    ) : Object.keys(
-                                                        fi
-                                                    ).includes(qk.src) ? (
-                                                        (() => {
-                                                            const WinApp =
-                                                                fi[qk.src];
-                                                            return <WinApp />;
-                                                        })()
-                                                    ) : Object.keys(
-                                                        fa
-                                                    ).includes(qk.src) ? (
-                                                        (() => {
-                                                            const WinApp =
-                                                                fa[qk.src];
-                                                            return <WinApp />;
-                                                        })()
-                                                    ) : (
-                                                        <Icon
-                                                            className="quickIcon"
-                                                            ui={qk.ui}
-                                                            src={qk.src}
-                                                            width={14}
-                                                            invert={
-                                                                pnstates[idx]
-                                                                    ? true
-                                                                    : null
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div className="qktext">
-                                                    {t[qk.name]}
-                                                </div>
-                                            </div>
-                                        );
-                                    })
-                            }
+                                                      (() => {
+                                                          const WinApp =
+                                                              fi[qk.src];
+                                                          return <WinApp />;
+                                                      })()
+                                                  ) : Object.keys(fa).includes(
+                                                        qk.src
+                                                    ) ? (
+                                                      (() => {
+                                                          const WinApp =
+                                                              fa[qk.src];
+                                                          return <WinApp />;
+                                                      })()
+                                                  ) : (
+                                                      <Icon
+                                                          className="quickIcon"
+                                                          ui={qk.ui}
+                                                          src={qk.src}
+                                                          width={14}
+                                                          invert={
+                                                              pnstates[idx]
+                                                                  ? true
+                                                                  : null
+                                                          }
+                                                      />
+                                                  )}
+                                              </div>
+                                              <div className="qktext">
+                                                  {t[qk.name]}
+                                              </div>
+                                          </div>
+                                      );
+                                  })}
                         </div>
 
                         <div className="shortcuts">
@@ -345,53 +315,53 @@ export const SidePane = () => {
                             <div className="listBtn">
                                 {isMobile()
                                     ? sidepane.mobileControl.shortcuts.map(
-                                        (qk, idx) => {
-                                            return (
-                                                <div
-                                                    key={idx}
-                                                    className="qkGrp t"
-                                                >
-                                                    <div
-                                                        style={{
-                                                            fontSize: '0.6rem'
-                                                        }}
-                                                        className="qkbtn handcr prtclk"
-                                                        onClick={() =>
-                                                            Actions.clickShortCut(
-                                                                qk.val
-                                                            )
-                                                        }
-                                                    >
-                                                        {qk.name}
-                                                    </div>
-                                                    {/*<div className="qktext">{t[qk.name]}</div>*/}
-                                                </div>
-                                            );
-                                        }
-                                    )
+                                          (qk, idx) => {
+                                              return (
+                                                  <div
+                                                      key={idx}
+                                                      className="qkGrp t"
+                                                  >
+                                                      <div
+                                                          style={{
+                                                              fontSize: '0.6rem'
+                                                          }}
+                                                          className="qkbtn handcr prtclk"
+                                                          onClick={() =>
+                                                              Actions.clickShortCut(
+                                                                  qk.val
+                                                              )
+                                                          }
+                                                      >
+                                                          {qk.name}
+                                                      </div>
+                                                      {/*<div className="qktext">{t[qk.name]}</div>*/}
+                                                  </div>
+                                              );
+                                          }
+                                      )
                                     : sidepane.shortcuts.map((qk, idx) => {
-                                        return (
-                                            <div
-                                                key={idx}
-                                                className="qkGrp t"
-                                            >
-                                                <div
-                                                    style={{
-                                                        fontSize: '0.8rem'
-                                                    }}
-                                                    className="qkbtn handcr prtclk"
-                                                    onClick={() =>
-                                                        Actions.clickShortCut(
-                                                            qk.val
-                                                        )
-                                                    }
-                                                >
-                                                    {qk.name}
-                                                </div>
-                                                {/*<div className="qktext">{t[qk.name]}</div>*/}
-                                            </div>
-                                        );
-                                    })}
+                                          return (
+                                              <div
+                                                  key={idx}
+                                                  className="qkGrp t"
+                                              >
+                                                  <div
+                                                      style={{
+                                                          fontSize: '0.8rem'
+                                                      }}
+                                                      className="qkbtn handcr prtclk"
+                                                      onClick={() =>
+                                                          Actions.clickShortCut(
+                                                              qk.val
+                                                          )
+                                                      }
+                                                  >
+                                                      {qk.name}
+                                                  </div>
+                                                  {/*<div className="qktext">{t[qk.name]}</div>*/}
+                                              </div>
+                                          );
+                                      })}
                             </div>
                         </div>
 
@@ -406,7 +376,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                            1000
+                                                1000
                                         )}
                                     </span>
                                 </div>
@@ -432,8 +402,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                                remote.framerate +
+                                                MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
