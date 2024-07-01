@@ -158,45 +158,41 @@ const DetailPage = ({ app }) => {
 
     const download = async (appId) => {
         const email = user.email;
-        if (stat?.plan_name !== 'hour_02') {
+
+        try {
+            if (stat?.plan_name !== 'hour_02') {
+                throw 'Tài khoản chưa mua gói giờ lẻ'
+            }
+            if (user.isExpired) {
+                appDispatch(popup_open({ type: 'warning', data: {} }));
+                return;
+            }
+
+
+            appDispatch(
+                popup_open({
+                    type: 'notify',
+                    data: { loading: true, title: 'Connect to PC' }
+                })
+            );
+
+            const binding = await bindStoreId(email, appId);
+
+            appDispatch(popup_close());
+
+            appDispatch(wait_and_claim_volume());
+        } catch (error) {
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
-                        content: 'Tài khoản chưa mua gói giờ lẻ',
+                        content: JSON.stringify(error),
                         success: false
                     }
                 })
             );
-            return;
-        }
-        if (user.isExpired) {
-            appDispatch(popup_open({ type: 'warning', data: {} }));
-            return;
         }
 
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    content: 'Tính năng đang bảo trì, tạm thời chưa thể sử dụng',
-                    success: false
-                }
-            })
-        );
-
-        return
-        appDispatch(
-            popup_open({
-                type: 'notify',
-                data: { loading: true, title: 'Connect to PC' }
-            })
-        );
-        const binding = await bindStoreId(email, appId);
-
-        appDispatch(popup_close());
-
-        appDispatch(wait_and_claim_volume());
     };
 
     const handleEdit = () => {
