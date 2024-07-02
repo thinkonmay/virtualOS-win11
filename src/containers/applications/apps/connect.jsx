@@ -12,6 +12,7 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
+import { Contents } from '../../../backend/reducers/locales';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -39,8 +40,12 @@ export const ConnectApp = () => {
     const renderPlanStorage = (planName) => {
         let storage = '130GB';
         if (planName == 'month_01') {
+            storage = '150GB';
+        }
+        if (planName == 'hour_01') {
             storage = '130GB';
-        } else if (planName == 'month_02') {
+        }
+        else if (planName == 'month_02') {
             storage = '200GB';
         }
 
@@ -141,8 +146,9 @@ export const ConnectApp = () => {
                                         {spec.text}
                                     </div>
                                 ))}
-                            </div>
+                                <div className='spec mt-4'>{t[Contents.SUGGEST_BROWSER]}</div>
 
+                            </div>
                             <button
                                 onClick={connect}
                                 className="instbtn connectBtn"

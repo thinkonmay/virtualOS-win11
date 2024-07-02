@@ -176,7 +176,9 @@ export enum Contents {
     SHUT_DOWN,
     OPEN_GAMEPAD,
     OPEN_KEYBOARD,
-    ADJUST_GAMEPAD
+    ADJUST_GAMEPAD,
+    SUGGEST_BITRATE_FPS,
+    SUGGEST_BROWSER,
 }
 
 export function language() {
@@ -219,7 +221,7 @@ export function language() {
     );
     vn.set(
         Contents.PAYMENT_FOLLOW_UP_DONE,
-        'Cảm ơn bạn đã thanh toán dịch vụ thinkmay, chúng mình sẽ cần một vài giờ để xác minh giao dịch trên'
+        'Cảm ơn bạn đã thanh toán dịch vụ thinkmay, vui lòng liên hệ Fanpage nếu gặp lỗi trong quá trình sử dụng & thanh toán.'
     );
 
     en.set(
@@ -886,5 +888,10 @@ export function language() {
 
     en.set(Contents.ADJUST_GAMEPAD, 'Gamepad Setting');
     vn.set(Contents.ADJUST_GAMEPAD, 'Chỉnh Gamepad');
+    en.set(Contents.SUGGEST_BITRATE_FPS, 'BITRATE & FPSsuggest');
+    vn.set(Contents.SUGGEST_BITRATE_FPS, 'BITRATE & FPS khuyến nghị');
+    en.set(Contents.SUGGEST_BROWSER, 'HAVE TO: connect through Chrome or App');
+    vn.set(Contents.SUGGEST_BROWSER, 'BẮT BUỘC: phải mở trên Chrome hoặc App');
+
     return t;
 }

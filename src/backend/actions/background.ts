@@ -64,8 +64,8 @@ const fetchSetting = async () => {
         framerateLocal > 100 ||
         framerateLocal <= 0
     ) {
-        bitrateLocal = 50;
-        framerateLocal = 50;
+        bitrateLocal = 35;
+        framerateLocal = 25;
     }
 
     appDispatch(change_bitrate(bitrateLocal));

@@ -25,7 +25,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [ListSubs, setListSubs] = useState([
+    const [listSubs, setListSubs] = useState([
         {
             highlight: false,
             title: 'Gói giờ',
@@ -81,6 +81,7 @@ export const PaymentApp = () => {
     };
 
     const [paypage, setPaypage] = useState(null);
+    const [subChoose, setSubChoose] = useState(null);
     const payment = async (price_in_vnd) => {
         setPaypage(price_in_vnd);
     };
@@ -103,16 +104,17 @@ export const PaymentApp = () => {
                 size={wnapp.size}
                 name="Payment"
             />
-            <div className="windowScreen">
+            <div className="windowScreen wrapperPayment">
                 <LazyComponent show={!wnapp.hide}>
                     {paypage != null ? (
                         <Payment
                             price={paypage}
                             onClose={() => setPaypage(null)}
+                            subInfo={subChoose}
                         />
                     ) : (
                         <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
-                            {ListSubs.map((sub, index) => (
+                            {listSubs.map((sub, index) => (
                                 <div key={index} className="sub relative">
                                     {sub.highlight ? (
                                         <div className="rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
@@ -230,22 +232,23 @@ export const PaymentApp = () => {
                                                     </p>
                                                 </div>
 
-                                                <a
-                                                    onClick={() =>
+
+                                                <button
+                                                    onClick={() => {
                                                         payment(
                                                             sub.price_in_vnd
                                                         )
+                                                        setSubChoose(sub)
                                                     }
+
+                                                    }
+                                                    type="button"
+                                                    className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
                                                 >
-                                                    <button
-                                                        type="button"
-                                                        className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
-                                                    >
-                                                        <span className="truncate">
-                                                            {'Bắt đầu'}
-                                                        </span>
-                                                    </button>
-                                                </a>
+                                                    <span className="truncate">
+                                                        {'Bắt đầu'}
+                                                    </span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -259,23 +262,31 @@ export const PaymentApp = () => {
     );
 };
 
-const Payment = ({ onClose, price }) => {
+const Payment = ({ onClose, price, subInfo }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const { id } = useAppSelector((state) => state.user);
     const { email } = useAppSelector((state) => state.user);
 
     const [pageNo, setPageNo] = useState(0);
-    const nextPage = () =>
+    const nextPage = () => {
         setPageNo((old) => {
             const current = pages.at(old);
             return pages.length - 1 != old ? old + 1 : old;
         });
-    const prevPage = () =>
+
+    }
+    const prevPage = () => {
+        if (pageNo == 0) {
+            onClose()
+            return
+        }
         setPageNo((old) => {
             const n = old != 0 ? old - 1 : old;
             const current = pages.at(n);
             return n;
         });
+    }
+
     const finishSurvey = async () => {
         UserEvents({ type: `finish_payment` });
         onClose();
@@ -286,22 +297,30 @@ const Payment = ({ onClose, price }) => {
         const url = new URL(
             `https://img.vietqr.io/image/${mb}-${account_id}-${model}.png`
         );
-        url.searchParams.append('ammount', price * 1000);
+        let amount = price * 1000
         url.searchParams.append('accountName', account_owner);
         url.searchParams.append(
             'addInfo',
-            `thinkmay ${id.replaceAll('-', ' ')}`
+            `
+                PAY ${email.replace('@gmail.com', '')}
+            `
         );
+
+        if (subInfo.name == 'hour_01') {
+            amount = price * 20 * 1000
+        }
+        url.searchParams.append('amount', amount);
+
         setQR(url.toString());
 
         const handle = (e) =>
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
@@ -329,12 +348,13 @@ const Payment = ({ onClose, price }) => {
 
     const QR = () => (
         <div className="left">
-            <Image absolute src="qr_code.png" />
+            {/*<Image absolute src="qr_code.png" />*/}
+            <Image ext absolute src={qrurl} />
         </div>
     );
     const Logo = () => (
         <div className="left">
-            <img alt="left image" id="left_img" src="logo_white.png" />
+            <div className='logoPayment' id="left_img" />
         </div>
     );
 
@@ -345,19 +365,39 @@ const Payment = ({ onClose, price }) => {
                 <>
                     <QR />
                     <div className="right">
-                        <div className="header mb-8">
+                        <div className="header mb-10">
                             {t[Contents.PAYMENT_FOLLOW_UP_TITLE1]}
                         </div>
-                        <p>
-                            <b>MB Bank</b> <br />
-                            Tên Chủ Tk: <b>DO VAN DAT</b> <br />
-                            Số TK: <b>1502200344444</b> <br />
-                            Nội dung: <b>
-                                {email.replace('@gmail.com', '')}
-                            </b>{' '}
-                            <br />
-                            [Email của bạn không bao gồm @gmail.com]
-                        </p>
+                        <div className='flex flex-col gap-2'>
+                            <div>
+                                Tên Ngân Hàng: <b>MB Bank</b>
+
+                            </div>
+                            <div>
+                                Tên Chủ Tk: <b>DO VAN DAT</b>
+
+                            </div>
+
+                            <div>
+                                Số TK: <b>1502200344444</b>
+                            </div>
+                            <div>
+                                Số tiền: <b>{
+                                    subInfo.name == 'hour_01' ? price * 20 * 1000 :
+                                        price * 1000
+
+                                } VNĐ</b>
+                            </div>
+                            <div>
+                                Nội dung: <b>
+                                    PAY {email.replace('@gmail.com', '')}
+                                </b>{' '}
+
+                            </div>
+
+                        </div>
+
+                        <p className='mt-4'><b className='text-lg'>LƯU Ý</b>: Vui lòng liên hệ fanpage nếu quá 15' chưa được kích hoạt.</p>
                     </div>
                     <Navigate />
                 </>
@@ -365,24 +405,24 @@ const Payment = ({ onClose, price }) => {
         }
     ];
 
-    pages.unshift({
-        survey: false,
-        content: (
-            <>
-                <Logo />
-                <div className="right">
-                    <div className="header mb-8">
-                        {t[Contents.PAYMENT_FOLLOW_UP_TITLE]}
-                    </div>
-                    <div>
-                        {t[Contents.PAYMENT_FOLLOW_UP_CONTENT]}
-                        <br />
-                    </div>
-                </div>
-                <Navigate />
-            </>
-        )
-    });
+    //pages.unshift({
+    //    survey: false,
+    //    content: (
+    //        <>
+    //            <Logo />
+    //            <div className="right">
+    //                <div className="header mb-8">
+    //                    {t[Contents.PAYMENT_FOLLOW_UP_TITLE]}
+    //                </div>
+    //                <div>
+    //                    {t[Contents.PAYMENT_FOLLOW_UP_CONTENT]}
+    //                    <br />
+    //                </div>
+    //            </div>
+    //            <Navigate />
+    //        </>
+    //    )
+    //});
 
     pages.push({
         survey: false,

@@ -239,11 +239,7 @@ export const ButtonGroupRight = (props) => {
                 onDrag={handleDrag}
                 nodeRef={subBtnRef}
             >
-                <div
-                    ref={subBtnRef}
-                    className="containerSubButton"
-                    id="subBtn"
-                >
+                <div ref={subBtnRef} className="containerSubButton" id="subBtn">
                     <div
                         className="centerButton"
                         onTouchStart={() => gamePadBtnCallback(8, 'down')}

@@ -13,6 +13,7 @@ import {
     worker_refresh,
     worker_vm_create_from_volume
 } from '.';
+import { sleep } from '../utils/sleep';
 import { fromComputer, RenderNode } from '../utils/tree';
 import { UserEvents } from './fetch/analytics';
 import { pb } from './fetch/createClient';
@@ -305,6 +306,7 @@ export const workerAsync = {
             else if (vm_session == undefined) throw new Error('invalid tree');
 
             const result = await StartThinkmayOnVM(host.info, vm_session.id);
+            await sleep(15 * 1000);
             appDispatch(remote_connect(result));
             await appDispatch(fetch_local_worker(host.info.address));
             await appDispatch(save_reference(result));
@@ -330,7 +332,9 @@ export const workerAsync = {
                 ...session,
                 target: vm_session_id
             });
+
             appDispatch(remote_connect(result));
+            await sleep(15 * 1000);
             await appDispatch(save_reference(result));
         }
     ),

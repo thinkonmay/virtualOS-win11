@@ -161,13 +161,12 @@ const DetailPage = ({ app }) => {
 
         try {
             if (stat?.plan_name !== 'hour_02') {
-                throw 'Tài khoản chưa mua gói giờ lẻ'
+                throw 'Tài khoản chưa mua gói giờ lẻ';
             }
             if (user.isExpired) {
                 appDispatch(popup_open({ type: 'warning', data: {} }));
                 return;
             }
-
 
             appDispatch(
                 popup_open({
@@ -192,7 +191,6 @@ const DetailPage = ({ app }) => {
                 })
             );
         }
-
     };
 
     const handleEdit = () => {
@@ -463,7 +461,7 @@ const DownPage = ({ action }) => {
                     />
                 </div>
             </div>*/}
-
+            <h3 className='storeHeading'>Dành cho những tài khoản mua dưới 20h</h3>
             <p className="storeHeading mt-4">
                 Với <b className="font-bold">8k/h</b> bạn có thể chơi ngay lập
                 tức các game sau:
