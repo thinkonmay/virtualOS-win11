@@ -10,6 +10,7 @@ import {
 
 import {
     appDispatch,
+    sidepane_panehide,
     task_hide,
     task_show,
     useAppSelector
@@ -74,6 +75,11 @@ const Taskbar = () => {
         remote?.active ? play() : null;
     }, [remote.active]);
 
+    const toggleControl = () => {
+        setOpen((old) => !old)
+
+        appDispatch(sidepane_panehide)
+    }
     return (
         <>
             {remote.active ? (
@@ -84,7 +90,7 @@ const Taskbar = () => {
                     {remote.active ? (
                         <button
                             className="btn-show"
-                            onClick={() => setOpen((old) => !old)}
+                            onClick={() => toggleControl()}
                         >
                             {open ? (
                                 <MdArrowForwardIos
@@ -223,9 +229,8 @@ const Taskbar = () => {
                         </div>
                     )}
                     <div
-                        className={`${
-                            open ? 'slide-in' : 'slide-out'
-                        } taskright`}
+                        className={`${open ? 'slide-in' : 'slide-out'
+                            } taskright`}
                         data-remote={remote.active}
                     >
                         {remote.active ? (
