@@ -19,8 +19,9 @@
   z-index: 9999;
 
   &[data-hide="true"] {
-    transform: translateX(+110%);
+    transform: translateX(120%);
     transition: all 0.6s cubic-bezier(0.77, 0, 0.18, 1);
+    right: 0;
   }
 
   .WidPane {
@@ -570,7 +571,7 @@ body[data-theme="dark"] .widPaneCont {
   .widPaneCont {
     right: 8%;
     bottom: 30px;
-    width: 280px;
+    width: 248px;
     height: 80%;
     max-height: 560px;
 

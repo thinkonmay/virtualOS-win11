@@ -3,7 +3,7 @@ import { AiOutlineCloudDownload } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
-import { MdOutlineClose } from 'react-icons/md';
+import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
 import { PiPauseBold } from 'react-icons/pi';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
@@ -15,6 +15,7 @@ import {
     change_btnGp_size,
     change_framerate,
     menu_show,
+    sidepane_panehide,
     toggle_default_gamepad_position,
     toggle_gamepad,
     toggle_gamepad_draggable,
@@ -459,6 +460,10 @@ const GamePadSetting = () => {
     const handleChange = (e) => {
         appDispatch(change_btnGp_size(e.target.value));
     };
+    const handleClose = (e) => {
+        appDispatch(sidepane_panehide());
+
+    }
 
     return (
         <div
@@ -468,21 +473,27 @@ const GamePadSetting = () => {
                     : 'gamepadSetting slide-in'
             }
         >
-            <button
-                className="bg-none outline-none border-none  ml-[96%] mt-2"
-                onClick={() => {
-                    appDispatch(toggle_gamepad_setting());
-                }}
-            >
-                <MdOutlineClose></MdOutlineClose>
-            </button>
+            <div className='flex justify-between py-3 mx-[-12px]'>
+
+                <MdArrowBack
+                    fontSize={'1.2rem'}
+                    onClick={() => {
+                        appDispatch(toggle_gamepad_setting());
+                    }}
+                />
+
+                <MdOutlineClose
+                    onClick={handleClose}
+                    fontSize={'1.2rem'}></MdOutlineClose>
+
+            </div>
             <button
                 onClick={() => {
                     appDispatch(toggle_gamepad());
                 }}
-                className="instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
+                className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
             >
-                Mở gamepad ảo
+                Đóng/mở gamepad ảo
             </button>
             <div className="">
                 <p className="text-[0.9rem] mb-[4px]">Size:</p>
@@ -500,8 +511,8 @@ const GamePadSetting = () => {
                         Medium
                         <input
                             type="radio"
-                            value="2"
-                            checked={selectedOption == '2'}
+                            value="1.2"
+                            checked={selectedOption == '1.2'}
                             onChange={handleChange}
                         />
                     </label>
@@ -527,25 +538,28 @@ const GamePadSetting = () => {
             </button>
 
             {gamepadDraggable == 'draggable' ? (
-                <div className="ctnBtn flex mt-4 gap-4 justify-end">
-                    <button
-                        className="bg-slate-400 rounded-md"
-                        onClick={() =>
-                            appDispatch(toggle_default_gamepad_position())
-                        }
-                    >
-                        Default
-                    </button>
-                    <button
-                        className="bg-[#0167c0] rounded-md"
-                        onClick={() => {
-                            appDispatch(toggle_gamepad_draggable());
-                            appDispatch(toggle_gamepad_setting());
-                        }}
-                    >
-                        Save
-                    </button>
-                </div>
+                <>
+                    <p className='text-[0.75rem] mt-1'>*kéo các nút để chỉnh vị trí</p>
+                    <div className="ctnBtn flex mt-4 gap-4 justify-end">
+                        <button
+                            className="bg-slate-400 rounded-md"
+                            onClick={() =>
+                                appDispatch(toggle_default_gamepad_position())
+                            }
+                        >
+                            Default
+                        </button>
+                        <button
+                            className="bg-[#0167c0] rounded-md"
+                            onClick={() => {
+                                appDispatch(toggle_gamepad_draggable());
+                                appDispatch(toggle_gamepad_setting());
+                            }}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </>
             ) : null}
         </div>
     );
