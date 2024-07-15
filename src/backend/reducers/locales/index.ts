@@ -178,7 +178,7 @@ export enum Contents {
     OPEN_KEYBOARD,
     ADJUST_GAMEPAD,
     SUGGEST_BITRATE_FPS,
-    SUGGEST_BROWSER,
+    SUGGEST_BROWSER
 }
 
 export function language() {

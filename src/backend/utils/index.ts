@@ -91,9 +91,7 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: [
-        'Store games'
-    ],
+    taskbar: ['Store games'],
     desktop: [
         //'Worker Profile',
         //'Browser',

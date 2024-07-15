@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { MdOutlineSend } from "react-icons/md";
+import { MdOutlineSend } from 'react-icons/md';
 import {
     appDispatch,
     push_message,
@@ -28,7 +28,11 @@ export const WidPane = () => {
 
     return (
         <>
-            <div data-hide={widget.banhide} style={{ '--prefix': 'BAND' }} className="widPaneCont">
+            <div
+                data-hide={widget.banhide}
+                style={{ '--prefix': 'BAND' }}
+                className="widPaneCont"
+            >
                 <LazyComponent show={!widget.banhide}>
                     <div className="WidPane ">
                         <div className="title">
@@ -92,7 +96,11 @@ export const WidPane = () => {
                                 placeholder="Send us a message"
                                 type="text"
                             />
-                            <MdOutlineSend color='rgb(1, 103, 192)' fontSize={'2rem'} onClick={finish}></MdOutlineSend>
+                            <MdOutlineSend
+                                color="rgb(1, 103, 192)"
+                                fontSize={'2rem'}
+                                onClick={finish}
+                            ></MdOutlineSend>
                             {/*<Icon
                                 className="z-1 handcr ml-2 "
                                 src="mail"

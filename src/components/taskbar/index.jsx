@@ -15,7 +15,10 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
-import { clickDispatch, customClickDispatch } from '../../backend/utils/dispatch';
+import {
+    clickDispatch,
+    customClickDispatch
+} from '../../backend/utils/dispatch';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
 
@@ -74,15 +77,13 @@ const Taskbar = () => {
         remote?.active ? play() : null;
     }, [remote.active]);
 
-
     const toggleControl = (e) => {
-        setOpen((old) => !old)
+        setOpen((old) => !old);
 
-        afterMath(e)
+        afterMath(e);
+    };
 
-    }
-
-    const customDispatch = customClickDispatch(e => afterMath(e))
+    const customDispatch = customClickDispatch((e) => afterMath(e));
     return (
         <>
             {remote.active ? (
@@ -91,10 +92,7 @@ const Taskbar = () => {
                     data-remote={remote.active}
                 >
                     {remote.active ? (
-                        <button
-                            className="btn-show"
-                            onClick={toggleControl}
-                        >
+                        <button className="btn-show" onClick={toggleControl}>
                             {open ? (
                                 <MdArrowForwardIos
                                     style={{ fontSize: '1.2rem' }}
@@ -145,7 +143,6 @@ const Taskbar = () => {
                             </div>
                         </div>
                     </>
-
                 </div>
             ) : (
                 <div
@@ -218,8 +215,9 @@ const Taskbar = () => {
                         </div>
                     )}
                     <div
-                        className={`${open ? 'slide-in' : 'slide-out'
-                            } taskright`}
+                        className={`${
+                            open ? 'slide-in' : 'slide-out'
+                        } taskright`}
                         data-remote={remote.active}
                     >
                         {remote.active ? (
@@ -279,7 +277,6 @@ const Taskbar = () => {
                                 </div>
                             </div>
                         </>
-
                     </div>
                 </div>
             )}

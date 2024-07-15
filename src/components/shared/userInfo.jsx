@@ -175,7 +175,7 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                            //invert={pnstates[idx] ? true : null}
+                                //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>

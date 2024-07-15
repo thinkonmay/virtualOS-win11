@@ -232,16 +232,13 @@ export const PaymentApp = () => {
                                                     </p>
                                                 </div>
 
-
                                                 <button
                                                     onClick={() => {
                                                         payment(
                                                             sub.price_in_vnd
-                                                        )
-                                                        setSubChoose(sub)
-                                                    }
-
-                                                    }
+                                                        );
+                                                        setSubChoose(sub);
+                                                    }}
                                                     type="button"
                                                     className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
                                                 >
@@ -273,19 +270,18 @@ const Payment = ({ onClose, price, subInfo }) => {
             const current = pages.at(old);
             return pages.length - 1 != old ? old + 1 : old;
         });
-
-    }
+    };
     const prevPage = () => {
         if (pageNo == 0) {
-            onClose()
-            return
+            onClose();
+            return;
         }
         setPageNo((old) => {
             const n = old != 0 ? old - 1 : old;
             const current = pages.at(n);
             return n;
         });
-    }
+    };
 
     const finishSurvey = async () => {
         UserEvents({ type: `finish_payment` });
@@ -297,7 +293,7 @@ const Payment = ({ onClose, price, subInfo }) => {
         const url = new URL(
             `https://img.vietqr.io/image/${mb}-${account_id}-${model}.png`
         );
-        let amount = price * 1000
+        let amount = price * 1000;
         url.searchParams.append('accountName', account_owner);
         url.searchParams.append(
             'addInfo',
@@ -307,7 +303,7 @@ const Payment = ({ onClose, price, subInfo }) => {
         );
 
         if (subInfo.name == 'hour_01') {
-            amount = price * 20 * 1000
+            amount = price * 20 * 1000;
         }
         url.searchParams.append('amount', amount);
 
@@ -317,10 +313,10 @@ const Payment = ({ onClose, price, subInfo }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                    ? prevPage()
-                    : e.key == 'ArrowRight'
-                        ? nextPage()
-                        : null;
+                  ? prevPage()
+                  : e.key == 'ArrowRight'
+                    ? nextPage()
+                    : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
@@ -354,7 +350,7 @@ const Payment = ({ onClose, price, subInfo }) => {
     );
     const Logo = () => (
         <div className="left">
-            <div className='logoPayment' id="left_img" />
+            <div className="logoPayment" id="left_img" />
         </div>
     );
 
@@ -368,36 +364,36 @@ const Payment = ({ onClose, price, subInfo }) => {
                         <div className="header mb-10">
                             {t[Contents.PAYMENT_FOLLOW_UP_TITLE1]}
                         </div>
-                        <div className='flex flex-col gap-2'>
+                        <div className="flex flex-col gap-2">
                             <div>
                                 Tên Ngân Hàng: <b>MB Bank</b>
-
                             </div>
                             <div>
                                 Tên Chủ Tk: <b>DO VAN DAT</b>
-
                             </div>
 
                             <div>
                                 Số TK: <b>1502200344444</b>
                             </div>
                             <div>
-                                Số tiền: <b>{
-                                    subInfo.name == 'hour_01' ? price * 20 * 1000 :
-                                        price * 1000
-
-                                } VNĐ</b>
+                                Số tiền:{' '}
+                                <b>
+                                    {subInfo.name == 'hour_01'
+                                        ? price * 20 * 1000
+                                        : price * 1000}{' '}
+                                    VNĐ
+                                </b>
                             </div>
                             <div>
-                                Nội dung: <b>
-                                    PAY {email.replace('@gmail.com', '')}
-                                </b>{' '}
-
+                                Nội dung:{' '}
+                                <b>PAY {email.replace('@gmail.com', '')}</b>{' '}
                             </div>
-
                         </div>
 
-                        <p className='mt-4'><b className='text-lg'>LƯU Ý</b>: Vui lòng liên hệ fanpage nếu quá 15' chưa được kích hoạt.</p>
+                        <p className="mt-4">
+                            <b className="text-lg">LƯU Ý</b>: Vui lòng liên hệ
+                            fanpage nếu quá 15' chưa được kích hoạt.
+                        </p>
                     </div>
                     <Navigate />
                 </>

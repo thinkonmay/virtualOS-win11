@@ -44,8 +44,7 @@ export const ConnectApp = () => {
         }
         if (planName == 'hour_01') {
             storage = '130GB';
-        }
-        else if (planName == 'month_02') {
+        } else if (planName == 'month_02') {
             storage = '200GB';
         }
 
@@ -146,8 +145,9 @@ export const ConnectApp = () => {
                                         {spec.text}
                                     </div>
                                 ))}
-                                <div className='spec mt-4'>{t[Contents.SUGGEST_BROWSER]}</div>
-
+                                <div className="spec mt-4">
+                                    {t[Contents.SUGGEST_BROWSER]}
+                                </div>
                             </div>
                             <button
                                 onClick={connect}
