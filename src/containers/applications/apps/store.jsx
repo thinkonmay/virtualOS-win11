@@ -420,8 +420,15 @@ const DownPage = ({ action }) => {
             id="storeScroll"
             className="pagecont w-full absolute top-0 box-border p-3 sm:p-12"
         >
-            {/*<div className="flex flex-wrap gap-5 justify-between">
-                <div className="flex items-center ">
+            <p className="storeHeading mt-4">
+                Với <b className="font-bold">8k/h</b> bạn có thể chơi ngay lập
+                tức các game sau:
+            </p>
+            <p className="storeHeading text-sm mt-2">
+                *Toàn bộ dữ liệu sẽ bị xoá khi tắt máy
+            </p>
+            <div className="flex flex-wrap gap-5 justify-between">
+                {/*<div className="flex items-center ">
                     <div
                         className="catbtn handcr"
                         value={catg == 'all'}
@@ -443,7 +450,7 @@ const DownPage = ({ action }) => {
                     >
                         Games
                     </div>
-                </div>
+                </div>*/}
                 <div className="relative srchbar right-0 text-sm ">
                     <Icon className="searchIcon" src="search" width={12} />
                     <input
@@ -453,15 +460,9 @@ const DownPage = ({ action }) => {
                         placeholder="Search"
                     />
                 </div>
-            </div>*/}
+            </div>
 
-            <p className="storeHeading mt-4">
-                Với <b className="font-bold">8k/h</b> bạn có thể chơi ngay lập
-                tức các game sau:
-            </p>
-            <p className="storeHeading text-sm mt-2">
-                *Toàn bộ dữ liệu sẽ bị xoá khi tắt máy
-            </p>
+
             <div className="appscont mt-8">
                 {games.length > 0
                     ? renderSearchResult()
