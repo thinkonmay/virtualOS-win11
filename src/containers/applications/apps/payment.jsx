@@ -31,15 +31,13 @@ export const PaymentApp = () => {
             title: 'Gói giờ',
             price_in_vnd: '8',
             //total_time: '110',
-            under_price: 'Lần đầu, bạn cần mua ít nhất 20h.',
+            //under_price: 'Lần đầu, bạn cần mua ít nhất 20h.',
 
             name: 'hour_01',
             period: 'h',
             bonus: [
-                'RTX 3060TI',
-                '16GB ram',
-                '130GB dung lượng',
-                'Không giới hạn thời gian mỗi session'
+                'Chơi sẵn các game trong store games',
+                'Không lưu dữ liệu sau khi chơi'
             ]
         },
         {
@@ -51,7 +49,11 @@ export const PaymentApp = () => {
             name: 'month_01',
             period: 'tháng',
             bonus: [
-                'Cấu hình giống gói giờ',
+                'Được cấp PC riêng',
+                'Có lưu dữ liệu sau khi tắt máy',
+                'RTX 3060TI',
+                '16GB ram',
+                '130GB dung lượng',
                 'Không giới hạn thời gian mỗi session'
             ],
             storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
@@ -66,7 +68,7 @@ export const PaymentApp = () => {
             name: 'month_01',
             bonus: [
                 'Không hàng chờ',
-                'Cấu hình giống gói giờ',
+                'Cấu hình giống gói tháng',
                 '250GB dung lượng',
                 'Không giới hạn thời gian mỗi session'
             ]
@@ -303,7 +305,7 @@ const Payment = ({ onClose, price, subInfo }) => {
         );
 
         if (subInfo.name == 'hour_01') {
-            amount = price * 20 * 1000;
+            amount = price * 1 * 1000;
         }
         url.searchParams.append('amount', amount);
 
@@ -313,10 +315,10 @@ const Payment = ({ onClose, price, subInfo }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
@@ -379,7 +381,7 @@ const Payment = ({ onClose, price, subInfo }) => {
                                 Số tiền:{' '}
                                 <b>
                                     {subInfo.name == 'hour_01'
-                                        ? price * 20 * 1000
+                                        ? `Số giờ chơi x 8000k `
                                         : price * 1000}{' '}
                                     VNĐ
                                 </b>
