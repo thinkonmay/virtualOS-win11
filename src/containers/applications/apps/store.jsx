@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bindStoreId } from '../../../backend/actions';
 import {
     appDispatch,
+    fetch_store,
     popup_close,
     popup_open,
     useAppSelector,
@@ -143,7 +144,7 @@ const reviews = 5000;
 const DetailPage = ({ app }) => {
     const [dstate, setDown] = useState(0);
 
-    const t = (e) => {};
+    const t = (e) => { };
     const [Options, SetOptions] = useState([]);
     const user = useAppSelector((state) => state.user);
     const stat = useAppSelector((state) => state.user.stat);
@@ -347,28 +348,20 @@ const DetailPage = ({ app }) => {
 
 const DownPage = ({ action }) => {
     const [catg, setCatg] = useState('all');
-    const apps = useAppSelector((state) => state.globals.apps);
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => {};
-    const [storeApps, setStoreApps] = useState([...apps, ...games]);
+    const t = (e) => { };
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
 
+    console.log(games.length);
     useEffect(() => {
-        console.log('render');
-
-        if (catg == 'app') {
-            setStoreApps(apps);
-            return;
-        } else if (catg == 'all') {
-            setStoreApps([...apps, ...games]);
-            return;
+        if (games.length == 0) {
+            appDispatch(fetch_store())
         }
-        setStoreApps(games);
-    }, [catg, games]);
+    }, [])
     const CheckAppPriority = (volume_class = '') => {
         let priority = '';
         if (volume_class.includes('LA')) {
@@ -381,7 +374,7 @@ const DownPage = ({ action }) => {
     };
     const renderSearchResult = () => {
         const keyword = searchtxt.toLowerCase();
-        const cloneApp = [...storeApps];
+        const cloneApp = [...games];
 
         return cloneApp.map((app, index) => {
             const appName = app.name.toLowerCase();
@@ -461,9 +454,7 @@ const DownPage = ({ action }) => {
                     />
                 </div>
             </div>*/}
-            <h3 className="storeHeading">
-                Dành cho những tài khoản mua dưới 20h
-            </h3>
+
             <p className="storeHeading mt-4">
                 Với <b className="font-bold">8k/h</b> bạn có thể chơi ngay lập
                 tức các game sau:
@@ -472,23 +463,23 @@ const DownPage = ({ action }) => {
                 *Toàn bộ dữ liệu sẽ bị xoá khi tắt máy
             </p>
             <div className="appscont mt-8">
-                {storeApps.length > 0
+                {games.length > 0
                     ? renderSearchResult()
                     : listDraftApp.map((i) => (
-                          <div
-                              key={i}
-                              className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
-                              data-action="page2"
-                          >
-                              <Image
-                                  className="mx-4 mb-6 rounded bg-slate-200"
-                                  w={100}
-                                  h={100}
-                                  ext
-                              />
-                              <div className="capitalize text-xs text-center font-semibold"></div>
-                          </div>
-                      ))}
+                        <div
+                            key={i}
+                            className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
+                            data-action="page2"
+                        >
+                            <Image
+                                className="mx-4 mb-6 rounded bg-slate-200"
+                                w={100}
+                                h={100}
+                                ext
+                            />
+                            <div className="capitalize text-xs text-center font-semibold"></div>
+                        </div>
+                    ))}
             </div>
         </div>
     );

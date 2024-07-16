@@ -9,6 +9,15 @@ const translation = language();
 export type TranslationResult = {
     [key in Contents]: string;
 };
+interface IGame {
+    name: string,
+    logo: string,
+    publisher: string,
+    created_at: string,
+    metadata: {
+        hide: boolean
+    }
+}
 
 const initialState = {
     lays: [
@@ -183,15 +192,16 @@ const initialState = {
     translation: {} as TranslationResult,
 
     apps: [],
-    games: []
+    games: [] as IGame[]
 };
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        const { data, error } = await supabase.from('store').select();
+        const { data, error } = await supabase.rpc('fetch_store')
 
         if (error) throw new Error(error.message);
-        return data;
+
+        return data as IGame[];
     })
 };
 
@@ -215,8 +225,8 @@ export const globalSlice = createSlice({
     extraReducers: (builder) => {
         BuilderHelper(builder, {
             fetch: globalAsync.fetch_store,
-            hander: (state, action: PayloadAction<any>) => {
-                state.games = action.payload;
+            hander: (state, action: PayloadAction<IGame[]>) => {
+                state.games = action.payload.filter(g => g.metadata?.hide != true);
             }
         });
     }
