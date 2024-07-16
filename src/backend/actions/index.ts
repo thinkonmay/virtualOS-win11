@@ -9,6 +9,7 @@ import {
     desk_size,
     desk_sort,
     dispatch_generic,
+    fetch_user,
     menu_chng,
     menu_hide,
     setting_theme,
@@ -40,7 +41,7 @@ export const afterMath = (event: any) => {
     var actionType = '';
     try {
         actionType = event.target.dataset.action || '';
-    } catch (err) {}
+    } catch (err) { }
 
     var actionType0 = getComputedStyle(event.target).getPropertyValue(
         '--prefix'
@@ -154,9 +155,9 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => {};
+export const loginWithEmail = async (email: string, password: string) => { };
 
-export const signUpWithEmail = async (email: string, password: string) => {};
+export const signUpWithEmail = async (email: string, password: string) => { };
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     let w = window.open();
 
@@ -170,6 +171,8 @@ export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     });
     const record = await pb.collection('users').getOne(id);
     appDispatch(user_update(record));
+    console.log(record);
+    await appDispatch(fetch_user())
 };
 
 export const getHostSessionIdByEmail = async (): Promise<string> => {
