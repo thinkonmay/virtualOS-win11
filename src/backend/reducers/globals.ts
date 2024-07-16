@@ -1,4 +1,6 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { supabase } from './fetch/createClient';
+import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -180,18 +182,17 @@ const initialState = {
     service_available: false,
     translation: {} as TranslationResult,
 
-    apps: [
-        {
-            name: 'Genshin',
-            icon: 'Store'
-        }
-    ],
-    games: [
-        {
-            name: 'Genshin1',
-            icon: 'Store'
-        }
-    ]
+    apps: [],
+    games: []
+};
+
+export const globalAsync = {
+    fetch_store: createAsyncThunk('fetch_store', async () => {
+        const { data, error } = await supabase.from('store').select();
+
+        if (error) throw new Error(error.message);
+        return data;
+    })
 };
 
 export const globalSlice = createSlice({
@@ -206,6 +207,17 @@ export const globalSlice = createSlice({
                     state.translation[key] = val;
                 });
             });
+        },
+        update_store_data: (state, payload: any) => {
+            state.games = payload;
         }
+    },
+    extraReducers: (builder) => {
+        BuilderHelper(builder, {
+            fetch: globalAsync.fetch_store,
+            hander: (state, action: PayloadAction<any>) => {
+                state.games = action.payload;
+            }
+        });
     }
 });

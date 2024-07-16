@@ -218,3 +218,18 @@ export const clickShortCut = (keys = []) => {
         keyboardCallback(k, 'up');
     });
 };
+
+export const bindStoreId = async (email: string, store_id: number) => {
+    const data = await fetch('https://play.thinkmay.net/access_store_volume', {
+        method: 'POST',
+        headers: {
+            Authorization: pb.authStore.token
+        },
+        body: JSON.stringify({
+            store_id,
+            email
+        })
+    });
+
+    return data;
+};

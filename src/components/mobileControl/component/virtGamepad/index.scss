@@ -42,8 +42,12 @@
 		-webkit-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		overflow: hidden;
 
-
+		&:active {
+			background-color: rgba($color: #ffffff, $alpha: 0.1);
+		}
 	}
 
 	.centerButton {

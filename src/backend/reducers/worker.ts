@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
-    app_toggle,
     appDispatch,
     claim_volume,
     fetch_local_worker,
@@ -14,7 +13,9 @@ import {
     worker_refresh,
     worker_vm_create_from_volume
 } from '.';
+import { sleep } from '../utils/sleep';
 import { fromComputer, RenderNode } from '../utils/tree';
+import { UserEvents } from './fetch/analytics';
 import { pb } from './fetch/createClient';
 import {
     CloseSession,
@@ -29,7 +30,6 @@ import {
 } from './fetch/local';
 import { BuilderHelper } from './helper';
 import { Contents } from './locales';
-import { UserEvents } from './fetch/analytics';
 
 type WorkerType = {
     data: any;
@@ -100,21 +100,6 @@ export const workerAsync = {
 
                 if (result == undefined) {
                     appDispatch(popup_close());
-
-                    const userStat = (getState() as RootState).user.stat;
-                    if (userStat == null) {
-                        appDispatch(app_toggle('payment'));
-                        throw new Error(
-                            'Bạn chưa đăng ký dịch vụ. Đăng ký ngay bên trong website hoặc nhắn tin qua Facebook Thinkmay'
-                        );
-                    }
-                    if (new Date() > new Date(userStat.end_time)) {
-                        appDispatch(app_toggle('payment'));
-                        throw new Error(
-                            'Bạn chưa giai hạn dịch vụ. Tiếp tục giai hạn bên trong website hoặc nhắn tin qua Facebook Thinkmay'
-                        );
-                    }
-
                     throw new Error(
                         'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
                     );
@@ -321,6 +306,7 @@ export const workerAsync = {
             else if (vm_session == undefined) throw new Error('invalid tree');
 
             const result = await StartThinkmayOnVM(host.info, vm_session.id);
+            await sleep(15 * 1000);
             appDispatch(remote_connect(result));
             await appDispatch(fetch_local_worker(host.info.address));
             await appDispatch(save_reference(result));
@@ -346,7 +332,9 @@ export const workerAsync = {
                 ...session,
                 target: vm_session_id
             });
+
             appDispatch(remote_connect(result));
+            await sleep(15 * 1000);
             await appDispatch(save_reference(result));
         }
     ),
