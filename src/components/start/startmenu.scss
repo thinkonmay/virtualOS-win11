@@ -165,7 +165,13 @@ body[data-theme="dark"] .startMenu {
   --rib-bg: #ffffffb8;
 
   min-width: 550px;
-  background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
+  //background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
+  background: var(--bg1);
+
+  .wrapperPayment {
+    background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
+
+  }
 
   &[data-size="mini"] {
     top: 4%;
@@ -227,6 +233,7 @@ body[data-theme="dark"] .paymentApp {
   --bg3: #313131;
   --bg4: #444;
   --rib-bg: #2f2e30b8;
+
 
 }
 

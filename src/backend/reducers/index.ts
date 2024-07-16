@@ -3,7 +3,7 @@ import * as actions from '.';
 import * as Actions from '../actions/index.js';
 import { appSlice, appsAsync } from './apps';
 import { deskSlice } from './desktop';
-import { globalSlice } from './globals';
+import { globalAsync, globalSlice } from './globals';
 import { menusSlice } from './menu';
 import { modalSlice as popupSlice } from './modal';
 import { remoteAsync, remoteSlice } from './remote.js';
@@ -160,6 +160,7 @@ export const {
     hard_reset_async
 } = remoteAsync;
 
+export const { fetch_store } = globalAsync;
 export const { push_message, fetch_message } = sidepaneAsync;
 
 export { ready } from './remote';

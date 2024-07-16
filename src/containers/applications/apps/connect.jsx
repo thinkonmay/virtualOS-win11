@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+    app_toggle,
     appDispatch,
     popup_open,
     useAppSelector,
@@ -11,6 +12,7 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
+import { Contents } from '../../../backend/reducers/locales';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -38,6 +40,9 @@ export const ConnectApp = () => {
     const renderPlanStorage = (planName) => {
         let storage = '130GB';
         if (planName == 'month_01') {
+            storage = '150GB';
+        }
+        if (planName == 'hour_01') {
             storage = '130GB';
         } else if (planName == 'month_02') {
             storage = '200GB';
@@ -68,10 +73,38 @@ export const ConnectApp = () => {
         }
     ];
     const connect = () => {
+        if (stats == null) {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content:
+                            'Bạn chưa đăng ký dịch vụ. Đăng ký ngay bên trong website hoặc nhắn tin qua Facebook Thinkmay',
+                        success: false
+                    }
+                })
+            );
+            appDispatch(app_toggle('payment'));
+            return;
+        }
+        if (stats?.plan_name == 'hour_02') {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content:
+                            'Tài khoản của bạn chỉ tải được game trong Store',
+                        success: false
+                    }
+                })
+            );
+            return;
+        }
         if (user.isExpired) {
             appDispatch(popup_open({ type: 'warning', data: {} }));
             return;
         }
+
         appDispatch(wait_and_claim_volume());
     };
 
@@ -112,8 +145,10 @@ export const ConnectApp = () => {
                                         {spec.text}
                                     </div>
                                 ))}
+                                <div className="spec mt-4">
+                                    {t[Contents.SUGGEST_BROWSER]}
+                                </div>
                             </div>
-
                             <button
                                 onClick={connect}
                                 className="instbtn connectBtn"

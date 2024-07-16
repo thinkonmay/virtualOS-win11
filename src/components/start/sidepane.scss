@@ -64,7 +64,7 @@ body[data-theme="dark"] .bandpane {
   right: 12px;
   width: 376px;
   height: calc(100% - 56px);
-  max-height: 560px;
+  max-height: 584px;
   border-radius: 0.5rem;
   color: var(--dark-txt);
   background: var(--bg1);
@@ -328,11 +328,11 @@ body[data-theme="dark"] .bandpane {
 @media (1px < width < 1024px) {
   .sidePane {
     position: absolute;
-    bottom: 56px;
+    top: 58px;
     right: 12px;
     width: 240px;
     height: calc(100% - 56px);
-    max-height: 286px;
+    max-height: 294px;
 
 
     .quickSettings {

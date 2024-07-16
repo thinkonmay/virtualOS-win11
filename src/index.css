@@ -52,6 +52,8 @@ button {
   outline: none;
   border: unset;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
 }
 
 .App {

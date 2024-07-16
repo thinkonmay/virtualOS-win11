@@ -38,7 +38,7 @@ const apps: AppData[] = [
         payload: 'edge'
     },
     {
-        name: 'Đăng ký dịch vụ',
+        name: 'Payment',
         id: 'payment',
         action: 'apps/app_toggle',
         payload: 'payment'
@@ -49,14 +49,9 @@ const apps: AppData[] = [
         action: 'apps/app_toggle',
         payload: 'feedback'
     },
+
     {
-        name: 'Your Info',
-        id: 'usermanager',
-        action: 'apps/app_toggle',
-        payload: 'usermanager'
-    },
-    {
-        name: 'Store',
+        name: 'Store games',
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store',
@@ -77,6 +72,12 @@ const apps: AppData[] = [
         payload: 'https://thinkmay.net'
     },
     {
+        name: 'Your Info',
+        id: 'usermanager',
+        action: 'apps/app_toggle',
+        payload: 'usermanager'
+    },
+    {
         name: 'Discord',
         id: 'discord',
         action: 'apps/app_external',
@@ -90,18 +91,16 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: [
-        //'Store'
-    ],
+    taskbar: ['Store games'],
     desktop: [
         //'Worker Profile',
         //'Browser',
         'Local Connect',
         'Discord',
         'Thinkmay Fanpage',
-        //'Store',
+        'Store games',
         'Connect YourPC',
-        'Đăng ký dịch vụ',
+        'Payment',
         'Your Info'
     ]
 };

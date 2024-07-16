@@ -38,6 +38,21 @@
   }
 }
 
+.logoPayment {
+  background-image: url('logo.png');
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+body[data-theme="dark"] {
+  .logoPayment {
+    background-image: url('logo_white.png');
+
+  }
+}
+
 .frontPage {
   position: relative;
   max-height: calc(100vh - 150px);
@@ -288,6 +303,12 @@
 
 .reviewtxt {
   color: var(--med-txt);
+}
+
+.storeHeading {
+  color: var(--txt-col);
+  font-size: 1.25rem;
+  text-align: center;
 }
 
 .downbar {
