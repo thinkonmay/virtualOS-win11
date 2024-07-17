@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { bindStoreId } from '../../../backend/actions';
 import {
+    app_toggle,
     appDispatch,
     fetch_store,
     popup_close,
@@ -162,6 +163,7 @@ const DetailPage = ({ app }) => {
 
         try {
             if (stat?.plan_name !== 'hour_02') {
+                appDispatch(app_toggle('payment'))
                 throw 'Tài khoản chưa mua gói giờ lẻ';
             }
             if (user.isExpired) {
@@ -220,12 +222,12 @@ const DetailPage = ({ app }) => {
                     <div className="text-2xl font-semibold mt-6">
                         {app?.name}
                     </div>
-                    <div className="text-xs text-blue-500">{app?.type}</div>
+                    <div className="text-xs text-blue-500">*Bắt buộc phải mở qua Chrome hoặc App</div>
                     <button
                         onClick={() => download(app.id)}
-                        className="font-semibold text-base rounded-lg instbtn mt-12 handcr !px-[24px] !py-[12px]"
+                        className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
                     >
-                        Install
+                        Play now!
                     </button>
 
                     <div className="flex mt-4">
@@ -382,7 +384,7 @@ const DownPage = ({ action }) => {
                 return (
                     <div
                         key={index}
-                        className="ribcont p-4 pt-8 ltShad prtclk"
+                        className="ribcont ltShad prtclk"
                         onClick={() => {
                             action(app);
                         }}
@@ -394,14 +396,14 @@ const DownPage = ({ action }) => {
                         }}
                     >
                         <Image
-                            className="mx-4 mb-6 rounded"
-                            w={100}
-                            h={100}
+                            className="img"
+                            //w={'inherit'}
+                            //h={'inherit'}
                             src={app.logo}
                             ext
                             absolute
                         />
-                        <div className="capitalize text-xs text-center font-semibold">
+                        <div className="name capitalize  text-xs text-center font-semibold">
                             {app.name}
                         </div>
                         <div className="text-[11px] text-center font-regular">
