@@ -39,16 +39,17 @@ const loadSettings = async () => {
     appDispatch(wall_set(thm == 'light' ? 0 : 1));
 };
 
-const fetchUser = async () => {
+export const fetchUser = async () => {
     await appDispatch(fetch_user());
 
     const stat = store.getState().user.stat;
 
     appDispatch(app_toggle('usermanager'));
 
-    appDispatch(app_toggle('connectPc'));
-    if (stat.plan_name == 'hour_02') {
+    if (stat.plan_name == 'hour_02' || !stat.plan_name) {
         appDispatch(app_toggle('store'));
+    } else {
+        appDispatch(app_toggle('connectPc'));
     }
 };
 export const fetchApp = async () => {
