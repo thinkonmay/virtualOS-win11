@@ -11,6 +11,7 @@ import {
     have_focus,
     loose_focus,
     ping_session,
+    popup_open,
     setting_theme,
     sidepane_panethem,
     store,
@@ -42,6 +43,7 @@ const loadSettings = async () => {
 export const fetchUser = async () => {
     await appDispatch(fetch_user());
 
+
     const stat = store.getState().user.stat;
 
     appDispatch(app_toggle('usermanager'));
@@ -51,6 +53,8 @@ export const fetchUser = async () => {
     } else {
         appDispatch(app_toggle('connectPc'));
     }
+
+    appDispatch(popup_open({ type: 'maintain', data: {} }))
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());

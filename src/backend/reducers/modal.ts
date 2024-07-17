@@ -1,35 +1,42 @@
 type PopupData =
     | {
-          type: 'complete';
-          data: {
-              success: boolean;
-              content: string | Contents;
-          };
-      }
+        type: 'complete';
+        data: {
+            success: boolean;
+            content: string | Contents;
+        };
+    }
     | {
-          type: 'guidance';
-          data: {
-              content: string;
-          };
-      }
+        type: 'guidance';
+        data: {
+            content: string;
+        };
+    }
     | {
-          type: 'notify';
-          data: {
-              title?: string;
-              loading: boolean;
-              tips?: boolean;
-              text?: any;
-          };
-      }
+        type: 'notify';
+        data: {
+            title?: string;
+            loading: boolean;
+            tips?: boolean;
+            text?: any;
+        };
+    }
     | {
-          type: 'warning';
-          data: {
-              title?: string;
-              loading: boolean;
-              tips?: boolean;
-              text?: any;
-          };
-      };
+        type: 'warning';
+        data: {
+            title?: string;
+            loading: boolean;
+            tips?: boolean;
+            text?: any;
+        };
+    }
+    | {
+        type: 'maintain';
+        data: {
+            success: boolean;
+            content: string | Contents;
+        };
+    }
 
 type Data = {
     data_stack: PopupData[];
@@ -37,8 +44,8 @@ type Data = {
 
 const initialState: Data = {
     data_stack: [
-        //    {
-        //    type: '',
+        //{
+        //    type: 'maintain',
         //    data: {}
         //}
     ]
