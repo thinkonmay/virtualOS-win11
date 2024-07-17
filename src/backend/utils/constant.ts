@@ -37,3 +37,9 @@ export const localStorageKey = {
     request: 'REQUESTCACHE',
     language: 'language'
 };
+
+export enum PlanName {
+    month_01 = 'month_01',
+    hour_02 = 'hour_02',
+    hour_01 = 'hour_01',
+}

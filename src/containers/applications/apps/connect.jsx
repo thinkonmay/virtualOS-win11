@@ -13,6 +13,7 @@ import {
 } from '../../../components/shared/general';
 
 import { Contents } from '../../../backend/reducers/locales';
+import { PlanName } from '../../../backend/utils/constant';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -20,6 +21,9 @@ export const ConnectApp = () => {
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const stats = useAppSelector((state) => state.user.stat);
+    const user = useAppSelector((state) => state.user);
+
+
 
     const [selector, setSelector] = useState({
         feeling: '',
@@ -28,7 +32,6 @@ export const ConnectApp = () => {
         },
         text: ''
     });
-    const user = useAppSelector((state) => state.user);
 
     const emailSplit = () => {
         let result = '';
@@ -38,18 +41,22 @@ export const ConnectApp = () => {
     };
 
     const renderPlanStorage = (planName) => {
-        let storage = '130GB';
+        let storage = '150GB + Cloud save';
         if (planName == 'month_01') {
-            storage = '150GB';
+            storage = '150GB + Cloud save';
         }
         if (planName == 'hour_01') {
-            storage = '130GB';
+            storage = '130GB + Cloud save';
         } else if (planName == 'month_02') {
-            storage = '200GB';
+            storage = '200GB + Cloud save';
         }
 
         return storage;
     };
+    const hasComputer = () => {
+        const planName = stats?.plan_name
+        return planName == PlanName.month_01 || planName == PlanName.hour_01
+    }
     const listSpec = [
         {
             name: 'GPU:',
@@ -72,32 +79,25 @@ export const ConnectApp = () => {
             text: 'Window 10'
         }
     ];
+    console.log(stats);
     const connect = () => {
-        if (stats == null) {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        content:
-                            'Bạn chưa đăng ký dịch vụ. Đăng ký ngay bên trong website hoặc nhắn tin qua Facebook Thinkmay',
-                        success: false
-                    }
-                })
-            );
+        if (!stats.plan_name) {
             appDispatch(app_toggle('payment'));
             return;
         }
+        return
         if (stats?.plan_name == 'hour_02') {
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
                         content:
-                            'Tài khoản của bạn chỉ tải được game trong Store',
+                            'Truy cập Store Games để cài game, do tải khoản của bạn chưa thuê PC riêng',
                         success: false
                     }
                 })
             );
+
             return;
         }
         if (user.isExpired) {
@@ -149,11 +149,15 @@ export const ConnectApp = () => {
                                     {t[Contents.SUGGEST_BROWSER]}
                                 </div>
                             </div>
+
                             <button
                                 onClick={connect}
                                 className="instbtn connectBtn"
                             >
-                                Connect
+                                {
+                                    hasComputer() ? 'Connect' : 'Payment'
+                                }
+
                             </button>
                         </div>
                     </div>
