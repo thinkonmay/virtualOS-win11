@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../backend/reducers';
+import { appDispatch, popup_open, useAppSelector } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
@@ -25,6 +25,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
+    const stat = useAppSelector(state => state.user.stat)
     const [listSubs, setListSubs] = useState([
         {
             highlight: false,
@@ -33,12 +34,13 @@ export const PaymentApp = () => {
             //total_time: '110',
             //under_price: 'Lần đầu, bạn cần mua ít nhất 20h.',
 
-            name: 'hour_01',
+            name: 'hour_02',
             period: 'h',
             bonus: [
                 'Chơi sẵn các game trong store games',
-                'Không lưu dữ liệu sau khi chơi'
-            ]
+                'Không lưu dữ liệu sau khi tắt máy'
+            ],
+            hoursChoose: 5,
         },
         {
             highlight: true,
@@ -49,7 +51,7 @@ export const PaymentApp = () => {
             name: 'month_01',
             period: 'tháng',
             bonus: [
-                'Được cấp PC riêng',
+                'Sở hữu PC riêng, dữ liệu cá nhân',
                 'Có lưu dữ liệu sau khi tắt máy',
                 'RTX 3060TI',
                 '16GB ram',
@@ -88,6 +90,7 @@ export const PaymentApp = () => {
         setPaypage(price_in_vnd);
     };
 
+    const [hoursChoose, setHoursChoose] = useState(5)
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -119,7 +122,7 @@ export const PaymentApp = () => {
                             {listSubs.map((sub, index) => (
                                 <div key={index} className="sub relative">
                                     {sub.highlight ? (
-                                        <div className="rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
+                                        <div className="absolute rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
                                             <p className="text-[16px] leading-4 text-center py-2 mt-[4px] text-background">
                                                 Gói phổ biến nhất
                                             </p>
@@ -226,7 +229,15 @@ export const PaymentApp = () => {
                                                     </li>
                                                 ))}
                                             </ul>
+                                            {
+                                                sub.name == 'hour_02' ?
+                                                    <div className='flex gap-3 items-center'>
+                                                        <b>Chọn giờ</b>
+                                                        <input value={hoursChoose} onChange={e => setHoursChoose(e.target.value)} className='p-2 rounded-sm' type="number" min={5} name="" id="" />
+                                                    </div>
+                                                    : null
 
+                                            }
                                             <div className="flex flex-col gap-6 mt-auto prose">
                                                 <div className="space-y-2">
                                                     <p className="text-[13px] whitespace-pre-wrap">
@@ -236,16 +247,27 @@ export const PaymentApp = () => {
 
                                                 <button
                                                     onClick={() => {
+                                                        if (hoursChoose < 5) {
+                                                            appDispatch(popup_open({
+                                                                type: 'complete',
+                                                                data: {
+                                                                    success: false,
+                                                                    content: 'Cần mua ít nhất 5h',
+
+                                                                }
+                                                            }))
+                                                            return
+                                                        }
                                                         payment(
                                                             sub.price_in_vnd
                                                         );
-                                                        setSubChoose(sub);
+                                                        setSubChoose({ ...sub, hoursChoose });
                                                     }}
                                                     type="button"
                                                     className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
                                                 >
-                                                    <span className="truncate">
-                                                        {'Bắt đầu'}
+                                                    <span className="truncate font-medium text-xl">
+                                                        {'Mua Ngay'}
                                                     </span>
                                                 </button>
                                             </div>
@@ -304,8 +326,8 @@ const Payment = ({ onClose, price, subInfo }) => {
             `
         );
 
-        if (subInfo.name == 'hour_01') {
-            amount = price * 1 * 1000;
+        if (subInfo.name == 'hour_02') {
+            amount = price * subInfo.hoursChoose * 1000;
         }
         url.searchParams.append('amount', amount);
 
@@ -380,8 +402,8 @@ const Payment = ({ onClose, price, subInfo }) => {
                             <div>
                                 Số tiền:{' '}
                                 <b>
-                                    {subInfo.name == 'hour_01'
-                                        ? `Số giờ chơi x 8000k `
+                                    {subInfo.name == 'hour_02'
+                                        ? price * subInfo.hoursChoose * 1000
                                         : price * 1000}{' '}
                                     VNĐ
                                 </b>
