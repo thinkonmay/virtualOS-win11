@@ -54,7 +54,7 @@ export const fetchUser = async () => {
         appDispatch(app_toggle('connectPc'));
     }
 
-    appDispatch(popup_open({ type: 'maintain', data: {} }))
+    appDispatch(popup_open({ type: 'maintain', data: { content: '' } }))
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());

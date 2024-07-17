@@ -33,7 +33,6 @@ type PopupData =
     | {
         type: 'maintain';
         data: {
-            success: boolean;
             content: string | Contents;
         };
     }
