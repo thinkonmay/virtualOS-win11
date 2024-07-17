@@ -85,7 +85,6 @@ export const ConnectApp = () => {
             appDispatch(app_toggle('payment'));
             return;
         }
-        return
         if (stats?.plan_name == 'hour_02') {
             appDispatch(
                 popup_open({
