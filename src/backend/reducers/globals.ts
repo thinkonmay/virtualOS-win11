@@ -10,13 +10,13 @@ export type TranslationResult = {
     [key in Contents]: string;
 };
 interface IGame {
-    name: string,
-    logo: string,
-    publisher: string,
-    created_at: string,
+    name: string;
+    logo: string;
+    publisher: string;
+    created_at: string;
     metadata: {
-        hide: boolean
-    }
+        hide: boolean;
+    };
 }
 
 const initialState = {
@@ -197,7 +197,7 @@ const initialState = {
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        const { data, error } = await supabase.rpc('fetch_store')
+        const { data, error } = await supabase.rpc('fetch_store');
 
         if (error) throw new Error(error.message);
 
@@ -226,7 +226,9 @@ export const globalSlice = createSlice({
         BuilderHelper(builder, {
             fetch: globalAsync.fetch_store,
             hander: (state, action: PayloadAction<IGame[]>) => {
-                state.games = action.payload.filter(g => g.metadata?.hide != true);
+                state.games = action.payload.filter(
+                    (g) => g.metadata?.hide != true
+                );
             }
         });
     }

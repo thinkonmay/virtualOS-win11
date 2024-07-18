@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { appDispatch, popup_open, useAppSelector } from '../../../backend/reducers';
+import {
+    appDispatch,
+    popup_open,
+    useAppSelector
+} from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
@@ -25,7 +29,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const stat = useAppSelector(state => state.user.stat)
+    const stat = useAppSelector((state) => state.user.stat);
     const [listSubs, setListSubs] = useState([
         {
             highlight: false,
@@ -40,7 +44,7 @@ export const PaymentApp = () => {
                 'Chơi sẵn các game trong store games',
                 'Không lưu dữ liệu sau khi tắt máy'
             ],
-            hoursChoose: 5,
+            hoursChoose: 5
         },
         {
             highlight: true,
@@ -90,7 +94,7 @@ export const PaymentApp = () => {
         setPaypage(price_in_vnd);
     };
 
-    const [hoursChoose, setHoursChoose] = useState(5)
+    const [hoursChoose, setHoursChoose] = useState(5);
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -229,15 +233,24 @@ export const PaymentApp = () => {
                                                     </li>
                                                 ))}
                                             </ul>
-                                            {
-                                                sub.name == 'hour_02' ?
-                                                    <div className='flex gap-3 items-center'>
-                                                        <b>Chọn giờ</b>
-                                                        <input value={hoursChoose} onChange={e => setHoursChoose(e.target.value)} className='p-2 rounded-sm' type="number" min={5} name="" id="" />
-                                                    </div>
-                                                    : null
-
-                                            }
+                                            {sub.name == 'hour_02' ? (
+                                                <div className="flex gap-3 items-center">
+                                                    <b>Chọn giờ</b>
+                                                    <input
+                                                        value={hoursChoose}
+                                                        onChange={(e) =>
+                                                            setHoursChoose(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="p-2 rounded-sm"
+                                                        type="number"
+                                                        min={5}
+                                                        name=""
+                                                        id=""
+                                                    />
+                                                </div>
+                                            ) : null}
                                             <div className="flex flex-col gap-6 mt-auto prose">
                                                 <div className="space-y-2">
                                                     <p className="text-[13px] whitespace-pre-wrap">
@@ -248,20 +261,25 @@ export const PaymentApp = () => {
                                                 <button
                                                     onClick={() => {
                                                         if (hoursChoose < 5) {
-                                                            appDispatch(popup_open({
-                                                                type: 'complete',
-                                                                data: {
-                                                                    success: false,
-                                                                    content: 'Cần mua ít nhất 5h',
-
-                                                                }
-                                                            }))
-                                                            return
+                                                            appDispatch(
+                                                                popup_open({
+                                                                    type: 'complete',
+                                                                    data: {
+                                                                        success: false,
+                                                                        content:
+                                                                            'Cần mua ít nhất 5h'
+                                                                    }
+                                                                })
+                                                            );
+                                                            return;
                                                         }
                                                         payment(
                                                             sub.price_in_vnd
                                                         );
-                                                        setSubChoose({ ...sub, hoursChoose });
+                                                        setSubChoose({
+                                                            ...sub,
+                                                            hoursChoose
+                                                        });
                                                     }}
                                                     type="button"
                                                     className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
@@ -337,10 +355,10 @@ const Payment = ({ onClose, price, subInfo }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                    ? prevPage()
-                    : e.key == 'ArrowRight'
-                        ? nextPage()
-                        : null;
+                  ? prevPage()
+                  : e.key == 'ArrowRight'
+                    ? nextPage()
+                    : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);

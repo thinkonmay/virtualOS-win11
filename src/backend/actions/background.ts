@@ -43,7 +43,6 @@ const loadSettings = async () => {
 export const fetchUser = async () => {
     await appDispatch(fetch_user());
 
-
     const stat = store.getState().user.stat;
 
     appDispatch(app_toggle('usermanager'));
@@ -54,7 +53,7 @@ export const fetchUser = async () => {
         appDispatch(app_toggle('connectPc'));
     }
 
-    appDispatch(popup_open({ type: 'maintain', data: { content: '' } }))
+    appDispatch(popup_open({ type: 'maintain', data: { content: '' } }));
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());

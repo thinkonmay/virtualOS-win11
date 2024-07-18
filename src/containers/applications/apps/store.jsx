@@ -145,7 +145,7 @@ const reviews = 5000;
 const DetailPage = ({ app }) => {
     const [dstate, setDown] = useState(0);
 
-    const t = (e) => { };
+    const t = (e) => {};
     const [Options, SetOptions] = useState([]);
     const user = useAppSelector((state) => state.user);
     const stat = useAppSelector((state) => state.user.stat);
@@ -163,7 +163,7 @@ const DetailPage = ({ app }) => {
 
         try {
             if (stat?.plan_name !== 'hour_02') {
-                appDispatch(app_toggle('payment'))
+                appDispatch(app_toggle('payment'));
                 throw 'Tài khoản chưa mua gói giờ lẻ';
             }
             if (user.isExpired) {
@@ -222,7 +222,9 @@ const DetailPage = ({ app }) => {
                     <div className="text-2xl font-semibold mt-6">
                         {app?.name}
                     </div>
-                    <div className="text-xs text-blue-500">*Bắt buộc phải mở qua Chrome hoặc App</div>
+                    <div className="text-xs text-blue-500">
+                        *Bắt buộc phải mở qua Chrome hoặc App
+                    </div>
                     <button
                         onClick={() => download(app.id)}
                         className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
@@ -353,7 +355,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => { };
+    const t = (e) => {};
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -361,9 +363,9 @@ const DownPage = ({ action }) => {
     console.log(games.length);
     useEffect(() => {
         if (games.length == 0) {
-            appDispatch(fetch_store())
+            appDispatch(fetch_store());
         }
-    }, [])
+    }, []);
     const CheckAppPriority = (volume_class = '') => {
         let priority = '';
         if (volume_class.includes('LA')) {
@@ -464,25 +466,24 @@ const DownPage = ({ action }) => {
                 </div>
             </div>
 
-
             <div className="appscont mt-8">
                 {games.length > 0
                     ? renderSearchResult()
                     : listDraftApp.map((i) => (
-                        <div
-                            key={i}
-                            className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
-                            data-action="page2"
-                        >
-                            <Image
-                                className="mx-4 mb-6 rounded bg-slate-200"
-                                w={100}
-                                h={100}
-                                ext
-                            />
-                            <div className="capitalize text-xs text-center font-semibold"></div>
-                        </div>
-                    ))}
+                          <div
+                              key={i}
+                              className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
+                              data-action="page2"
+                          >
+                              <Image
+                                  className="mx-4 mb-6 rounded bg-slate-200"
+                                  w={100}
+                                  h={100}
+                                  ext
+                              />
+                              <div className="capitalize text-xs text-center font-semibold"></div>
+                          </div>
+                      ))}
             </div>
         </div>
     );

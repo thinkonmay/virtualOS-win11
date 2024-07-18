@@ -23,8 +23,6 @@ export const ConnectApp = () => {
     const stats = useAppSelector((state) => state.user.stat);
     const user = useAppSelector((state) => state.user);
 
-
-
     const [selector, setSelector] = useState({
         feeling: '',
         control: {
@@ -54,9 +52,9 @@ export const ConnectApp = () => {
         return storage;
     };
     const hasComputer = () => {
-        const planName = stats?.plan_name
-        return planName == PlanName.month_01 || planName == PlanName.hour_01
-    }
+        const planName = stats?.plan_name;
+        return planName == PlanName.month_01 || planName == PlanName.hour_01;
+    };
     const listSpec = [
         {
             name: 'GPU:',
@@ -153,10 +151,7 @@ export const ConnectApp = () => {
                                 onClick={connect}
                                 className="instbtn connectBtn"
                             >
-                                {
-                                    hasComputer() ? 'Connect' : 'Payment'
-                                }
-
+                                {hasComputer() ? 'Connect' : 'Payment'}
                             </button>
                         </div>
                     </div>

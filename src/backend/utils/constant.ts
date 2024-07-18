@@ -41,5 +41,5 @@ export const localStorageKey = {
 export enum PlanName {
     month_01 = 'month_01',
     hour_02 = 'hour_02',
-    hour_01 = 'hour_01',
+    hour_01 = 'hour_01'
 }
