@@ -7,6 +7,7 @@ import {
     check_worker,
     fetch_message,
     fetch_store,
+    fetch_under_maintenance,
     fetch_user,
     have_focus,
     loose_focus,
@@ -52,8 +53,39 @@ export const fetchUser = async () => {
     } else {
         appDispatch(app_toggle('connectPc'));
     }
+    checkMaintain();
+};
+const checkMaintain = async () => {
+    await appDispatch(fetch_under_maintenance());
 
-    appDispatch(popup_open({ type: 'maintain', data: { content: '' } }));
+    const info = store.getState().globals.maintenance;
+    const startAt = new Date(info.created_at);
+    const endAt = new Date(info.ended_at);
+
+    // Extract hour, day, and month
+    const hourStart = startAt.getUTCHours();
+    const dayStart = startAt.getUTCDate();
+    const monthStart = startAt.getUTCMonth() + 1;
+
+    const startText = `${hourStart}h ${dayStart}/${monthStart}`;
+
+    const hourEnd = endAt.getUTCHours();
+    const dayEnd = endAt.getUTCDate();
+    const monthEnd = endAt.getUTCMonth() + 1;
+
+    const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
+
+    if (new Date() < endAt) {
+        appDispatch(
+            popup_open({
+                type: 'maintain',
+                data: {
+                    start: startText,
+                    end: endText
+                }
+            })
+        );
+    }
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());
@@ -118,10 +150,9 @@ export const checkTimeUsage = () => {
     const isNearbyEndTime = now >= twoDaysBeforeEndTime && now <= endTime;
 
     // Check if usage_hour is within 2 hours of 2 * plan_hour
+    const isNearbyUsageHour = subInfo?.remain_time <= 2;
 
-    const isNearbyUsageHour = Math.abs(subInfo?.usage_hour - totalTime) <= 2;
-
-    if (now > endTime || subInfo?.usage_hour - totalTime >= 0) {
+    if (now > endTime || subInfo?.remain_time == 0) {
         isExpired = true;
     }
 

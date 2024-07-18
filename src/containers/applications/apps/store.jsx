@@ -149,6 +149,9 @@ const DetailPage = ({ app }) => {
     const [Options, SetOptions] = useState([]);
     const user = useAppSelector((state) => state.user);
     const stat = useAppSelector((state) => state.user.stat);
+    const isMaintaining = useAppSelector(
+        (state) => state.globals.maintenance?.isMaintaining
+    );
 
     const region = ['Hà Nội', 'India'];
 
@@ -168,6 +171,16 @@ const DetailPage = ({ app }) => {
             }
             if (user.isExpired) {
                 appDispatch(popup_open({ type: 'warning', data: {} }));
+                return;
+            }
+            if (isMaintaining) {
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content: 'Server is Offline!!!',
+                        success: false
+                    }
+                });
                 return;
             }
 

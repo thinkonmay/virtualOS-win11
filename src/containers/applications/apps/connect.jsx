@@ -22,6 +22,9 @@ export const ConnectApp = () => {
     );
     const stats = useAppSelector((state) => state.user.stat);
     const user = useAppSelector((state) => state.user);
+    const isMaintaining = useAppSelector(
+        (state) => state.globals.maintenance?.isMaintaining
+    );
 
     const [selector, setSelector] = useState({
         feeling: '',
@@ -77,7 +80,6 @@ export const ConnectApp = () => {
             text: 'Window 10'
         }
     ];
-    console.log(stats);
     const connect = () => {
         if (!stats.plan_name) {
             appDispatch(app_toggle('payment'));
@@ -102,6 +104,16 @@ export const ConnectApp = () => {
             return;
         }
 
+        if (isMaintaining) {
+            popup_open({
+                type: 'complete',
+                data: {
+                    content: 'Server is Offline!!!',
+                    success: false
+                }
+            });
+            return;
+        }
         appDispatch(wait_and_claim_volume());
     };
 

@@ -33,7 +33,8 @@ type PopupData =
     | {
           type: 'maintain';
           data: {
-              content: string | Contents;
+              start: string;
+              end: string;
           };
       };
 

@@ -15,7 +15,12 @@ import { UserSession } from './backend/reducers/fetch/analytics';
 import { Contents } from './backend/reducers/locales';
 import { isMobile } from './backend/utils/checking';
 import ActMenu from './components/menu';
-import { DesktopApp, SidePane, StartMenu } from './components/start';
+import {
+    DesktopApp,
+    LogMaintain,
+    SidePane,
+    StartMenu
+} from './components/start';
 import { WidPane } from './components/start/widget';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
@@ -31,6 +36,9 @@ function App() {
     const user = useAppSelector((state) => state.user);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
+    const isMaintaining = useAppSelector(
+        (state) => state.globals.maintenance?.isMaintaining
+    );
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -194,6 +202,7 @@ function App() {
                         </div>
                     ) : null}
                 </div>
+                {isMaintaining ? <LogMaintain /> : null}
             </ErrorBoundary>
         </div>
     );
