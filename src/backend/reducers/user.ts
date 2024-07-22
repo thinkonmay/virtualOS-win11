@@ -14,6 +14,8 @@ interface UsageTime {
     end_time: string;
     plan_name: string;
     usage_hour: number;
+    remain_time: number;
+    pre_remain_time: number;
     additional_time: string;
     plan_hour: string;
 }
