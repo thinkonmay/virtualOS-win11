@@ -2,14 +2,26 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
-
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
 export type TranslationResult = {
     [key in Contents]: string;
 };
-
+interface IGame {
+    name: string;
+    logo: string;
+    publisher: string;
+    created_at: string;
+    metadata: {
+        hide: boolean;
+    };
+}
+interface Maintain {
+    created_at: string;
+    ended_at: string;
+    isMaintaining?: boolean;
+}
 const initialState = {
     lays: [
         [
@@ -181,18 +193,43 @@ const initialState = {
 
     service_available: false,
     translation: {} as TranslationResult,
-
+    maintenance: {} as Maintain,
     apps: [],
-    games: []
+    games: [] as IGame[]
 };
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        const { data, error } = await supabase.from('store').select();
+        const { data, error } = await supabase.rpc('fetch_store');
 
         if (error) throw new Error(error.message);
-        return data;
-    })
+
+        return data as IGame[];
+    }),
+    fetch_under_maintenance: createAsyncThunk(
+        'fetch_under_maintenance',
+        async () => {
+            const { data, error } = await supabase.rpc(
+                'fetch_under_maintenance'
+            );
+
+            if (error) throw new Error(error.message);
+
+            let isMaintaining = false;
+
+            const info = data.at(0);
+            if (
+                new Date() > new Date(info.created_at) &&
+                new Date() < new Date(info.ended_at)
+            )
+                isMaintaining = true;
+
+            return {
+                ...info,
+                isMaintaining
+            };
+        }
+    )
 };
 
 export const globalSlice = createSlice({
@@ -213,11 +250,22 @@ export const globalSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        BuilderHelper(builder, {
-            fetch: globalAsync.fetch_store,
-            hander: (state, action: PayloadAction<any>) => {
-                state.games = action.payload;
+        BuilderHelper(
+            builder,
+            {
+                fetch: globalAsync.fetch_store,
+                hander: (state, action: PayloadAction<IGame[]>) => {
+                    state.games = action.payload.filter(
+                        (g) => g.metadata?.hide != true
+                    );
+                }
+            },
+            {
+                fetch: globalAsync.fetch_under_maintenance,
+                hander: (state, action: PayloadAction<Maintain>) => {
+                    state.maintenance = action.payload;
+                }
             }
-        });
+        );
     }
 });

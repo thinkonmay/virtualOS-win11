@@ -19,7 +19,9 @@ const Popup = () => {
     );
 
     const closeModal = () => {
-        popup.type == 'complete' ? appDispatch(popup_close()) : null;
+        popup.type == 'complete' || popup.type == 'maintain'
+            ? appDispatch(popup_close())
+            : null;
     };
     return (
         <>

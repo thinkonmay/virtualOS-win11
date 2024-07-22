@@ -17,6 +17,7 @@ function UserInfo() {
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
+    console.log(stats);
     const formatDate = (dateStr) => {
         return new Date(dateStr).toLocaleDateString('en-GB', {
             month: 'numeric',
@@ -26,6 +27,7 @@ function UserInfo() {
     };
 
     const additionalTime = stats?.additional_time ?? 0;
+    const preTime = stats?.pre_remain_time ?? 0;
     const planUsageTime = stats?.plan_hour ?? 0;
     const _planName = stats?.plan_name ?? '';
     //const totalTime = +planUsageTime + +additionalTime;
@@ -113,20 +115,25 @@ function UserInfo() {
                     </span>
                     <span>{formatDate(stats?.end_time)}</span>
                 </div>*/}
-                <div className="w-full flex gap-4 justify-between mt-3 items-end">
+                <div className="w-full flex gap-4 justify-between mt-2 items-end">
                     <span className="text-left">Time:</span>
-                    <span>{additionalTime}h</span>
+                    <span>{additionalTime + preTime}h</span>
                 </div>
-
-                <hr className="my-[14px]" />
-                <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
+                <div className="w-full flex gap-4 justify-between  mt-2 ">
                     <span className="text-left">{t[Contents.TIME]}:</span>
                     <span className="text-right">
                         {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h
-                        / {totalTime + 'h'}
                     </span>
                 </div>
+                <hr className="my-[14px]" />
 
+                <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
+                    <span className="text-left">Thời gian còn lại</span>
+                    <span className="text-right">
+                        {stats?.remain_time ? stats?.remain_time.toFixed(1) : 0}
+                        h
+                    </span>
+                </div>
                 <p></p>
             </div>
         );

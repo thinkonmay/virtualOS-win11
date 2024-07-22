@@ -29,6 +29,13 @@ type PopupData =
               tips?: boolean;
               text?: any;
           };
+      }
+    | {
+          type: 'maintain';
+          data: {
+              start: string;
+              end: string;
+          };
       };
 
 type Data = {
@@ -37,8 +44,8 @@ type Data = {
 
 const initialState: Data = {
     data_stack: [
-        //    {
-        //    type: '',
+        //{
+        //    type: 'maintain',
         //    data: {}
         //}
     ]

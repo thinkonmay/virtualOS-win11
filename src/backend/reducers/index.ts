@@ -160,7 +160,7 @@ export const {
     hard_reset_async
 } = remoteAsync;
 
-export const { fetch_store } = globalAsync;
+export const { fetch_store, fetch_under_maintenance } = globalAsync;
 export const { push_message, fetch_message } = sidepaneAsync;
 
 export { ready } from './remote';
