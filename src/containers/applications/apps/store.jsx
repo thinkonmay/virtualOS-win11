@@ -145,7 +145,7 @@ const reviews = 5000;
 const DetailPage = ({ app }) => {
     const [dstate, setDown] = useState(0);
 
-    const t = (e) => {};
+    const t = (e) => { };
     const [Options, SetOptions] = useState([]);
     const user = useAppSelector((state) => state.user);
     const stat = useAppSelector((state) => state.user.stat);
@@ -238,6 +238,7 @@ const DetailPage = ({ app }) => {
                     <div className="text-xs text-blue-500">
                         *Bắt buộc phải mở qua Chrome hoặc App
                     </div>
+
                     <button
                         onClick={() => download(app.id)}
                         className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
@@ -245,6 +246,9 @@ const DetailPage = ({ app }) => {
                         Play now!
                     </button>
 
+                    <div className="text-sm text-orange-500 mt-2 underline">
+                        <a target='_blank' href="https://www.youtube.com/watch?v=qQDiEP4R11A" className='mt-5'>Hướng dẫn sử dụng</a>
+                    </div>
                     <div className="flex mt-4">
                         <div>
                             <div className="flex items-center text-sm font-semibold">
@@ -265,9 +269,12 @@ const DetailPage = ({ app }) => {
                             <div className="text-xss mt-px pt-1">Ratings</div>
                         </div>
                     </div>
+                    <div className="descnt text-sm  w-0 text-center relative ">
+                        {/*{app?.description}
+                        
+                        */}
 
-                    <div className="descnt text-xs relative w-0">
-                        {app?.description}
+                        Hướng dẫn sử dụng
                     </div>
                 </div>
             </div>
@@ -368,7 +375,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => {};
+    const t = (e) => { };
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -483,20 +490,20 @@ const DownPage = ({ action }) => {
                 {games.length > 0
                     ? renderSearchResult()
                     : listDraftApp.map((i) => (
-                          <div
-                              key={i}
-                              className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
-                              data-action="page2"
-                          >
-                              <Image
-                                  className="mx-4 mb-6 rounded bg-slate-200"
-                                  w={100}
-                                  h={100}
-                                  ext
-                              />
-                              <div className="capitalize text-xs text-center font-semibold"></div>
-                          </div>
-                      ))}
+                        <div
+                            key={i}
+                            className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
+                            data-action="page2"
+                        >
+                            <Image
+                                className="mx-4 mb-6 rounded bg-slate-200"
+                                w={100}
+                                h={100}
+                                ext
+                            />
+                            <div className="capitalize text-xs text-center font-semibold"></div>
+                        </div>
+                    ))}
             </div>
         </div>
     );
