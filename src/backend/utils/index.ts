@@ -107,7 +107,7 @@ var { taskbar, desktop } = {
         'Thinkmay Fanpage',
         'Store games',
         'Connect YourPC',
-        'Payment',
+        'Payment'
         //'Your Info'
     ]
 };

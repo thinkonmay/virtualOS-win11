@@ -5,7 +5,9 @@ import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
 const TIME_RUN_OUT_OF_GPU = 200 * 1000; //sec
-export function notify({ data: { title, tips = true, loading = true, text, timeProcessing = 3.5 } }) {
+export function notify({
+    data: { title, tips = true, loading = true, text, timeProcessing = 3.5 }
+}) {
     const t = useAppSelector((state) => state.globals.translation);
     const [textTrans, setTextTrans] = useState('');
     const [isLaterThan15s, setIsLaterThan15s] = useState(false);
@@ -31,9 +33,9 @@ export function notify({ data: { title, tips = true, loading = true, text, timeP
         return () => clearInterval(interval);
     }, [title]);
     useEffect(() => {
-        if (t[text]) setTextTrans(t[text])
+        if (t[text]) setTextTrans(t[text]);
 
-        setTextTrans(text)
+        setTextTrans(text);
     }, [text]);
 
     return (
@@ -44,8 +46,10 @@ export function notify({ data: { title, tips = true, loading = true, text, timeP
             <p className="text-center text-[1.2rem] mb-[16px]">
                 {title ?? 'Please wait...'}
             </p>
-            {textTrans ? <p className='mb-3'> {textTrans} </p> : null}
-            {loading && !isLaterThan15s ? <LoadingProgressBar timeProcessing={timeProcessing} /> : null}
+            {textTrans ? <p className="mb-3"> {textTrans} </p> : null}
+            {loading && !isLaterThan15s ? (
+                <LoadingProgressBar timeProcessing={timeProcessing} />
+            ) : null}
             {tips ? <Protip /> : null}
         </div>
     );

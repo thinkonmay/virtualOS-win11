@@ -8,7 +8,10 @@ import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
 import { FUNDING } from '@paypal/react-paypal-js';
-import { createPaymentLink, wrapperAsyncFunction } from '../../../backend/actions';
+import {
+    createPaymentLink,
+    wrapperAsyncFunction
+} from '../../../backend/actions';
 import { UserEvents } from '../../../backend/reducers/fetch/analytics';
 import { Contents } from '../../../backend/reducers/locales';
 import { Image } from '../../../components/shared/general';
@@ -83,7 +86,7 @@ export const PaymentApp = () => {
         }
     ]);
 
-    const [iframe, setIframe] = useState('')
+    const [iframe, setIframe] = useState('');
     useEffect(() => {
         setup();
     }, []);
@@ -106,8 +109,7 @@ export const PaymentApp = () => {
                     type: 'complete',
                     data: {
                         success: false,
-                        content:
-                            'Cần mua ít nhất 5h'
+                        content: 'Cần mua ít nhất 5h'
                     }
                 })
             );
@@ -130,20 +132,22 @@ export const PaymentApp = () => {
                     quantity: sub.name == 'hour_02' ? +hoursChoose : 1
                 }
             ]
-        }
-        wrapperAsyncFunction(async () => {
-            const link = await createPaymentLink(inputs)
-            window.open(link, '_self');
-            //setIframe(link)
-            //setPaypage(1)
-        }, {
-            title: 'Creating Payment',
-            //text: 'Please wait a few seconds',
-            tips: false,
-            timeProcessing: 0.5
-        })
-
-    }
+        };
+        wrapperAsyncFunction(
+            async () => {
+                const link = await createPaymentLink(inputs);
+                window.open(link, '_self');
+                //setIframe(link)
+                //setPaypage(1)
+            },
+            {
+                title: 'Creating Payment',
+                //text: 'Please wait a few seconds',
+                tips: false,
+                timeProcessing: 0.5
+            }
+        );
+    };
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -170,7 +174,6 @@ export const PaymentApp = () => {
                             onClose={() => setPaypage(null)}
                             subInfo={subChoose}
                             iframe={iframe}
-
                         />
                     ) : (
                         <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
@@ -310,7 +313,9 @@ export const PaymentApp = () => {
                                                 </div>
 
                                                 <button
-                                                    onClick={() => handleChooseSub(sub)}
+                                                    onClick={() =>
+                                                        handleChooseSub(sub)
+                                                    }
                                                     type="button"
                                                     className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
                                                 >
@@ -385,10 +390,10 @@ const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                    ? prevPage()
-                    : e.key == 'ArrowRight'
-                        ? nextPage()
-                        : null;
+                  ? prevPage()
+                  : e.key == 'ArrowRight'
+                    ? nextPage()
+                    : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
@@ -514,7 +519,11 @@ const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
                     <div className="w-full h-full">
                         {/*<div className="inner_fill_setup">*/}
                         {/*{pages.at(pageNo)?.content}*/}
-                        <iframe title='QR webstie' className='w-full h-full' src={iframe}></iframe>
+                        <iframe
+                            title="QR webstie"
+                            className="w-full h-full"
+                            src={iframe}
+                        ></iframe>
                     </div>
                 </div>
             </div>

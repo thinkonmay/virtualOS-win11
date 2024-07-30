@@ -47,7 +47,6 @@ export enum PlanName {
     unlimited = 'unlimited_01'
 }
 
-
 export const pathNames = {
-    VERIFY_PAYMENT: 'success',
-}
+    VERIFY_PAYMENT: 'success'
+};

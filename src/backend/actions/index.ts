@@ -44,7 +44,7 @@ export const afterMath = (event: any) => {
     var actionType = '';
     try {
         actionType = event.target.dataset.action || '';
-    } catch (err) { }
+    } catch (err) {}
 
     var actionType0 = getComputedStyle(event.target).getPropertyValue(
         '--prefix'
@@ -158,9 +158,9 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => { };
+export const loginWithEmail = async (email: string, password: string) => {};
 
-export const signUpWithEmail = async (email: string, password: string) => { };
+export const signUpWithEmail = async (email: string, password: string) => {};
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     let w = window.open();
 
@@ -227,98 +227,95 @@ export const clickShortCut = (keys = []) => {
 
 export const bindStoreId = async (email: string, store_id: number) => {
     try {
-        const data = await fetch('https://play.thinkmay.net/access_store_volume', {
-            method: 'POST',
-            headers: {
-                Authorization: pb.authStore.token
-            },
-            body: JSON.stringify({
-                store_id,
-                email
-            })
-        });
-        if (data.ok === false) throw (await data.text());
+        const data = await fetch(
+            'https://play.thinkmay.net/access_store_volume',
+            {
+                method: 'POST',
+                headers: {
+                    Authorization: pb.authStore.token
+                },
+                body: JSON.stringify({
+                    store_id,
+                    email
+                })
+            }
+        );
+        if (data.ok === false) throw await data.text();
 
         return data;
     } catch (error) {
         console.log(error);
-        throw error
+        throw error;
     }
 };
 interface PaymentBody {
-    buyerEmail: string,
+    buyerEmail: string;
     items: {
-        name: PlanName,
-        price: number,
-        quantity: number
-    }[]
+        name: PlanName;
+        price: number;
+        quantity: number;
+    }[];
 }
-
 
 export const createPaymentLink = async (inputs: PaymentBody) => {
-    const result = await SupabaseFuncInvoke('create_payment_link',
-        inputs
-    )
-    if (result instanceof Error) throw result
+    const result = await SupabaseFuncInvoke('create_payment_link', inputs);
+    if (result instanceof Error) throw result;
 
     return result;
-}
+};
 
 interface VerifyPaymentBody {
-    email: string,
-
+    email: string;
 }
 
 export const verifyPayment = async (inputs: VerifyPaymentBody) => {
-    const oldPathName = localStorage.getItem(localStorageKey.PATH_NAME)
-    localStorage.removeItem(localStorageKey.PATH_NAME)
+    const oldPathName = localStorage.getItem(localStorageKey.PATH_NAME);
+    localStorage.removeItem(localStorageKey.PATH_NAME);
     if (oldPathName != pathNames.VERIFY_PAYMENT || !inputs) {
-        return
+        return;
     }
 
-    const result = await SupabaseFuncInvoke('verify_payment',
-        { email: inputs }
-    )
+    const result = await SupabaseFuncInvoke('verify_payment', {
+        email: inputs
+    });
 
-    if (result instanceof Error) throw result
+    if (result instanceof Error) throw result;
 
-    await appDispatch(fetch_user())
+    await appDispatch(fetch_user());
     return result;
-}
+};
 
-export const wrapperAsyncFunction = async (fun: () => Promise<void>, {
-    loading = true,
-    title = 'Loading...',
-    text,
-    tips = true,
-    timeProcessing
-
-}) => {
+export const wrapperAsyncFunction = async (
+    fun: () => Promise<void>,
+    { loading = true, title = 'Loading...', text, tips = true, timeProcessing }
+) => {
     try {
-        appDispatch(popup_open({
-            type: 'notify',
-            data: {
-                loading,
-                title,
-                text,
-                tips,
-                timeProcessing
-            }
-        }))
-        const data = await fun()
-        appDispatch(popup_close())
-        return data
+        appDispatch(
+            popup_open({
+                type: 'notify',
+                data: {
+                    loading,
+                    title,
+                    text,
+                    tips,
+                    timeProcessing
+                }
+            })
+        );
+        const data = await fun();
+        appDispatch(popup_close());
+        return data;
     } catch (error) {
-        appDispatch(popup_close())
-        appDispatch(popup_open({
-            type: 'complete',
-            data: {
-                success: false,
-                content: error.message
-            }
-        }))
+        appDispatch(popup_close());
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: error.message
+                }
+            })
+        );
     } finally {
     }
-
-}
-
+};
