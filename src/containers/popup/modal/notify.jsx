@@ -4,8 +4,8 @@ import { TbLoader3 } from 'react-icons/tb';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
-const TIME_RUN_OUT_OF_GPU = 120 * 1000; //sec
-export function notify({ data: { title, tips = true, loading = true, text } }) {
+const TIME_RUN_OUT_OF_GPU = 200 * 1000; //sec
+export function notify({ data: { title, tips = true, loading = true, text, timeProcessing = 3.5 } }) {
     const t = useAppSelector((state) => state.globals.translation);
     const [textTrans, setTextTrans] = useState('');
     const [isLaterThan15s, setIsLaterThan15s] = useState(false);
@@ -31,27 +31,30 @@ export function notify({ data: { title, tips = true, loading = true, text } }) {
         return () => clearInterval(interval);
     }, [title]);
     useEffect(() => {
-        setTextTrans(t[text]);
+        if (t[text]) setTextTrans(t[text])
+
+        setTextTrans(text)
     }, [text]);
 
     return (
-        <div className="w-[330px] h-auto p-[14px]">
+        <div className="w-[330px] h-auto p-[14px] pb-6">
             <div className="notify-icon">
                 <TbLoader3 className="animate-spin" />
             </div>
             <p className="text-center text-[1.2rem] mb-[16px]">
                 {title ?? 'Please wait...'}
             </p>
-            {textTrans ? <p>{textTrans} </p> : null}
-            {loading && !isLaterThan15s ? <LoadingProgressBar /> : null}
+            {textTrans ? <p className='mb-3'> {textTrans} </p> : null}
+            {loading && !isLaterThan15s ? <LoadingProgressBar timeProcessing={timeProcessing} /> : null}
             {tips ? <Protip /> : null}
         </div>
     );
 }
 
-const LoadingProgressBar = () => {
+const LoadingProgressBar = ({ timeProcessing }) => {
     const [loading, setLoading] = useState(0);
 
+    console.log(timeProcessing);
     useEffect(() => {
         const interval = setInterval(() => {
             const randomNumber = Math.floor(Math.random() * 5) + 1;
@@ -60,7 +63,7 @@ const LoadingProgressBar = () => {
                     prevLoading < 94 ? prevLoading + randomNumber : 99
                 );
             }
-        }, 3.5 * 1000);
+        }, timeProcessing * 1000);
 
         return () => {
             clearInterval(interval);
