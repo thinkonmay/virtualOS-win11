@@ -131,7 +131,6 @@ export const PaymentApp = () => {
                 }
             ]
         }
-        console.log(inputs);
         wrapperAsyncFunction(async () => {
             const link = await createPaymentLink(inputs)
             window.open(link, '_self');

@@ -17,7 +17,6 @@ function UserInfo() {
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
-    console.log(stats);
     const formatDate = (dateStr) => {
         return new Date(dateStr).toLocaleDateString('en-GB', {
             month: 'numeric',
@@ -182,7 +181,7 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                                //invert={pnstates[idx] ? true : null}
+                            //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>

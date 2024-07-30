@@ -361,7 +361,6 @@ const DownPage = ({ action }) => {
         setShText(e.target.value);
     };
 
-    console.log(games.length);
     useEffect(() => {
         if (games.length == 0) {
             appDispatch(fetch_store());
