@@ -65,22 +65,19 @@ function App() {
 
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
 
+
+
     useEffect(() => {
+        const url = new URL(window.location.href).searchParams;
         const pathName = new URL(window.location.href).pathname;
         const pathNameSegment = pathName.replace('/', '');
         if (pathNameSegment == pathNames.VERIFY_PAYMENT) {
             localStorage.setItem(localStorageKey.PATH_NAME, pathNameSegment);
         }
-
-        window.history.replaceState({}, document.title, '/' + '');
-    }, []);
-
-    useEffect(() => {
-        const url = new URL(window.location.href).searchParams;
         const ref = url.get('ref');
         if (ref != null) {
             appDispatch(direct_access({ ref }));
-            window.history.replaceState({}, document.title, '/' + '');
+            //window.history.replaceState({}, document.title, '/' + '');
             window.onbeforeunload = (e) => {
                 const text = 'Are you sure (｡◕‿‿◕｡)';
                 e = e || window.event;
@@ -88,6 +85,7 @@ function App() {
                 return text;
             };
         }
+        window.history.replaceState({}, document.title, '/' + '');
 
         preload().finally(async () => {
             await new Promise((r) => setTimeout(r, 1000));
@@ -114,7 +112,6 @@ function App() {
             setLockscreen(false);
         });
     }, []);
-
     useEffect(() => {
         if (user.id == 'unknown') return;
 
@@ -158,7 +155,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => {});
+        job?.catch(() => { });
 
         const handleState = () => {
             const fullscreen =
