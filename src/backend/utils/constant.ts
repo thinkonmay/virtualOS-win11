@@ -36,7 +36,8 @@ export const localStorageKey = {
     store: 'STORE',
     app: 'APP',
     request: 'REQUESTCACHE',
-    language: 'language'
+    language: 'language',
+    PATH_NAME: 'PATHNAME'
 };
 
 export enum PlanName {
@@ -44,4 +45,9 @@ export enum PlanName {
     hour_02 = 'hour_02',
     hour_01 = 'hour_01',
     unlimited = 'unlimited_01'
+}
+
+
+export const pathNames = {
+    VERIFY_PAYMENT: 'success',
 }

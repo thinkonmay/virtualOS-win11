@@ -1,5 +1,5 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import { pb } from '../reducers/fetch/createClient';
+import { pb, SupabaseFuncInvoke } from '../reducers/fetch/createClient';
 import { Computer } from '../reducers/fetch/local';
 import '../reducers/index';
 import {
@@ -12,6 +12,8 @@ import {
     fetch_user,
     menu_chng,
     menu_hide,
+    popup_close,
+    popup_open,
     setting_theme,
     sidepane_panethem,
     store,
@@ -21,6 +23,7 @@ import {
     worker_session_close
 } from '../reducers/index';
 import { keyboardCallback } from '../reducers/remote';
+import { localStorageKey, pathNames, PlanName } from '../utils/constant';
 import { RenderNode } from '../utils/tree';
 import { fetchApp } from './background';
 
@@ -242,3 +245,80 @@ export const bindStoreId = async (email: string, store_id: number) => {
         throw error
     }
 };
+interface PaymentBody {
+    buyerEmail: string,
+    items: {
+        name: PlanName,
+        price: number,
+        quantity: number
+    }[]
+}
+
+
+export const createPaymentLink = async (inputs: PaymentBody) => {
+    const result = await SupabaseFuncInvoke('create_payment_link',
+        inputs
+    )
+    if (result instanceof Error) throw result
+
+    return result;
+}
+
+interface VerifyPaymentBody {
+    email: string,
+
+}
+
+export const verifyPayment = async (inputs: VerifyPaymentBody) => {
+    const oldPathName = localStorage.getItem(localStorageKey.PATH_NAME)
+    localStorage.removeItem(localStorageKey.PATH_NAME)
+    if (oldPathName != pathNames.VERIFY_PAYMENT || !inputs) {
+        return
+    }
+
+    const result = await SupabaseFuncInvoke('verify_payment',
+        { email: inputs }
+    )
+
+    if (result instanceof Error) throw result
+
+    await appDispatch(fetch_user())
+    return result;
+}
+
+export const wrapperAsyncFunction = async (fun: () => Promise<void>, {
+    loading = true,
+    title = 'Loading...',
+    text,
+    tips = true,
+    timeProcessing
+
+}) => {
+    try {
+        appDispatch(popup_open({
+            type: 'notify',
+            data: {
+                loading,
+                title,
+                text,
+                tips,
+                timeProcessing
+            }
+        }))
+        const data = await fun()
+        appDispatch(popup_close())
+        return data
+    } catch (error) {
+        appDispatch(popup_close())
+        appDispatch(popup_open({
+            type: 'complete',
+            data: {
+                success: false,
+                content: error.message
+            }
+        }))
+    } finally {
+    }
+
+}
+

@@ -8,6 +8,7 @@ import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
 import { FUNDING } from '@paypal/react-paypal-js';
+import { createPaymentLink, wrapperAsyncFunction } from '../../../backend/actions';
 import { UserEvents } from '../../../backend/reducers/fetch/analytics';
 import { Contents } from '../../../backend/reducers/locales';
 import { Image } from '../../../components/shared/general';
@@ -30,6 +31,7 @@ export const PaymentApp = () => {
         state.apps.apps.find((x) => x.id == 'payment')
     );
     const stat = useAppSelector((state) => state.user.stat);
+    const user = useAppSelector((state) => state.user);
     const [listSubs, setListSubs] = useState([
         {
             highlight: false,
@@ -71,7 +73,7 @@ export const PaymentApp = () => {
             period: 'tháng',
             total_time: 'Không giới hạn',
             under_price: 'Không giới hạn giờ sử dụng',
-            name: 'month_01',
+            name: 'unlimited_01',
             bonus: [
                 'Không hàng chờ',
                 'Cấu hình giống gói tháng',
@@ -81,6 +83,7 @@ export const PaymentApp = () => {
         }
     ]);
 
+    const [iframe, setIframe] = useState('')
     useEffect(() => {
         setup();
     }, []);
@@ -95,6 +98,53 @@ export const PaymentApp = () => {
     };
 
     const [hoursChoose, setHoursChoose] = useState(5);
+
+    const handleChooseSub = async (sub) => {
+        if (hoursChoose < 5 && sub.name == 'hour_02') {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        success: false,
+                        content:
+                            'Cần mua ít nhất 5h'
+                    }
+                })
+            );
+            return;
+        }
+        //payment(
+        //    sub.price_in_vnd
+        //);
+        setSubChoose({
+            ...sub,
+            hoursChoose
+        });
+
+        const inputs = {
+            buyerEmail: user.email,
+            items: [
+                {
+                    name: sub.name,
+                    price: +sub.price_in_vnd * 1000,
+                    quantity: sub.name == 'hour_02' ? +hoursChoose : 1
+                }
+            ]
+        }
+        console.log(inputs);
+        wrapperAsyncFunction(async () => {
+            const link = await createPaymentLink(inputs)
+            window.open(link, '_self');
+            //setIframe(link)
+            //setPaypage(1)
+        }, {
+            title: 'Creating Payment',
+            //text: 'Please wait a few seconds',
+            tips: false,
+            timeProcessing: 0.5
+        })
+
+    }
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -120,6 +170,8 @@ export const PaymentApp = () => {
                             price={paypage}
                             onClose={() => setPaypage(null)}
                             subInfo={subChoose}
+                            iframe={iframe}
+
                         />
                     ) : (
                         <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
@@ -259,28 +311,7 @@ export const PaymentApp = () => {
                                                 </div>
 
                                                 <button
-                                                    onClick={() => {
-                                                        if (hoursChoose < 5) {
-                                                            appDispatch(
-                                                                popup_open({
-                                                                    type: 'complete',
-                                                                    data: {
-                                                                        success: false,
-                                                                        content:
-                                                                            'Cần mua ít nhất 5h'
-                                                                    }
-                                                                })
-                                                            );
-                                                            return;
-                                                        }
-                                                        payment(
-                                                            sub.price_in_vnd
-                                                        );
-                                                        setSubChoose({
-                                                            ...sub,
-                                                            hoursChoose
-                                                        });
-                                                    }}
+                                                    onClick={() => handleChooseSub(sub)}
                                                     type="button"
                                                     className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
                                                 >
@@ -301,7 +332,7 @@ export const PaymentApp = () => {
     );
 };
 
-const Payment = ({ onClose, price, subInfo }) => {
+const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const { id } = useAppSelector((state) => state.user);
     const { email } = useAppSelector((state) => state.user);
@@ -355,10 +386,10 @@ const Payment = ({ onClose, price, subInfo }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
@@ -481,8 +512,10 @@ const Payment = ({ onClose, price, subInfo }) => {
         <div className="getstarted floatTab dpShad">
             <div className="windowScreen flex flex-col" data-dock="true">
                 <div className="restWindow flex-grow flex flex-col p-[24px]">
-                    <div className="inner_fill_setup">
-                        {pages.at(pageNo)?.content}
+                    <div className="w-full h-full">
+                        {/*<div className="inner_fill_setup">*/}
+                        {/*{pages.at(pageNo)?.content}*/}
+                        <iframe title='QR webstie' className='w-full h-full' src={iframe}></iframe>
                     </div>
                 </div>
             </div>
