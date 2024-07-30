@@ -41,7 +41,7 @@ export const afterMath = (event: any) => {
     var actionType = '';
     try {
         actionType = event.target.dataset.action || '';
-    } catch (err) {}
+    } catch (err) { }
 
     var actionType0 = getComputedStyle(event.target).getPropertyValue(
         '--prefix'
@@ -155,9 +155,9 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => {};
+export const loginWithEmail = async (email: string, password: string) => { };
 
-export const signUpWithEmail = async (email: string, password: string) => {};
+export const signUpWithEmail = async (email: string, password: string) => { };
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     let w = window.open();
 
@@ -223,16 +223,22 @@ export const clickShortCut = (keys = []) => {
 };
 
 export const bindStoreId = async (email: string, store_id: number) => {
-    const data = await fetch('https://play.thinkmay.net/access_store_volume', {
-        method: 'POST',
-        headers: {
-            Authorization: pb.authStore.token
-        },
-        body: JSON.stringify({
-            store_id,
-            email
-        })
-    });
+    try {
+        const data = await fetch('https://play.thinkmay.net/access_store_volume', {
+            method: 'POST',
+            headers: {
+                Authorization: pb.authStore.token
+            },
+            body: JSON.stringify({
+                store_id,
+                email
+            })
+        });
+        if (data.ok === false) throw (await data.text());
 
-    return data;
+        return data;
+    } catch (error) {
+        console.log(error);
+        throw error
+    }
 };

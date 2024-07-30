@@ -174,14 +174,7 @@ const DetailPage = ({ app }) => {
                 return;
             }
             if (isMaintaining) {
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        content: 'Server is Offline!!!',
-                        success: false
-                    }
-                });
-                return;
+                throw 'Server is Offline!!!';
             }
 
             appDispatch(
@@ -190,13 +183,12 @@ const DetailPage = ({ app }) => {
                     data: { loading: true, title: 'Connect to PC' }
                 })
             );
-
-            const binding = await bindStoreId(email, appId);
-
+            await bindStoreId(email, appId);
             appDispatch(popup_close());
-
             appDispatch(wait_and_claim_volume());
+
         } catch (error) {
+            appDispatch(popup_close());
             appDispatch(
                 popup_open({
                     type: 'complete',
@@ -207,17 +199,6 @@ const DetailPage = ({ app }) => {
                 })
             );
         }
-    };
-
-    const handleEdit = () => {
-        dispatch({
-            type: 'ADMIN_UPDATE_STORE',
-            payload: app
-        });
-    };
-
-    const GotoButton = () => {
-        return <div></div>;
     };
 
     return (
