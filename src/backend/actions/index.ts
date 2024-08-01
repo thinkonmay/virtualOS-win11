@@ -1,6 +1,6 @@
 import 'sweetalert2/src/sweetalert2.scss';
 import { pb, SupabaseFuncInvoke } from '../reducers/fetch/createClient';
-import { Computer } from '../reducers/fetch/local';
+import { Computer, StartRequest } from '../reducers/fetch/local';
 import '../reducers/index';
 import {
     appDispatch,
@@ -44,7 +44,7 @@ export const afterMath = (event: any) => {
     var actionType = '';
     try {
         actionType = event.target.dataset.action || '';
-    } catch (err) {}
+    } catch (err) { }
 
     var actionType0 = getComputedStyle(event.target).getPropertyValue(
         '--prefix'
@@ -158,9 +158,9 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => {};
+export const loginWithEmail = async (email: string, password: string) => { };
 
-export const signUpWithEmail = async (email: string, password: string) => {};
+export const signUpWithEmail = async (email: string, password: string) => { };
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     let w = window.open();
 
@@ -319,3 +319,31 @@ export const wrapperAsyncFunction = async (
     } finally {
     }
 };
+
+//Connecting to old session
+
+export const hasHourSession = async () => {
+    const all = await pb.collection('volumes').getFullList()
+    const foundVolumeId = all.at(0)?.local_id;
+
+    const node = new RenderNode(
+        (store.getState()).worker.data
+    );
+    let result: RenderNode<Computer> | undefined = undefined;
+    node.iterate((x) => {
+        if (
+            result == undefined &&
+            (x.info as Computer)?.Volumes?.includes(foundVolumeId)
+        )
+            result = x;
+    });
+    const session = node.find<StartRequest>(result?.data?.at(0)?.id)?.info;
+    const vm_session_id = node.findParent<StartRequest>(
+        result?.data?.at(0)?.id,
+        'host_session'
+    )?.info.id
+
+    return session?.id
+}
+
+// connect to session
