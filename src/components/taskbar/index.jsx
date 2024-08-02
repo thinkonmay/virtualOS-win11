@@ -8,6 +8,7 @@ import {
     MdOutlineVideoSettings
 } from 'react-icons/md';
 
+import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
     task_hide,
@@ -215,9 +216,8 @@ const Taskbar = () => {
                         </div>
                     )}
                     <div
-                        className={`${
-                            open ? 'slide-in' : 'slide-out'
-                        } taskright`}
+                        className={`${open ? 'slide-in' : 'slide-out'
+                            } taskright`}
                         data-remote={remote.active}
                     >
                         {remote.active ? (

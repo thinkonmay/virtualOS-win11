@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { AudioWrapper } from '../../../src-tauri/core/pipeline/sink/audio/wrapper';
 import { VideoWrapper } from '../../../src-tauri/core/pipeline/sink/video/wrapper';
+import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
     set_fullscreen,
@@ -23,7 +24,6 @@ export const Remote = () => {
     const remote = useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
-
     useEffect(() => {
         if (!remote.active || remote.auth == undefined) return;
         SetupWebRTC();
@@ -69,7 +69,7 @@ export const Remote = () => {
             <video
                 className="remote"
                 ref={remoteVideo}
-                onClick={relative_mouse ? pointerlock : () => {}}
+                onClick={relative_mouse ? pointerlock : (e) => { afterMath(e) }}
                 //style={{ backgroundImage: `url(img/wallpaper/${wall.src})` }}
                 autoPlay
                 muted
