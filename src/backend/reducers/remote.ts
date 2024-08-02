@@ -16,8 +16,10 @@ import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
 import { convertJSKey } from '../../../src-tauri/core/utils/convert';
 import { getVolumeIdByEmail } from '../actions';
 import { sleep } from '../utils/sleep';
+import { RenderNode } from '../utils/tree';
 import { isMobile } from './../utils/checking';
-import { CAUSE, pb, supabase } from './fetch/createClient';
+import { PingSession } from './fetch';
+import { CAUSE, pb } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 
 const size = () =>
@@ -265,7 +267,7 @@ export const remoteAsync = {
                     data: {
                         loading: false,
                         tips: false,
-                        title: 'please move your mouse'
+                        title: 'Please move your mouse!'
                     }
                 })
             );
@@ -281,16 +283,21 @@ export const remoteAsync = {
             appDispatch(popup_close());
         }
         const email = (store.getState() as RootState).user.email;
-        const volume_id = await getVolumeIdByEmail();
-
-        const { error } = await supabase.rpc(`ping_session`, {
-            email,
-            volume_id
-        });
-
-        if (error) {
-            console.log('ping session error' + error.message);
+        const nodes = new RenderNode(
+            (store.getState()).worker.data
+        );
+        let newVolumeId = ''
+        nodes.iterate(n => {
+            if (n.type == 'vm_worker') {
+                newVolumeId = n.info?.Volumes?.at(0)
+            }
+        })
+        if (!newVolumeId) {
+            const volume_id = await getVolumeIdByEmail();
+            newVolumeId = volume_id
         }
+        await PingSession(email, newVolumeId)
+
     },
     sync: async () => {
         if (!store.getState().remote.active) return;
@@ -299,9 +306,9 @@ export const remoteAsync = {
 
         if (
             store.getState().remote.prev_bitrate !=
-                store.getState().remote.bitrate ||
+            store.getState().remote.bitrate ||
             store.getState().remote.prev_framerate !=
-                store.getState().remote.framerate ||
+            store.getState().remote.framerate ||
             store.getState().remote.prev_framerate != size()
         )
             appDispatch(remoteSlice.actions.internal_sync());
@@ -462,8 +469,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
-                            state.bitrate +
-                            MIN_BITRATE()
+                        state.bitrate +
+                        MIN_BITRATE()
                     )
                 );
                 state.prev_bitrate = state.bitrate;
@@ -474,8 +481,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
-                            state.framerate +
-                            MIN_FRAMERATE
+                        state.framerate +
+                        MIN_FRAMERATE
                     )
                 );
                 state.prev_framerate = state.framerate;
@@ -503,7 +510,7 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.cache_setting,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             },
             {
                 fetch: remoteAsync.save_reference,
@@ -513,11 +520,11 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.toggle_remote_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             },
             {
                 fetch: remoteAsync.hard_reset_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             }
         );
     }

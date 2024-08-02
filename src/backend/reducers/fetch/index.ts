@@ -1,15 +1,15 @@
-import { SupabaseFuncInvoke } from './createClient.ts';
+import { supabase, SupabaseFuncInvoke } from './createClient.ts';
 
 export const DownloadApplication = async (
     app_template_id: string,
     availability: string,
     speed: string,
     safe: string
-) => {};
+) => { };
 
-export const StartApplication = async (storage_id: string) => {};
+export const StartApplication = async (storage_id: string) => { };
 
-export const DeleteApplication = async (storage_id: string) => {};
+export const DeleteApplication = async (storage_id: string) => { };
 
 export const StopApplication = async (storage_id: string) => {
     // TODO
@@ -37,7 +37,7 @@ interface UserSettingUpdate {
 }
 export async function UpdateUserSetting(
     params: UserSettingUpdate
-): Promise<void> {}
+): Promise<void> { }
 
 /**
  *
@@ -81,3 +81,14 @@ export const ModifySubscription = async (input: IModifySubscriptionAction) => {
     if (result instanceof Error) throw result;
     return result;
 };
+
+export const PingSession = async (email: string, volume_id: string) => {
+    const data = await supabase.rpc(`ping_session`, {
+        email,
+        volume_id
+    });
+    if (data.error)
+        console.log('ping session error' + data.error.message);
+
+    return data
+}
