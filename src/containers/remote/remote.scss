@@ -25,6 +25,47 @@
   transition: all 0.2s ease;
 }
 
+.statusConnection {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  transition: all ease-in-out 0.5s;
+  transform: translatex(0%);
+  border-radius: 15px;
+  padding: 12px 24px;
+  //height: 56px;
+  padding-right: 32px;
+
+  //display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &.slide-in {
+    transform: translateX(0%)
+  }
+
+  &.slide-out {
+    transform: translateX(calc(-100% + 26px))
+  }
+
+
+  .btn-show {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 100%;
+    outline: none;
+    border: none;
+    background: none;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 @media (1px < width < 1024px) {
   .remote {
     object-fit: contain;
