@@ -109,7 +109,7 @@ const Taskbar = () => {
                     <>
                         <div
                             className="p-2 prtclk handcr hvlight flex rounded "
-                            onClick={clickDispatch}
+                            onClick={customDispatch}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
@@ -122,7 +122,7 @@ const Taskbar = () => {
                         </div>
                         <div
                             className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
-                            onClick={clickDispatch}
+                            onClick={customDispatch}
                             style={{ '--prefix': 'PANE' }}
                             data-action="sidepane_panetogg"
                         >

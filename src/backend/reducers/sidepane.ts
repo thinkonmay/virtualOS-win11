@@ -343,6 +343,8 @@ export const sidepaneSlice = createSlice({
         },
         toggle_gamepad: (state) => {
             state.mobileControl.gamePadHide = !state.mobileControl.gamePadHide;
+            state.mobileControl.keyboardHide = true;
+
         },
         toggle_gamepad_setting: (state) => {
             state.mobileControl.gamepadSetting.open =
@@ -367,6 +369,10 @@ export const sidepaneSlice = createSlice({
         toggle_keyboard: (state) => {
             let oldState = state.mobileControl.keyboardHide;
             state.mobileControl.keyboardHide = !oldState;
+            state.hide = true
+            state.banhide = true;
+            state.mobileControl.gamePadHide = true
+
         }
     },
     extraReducers: (builder) => {
