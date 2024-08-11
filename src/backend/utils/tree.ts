@@ -117,7 +117,8 @@ export class RenderNode<T> {
 
 export function fromComputer(
     address: string,
-    computer: Computer
+    computer: Computer,
+    internal?: boolean
 ): RenderNode<Computer> {
     const node = new RenderNode<Computer>();
     node.id = address;
@@ -133,7 +134,7 @@ export function fromComputer(
     )
         node.type = 'vm_worker';
     else if (node.info.Hostname?.includes('ubuntu')) node.type = 'host_worker';
-    else if (node.info.Hostname?.includes('nobara')) node.type = 'peer_worker';
+    else if (internal) node.type = 'peer_worker';
     else node.type = 'local_worker';
 
     computer.Sessions?.forEach((x) => {
@@ -159,7 +160,7 @@ export function fromComputer(
             node.data.push(child);
         });
 
-        computer.Peers?.forEach(x => node.data.push(fromComputer(x.PrivateIP,x)))
+        computer.Peers?.forEach(x => node.data.push(fromComputer(x.PrivateIP,x,true)))
     }
 
     return node;

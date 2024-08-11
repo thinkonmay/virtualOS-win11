@@ -383,7 +383,6 @@ export const workerAsync = {
             const host = node.findParent<Computer>(ip, 'host_worker');
             if (host == undefined) throw new Error('invalid tree');
 
-            console.log(host,ip)
             const result = await StartThinkmayOnPeer(host.info, ip);
             appDispatch(remote_connect(result));
 
