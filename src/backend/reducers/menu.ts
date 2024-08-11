@@ -155,6 +155,17 @@ function menu_conversion(menu: MenuOption): MenuOpt {
                     }
                 ]
             };
+        case 'peer_worker':
+            return {
+                width: '200px',
+                secwid: '200px',
+                data: [
+                    {
+                        name: 'Thinkmay remote desktop',
+                        action: 'peer_session_create'
+                    }
+                ]
+            };
         case 'vm_worker':
             return {
                 width: '200px',
@@ -174,6 +185,21 @@ function menu_conversion(menu: MenuOption): MenuOpt {
                     {
                         name: 'Thinkmay remote desktop',
                         action: 'worker_session_create'
+                    }
+                ]
+            };
+        case 'peer_session':
+            return {
+                width: '200px',
+                secwid: '200px',
+                data: [
+                    {
+                        name: 'Access session',
+                        action: 'peer_session_access'
+                    },
+                    {
+                        name: 'Close session',
+                        action: 'peer_session_close'
                     }
                 ]
             };

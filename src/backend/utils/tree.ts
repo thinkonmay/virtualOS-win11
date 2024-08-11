@@ -11,6 +11,8 @@ export type NodeType =
     | 'local_session'
     | 'host_worker'
     | 'vm_worker'
+    | 'peer_worker'
+    | 'peer_session'
     | 'local_worker'
     | 'reject';
 
@@ -131,6 +133,7 @@ export function fromComputer(
     )
         node.type = 'vm_worker';
     else if (node.info.Hostname?.includes('ubuntu')) node.type = 'host_worker';
+    else if (node.info.Hostname?.includes('nobara')) node.type = 'peer_worker';
     else node.type = 'local_worker';
 
     computer.Sessions?.forEach((x) => {
@@ -138,6 +141,7 @@ export function fromComputer(
         child.id = x.id;
         if (node.type == 'vm_worker') child.type = 'vm_session';
         else if (node.type == 'host_worker') child.type = 'host_session';
+        else if (node.type == 'peer_worker') child.type = 'peer_session';
         else child.type = 'local_session';
 
         child.info = { ...x, vm: undefined };
@@ -154,6 +158,8 @@ export function fromComputer(
             child.info = {};
             node.data.push(child);
         });
+
+        computer.Peers?.forEach(x => node.data.push(fromComputer(x.PrivateIP,x)))
     }
 
     return node;

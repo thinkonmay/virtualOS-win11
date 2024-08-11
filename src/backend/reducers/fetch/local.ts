@@ -105,6 +105,7 @@ export type Computer = {
     MacAddr?: string;
 
     GPUs: string[];
+    Peers?: Computer[];
     Sessions?: StartRequest[];
     Volumes?: string[];
 };
@@ -184,6 +185,62 @@ export type Session = {
     rtc_config: RTCConfiguration;
 };
 
+export async function StartThinkmayOnPeer(
+    computer: Computer,
+    target: string
+): Promise<Session> {
+    const { address } = computer;
+
+    const turn = TurnCredential();
+
+    const thinkmay = {
+        stunAddress: `stun:${address}:${turn.port}`,
+        turnAddress: `turn:${address}:${turn.port}`,
+        username: turn.username,
+        password: turn.password
+    };
+
+    const display = {
+        ScreenWidth: 1920,
+        ScreenHeight: 1080
+    };
+
+    const id = crypto.randomUUID();
+    const req: StartRequest = {
+        id,
+        target,
+        thinkmay,
+        turn,
+        display
+    };
+
+    const resp = await internalFetch<StartRequest>(address, 'new', req);
+    console.log(resp, 'resp thinkmay');
+
+    if (resp instanceof Error) throw resp;
+
+    return {
+        audioUrl: !userHttp(address)
+            ? `https://${address}/handshake/client?token=${resp.thinkmay.audioToken}&target=${target}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${resp.thinkmay.audioToken}&target=${target}`,
+        videoUrl: !userHttp(address)
+            ? `https://${address}/handshake/client?token=${resp.thinkmay.videoToken}&target=${target}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${resp.thinkmay.videoToken}&target=${target}`,
+        rtc_config: {
+            iceTransportPolicy: 'relay',
+            iceServers: [
+                {
+                    urls: `stun:${address}:${turn.port}`
+                },
+                {
+                    urls: `turn:${address}:${turn.port}`,
+                    username: turn.username,
+                    credential: turn.password
+                }
+            ]
+        }
+    };
+}
 export async function StartThinkmayOnVM(
     computer: Computer,
     target: string

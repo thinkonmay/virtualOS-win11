@@ -145,7 +145,10 @@ export const {
     claim_volume,
     vm_session_create,
     vm_session_access,
-    vm_session_close
+    vm_session_close,
+    peer_session_create,
+    peer_session_access,
+    peer_session_close,
 } = workerAsync;
 export const { fetch_user } = userAsync;
 export const {

@@ -15,6 +15,7 @@ import {
     worker_vm_create_from_volume
 } from '.';
 import { fromComputer, RenderNode } from '../utils/tree';
+import { UserEvents } from './fetch/analytics';
 import { pb } from './fetch/createClient';
 import {
     CloseSession,
@@ -24,12 +25,12 @@ import {
     ParseVMRequest,
     StartRequest,
     StartThinkmay,
+    StartThinkmayOnPeer,
     StartThinkmayOnVM,
     StartVirtdaemon
 } from './fetch/local';
 import { BuilderHelper } from './helper';
 import { Contents } from './locales';
-import { UserEvents } from './fetch/analytics';
 
 type WorkerType = {
     data: any;
@@ -369,6 +370,62 @@ export const workerAsync = {
             if (vm_session_id == undefined) throw new Error('invalid tree');
 
             await CloseSession(computer, { ...session, target: vm_session_id });
+            await appDispatch(fetch_local_worker(computer.address));
+        }
+    ),
+    peer_session_create: createAsyncThunk(
+        'peer_session_create',
+        async (ip: string, { getState }): Promise<any> => {
+            await appDispatch(worker_refresh());
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+
+            const host = node.findParent<Computer>(ip, 'host_worker');
+            if (host == undefined) throw new Error('invalid tree');
+
+            console.log(host,ip)
+            const result = await StartThinkmayOnPeer(host.info, ip);
+            appDispatch(remote_connect(result));
+
+            await appDispatch(fetch_local_worker(host.info.address));
+            await appDispatch(save_reference(result));
+        }
+    ),
+    peer_session_access: createAsyncThunk(
+        'peer_session_access',
+        async (input: string, { getState }): Promise<any> => {
+            const node = new RenderNode((getState() as RootState).worker.data);
+            const computer = node.findParent<Computer>(input, 'host_worker')
+                ?.info;
+            const session = node.find<StartRequest>(input)?.info;
+            const target = node.findParent<Computer>(
+                input,
+                'peer_worker'
+            )?.info.PrivateIP;
+
+            if (computer == undefined) throw new Error('invalid tree');
+            if (session == undefined) throw new Error('invalid tree');
+            if (target == undefined) throw new Error('invalid tree');
+
+            const result = ParseVMRequest(computer, { ...session, target });
+
+            appDispatch(remote_connect(result));
+            await appDispatch(save_reference(result));
+        }
+    ),
+    peer_session_close: createAsyncThunk(
+        'peer_session_close',
+        async (id: string, { getState }): Promise<any> => {
+            const node = new RenderNode((getState() as RootState).worker.data);
+            const computer =
+                node.findParent<Computer>(id, 'host_worker')?.info ??
+                node.findParent<Computer>(id, 'local_worker')?.info;
+            if (computer == undefined) throw new Error('invalid tree');
+
+            const session = node.find<StartRequest>(id)?.info;
+            if (session == undefined) throw new Error('invalid tree');
+
+            await CloseSession(computer, { ...session });
             await appDispatch(fetch_local_worker(computer.address));
         }
     )
