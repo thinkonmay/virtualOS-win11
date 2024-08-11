@@ -57,9 +57,9 @@ body[data-theme="dark"] {
   &[data-remote="true"] {
     bottom: 0;
     top: unset;
-    height: max-content;
+    //height: max-content;
     z-index: 10;
-    padding-left: 15px;
+    padding-left: 22px;
 
     --bg1: rgba(32, 32, 32, 0.75);
     --bg2: rgba(255, 255, 255, 0.3);
@@ -83,10 +83,11 @@ body[data-theme="dark"] {
 
 
 
+  padding: 0 12px;
   top: 0;
   right: 0;
   width: auto;
-  height: 100%;
+  height: 56px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -98,11 +99,13 @@ body[data-theme="dark"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 48px;
+    width: 32px;
+    height: 100%;
     outline: none;
     border: none;
     background: none;
+
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -113,9 +116,9 @@ body[data-theme="dark"] {
     &[data-remote="true"] {
       //bottom: 0;
       top: 0;
-      height: max-content;
+      height: 56px;
       z-index: 10;
-      padding-left: 15px;
+      padding-left: 22px;
 
 
 

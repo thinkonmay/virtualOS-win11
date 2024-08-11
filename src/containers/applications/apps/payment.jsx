@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../backend/reducers';
+import {
+    appDispatch,
+    popup_open,
+    useAppSelector
+} from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
@@ -25,37 +29,55 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [ListSubs, setListSubs] = useState([
+    const stat = useAppSelector((state) => state.user.stat);
+    const [listSubs, setListSubs] = useState([
         {
             highlight: false,
-            title: 'Tiết kiệm',
-            price_in_vnd: '299',
-            total_time: '110',
-            name: 'week',
-            period: 'tháng',
-            description: 'Khởi đầu với Cloud PC',
-            bonus: ['130GB dung lượng', '16GB ram', 'RTX 3060TI']
+            title: 'Gói giờ',
+            price_in_vnd: '8',
+            //total_time: '110',
+            //under_price: 'Lần đầu, bạn cần mua ít nhất 20h.',
+
+            name: 'hour_02',
+            period: 'h',
+            bonus: [
+                'Chơi sẵn các game trong store games',
+                'Không lưu dữ liệu sau khi tắt máy'
+            ],
+            hoursChoose: 5
         },
         {
             highlight: true,
-            title: 'Tối ưu',
-            price_in_vnd: '369',
-            total_time: '160',
-            name: 'month',
+            title: 'Tiết kiệm',
+            price_in_vnd: '299',
+            total_time: '150',
+            under_price: 'Giới hạn 150h sử dụng trong tháng',
+            name: 'month_01',
             period: 'tháng',
-            description: 'Thoải mái sử dụng',
-            bonus: ['200GB dung lượng', '16GB ram', 'RTX 3060TI']
+            bonus: [
+                'Sở hữu PC riêng, dữ liệu cá nhân',
+                'Có lưu dữ liệu sau khi tắt máy',
+                'RTX 3060TI',
+                '16GB ram',
+                '130GB dung lượng',
+                'Không giới hạn thời gian mỗi session'
+            ],
+            storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
         },
         {
             highlight: false,
-            title: 'Super',
-            price_in_vnd: '899',
-            description: 'Tối ưu & tiết kiệm nhất',
-            period: '3 tháng',
-            total_time: '125',
-
-            name: 'Enterprise',
-            bonus: ['130GB dung lượng', '16GB ram', 'RTX 3060TI']
+            title: 'Unlimited',
+            price_in_vnd: '1699',
+            period: 'tháng',
+            total_time: 'Không giới hạn',
+            under_price: 'Không giới hạn giờ sử dụng',
+            name: 'month_01',
+            bonus: [
+                'Không hàng chờ',
+                'Cấu hình giống gói tháng',
+                '250GB dung lượng',
+                'Không giới hạn thời gian mỗi session'
+            ]
         }
     ]);
 
@@ -67,10 +89,12 @@ export const PaymentApp = () => {
     };
 
     const [paypage, setPaypage] = useState(null);
+    const [subChoose, setSubChoose] = useState(null);
     const payment = async (price_in_vnd) => {
         setPaypage(price_in_vnd);
     };
 
+    const [hoursChoose, setHoursChoose] = useState(5);
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -89,19 +113,20 @@ export const PaymentApp = () => {
                 size={wnapp.size}
                 name="Payment"
             />
-            <div className="windowScreen">
+            <div className="windowScreen wrapperPayment">
                 <LazyComponent show={!wnapp.hide}>
                     {paypage != null ? (
                         <Payment
                             price={paypage}
                             onClose={() => setPaypage(null)}
+                            subInfo={subChoose}
                         />
                     ) : (
-                        <div className="paymentContent ">
-                            {ListSubs.map((sub, index) => (
+                        <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
+                            {listSubs.map((sub, index) => (
                                 <div key={index} className="sub relative">
                                     {sub.highlight ? (
-                                        <div className="rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
+                                        <div className="absolute rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
                                             <p className="text-[16px] leading-4 text-center py-2 mt-[4px] text-background">
                                                 Gói phổ biến nhất
                                             </p>
@@ -109,31 +134,28 @@ export const PaymentApp = () => {
                                     ) : null}
 
                                     <div className="flex flex-col overflow-hidden border h-full rounded-[4px]">
-                                        <div className="bg-surface-100 px-8 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
-                                            <div className="mb-2 flex items-center gap-2">
+                                        <div className="bg-surface-100 px-4 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
+                                            <div className="flex items-center gap-2">
                                                 <div className="flex items-center gap-2">
-                                                    <h3 className="text-brand-600 text-2xl font-normal uppercase flex items-center gap-4 font-mono">
+                                                    <p className=" uppercase flex items-center gap-4 font-mono">
                                                         {sub.title}
-                                                    </h3>
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <p className="text-foreground-light my-4 text-sm border-b border-default pb-4 2xl:pr-4">
-                                                {sub.description}
-                                            </p>
 
                                             <hr className="border-[#504646]" />
-                                            <div className=" text-foreground flex items-baseline text-5xl font-normal lg:text-4xl xl:text-4xl border-b border-default min-h-[175px] pt-10">
+                                            <div className=" text-foreground flex items-center text-lg min-h-[116px]">
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-end gap-2">
                                                         <div>
                                                             <div className="flex items-end">
                                                                 {
                                                                     <>
-                                                                        <p className="mt-2 gradient-text-500 pb-1 text-5xl">
+                                                                        <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
                                                                             {sub.price_in_vnd
                                                                                 ? `${sub.price_in_vnd}k VND`
                                                                                 : `\$${sub.price}`}
-                                                                        </p>
+                                                                        </h3>
                                                                         <p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                                             /{' '}
                                                                             {
@@ -145,13 +167,9 @@ export const PaymentApp = () => {
                                                             </div>
                                                             <p className="-mt-2">
                                                                 <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                                                    {sub.title ==
-                                                                    'Enterprise'
-                                                                        ? 'charge based on number of account'
-                                                                        : sub.title ==
-                                                                            'one year plan'
-                                                                          ? `Unlimited remote usage`
-                                                                          : `Giới hạn ${sub.total_time} giờ sử dụng trong tháng`}
+                                                                    {
+                                                                        sub.under_price
+                                                                    }
                                                                 </span>
                                                             </p>
                                                         </div>
@@ -161,8 +179,8 @@ export const PaymentApp = () => {
                                             <hr className="border-[#504646]" />
                                         </div>
                                         <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-8 xl:px-4 2xl:px-8 py-6 ">
-                                            <p className="text-foreground-light text-[13px] mt-2 mb-4">
-                                                Bắt đầu với:
+                                            <p className="text-foreground-light text-[13px] mt-2 mb-2">
+                                                Chi tiết:
                                             </p>
 
                                             {sub.bonus.map((x, i) => (
@@ -171,7 +189,7 @@ export const PaymentApp = () => {
                                                     role="list"
                                                     className="text-[13px] text-foreground-lighter"
                                                 >
-                                                    <li className="flex items-center py-2 first:mt-0">
+                                                    <li className="flex items-center py-[8px] first:mt-0">
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             width="18"
@@ -187,36 +205,89 @@ export const PaymentApp = () => {
                                                         >
                                                             <polyline points="20 6 9 17 4 12"></polyline>
                                                         </svg>
-                                                        <span className="text-foreground mb-0 ml-3 ">
+                                                        <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
                                                             {x}
                                                         </span>
                                                     </li>
                                                 </ul>
                                             ))}
 
+                                            {sub.storage ? (
+                                                <p className="text-foreground-light text-[13px] mt-8 mb-2">
+                                                    Dung lượng mua thêm:
+                                                </p>
+                                            ) : null}
+
+                                            <ul
+                                                role="list"
+                                                className="list-decimal text-[13px] text-foreground-lighter"
+                                            >
+                                                {sub.storage?.map((x, i) => (
+                                                    <li
+                                                        key={i}
+                                                        className="flex items-center py-[8px] first:mt-0"
+                                                    >
+                                                        <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
+                                                            {x}
+                                                        </span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            {sub.name == 'hour_02' ? (
+                                                <div className="flex gap-3 items-center">
+                                                    <b>Chọn giờ</b>
+                                                    <input
+                                                        value={hoursChoose}
+                                                        onChange={(e) =>
+                                                            setHoursChoose(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="p-2 rounded-sm"
+                                                        type="number"
+                                                        min={5}
+                                                        name=""
+                                                        id=""
+                                                    />
+                                                </div>
+                                            ) : null}
                                             <div className="flex flex-col gap-6 mt-auto prose">
-                                                <div className="space-y-2 mt-12">
+                                                <div className="space-y-2">
                                                     <p className="text-[13px] whitespace-pre-wrap">
                                                         {/* Free projects are paused after 1 week of inactivity. */}
                                                     </p>
                                                 </div>
 
-                                                <a
-                                                    onClick={() =>
+                                                <button
+                                                    onClick={() => {
+                                                        if (hoursChoose < 5) {
+                                                            appDispatch(
+                                                                popup_open({
+                                                                    type: 'complete',
+                                                                    data: {
+                                                                        success: false,
+                                                                        content:
+                                                                            'Cần mua ít nhất 5h'
+                                                                    }
+                                                                })
+                                                            );
+                                                            return;
+                                                        }
                                                         payment(
                                                             sub.price_in_vnd
-                                                        )
-                                                    }
+                                                        );
+                                                        setSubChoose({
+                                                            ...sub,
+                                                            hoursChoose
+                                                        });
+                                                    }}
+                                                    type="button"
+                                                    className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
                                                 >
-                                                    <button
-                                                        type="button"
-                                                        className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
-                                                    >
-                                                        <span className="truncate">
-                                                            {'Bắt đầu'}
-                                                        </span>
-                                                    </button>
-                                                </a>
+                                                    <span className="truncate font-medium text-xl">
+                                                        {'Mua Ngay'}
+                                                    </span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -230,23 +301,30 @@ export const PaymentApp = () => {
     );
 };
 
-const Payment = ({ onClose, price }) => {
+const Payment = ({ onClose, price, subInfo }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const { id } = useAppSelector((state) => state.user);
     const { email } = useAppSelector((state) => state.user);
 
     const [pageNo, setPageNo] = useState(0);
-    const nextPage = () =>
+    const nextPage = () => {
         setPageNo((old) => {
             const current = pages.at(old);
             return pages.length - 1 != old ? old + 1 : old;
         });
-    const prevPage = () =>
+    };
+    const prevPage = () => {
+        if (pageNo == 0) {
+            onClose();
+            return;
+        }
         setPageNo((old) => {
             const n = old != 0 ? old - 1 : old;
             const current = pages.at(n);
             return n;
         });
+    };
+
     const finishSurvey = async () => {
         UserEvents({ type: `finish_payment` });
         onClose();
@@ -257,12 +335,20 @@ const Payment = ({ onClose, price }) => {
         const url = new URL(
             `https://img.vietqr.io/image/${mb}-${account_id}-${model}.png`
         );
-        url.searchParams.append('ammount', price * 1000);
+        let amount = price * 1000;
         url.searchParams.append('accountName', account_owner);
         url.searchParams.append(
             'addInfo',
-            `thinkmay ${id.replaceAll('-', ' ')}`
+            `
+                PAY ${email.replace('@gmail.com', '')}
+            `
         );
+
+        if (subInfo.name == 'hour_02') {
+            amount = price * subInfo.hoursChoose * 1000;
+        }
+        url.searchParams.append('amount', amount);
+
         setQR(url.toString());
 
         const handle = (e) =>
@@ -300,12 +386,13 @@ const Payment = ({ onClose, price }) => {
 
     const QR = () => (
         <div className="left">
-            <Image absolute src="qr_code.png" />
+            {/*<Image absolute src="qr_code.png" />*/}
+            <Image ext absolute src={qrurl} />
         </div>
     );
     const Logo = () => (
         <div className="left">
-            <img alt="left image" id="left_img" src="logo_white.png" />
+            <div className="logoPayment" id="left_img" />
         </div>
     );
 
@@ -316,18 +403,38 @@ const Payment = ({ onClose, price }) => {
                 <>
                     <QR />
                     <div className="right">
-                        <div className="header mb-8">
+                        <div className="header mb-10">
                             {t[Contents.PAYMENT_FOLLOW_UP_TITLE1]}
                         </div>
-                        <p>
-                            <b>MB Bank</b> <br />
-                            Tên Chủ Tk: <b>DO VAN DAT</b> <br />
-                            Số TK: <b>1502200344444</b> <br />
-                            Nội dung: <b>
-                                {email.replace('@gmail.com', '')}
-                            </b>{' '}
-                            <br />
-                            [Email của bạn không bao gồm @gmail.com]
+                        <div className="flex flex-col gap-2">
+                            <div>
+                                Tên Ngân Hàng: <b>MB Bank</b>
+                            </div>
+                            <div>
+                                Tên Chủ Tk: <b>DO VAN DAT</b>
+                            </div>
+
+                            <div>
+                                Số TK: <b>1502200344444</b>
+                            </div>
+                            <div>
+                                Số tiền:{' '}
+                                <b>
+                                    {subInfo.name == 'hour_02'
+                                        ? price * subInfo.hoursChoose * 1000
+                                        : price * 1000}{' '}
+                                    VNĐ
+                                </b>
+                            </div>
+                            <div>
+                                Nội dung:{' '}
+                                <b>PAY {email.replace('@gmail.com', '')}</b>{' '}
+                            </div>
+                        </div>
+
+                        <p className="mt-4">
+                            <b className="text-lg">LƯU Ý</b>: Vui lòng liên hệ
+                            fanpage nếu quá 15' chưa được kích hoạt.
                         </p>
                     </div>
                     <Navigate />
@@ -336,24 +443,24 @@ const Payment = ({ onClose, price }) => {
         }
     ];
 
-    pages.unshift({
-        survey: false,
-        content: (
-            <>
-                <Logo />
-                <div className="right">
-                    <div className="header mb-8">
-                        {t[Contents.PAYMENT_FOLLOW_UP_TITLE]}
-                    </div>
-                    <div>
-                        {t[Contents.PAYMENT_FOLLOW_UP_CONTENT]}
-                        <br />
-                    </div>
-                </div>
-                <Navigate />
-            </>
-        )
-    });
+    //pages.unshift({
+    //    survey: false,
+    //    content: (
+    //        <>
+    //            <Logo />
+    //            <div className="right">
+    //                <div className="header mb-8">
+    //                    {t[Contents.PAYMENT_FOLLOW_UP_TITLE]}
+    //                </div>
+    //                <div>
+    //                    {t[Contents.PAYMENT_FOLLOW_UP_CONTENT]}
+    //                    <br />
+    //                </div>
+    //            </div>
+    //            <Navigate />
+    //        </>
+    //    )
+    //});
 
     pages.push({
         survey: false,

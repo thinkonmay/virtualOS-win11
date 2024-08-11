@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
+    app_toggle,
     appDispatch,
+    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -11,6 +12,8 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
+import { Contents } from '../../../backend/reducers/locales';
+import { PlanName } from '../../../backend/utils/constant';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -18,6 +21,10 @@ export const ConnectApp = () => {
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const stats = useAppSelector((state) => state.user.stat);
+    const user = useAppSelector((state) => state.user);
+    const isMaintaining = useAppSelector(
+        (state) => state.globals.maintenance?.isMaintaining
+    );
 
     const [selector, setSelector] = useState({
         feeling: '',
@@ -26,7 +33,6 @@ export const ConnectApp = () => {
         },
         text: ''
     });
-    const user = useSelector((state) => state.user);
 
     const emailSplit = () => {
         let result = '';
@@ -36,14 +42,21 @@ export const ConnectApp = () => {
     };
 
     const renderPlanStorage = (planName) => {
-        let storage = '130GB';
+        let storage = '150GB + Cloud save';
         if (planName == 'month_01') {
-            storage = '130GB';
+            storage = '150GB + Cloud save';
+        }
+        if (planName == 'hour_01') {
+            storage = '130GB + Cloud save';
         } else if (planName == 'month_02') {
-            storage = '200GB';
+            storage = '200GB + Cloud save';
         }
 
         return storage;
+    };
+    const hasComputer = () => {
+        const planName = stats?.plan_name;
+        return planName == PlanName.month_01 || planName == PlanName.hour_01;
     };
     const listSpec = [
         {
@@ -68,6 +81,39 @@ export const ConnectApp = () => {
         }
     ];
     const connect = () => {
+        if (!stats.plan_name) {
+            appDispatch(app_toggle('payment'));
+            return;
+        }
+        if (stats?.plan_name == 'hour_02') {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content:
+                            'Truy cập Store Games để cài game, do tải khoản của bạn chưa thuê PC riêng',
+                        success: false
+                    }
+                })
+            );
+
+            return;
+        }
+        if (user.isExpired) {
+            appDispatch(popup_open({ type: 'warning', data: {} }));
+            return;
+        }
+
+        if (isMaintaining) {
+            popup_open({
+                type: 'complete',
+                data: {
+                    content: 'Server is Offline!!!',
+                    success: false
+                }
+            });
+            return;
+        }
         appDispatch(wait_and_claim_volume());
     };
 
@@ -108,13 +154,16 @@ export const ConnectApp = () => {
                                         {spec.text}
                                     </div>
                                 ))}
+                                <div className="spec mt-4">
+                                    {t[Contents.SUGGEST_BROWSER]}
+                                </div>
                             </div>
 
                             <button
                                 onClick={connect}
                                 className="instbtn connectBtn"
                             >
-                                Connect
+                                {hasComputer() ? 'Connect' : 'Payment'}
                             </button>
                         </div>
                     </div>

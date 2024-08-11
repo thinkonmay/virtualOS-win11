@@ -3,7 +3,7 @@ import { AiOutlineCloudDownload } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
-import { MdOutlineClose } from 'react-icons/md';
+import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
 import { PiPauseBold } from 'react-icons/pi';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
@@ -15,11 +15,14 @@ import {
     change_btnGp_size,
     change_framerate,
     menu_show,
+    sidepane_panehide,
     toggle_default_gamepad_position,
+    toggle_gamepad,
     toggle_gamepad_draggable,
     toggle_gamepad_setting,
     useAppSelector
 } from '../../backend/reducers';
+import { Contents } from '../../backend/reducers/locales';
 import {
     MAX_BITRATE,
     MAX_FRAMERATE,
@@ -366,6 +369,11 @@ export const SidePane = () => {
 
                         <div className="sliderCont flex flex-col items-start">
                             <div className="containerSlider">
+                                <p className="sliderName">
+                                    {t[Contents.SUGGEST_BITRATE_FPS]}{' '}
+                                    <b>6 & 60</b>
+                                </p>
+
                                 <div className="sliderName">
                                     {/*{t[Contents.QUALITY]}*/}
                                     Bitrate:
@@ -416,7 +424,7 @@ export const SidePane = () => {
                                         max="100"
                                         value={remote.framerate}
                                     />
-                                    <span>240</span>
+                                    <span>120</span>
                                 </div>
                             </div>
                         </div>
@@ -455,6 +463,9 @@ const GamePadSetting = () => {
     const handleChange = (e) => {
         appDispatch(change_btnGp_size(e.target.value));
     };
+    const handleClose = (e) => {
+        appDispatch(sidepane_panehide());
+    };
 
     return (
         <div
@@ -464,16 +475,29 @@ const GamePadSetting = () => {
                     : 'gamepadSetting slide-in'
             }
         >
+            <div className="flex justify-between py-3 mx-[-12px]">
+                <MdArrowBack
+                    fontSize={'1.2rem'}
+                    onClick={() => {
+                        appDispatch(toggle_gamepad_setting());
+                    }}
+                />
+
+                <MdOutlineClose
+                    onClick={handleClose}
+                    fontSize={'1.2rem'}
+                ></MdOutlineClose>
+            </div>
             <button
-                className="bg-none outline-none border-none text-[1.4rem] ml-[96%] mt-2"
                 onClick={() => {
-                    appDispatch(toggle_gamepad_setting());
+                    appDispatch(toggle_gamepad());
                 }}
+                className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
             >
-                <MdOutlineClose></MdOutlineClose>
+                Đóng/mở gamepad ảo
             </button>
             <div className="">
-                <p className="text-[0.9rem] mb-[4px]">Button size:</p>
+                <p className="text-[0.9rem] mb-[4px]">Size:</p>
                 <form className="flex gap-4">
                     <label className="size-choosen">
                         Small
@@ -488,8 +512,8 @@ const GamePadSetting = () => {
                         Medium
                         <input
                             type="radio"
-                            value="2"
-                            checked={selectedOption == '2'}
+                            value="1.2"
+                            checked={selectedOption == '1.2'}
                             onChange={handleChange}
                         />
                     </label>
@@ -506,32 +530,51 @@ const GamePadSetting = () => {
             </div>
 
             <button
-                className="instbtn outline-none border-none w-full py-3 bold mt-4"
+                className="instbtn outline-none border-none w-full py-3 bold mt-4 rounded-lg"
                 onClick={() => {
                     appDispatch(toggle_gamepad_draggable());
                 }}
             >
-                Change gamepad button position
+                Đổi vị trí các nút
             </button>
 
             {gamepadDraggable == 'draggable' ? (
-                <div className="ctnBtn flex mt-4 gap-4 justify-end">
-                    <button
-                        className="bg-slate-400 rounded-md"
-                        onClick={() =>
-                            appDispatch(toggle_default_gamepad_position())
-                        }
-                    >
-                        Default
-                    </button>
-                    <button
-                        className="bg-[#0167c0] rounded-md"
-                        onClick={() => appDispatch(toggle_gamepad_draggable())}
-                    >
-                        Save
-                    </button>
-                </div>
+                <>
+                    <p className="text-[0.75rem] mt-1">
+                        *kéo các nút để chỉnh vị trí
+                    </p>
+                    <div className="ctnBtn flex mt-4 gap-4 justify-end">
+                        <button
+                            className="bg-slate-400 rounded-md"
+                            onClick={() =>
+                                appDispatch(toggle_default_gamepad_position())
+                            }
+                        >
+                            Default
+                        </button>
+                        <button
+                            className="bg-[#0167c0] rounded-md"
+                            onClick={() => {
+                                appDispatch(toggle_gamepad_draggable());
+                                appDispatch(toggle_gamepad_setting());
+                            }}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </>
             ) : null}
+        </div>
+    );
+};
+
+export const LogMaintain = () => {
+    return (
+        <div class="bg-red-600 absolute flex gap-4 items-center right-[50%] translate-x-[50%] top-0 text-white font-bold py-2 px-4 rounded">
+            <md.MdOutlineSettingsSuggest
+                fontSize={'1.5rem'}
+            ></md.MdOutlineSettingsSuggest>
+            Server is offline
         </div>
     );
 };

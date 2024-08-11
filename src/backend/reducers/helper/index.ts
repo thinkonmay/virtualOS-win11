@@ -116,7 +116,13 @@ export async function CacheRequest<T>(
 
     return cache;
 }
-const filterActions = ['fetch_local_worker', 'fetch_user', 'fetch_message'];
+const filterActions = [
+    'fetch_local_worker',
+    'fetch_user',
+    'fetch_store',
+    'fetch_under_maintenance',
+    'fetch_message'
+];
 
 const isFilterAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));

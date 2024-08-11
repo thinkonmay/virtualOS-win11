@@ -48,6 +48,14 @@ code {
     monospace;
 }
 
+button {
+  outline: none;
+  border: unset;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+}
+
 .App {
   position: relative;
   overflow: hidden;

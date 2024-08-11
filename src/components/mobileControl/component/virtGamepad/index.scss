@@ -35,15 +35,19 @@
 		outline: none;
 		width: inherit;
 		height: inherit;
-		color: rgba(255, 255, 255, 0.5);
+		color: white;
 		border: 1px solid currentColor;
 		border-radius: 50%;
 		background-color: transparent;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		overflow: hidden;
 
-
+		&:active {
+			background-color: rgba($color: #ffffff, $alpha: 0.1);
+		}
 	}
 
 	.centerButton {
