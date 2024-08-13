@@ -13,6 +13,7 @@ import {
     wait_and_claim_volume,
     worker_refresh
 } from '../../../backend/reducers';
+import { formatError } from '../../../backend/utils/formatErr';
 import {
     Icon,
     Image,
@@ -38,6 +39,7 @@ export const MicroStore = () => {
     //const isValidSub = true
     const isValidSub = stat?.plan_name == 'hour_02'
 
+    console.log(worker);
     const [isConnecting, setConnecting] = useState(false)
 
     useEffect(() => {
@@ -234,7 +236,7 @@ const DetailPage = ({ app }) => {
                 popup_open({
                     type: 'complete',
                     data: {
-                        content: JSON.stringify(error),
+                        content: formatError(error),
                         success: false
                     }
                 })

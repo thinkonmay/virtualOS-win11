@@ -18,18 +18,13 @@ map.set(CAUSE.PERMISSION_REQUIRED, Contents.STORE_DESCRIPTIONR);
 map.set(CAUSE.NEED_WAIT, Contents.STORE_DESCRIPTIONR);
 map.set(CAUSE.INVALID_REQUEST, Contents.STORE_DESCRIPTIONR);
 
-export function formatError(error: Error) {
+export function formatError(error) {
     const t = store.getState().globals.translation;
-
     try {
-        const err = JSON.parse(error.message) as {
-            message: string;
-            code: CAUSE;
-        };
-        if (err.code == 0) return includesErr(err.message);
-        else return t[map.get(err.code)] ?? includesErr(err.message);
+        //if (err.code == 0) return includesErr(err.message);
+        return includesErr(error);
     } catch {
-        return error.message;
+        return error;
     }
 }
 
@@ -40,6 +35,10 @@ const listErr = [
     },
     {
         msg: 'ran out of gpu',
+        text: [Contents.RUN_OUT_OF_GPU_STOCK, Contents.SUGGEST]
+    },
+    {
+        msg: 'run out of gpu',
         text: [Contents.RUN_OUT_OF_GPU_STOCK, Contents.SUGGEST]
     },
     {
