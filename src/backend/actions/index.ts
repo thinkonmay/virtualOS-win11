@@ -244,7 +244,6 @@ export const bindStoreId = async (email: string, store_id: number) => {
 
         return data;
     } catch (error) {
-        console.log(error);
         throw error;
     }
 };

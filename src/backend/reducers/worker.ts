@@ -30,7 +30,6 @@ import {
     StartVirtdaemon
 } from './fetch/local';
 import { BuilderHelper } from './helper';
-import { Contents } from './locales';
 
 type WorkerType = {
     data: any;
@@ -149,18 +148,7 @@ export const workerAsync = {
                 const resp = await StartVirtdaemon(computer, volume_id);
                 if (resp instanceof Error) {
                     appDispatch(popup_close());
-                    appDispatch(
-                        popup_open({
-                            type: 'notify',
-                            data: {
-                                loading: false,
-                                title: 'Connect to PC',
-                                text: [Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]
-                            }
-                        })
-                    );
-
-                    await new Promise((r) => setTimeout(r, 30000));
+                    throw resp;
                 }
 
                 await appDispatch(worker_refresh());

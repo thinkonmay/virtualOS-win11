@@ -19,13 +19,16 @@ map.set(CAUSE.NEED_WAIT, Contents.STORE_DESCRIPTIONR);
 map.set(CAUSE.INVALID_REQUEST, Contents.STORE_DESCRIPTIONR);
 
 export function formatError(error) {
-    const t = store.getState().globals.translation;
-    try {
-        //if (err.code == 0) return includesErr(err.message);
-        return includesErr(error);
-    } catch {
-        return error;
+    if (error?.message && includesErr(error?.message) != '') {
+        return includesErr(error.message);
     }
+    else if (includesErr(error) !== '') {
+        return includesErr(error);
+    }
+    if (typeof error === 'object') {
+        return error.message;
+    }
+    return error;
 }
 
 const listErr = [
