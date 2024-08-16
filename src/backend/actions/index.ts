@@ -1,5 +1,5 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import { pb, SupabaseFuncInvoke } from '../reducers/fetch/createClient';
+import { pb, supabase, SupabaseFuncInvoke } from '../reducers/fetch/createClient';
 import { Computer, StartRequest } from '../reducers/fetch/local';
 import '../reducers/index';
 import {
@@ -245,6 +245,20 @@ export const bindStoreId = async (email: string, store_id: number) => {
         return data;
     } catch (error) {
         throw error;
+    }
+};
+
+export const isAlowBuyHourSub = async () => {
+    try {
+        const { data, error } = await supabase.rpc('allow_hour_plan');
+
+        if (data.ok === false) {
+            console.log(error);
+        };
+
+        return data;
+    } catch (error) {
+        console.log(error);
     }
 };
 interface PaymentBody {

@@ -10,6 +10,7 @@ import './assets/store.scss';
 import { FUNDING } from '@paypal/react-paypal-js';
 import {
     createPaymentLink,
+    isAlowBuyHourSub,
     wrapperAsyncFunction
 } from '../../../backend/actions';
 import { UserEvents } from '../../../backend/reducers/fetch/analytics';
@@ -86,6 +87,16 @@ export const PaymentApp = () => {
         }
     ]);
 
+    const [isAvailableHourSub, setAvailableHourSub] = useState(false);
+
+    useEffect(() => {
+
+        const fetch = async () => {
+            const check = await isAlowBuyHourSub()
+            setAvailableHourSub(check)
+        }
+        fetch()
+    }, [user])
     const [iframe, setIframe] = useState('');
     useEffect(() => {
         setup();
@@ -110,6 +121,18 @@ export const PaymentApp = () => {
                     data: {
                         success: false,
                         content: 'Cần mua ít nhất 5h'
+                    }
+                })
+            );
+            return;
+        }
+        if (isRejectHourSub(sub.name)) {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        success: false,
+                        content: 'Gói giờ hiện tại đang đóng!. Xin vui lòng chọn gói khác'
                     }
                 })
             );
@@ -148,6 +171,16 @@ export const PaymentApp = () => {
             }
         );
     };
+
+    const isRejectHourSub = (subName) => {
+        let check = false
+        check = subName == 'hour_02' &&
+            !isAvailableHourSub &&
+            user?.stat?.plan_name !== 'hour_02' &&
+            user?.stat?.plan_name !== 'month_01' &&
+            user?.stat?.plan_name !== 'unlimited_01'
+        return check
+    }
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -287,25 +320,26 @@ export const PaymentApp = () => {
                                                     </li>
                                                 ))}
                                             </ul>
-                                            {sub.name == 'hour_02' ? (
-                                                <div className="flex gap-3 items-center">
-                                                    <b>Chọn giờ</b>
-                                                    <input
-                                                        value={hoursChoose}
-                                                        onChange={(e) =>
-                                                            setHoursChoose(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        className="p-2 rounded-sm"
-                                                        type="number"
-                                                        min={5}
-                                                        name=""
-                                                        id=""
-                                                    />
-                                                </div>
-                                            ) : null}
-                                            <div className="flex flex-col gap-6 mt-auto prose">
+
+                                            <div className="flex flex-col gap-2 mt-auto prose">
+                                                {sub.name == 'hour_02' && !isRejectHourSub(sub.name) ? (
+                                                    <div className="flex gap-3 items-center ">
+                                                        <b>Số giờ mua</b>
+                                                        <input
+                                                            value={hoursChoose}
+                                                            onChange={(e) =>
+                                                                setHoursChoose(
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            className="p-2 rounded-sm"
+                                                            type="number"
+                                                            min={5}
+                                                            name=""
+                                                            id=""
+                                                        />
+                                                    </div>
+                                                ) : null}
                                                 <div className="space-y-2">
                                                     <p className="text-[13px] whitespace-pre-wrap">
                                                         {/* Free projects are paused after 1 week of inactivity. */}
@@ -317,10 +351,23 @@ export const PaymentApp = () => {
                                                         handleChooseSub(sub)
                                                     }
                                                     type="button"
-                                                    className="border-none h-[48px] relative cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md outline-none transition-all outline-0 focus-visible:outline-4 focus-visible:outline-offset-1 border bg-brand-button hover:bg-brand-button/80 text-white border-brand focus-visible:outline-brand-600 shadow-sm w-full flex items-center justify-center text-sm leading-4 px-3 py-2 bg-[#328cff]"
+                                                    className={`border-none h-[48px] relative cursor-pointer 
+                                                            space-x-2 text-center font-regular ease-out duration-200 rounded-md 
+                                                            outline-none transition-all outline-0 focus-visible:outline-4 
+                                                            focus-visible:outline-offset-1 border bg-brand-button 
+                                                            hover:bg-brand-button/80 
+                                                            text-white border-brand 
+                                                            focus-visible:outline-brand-600 
+                                                            shadow-sm w-full flex items-center 
+                                                            justify-center text-sm 
+                                                            leading-4 px-3 py-2
+                                                            ${isRejectHourSub(sub.name) ? 'bg-red-500' : 'bg-[#328cff]'}  `
+                                                    }
                                                 >
                                                     <span className="truncate font-medium text-xl">
-                                                        {'Mua Ngay'}
+                                                        {
+                                                            isRejectHourSub(sub.name) ? 'Đang đóng!' : 'Mua Ngay'
+                                                        }
                                                     </span>
                                                 </button>
                                             </div>
@@ -390,10 +437,10 @@ const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
