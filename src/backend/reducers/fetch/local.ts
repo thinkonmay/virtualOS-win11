@@ -174,6 +174,7 @@ export async function StartVirtdaemon(
     try {
         resp = await internalFetch<StartRequest>(address, 'new', req);
     } catch (err) {
+        running = false;
         return new Error(JSON.stringify(err));
     }
     running = false;
