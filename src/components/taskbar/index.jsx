@@ -216,8 +216,9 @@ const Taskbar = () => {
                         </div>
                     )}
                     <div
-                        className={`${open ? 'slide-in' : 'slide-out'
-                            } taskright`}
+                        className={`${
+                            open ? 'slide-in' : 'slide-out'
+                        } taskright`}
                         data-remote={remote.active}
                     >
                         {remote.active ? (

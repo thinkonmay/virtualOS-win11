@@ -115,7 +115,7 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_access(result.data.at(0).id));
-                    await PingSession(email, volume_id)
+                    await PingSession(email, volume_id);
                     appDispatch(popup_close());
                     return;
                 } else if (
@@ -130,7 +130,7 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_create(result.id));
-                    await PingSession(email, volume_id)
+                    await PingSession(email, volume_id);
                     appDispatch(popup_close());
                     return;
                 }
@@ -423,10 +423,10 @@ export const workerSlice = createSlice({
                     } else {
                         paths.forEach(
                             (x) =>
-                            (target =
-                                new RenderNode(target).data.find(
-                                    (y) => y.id == x
-                                ) ?? target)
+                                (target =
+                                    new RenderNode(target).data.find(
+                                        (y) => y.id == x
+                                    ) ?? target)
                         );
                         state.cdata = target.data.map((x) => x.any());
                     }
@@ -434,11 +434,11 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_session_close,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }

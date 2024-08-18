@@ -21,8 +21,7 @@ map.set(CAUSE.INVALID_REQUEST, Contents.STORE_DESCRIPTIONR);
 export function formatError(error) {
     if (error?.message && includesErr(error?.message) != '') {
         return includesErr(error.message);
-    }
-    else if (includesErr(error) !== '') {
+    } else if (includesErr(error) !== '') {
         return includesErr(error);
     }
     if (typeof error === 'object') {

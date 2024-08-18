@@ -65,8 +65,6 @@ function App() {
 
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
 
-
-
     useEffect(() => {
         const url = new URL(window.location.href).searchParams;
         const pathName = new URL(window.location.href).pathname;
@@ -155,7 +153,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => { });
+        job?.catch(() => {});
 
         const handleState = () => {
             const fullscreen =

@@ -3,7 +3,10 @@ import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { AudioWrapper } from '../../../src-tauri/core/pipeline/sink/audio/wrapper';
 import { VideoWrapper } from '../../../src-tauri/core/pipeline/sink/video/wrapper';
-import { AddNotifier, ConnectionEvent } from '../../../src-tauri/core/utils/log';
+import {
+    AddNotifier,
+    ConnectionEvent
+} from '../../../src-tauri/core/utils/log';
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
@@ -28,7 +31,7 @@ export const Remote = () => {
     // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
-    const [isOpenStats, setOpenStats] = useState(true)
+    const [isOpenStats, setOpenStats] = useState(true);
     const remote = useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
@@ -39,20 +42,26 @@ export const Remote = () => {
 
         AddNotifier(async (message, text, source) => {
             if (message == ConnectionEvent.WebRTCConnectionClosed)
-                source == "audio" ? setAudioConnectivity("closed") : setVideoConnectivity("closed")
+                source == 'audio'
+                    ? setAudioConnectivity('closed')
+                    : setVideoConnectivity('closed');
             if (message == ConnectionEvent.WebRTCConnectionDoneChecking)
-                source == "audio" ? setAudioConnectivity("connected") : setVideoConnectivity("connected")
+                source == 'audio'
+                    ? setAudioConnectivity('connected')
+                    : setVideoConnectivity('connected');
             if (message == ConnectionEvent.WebRTCConnectionChecking)
-                source == "audio" ? setAudioConnectivity("connecting") : setVideoConnectivity("connecting")
+                source == 'audio'
+                    ? setAudioConnectivity('connecting')
+                    : setVideoConnectivity('connecting');
 
             if (message == ConnectionEvent.ApplicationStarted) {
                 //await TurnOnConfirm(message, text)
-                setAudioConnectivity("started")
-                setVideoConnectivity("started")
+                setAudioConnectivity('started');
+                setVideoConnectivity('started');
             }
 
             //Log(LogLevel.Infor,`${message} ${text ?? ""} ${source ?? ""}`)
-        })
+        });
 
         SetupWebRTC();
     }, [remote.active]);
@@ -115,31 +124,47 @@ export const Remote = () => {
     };
 
     const HandleSuggestion = () => {
-
-        let elem = ''
+        let elem = '';
         if (videoConnectivity == 'closed' && audioConnectivity == 'closed') {
-            return <div className='mt-4 flex gap-2 items-center'>
-                <button onClick={() => appDispatch(hard_reset_async())} className='instbtn'>Reset</button>
-                hoặc bật lại máy nếu <b>5'</b> chưa có hình & tiếng
-            </div>
+            return (
+                <div className="mt-4 flex gap-2 items-center">
+                    <button
+                        onClick={() => appDispatch(hard_reset_async())}
+                        className="instbtn"
+                    >
+                        Reset
+                    </button>
+                    hoặc bật lại máy nếu <b>5'</b> chưa có hình & tiếng
+                </div>
+            );
         }
         if (videoConnectivity == 'closed' || audioConnectivity == 'closed') {
-
-            return <div className='mt-4 flex gap-2 items-center'>
-                <button onClick={() => appDispatch(hard_reset_async())} className='instbtn'>Reset</button>
-                nếu sau <b>3'</b> chưa có hình hoặc tiếng
-            </div>
+            return (
+                <div className="mt-4 flex gap-2 items-center">
+                    <button
+                        onClick={() => appDispatch(hard_reset_async())}
+                        className="instbtn"
+                    >
+                        Reset
+                    </button>
+                    nếu sau <b>3'</b> chưa có hình hoặc tiếng
+                </div>
+            );
         }
-
-
-    }
+    };
 
     return (
-        <div className='relative'>
+        <div className="relative">
             <video
                 className="remote"
                 ref={remoteVideo}
-                onClick={relative_mouse ? pointerlock : (e) => { afterMath(e) }}
+                onClick={
+                    relative_mouse
+                        ? pointerlock
+                        : (e) => {
+                              afterMath(e);
+                          }
+                }
                 //style={{ backgroundImage: `url(img/wallpaper/${wall.src})` }}
                 autoPlay
                 muted
@@ -156,24 +181,24 @@ export const Remote = () => {
                 style={{ zIndex: -5, opacity: 0 }}
             ></audio>
 
-            <div className={`${isOpenStats ? 'slide-in' : 'slide-out'} bg-red-300   statusConnection`}>
-
-
+            <div
+                className={`${
+                    isOpenStats ? 'slide-in' : 'slide-out'
+                } bg-red-300   statusConnection`}
+            >
                 <p>
                     Video status: <b>{videoConnectivity}</b>
                     <br />
                     Audio status: <b>{audioConnectivity}</b>
                 </p>
-                <button className="btn-show" onClick={() => setOpenStats(old => !old)}>
+                <button
+                    className="btn-show"
+                    onClick={() => setOpenStats((old) => !old)}
+                >
                     {isOpenStats ? (
-                        <MdArrowBackIos
-                            style={{ fontSize: '1.2rem' }}
-                        />
+                        <MdArrowBackIos style={{ fontSize: '1.2rem' }} />
                     ) : (
-
-                        <MdArrowForwardIos
-                            style={{ fontSize: '1.2rem' }}
-                        />
+                        <MdArrowForwardIos style={{ fontSize: '1.2rem' }} />
                     )}
                 </button>
                 <HandleSuggestion />

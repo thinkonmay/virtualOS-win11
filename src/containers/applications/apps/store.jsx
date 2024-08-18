@@ -35,22 +35,22 @@ export const MicroStore = () => {
     const [page, setPage] = useState(1);
     const [opapp, setOpapp] = useState({});
     const stat = useAppSelector((state) => state.user.stat);
-    const worker = useAppSelector(state => state.worker)
+    const worker = useAppSelector((state) => state.worker);
     //const isValidSub = true
-    const isValidSub = stat?.plan_name == 'hour_02'
+    const isValidSub = stat?.plan_name == 'hour_02';
 
     console.log(worker);
-    const [isConnecting, setConnecting] = useState(false)
+    const [isConnecting, setConnecting] = useState(false);
 
     useEffect(() => {
         const checking = async () => {
-            const result = await hasHourSession()
-            setConnecting(result)
-        }
+            const result = await hasHourSession();
+            setConnecting(result);
+        };
         if (isValidSub) {
-            checking()
+            checking();
         }
-    }, [worker])
+    }, [worker]);
     const totab = (e) => {
         var x = e.target && e.target.dataset.action;
         if (x) {
@@ -98,26 +98,27 @@ export const MicroStore = () => {
         setPage(2);
     };
 
-
     const handleReconnect = async () => {
-        if (!isValidSub) return
-        await appDispatch(worker_refresh())
-        const check = await hasHourSession()
+        if (!isValidSub) return;
+        await appDispatch(worker_refresh());
+        const check = await hasHourSession();
 
         if (!check) {
-            setConnecting(false)
+            setConnecting(false);
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
-                        content: 'Session của bạn đã hết hạn, vui lòng tạo lại session mới',
+                        content:
+                            'Session của bạn đã hết hạn, vui lòng tạo lại session mới',
                         success: false
                     }
                 })
-            ); return
+            );
+            return;
         }
-        appDispatch(wait_and_claim_volume())
-    }
+        appDispatch(wait_and_claim_volume());
+    };
     return (
         <div
             className="wnstore floatTab dpShad"
@@ -159,14 +160,19 @@ export const MicroStore = () => {
 						/>*/}
                         {/* <Icon onClick={() => {}} width={30} ui={true} src={"nvidia"} /> */}
 
-                        {
-                            isValidSub && isConnecting ?
-                                <div className='absolute top-1 z-[1] right-4 rounded-lg p-3 bg-slate-200 flex flex-col'>
-                                    <p className='text-orange-700 text-[14px] font-semibold'>Tiếp tục session cũ</p>
-                                    <button className='instbtn mt-3 h-[32px] w-[88px] text-sm font-medium self-end' onClick={handleReconnect}>Connect</button>
-                                </div>
-                                : null
-                        }
+                        {isValidSub && isConnecting ? (
+                            <div className="absolute top-1 z-[1] right-4 rounded-lg p-3 bg-slate-200 flex flex-col">
+                                <p className="text-orange-700 text-[14px] font-semibold">
+                                    Tiếp tục session cũ
+                                </p>
+                                <button
+                                    className="instbtn mt-3 h-[32px] w-[88px] text-sm font-medium self-end"
+                                    onClick={handleReconnect}
+                                >
+                                    Connect
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div
@@ -189,7 +195,7 @@ const reviews = 5000;
 const DetailPage = ({ app }) => {
     const [dstate, setDown] = useState(0);
 
-    const t = (e) => { };
+    const t = (e) => {};
     const [Options, SetOptions] = useState([]);
     const user = useAppSelector((state) => state.user);
     const stat = useAppSelector((state) => state.user.stat);
@@ -404,7 +410,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => { };
+    const t = (e) => {};
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -518,20 +524,20 @@ const DownPage = ({ action }) => {
                 {games.length > 0
                     ? renderSearchResult()
                     : listDraftApp.map((i) => (
-                        <div
-                            key={i}
-                            className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
-                            data-action="page2"
-                        >
-                            <Image
-                                className="mx-4 mb-6 rounded bg-slate-200"
-                                w={100}
-                                h={100}
-                                ext
-                            />
-                            <div className="capitalize text-xs text-center font-semibold"></div>
-                        </div>
-                    ))}
+                          <div
+                              key={i}
+                              className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
+                              data-action="page2"
+                          >
+                              <Image
+                                  className="mx-4 mb-6 rounded bg-slate-200"
+                                  w={100}
+                                  h={100}
+                                  ext
+                              />
+                              <div className="capitalize text-xs text-center font-semibold"></div>
+                          </div>
+                      ))}
             </div>
         </div>
     );
