@@ -212,6 +212,14 @@ export const getVolumeIdByEmail = async (): Promise<string> => {
 
     return all.at(0)?.local_id ?? '';
 };
+
+export const getEmailFromDB = async (): Promise<string> => {
+    const all = await pb.collection('users').getFullList<{
+        email: string;
+    }>();
+
+    return all.at(0)?.email ?? '';
+};
 export const shutDownVm = async () => {
     // get volume id
     const host_session_id = await getHostSessionIdByEmail();
