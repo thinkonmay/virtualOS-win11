@@ -152,7 +152,7 @@ export const checkTimeUsage = () => {
     // Check if usage_hour is within 2 hours of 2 * plan_hour
     const isNearbyUsageHour = subInfo?.remain_time <= 2;
 
-    if (now > endTime || subInfo?.remain_time == 0) {
+    if (now > endTime || subInfo?.remain_time <= 0) {
         isExpired = true;
     }
 
