@@ -46,22 +46,25 @@ const VirtKeyboard = ({ close }) => {
                 disableButtonHold={true}
                 display={{
                     Backspace: 'Back',
-                    Close: '🅇'
+                    Close: '🅇',
+                    Control: 'Ctrl'
                 }}
                 layout={{
                     default: [
-                        'Close ` 1 2 3 4 5 6 7 8 9 0 - =',
+                        'F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12',
+                        'Close ` 1 2 3 4 5 6 7 8 9 0 - = Backspace',
                         'q w e r t y u i o p [ ] \\',
-                        "a s d f g h j k l ; '",
-                        'z x c v b n m , . / Backspace',
-                        'Shift Space Enter'
+                        "a s d f g h j k l ; ' Enter",
+                        'Shift z x c v b n m , . /',
+                        'Alt Space Control'
                     ],
                     shift: [
-                        'Close ~ ! @ # $ % ^ & * ( ) _ +',
+                        'F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12',
+                        'Close ~ ! @ # $ % ^ & * ( ) _ + Backspace',
                         'Q W E R T Y U I O P { } |',
-                        'A S D F G H J K L : "',
-                        'Z X C V B N M < > ? Backspace',
-                        'Shift Space Enter'
+                        'A S D F G H J K L : " Enter',
+                        'Shift Z X C V B N M < > ?',
+                        'Alt Space Control'
                     ]
                 }}
             />

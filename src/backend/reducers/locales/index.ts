@@ -414,7 +414,7 @@ export function language() {
     );
     vn.set(
         Contents.REMOTE_TIMEOUT,
-        'Yêu cầu kết nối hết hạn, bạn thử reset app nhé!'
+        'Yêu cầu kết nối hết hạn, bạn thử bật lại máy nhé!'
     );
 
     en.set(Contents.UNKNOWN_ERROR, 'Unknown error happened');

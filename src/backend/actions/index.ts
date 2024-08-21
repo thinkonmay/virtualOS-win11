@@ -1,6 +1,10 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import { pb } from '../reducers/fetch/createClient';
-import { Computer } from '../reducers/fetch/local';
+import {
+    pb,
+    supabase,
+    SupabaseFuncInvoke
+} from '../reducers/fetch/createClient';
+import { Computer, StartRequest } from '../reducers/fetch/local';
 import '../reducers/index';
 import {
     appDispatch,
@@ -12,6 +16,8 @@ import {
     fetch_user,
     menu_chng,
     menu_hide,
+    popup_close,
+    popup_open,
     setting_theme,
     sidepane_panethem,
     store,
@@ -21,6 +27,7 @@ import {
     worker_session_close
 } from '../reducers/index';
 import { keyboardCallback } from '../reducers/remote';
+import { localStorageKey, pathNames, PlanName } from '../utils/constant';
 import { RenderNode } from '../utils/tree';
 import { fetchApp } from './background';
 
@@ -205,6 +212,14 @@ export const getVolumeIdByEmail = async (): Promise<string> => {
 
     return all.at(0)?.local_id ?? '';
 };
+
+export const getEmailFromDB = async (): Promise<string> => {
+    const all = await pb.collection('users').getFullList<{
+        email: string;
+    }>();
+
+    return all.at(0)?.email ?? '';
+};
 export const shutDownVm = async () => {
     // get volume id
     const host_session_id = await getHostSessionIdByEmail();
@@ -223,16 +238,135 @@ export const clickShortCut = (keys = []) => {
 };
 
 export const bindStoreId = async (email: string, store_id: number) => {
-    const data = await fetch('https://play.thinkmay.net/access_store_volume', {
-        method: 'POST',
-        headers: {
-            Authorization: pb.authStore.token
-        },
-        body: JSON.stringify({
-            store_id,
-            email
-        })
+    try {
+        const data = await fetch(
+            'https://play.thinkmay.net/access_store_volume',
+            {
+                method: 'POST',
+                headers: {
+                    Authorization: pb.authStore.token
+                },
+                body: JSON.stringify({
+                    store_id,
+                    email
+                })
+            }
+        );
+        if (data.ok === false) throw await data.text();
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const isAlowBuyHourSub = async () => {
+    try {
+        const { data, error } = await supabase.rpc('allow_hour_plan');
+
+        if (data.ok === false) {
+            console.log(error);
+        }
+
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+interface PaymentBody {
+    buyerEmail: string;
+    items: {
+        name: PlanName;
+        price: number;
+        quantity: number;
+    }[];
+}
+
+export const createPaymentLink = async (inputs: PaymentBody) => {
+    const result = await SupabaseFuncInvoke('create_payment_link', inputs);
+    if (result instanceof Error) throw result;
+
+    return result;
+};
+
+interface VerifyPaymentBody {
+    email: string;
+}
+
+export const verifyPayment = async (inputs: VerifyPaymentBody) => {
+    const oldPathName = localStorage.getItem(localStorageKey.PATH_NAME);
+    localStorage.removeItem(localStorageKey.PATH_NAME);
+    if (oldPathName != pathNames.VERIFY_PAYMENT || !inputs) {
+        return;
+    }
+
+    const result = await SupabaseFuncInvoke('verify_payment', {
+        email: inputs
     });
 
-    return data;
+    if (result instanceof Error) throw result;
+
+    await appDispatch(fetch_user());
+    return result;
 };
+
+export const wrapperAsyncFunction = async (
+    fun: () => Promise<void>,
+    { loading = true, title = 'Loading...', text, tips = true, timeProcessing }
+) => {
+    try {
+        appDispatch(
+            popup_open({
+                type: 'notify',
+                data: {
+                    loading,
+                    title,
+                    text,
+                    tips,
+                    timeProcessing
+                }
+            })
+        );
+        const data = await fun();
+        appDispatch(popup_close());
+        return data;
+    } catch (error) {
+        appDispatch(popup_close());
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: error.message
+                }
+            })
+        );
+    } finally {
+    }
+};
+
+//Connecting to old session
+
+export const hasHourSession = async () => {
+    const all = await pb.collection('volumes').getFullList();
+    const foundVolumeId = all.at(0)?.local_id;
+
+    const node = new RenderNode(store.getState().worker.data);
+    let result: RenderNode<Computer> | undefined = undefined;
+    node.iterate((x) => {
+        if (
+            result == undefined &&
+            (x.info as Computer)?.Volumes?.includes(foundVolumeId)
+        )
+            result = x;
+    });
+    const session = node.find<StartRequest>(result?.data?.at(0)?.id)?.info;
+    const vm_session_id = node.findParent<StartRequest>(
+        result?.data?.at(0)?.id,
+        'host_session'
+    )?.info.id;
+
+    return session?.id;
+};
+
+// connect to session

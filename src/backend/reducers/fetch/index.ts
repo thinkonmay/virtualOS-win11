@@ -1,4 +1,4 @@
-import { SupabaseFuncInvoke } from './createClient.ts';
+import { supabase, SupabaseFuncInvoke } from './createClient.ts';
 
 export const DownloadApplication = async (
     app_template_id: string,
@@ -80,4 +80,14 @@ export const ModifySubscription = async (input: IModifySubscriptionAction) => {
 
     if (result instanceof Error) throw result;
     return result;
+};
+
+export const PingSession = async (email: string, volume_id: string) => {
+    const data = await supabase.rpc(`ping_session`, {
+        email,
+        volume_id
+    });
+    if (data.error) console.log('ping session error' + data.error.message);
+
+    return data;
 };

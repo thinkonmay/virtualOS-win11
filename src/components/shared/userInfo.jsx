@@ -17,7 +17,6 @@ function UserInfo() {
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
-    console.log(stats);
     const formatDate = (dateStr) => {
         return new Date(dateStr).toLocaleDateString('en-GB', {
             month: 'numeric',

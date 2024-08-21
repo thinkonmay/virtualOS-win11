@@ -19,6 +19,7 @@ type PopupData =
               loading: boolean;
               tips?: boolean;
               text?: any;
+              timeProcessing?: number;
           };
       }
     | {

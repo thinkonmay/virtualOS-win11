@@ -152,7 +152,7 @@ export const checkTimeUsage = () => {
     // Check if usage_hour is within 2 hours of 2 * plan_hour
     const isNearbyUsageHour = subInfo?.remain_time <= 2;
 
-    if (now > endTime || subInfo?.remain_time == 0) {
+    if (now > endTime || subInfo?.remain_time <= 0) {
         isExpired = true;
     }
 
@@ -184,5 +184,5 @@ export const preload = async () => {
     setInterval(check_worker, 30 * 1000);
     setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 100);
-    setInterval(ping_session, 1000 * 5);
+    setInterval(ping_session, 1000 * 10);
 };

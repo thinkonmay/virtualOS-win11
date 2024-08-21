@@ -15,6 +15,7 @@ import {
 } from '.';
 import { sleep } from '../utils/sleep';
 import { fromComputer, RenderNode } from '../utils/tree';
+import { PingSession } from './fetch';
 import { UserEvents } from './fetch/analytics';
 import { pb } from './fetch/createClient';
 import {
@@ -29,7 +30,6 @@ import {
     StartVirtdaemon
 } from './fetch/local';
 import { BuilderHelper } from './helper';
-import { Contents } from './locales';
 
 type WorkerType = {
     data: any;
@@ -115,6 +115,7 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_access(result.data.at(0).id));
+                    await PingSession(email, volume_id);
                     appDispatch(popup_close());
                     return;
                 } else if (
@@ -129,6 +130,7 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_create(result.id));
+                    await PingSession(email, volume_id);
                     appDispatch(popup_close());
                     return;
                 }
@@ -146,18 +148,7 @@ export const workerAsync = {
                 const resp = await StartVirtdaemon(computer, volume_id);
                 if (resp instanceof Error) {
                     appDispatch(popup_close());
-                    appDispatch(
-                        popup_open({
-                            type: 'notify',
-                            data: {
-                                loading: false,
-                                title: 'Connect to PC',
-                                text: [Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]
-                            }
-                        })
-                    );
-
-                    await new Promise((r) => setTimeout(r, 30000));
+                    throw resp;
                 }
 
                 await appDispatch(worker_refresh());
