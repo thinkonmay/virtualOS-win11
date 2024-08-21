@@ -2,18 +2,24 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
 import { preload } from './backend/actions/background';
-import { afterMath } from './backend/actions/index';
+import {
+    afterMath,
+    verifyPayment,
+    wrapperAsyncFunction
+} from './backend/actions/index';
 import {
     appDispatch,
     direct_access,
     menu_show,
     pointer_lock,
     set_fullscreen,
+    store,
     useAppSelector
 } from './backend/reducers';
 import { UserSession } from './backend/reducers/fetch/analytics';
 import { Contents } from './backend/reducers/locales';
 import { isMobile } from './backend/utils/checking';
+import { localStorageKey, pathNames } from './backend/utils/constant';
 import ActMenu from './components/menu';
 import {
     DesktopApp,
@@ -58,12 +64,18 @@ function App() {
     };
 
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
+
     useEffect(() => {
         const url = new URL(window.location.href).searchParams;
+        const pathName = new URL(window.location.href).pathname;
+        const pathNameSegment = pathName.replace('/', '');
+        if (pathNameSegment == pathNames.VERIFY_PAYMENT) {
+            localStorage.setItem(localStorageKey.PATH_NAME, pathNameSegment);
+        }
         const ref = url.get('ref');
         if (ref != null) {
             appDispatch(direct_access({ ref }));
-            window.history.replaceState({}, document.title, '/' + '');
+            //window.history.replaceState({}, document.title, '/' + '');
             window.onbeforeunload = (e) => {
                 const text = 'Are you sure (｡◕‿‿◕｡)';
                 e = e || window.event;
@@ -71,11 +83,21 @@ function App() {
                 return text;
             };
         }
+        window.history.replaceState({}, document.title, '/' + '');
 
         preload().finally(async () => {
             await new Promise((r) => setTimeout(r, 1000));
             const now = new Date().getTime();
             const timeout = () => new Date().getTime() - now > 10 * 1000;
+            await wrapperAsyncFunction(
+                () => verifyPayment(store.getState().user.email),
+                {
+                    loading: true,
+                    tips: false,
+                    title: 'Verify payment!',
+                    timeProcessing: 0.1
+                }
+            );
             while (
                 isMobile() &&
                 window.screen.width < window.screen.height &&
@@ -88,7 +110,6 @@ function App() {
             setLockscreen(false);
         });
     }, []);
-
     useEffect(() => {
         if (user.id == 'unknown') return;
 

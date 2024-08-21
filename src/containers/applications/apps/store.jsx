@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 //import { Icon, Image, LazyComponent, ToolBar } from '../../../'
 
-import { bindStoreId } from '../../../backend/actions';
+import { bindStoreId, hasHourSession } from '../../../backend/actions';
 import {
     app_toggle,
     appDispatch,
@@ -10,8 +10,10 @@ import {
     popup_close,
     popup_open,
     useAppSelector,
-    wait_and_claim_volume
+    wait_and_claim_volume,
+    worker_refresh
 } from '../../../backend/reducers';
+import { formatError } from '../../../backend/utils/formatErr';
 import {
     Icon,
     Image,
@@ -32,8 +34,23 @@ export const MicroStore = () => {
     const [tab, setTab] = useState('sthome');
     const [page, setPage] = useState(1);
     const [opapp, setOpapp] = useState({});
-    const user = useSelector((state) => state.user);
+    const stat = useAppSelector((state) => state.user.stat);
+    const worker = useAppSelector((state) => state.worker);
+    //const isValidSub = true
+    const isValidSub = stat?.plan_name == 'hour_02';
 
+    console.log(worker);
+    const [isConnecting, setConnecting] = useState(false);
+
+    useEffect(() => {
+        const checking = async () => {
+            const result = await hasHourSession();
+            setConnecting(result);
+        };
+        if (isValidSub) {
+            checking();
+        }
+    }, [worker]);
     const totab = (e) => {
         var x = e.target && e.target.dataset.action;
         if (x) {
@@ -81,8 +98,27 @@ export const MicroStore = () => {
         setPage(2);
     };
 
-    const dispatch = useDispatch();
+    const handleReconnect = async () => {
+        if (!isValidSub) return;
+        await appDispatch(worker_refresh());
+        const check = await hasHourSession();
 
+        if (!check) {
+            setConnecting(false);
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content:
+                            'Session của bạn đã hết hạn, vui lòng tạo lại session mới',
+                        success: false
+                    }
+                })
+            );
+            return;
+        }
+        appDispatch(wait_and_claim_volume());
+    };
     return (
         <div
             className="wnstore floatTab dpShad"
@@ -101,7 +137,7 @@ export const MicroStore = () => {
                 size={wnapp.size}
                 name={wnapp.name}
             />
-            <div className="windowScreen flex">
+            <div className="windowScreen flex relative">
                 <LazyComponent show={!wnapp.hide}>
                     <div className="storeNav h-full w-20 flex flex-col">
                         <Icon
@@ -123,6 +159,20 @@ export const MicroStore = () => {
 							payload={page == 1}
 						/>*/}
                         {/* <Icon onClick={() => {}} width={30} ui={true} src={"nvidia"} /> */}
+
+                        {isValidSub && isConnecting ? (
+                            <div className="absolute top-1 z-[1] right-4 rounded-lg p-3 bg-slate-200 flex flex-col">
+                                <p className="text-orange-700 text-[14px] font-semibold">
+                                    Tiếp tục session cũ
+                                </p>
+                                <button
+                                    className="instbtn mt-3 h-[32px] w-[88px] text-sm font-medium self-end"
+                                    onClick={handleReconnect}
+                                >
+                                    Connect
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
 
                     <div
@@ -174,14 +224,7 @@ const DetailPage = ({ app }) => {
                 return;
             }
             if (isMaintaining) {
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        content: 'Server is Offline!!!',
-                        success: false
-                    }
-                });
-                return;
+                throw 'Server is Offline!!!';
             }
 
             appDispatch(
@@ -190,34 +233,21 @@ const DetailPage = ({ app }) => {
                     data: { loading: true, title: 'Connect to PC' }
                 })
             );
-
-            const binding = await bindStoreId(email, appId);
-
+            await bindStoreId(email, appId);
             appDispatch(popup_close());
-
             appDispatch(wait_and_claim_volume());
         } catch (error) {
+            appDispatch(popup_close());
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
-                        content: JSON.stringify(error),
+                        content: formatError(error),
                         success: false
                     }
                 })
             );
         }
-    };
-
-    const handleEdit = () => {
-        dispatch({
-            type: 'ADMIN_UPDATE_STORE',
-            payload: app
-        });
-    };
-
-    const GotoButton = () => {
-        return <div></div>;
     };
 
     return (
@@ -238,6 +268,7 @@ const DetailPage = ({ app }) => {
                     <div className="text-xs text-blue-500">
                         *Bắt buộc phải mở qua Chrome hoặc App
                     </div>
+
                     <button
                         onClick={() => download(app.id)}
                         className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
@@ -245,6 +276,15 @@ const DetailPage = ({ app }) => {
                         Play now!
                     </button>
 
+                    <div className="text-sm text-orange-500 mt-2 underline">
+                        <a
+                            target="_blank"
+                            href="https://www.youtube.com/watch?v=qQDiEP4R11A"
+                            className="mt-5"
+                        >
+                            Hướng dẫn sử dụng
+                        </a>
+                    </div>
                     <div className="flex mt-4">
                         <div>
                             <div className="flex items-center text-sm font-semibold">
@@ -265,9 +305,11 @@ const DetailPage = ({ app }) => {
                             <div className="text-xss mt-px pt-1">Ratings</div>
                         </div>
                     </div>
-
-                    <div className="descnt text-xs relative w-0">
-                        {app?.description}
+                    <div className="descnt text-sm  w-0 text-center relative ">
+                        {/*{app?.description}
+                        
+                        */}
+                        Hướng dẫn sử dụng
                     </div>
                 </div>
             </div>
@@ -373,7 +415,6 @@ const DownPage = ({ action }) => {
         setShText(e.target.value);
     };
 
-    console.log(games.length);
     useEffect(() => {
         if (games.length == 0) {
             appDispatch(fetch_store());

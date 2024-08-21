@@ -14,7 +14,8 @@ export const externalLink = {
     FACEBOOK_LINK: 'https://www.facebook.com/thinkonmay',
     FACEBOOK_MESSAGE_LINK:
         'https://www.facebook.com/messages/t/105408644972153',
-    MAILTO_ADDRESS: 'mailto:huyhoangdo@contact.thinkmay.net'
+    MAILTO_ADDRESS: 'mailto:huyhoangdo@contact.thinkmay.net',
+    GUIDE_VIDEO: 'https://www.youtube.com/watch?v=qQDiEP4R11A'
 };
 
 export const scanCodeApps = [
@@ -35,11 +36,17 @@ export const localStorageKey = {
     store: 'STORE',
     app: 'APP',
     request: 'REQUESTCACHE',
-    language: 'language'
+    language: 'language',
+    PATH_NAME: 'PATHNAME'
 };
 
 export enum PlanName {
     month_01 = 'month_01',
     hour_02 = 'hour_02',
-    hour_01 = 'hour_01'
+    hour_01 = 'hour_01',
+    unlimited = 'unlimited_01'
 }
+
+export const pathNames = {
+    VERIFY_PAYMENT: 'success'
+};

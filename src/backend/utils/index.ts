@@ -66,11 +66,17 @@ const apps: AppData[] = [
         size: 'mini'
     },
     {
-        name: 'Guideline',
-        id: 'about',
-        action: 'apps/app_url',
-        payload: 'https://thinkmay.net'
+        name: 'Hướng dẫn',
+        id: 'hdsd',
+        action: 'apps/app_external',
+        payload: externalLink.GUIDE_VIDEO
     },
+    //{
+    //    name: 'Guideline',
+    //    id: 'about',
+    //    action: 'apps/app_url',
+    //    payload: 'https://thinkmay.net'
+    //},
     {
         name: 'Your Info',
         id: 'usermanager',
@@ -97,11 +103,12 @@ var { taskbar, desktop } = {
         //'Browser',
         'Local Connect',
         'Discord',
+        'Hướng dẫn',
         'Thinkmay Fanpage',
         'Store games',
         'Connect YourPC',
-        'Payment',
-        'Your Info'
+        'Payment'
+        //'Your Info'
     ]
 };
 
