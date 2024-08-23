@@ -61,7 +61,7 @@ async function internalFetch<T>(
                 responseType: ResponseType.JSON
             });
 
-            if (!ok) return new Error('fail to request');
+            if (!ok) return new Error(`${JSON.stringify(data)}. Send it to admin!`);
 
             return data;
         }
@@ -81,7 +81,10 @@ async function internalFetch<T>(
                 body: JSON.stringify(body)
             });
 
-            if (!resp.ok) return new Error('fail to request');
+            if (!resp.ok) {
+                const msg = JSON.stringify(await resp.json())
+                return new Error(`${msg}. Send it to admin!`);
+            }
             const clonedResponse = resp.clone();
 
             try {
