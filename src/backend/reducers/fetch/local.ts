@@ -151,6 +151,31 @@ export type StartRequest = {
     vm?: Computer;
 };
 
+export async function KeepaliveVolume(
+    computer: Computer,
+    volume_id: string,
+    cancel_fun?: () => boolean
+): Promise<void> {
+    const { address } = computer;
+    await (async () => {
+        await new Promise((r) => setTimeout(r, 3000));
+        let stop = false;
+        while (!stop) {
+            if (
+                (await internalFetch<{}>(address, '_use', volume_id)) instanceof
+                Error
+            ) {
+                console.log('stop _use thread');
+                break;
+            } else {
+                await new Promise((r) => setTimeout(r, 1000 * 30));
+            }
+
+            stop = cancel_fun ? cancel_fun() : false;
+        }
+    })();
+}
+
 export async function StartVirtdaemon(
     computer: Computer,
     volume_id?: string
