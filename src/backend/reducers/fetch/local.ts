@@ -155,7 +155,7 @@ export async function StartVirtdaemon(
     const { address } = computer;
 
     const id = crypto.randomUUID();
-    const req: StartRequest = {
+    const req = {
         id,
         vm: {
             GPUs: ['GA104 [GeForce RTX 3060 Ti Lite Hash Rate]'],
@@ -166,13 +166,13 @@ export async function StartVirtdaemon(
     };
 
     let running = true;
-    (async () => {
+    (async (_req: StartRequest) => {
         await new Promise((r) => setTimeout(r, 1000));
         while (running) {
-            internalFetch<{}>(address, '_new', req).catch(console.log);
+            internalFetch<{}>(address, '_new', _req).catch(console.log);
             await new Promise((r) => setTimeout(r, 1000));
         }
-    })();
+    })(req);
 
     let resp: Error | StartRequest = new Error('unable to request');
     try {
@@ -221,7 +221,6 @@ export async function StartThinkmayOnVM(
     };
 
     const resp = await internalFetch<StartRequest>(address, 'new', req);
-    console.log(resp, 'resp thinkmay');
 
     if (resp instanceof Error) throw resp;
 
@@ -305,7 +304,6 @@ export function ParseRequest(
     const { address } = computer;
     const { turn, thinkmay } = session;
 
-    console.log(session);
     return {
         audioUrl: !userHttp(address)
             ? `https://${address}/handshake/client?token=${thinkmay.audioToken}`

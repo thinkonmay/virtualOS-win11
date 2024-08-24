@@ -58,7 +58,6 @@ export function notify({
 const LoadingProgressBar = ({ timeProcessing }) => {
     const [loading, setLoading] = useState(0);
 
-    console.log(timeProcessing);
     useEffect(() => {
         const interval = setInterval(() => {
             const randomNumber = Math.floor(Math.random() * 5) + 1;

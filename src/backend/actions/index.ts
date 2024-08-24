@@ -178,7 +178,6 @@ export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     });
     const record = await pb.collection('users').getOne(id);
     appDispatch(user_update(record));
-    console.log(record);
     await appDispatch(fetch_user());
 };
 

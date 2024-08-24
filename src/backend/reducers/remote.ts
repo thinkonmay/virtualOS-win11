@@ -251,8 +251,6 @@ export const remoteAsync = {
         // TODO
     },
     ping_session: async () => {
-        console.log(store.getState().popup.data_stack.length > 0);
-        console.log((store.getState() as RootState).user.email);
         if (!store.getState().remote.active) return;
         else if (client == null) return;
         // else if (store.getState().remote.local) return;
