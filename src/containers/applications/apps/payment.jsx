@@ -65,7 +65,7 @@ export const PaymentApp = () => {
                 'Có lưu dữ liệu sau khi tắt máy',
                 'RTX 3060TI',
                 '16GB ram',
-                '130GB dung lượng',
+                '150GB dung lượng',
                 'Không giới hạn thời gian mỗi session'
             ],
             storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
@@ -177,9 +177,10 @@ export const PaymentApp = () => {
         check =
             subName == 'hour_02' &&
             !isAvailableHourSub &&
-            user?.stat?.plan_name !== 'hour_02' &&
-            user?.stat?.plan_name !== 'month_01' &&
-            user?.stat?.plan_name !== 'unlimited_01';
+            user?.stat?.plan_name !== 'hour_02';
+        //&&
+        //user?.stat?.plan_name !== 'month_01' &&
+        //user?.stat?.plan_name !== 'unlimited_01';
         return check;
     };
     return (

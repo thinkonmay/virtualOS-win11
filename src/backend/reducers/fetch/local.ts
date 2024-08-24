@@ -61,7 +61,8 @@ async function internalFetch<T>(
                 responseType: ResponseType.JSON
             });
 
-            if (!ok) return new Error('fail to request');
+            if (!ok)
+                return new Error(`${JSON.stringify(data)}. Send it to admin!`);
 
             return data;
         }
@@ -71,7 +72,10 @@ async function internalFetch<T>(
                 method: 'GET',
                 headers: { Authorization: token, User: user }
             });
-            if (!resp.ok) return new Error('fail to request');
+            if (!resp.ok)
+                return new Error(
+                    `${JSON.stringify(await resp.text())}. Send it to admin! `
+                );
 
             return await resp.json();
         } else {
@@ -81,7 +85,10 @@ async function internalFetch<T>(
                 body: JSON.stringify(body)
             });
 
-            if (!resp.ok) return new Error('fail to request');
+            if (!resp.ok) {
+                const msg = JSON.stringify(await resp.text());
+                return new Error(`${msg}. Send it to admin!`);
+            }
             const clonedResponse = resp.clone();
 
             try {
@@ -145,6 +152,31 @@ export type StartRequest = {
     vm?: Computer;
 };
 
+export async function KeepaliveVolume(
+    computer: Computer,
+    volume_id: string,
+    cancel_fun?: () => boolean
+): Promise<void> {
+    const { address } = computer;
+    await (async () => {
+        await new Promise((r) => setTimeout(r, 3000));
+        let stop = false;
+        while (!stop) {
+            if (
+                (await internalFetch<{}>(address, '_use', volume_id)) instanceof
+                Error
+            ) {
+                console.log('stop _use thread');
+                break;
+            } else {
+                await new Promise((r) => setTimeout(r, 1000 * 30));
+            }
+
+            stop = cancel_fun ? cancel_fun() : false;
+        }
+    })();
+}
+
 export async function StartVirtdaemon(
     computer: Computer,
     volume_id?: string
@@ -152,7 +184,7 @@ export async function StartVirtdaemon(
     const { address } = computer;
 
     const id = crypto.randomUUID();
-    const req: StartRequest = {
+    const req = {
         id,
         vm: {
             GPUs: ['GA104 [GeForce RTX 3060 Ti Lite Hash Rate]'],
@@ -163,13 +195,20 @@ export async function StartVirtdaemon(
     };
 
     let running = true;
-    (async () => {
-        await new Promise((r) => setTimeout(r, 1000));
+    (async (_req: StartRequest) => {
+        await new Promise((r) => setTimeout(r, 3000));
         while (running) {
-            internalFetch<{}>(address, '_new', req).catch(console.log);
-            await new Promise((r) => setTimeout(r, 1000));
+            if (
+                (await internalFetch<{}>(address, '_new', _req)) instanceof
+                Error
+            ) {
+                console.log('stop _new thread');
+                break;
+            } else {
+                await new Promise((r) => setTimeout(r, 1000));
+            }
         }
-    })();
+    })(req);
 
     let resp: Error | StartRequest = new Error('unable to request');
     try {
@@ -274,7 +313,6 @@ export async function StartThinkmayOnVM(
     };
 
     const resp = await internalFetch<StartRequest>(address, 'new', req);
-    console.log(resp, 'resp thinkmay');
 
     if (resp instanceof Error) throw resp;
 
@@ -358,7 +396,6 @@ export function ParseRequest(
     const { address } = computer;
     const { turn, thinkmay } = session;
 
-    console.log(session);
     return {
         audioUrl: !userHttp(address)
             ? `https://${address}/handshake/client?token=${thinkmay.audioToken}`
