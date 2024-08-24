@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc'; // import UTC plugin
 import {
     RootState,
     appDispatch,
@@ -57,25 +60,32 @@ export const fetchUser = async () => {
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());
-
     const info = store.getState().globals.maintenance;
-    const startAt = new Date(info.created_at);
-    const endAt = new Date(info.ended_at);
+
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+
+    let startAtTime = dayjs.utc(info.created_at);
+    let endAtTime = dayjs.utc(info.ended_at);
+
+    // Convert to GMT+7
+    let startAt = startAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
+    let endAt = endAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
 
     // Extract hour, day, and month
-    const hourStart = startAt.getUTCHours();
-    const dayStart = startAt.getUTCDate();
-    const monthStart = startAt.getUTCMonth() + 1;
+    const hourStart = startAt.hour();
+    const dayStart = startAt.date();
+    const monthStart = startAt.month() + 1;
 
     const startText = `${hourStart}h ${dayStart}/${monthStart}`;
 
-    const hourEnd = endAt.getUTCHours();
-    const dayEnd = endAt.getUTCDate();
-    const monthEnd = endAt.getUTCMonth() + 1;
+    const hourEnd = endAt.hour();
+    const dayEnd = endAt.date();
+    const monthEnd = endAt.month() + 1;
 
     const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
 
-    if (new Date() < endAt) {
+    if (dayjs() < endAt) {
         appDispatch(
             popup_open({
                 type: 'maintain',
