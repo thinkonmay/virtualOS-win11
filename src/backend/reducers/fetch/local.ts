@@ -72,7 +72,7 @@ async function internalFetch<T>(
                 method: 'GET',
                 headers: { Authorization: token, User: user }
             });
-            if (!resp.ok) return new Error('fail to request');
+            if (!resp.ok) return new Error(`${JSON.stringify(await resp.text())}. Send it to admin! `);
 
             return await resp.json();
         } else {
@@ -83,7 +83,7 @@ async function internalFetch<T>(
             });
 
             if (!resp.ok) {
-                const msg = JSON.stringify(await resp.json());
+                const msg = JSON.stringify(await resp.text())
                 return new Error(`${msg}. Send it to admin!`);
             }
             const clonedResponse = resp.clone();
