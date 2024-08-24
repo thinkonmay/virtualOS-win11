@@ -61,7 +61,8 @@ async function internalFetch<T>(
                 responseType: ResponseType.JSON
             });
 
-            if (!ok) return new Error(`${JSON.stringify(data)}. Send it to admin!`);
+            if (!ok)
+                return new Error(`${JSON.stringify(data)}. Send it to admin!`);
 
             return data;
         }
@@ -82,7 +83,7 @@ async function internalFetch<T>(
             });
 
             if (!resp.ok) {
-                const msg = JSON.stringify(await resp.json())
+                const msg = JSON.stringify(await resp.json());
                 return new Error(`${msg}. Send it to admin!`);
             }
             const clonedResponse = resp.clone();

@@ -286,11 +286,9 @@ export const remoteAsync = {
         }
 
         let email = (store.getState() as RootState).user.email;
-        const nodes = new RenderNode(
-            (store.getState()).worker.data
-        );
-        let newVolumeId = ''
-        nodes.iterate(n => {
+        const nodes = new RenderNode(store.getState().worker.data);
+        let newVolumeId = '';
+        nodes.iterate((n) => {
             if (n.type == 'vm_worker') {
                 newVolumeId = n.info?.Volumes?.at(0);
             }
@@ -300,10 +298,9 @@ export const remoteAsync = {
             newVolumeId = volume_id;
         }
         if (!email || email == '') {
-            email = await getEmailFromDB()
+            email = await getEmailFromDB();
         }
-        await PingSession(email, newVolumeId)
-
+        await PingSession(email, newVolumeId);
     },
     sync: async () => {
         if (!store.getState().remote.active) return;
@@ -312,9 +309,9 @@ export const remoteAsync = {
 
         if (
             store.getState().remote.prev_bitrate !=
-            store.getState().remote.bitrate ||
+                store.getState().remote.bitrate ||
             store.getState().remote.prev_framerate !=
-            store.getState().remote.framerate ||
+                store.getState().remote.framerate ||
             store.getState().remote.prev_framerate != size()
         )
             appDispatch(remoteSlice.actions.internal_sync());
@@ -475,8 +472,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
-                        state.bitrate +
-                        MIN_BITRATE()
+                            state.bitrate +
+                            MIN_BITRATE()
                     )
                 );
                 state.prev_bitrate = state.bitrate;
@@ -487,8 +484,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
-                        state.framerate +
-                        MIN_FRAMERATE
+                            state.framerate +
+                            MIN_FRAMERATE
                     )
                 );
                 state.prev_framerate = state.framerate;
@@ -516,7 +513,7 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.cache_setting,
-                hander: (state, action: PayloadAction<void>) => { }
+                hander: (state, action: PayloadAction<void>) => {}
             },
             {
                 fetch: remoteAsync.save_reference,
@@ -526,11 +523,11 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.toggle_remote_async,
-                hander: (state, action: PayloadAction<void>) => { }
+                hander: (state, action: PayloadAction<void>) => {}
             },
             {
                 fetch: remoteAsync.hard_reset_async,
-                hander: (state, action: PayloadAction<void>) => { }
+                hander: (state, action: PayloadAction<void>) => {}
             }
         );
     }
