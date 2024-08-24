@@ -72,7 +72,10 @@ async function internalFetch<T>(
                 method: 'GET',
                 headers: { Authorization: token, User: user }
             });
-            if (!resp.ok) return new Error(`${JSON.stringify(await resp.text())}. Send it to admin! `);
+            if (!resp.ok)
+                return new Error(
+                    `${JSON.stringify(await resp.text())}. Send it to admin! `
+                );
 
             return await resp.json();
         } else {
@@ -83,7 +86,7 @@ async function internalFetch<T>(
             });
 
             if (!resp.ok) {
-                const msg = JSON.stringify(await resp.text())
+                const msg = JSON.stringify(await resp.text());
                 return new Error(`${msg}. Send it to admin!`);
             }
             const clonedResponse = resp.clone();
@@ -167,10 +170,17 @@ export async function StartVirtdaemon(
 
     let running = true;
     (async (_req: StartRequest) => {
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 3000));
         while (running) {
-            internalFetch<{}>(address, '_new', _req).catch(console.log);
-            await new Promise((r) => setTimeout(r, 1000));
+            if (
+                (await internalFetch<{}>(address, '_new', _req)) instanceof
+                Error
+            ) {
+                console.log('stop _new thread');
+                break;
+            } else {
+                await new Promise((r) => setTimeout(r, 1000));
+            }
         }
     })(req);
 
