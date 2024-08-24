@@ -15,7 +15,7 @@ export const externalLink = {
     FACEBOOK_MESSAGE_LINK:
         'https://www.facebook.com/messages/t/105408644972153',
     MAILTO_ADDRESS: 'mailto:huyhoangdo@contact.thinkmay.net',
-    GUIDE_VIDEO: 'https://www.youtube.com/watch?v=qQDiEP4R11A'
+    GUIDE_VIDEO: 'https://www.youtube.com/watch?v=OeYx8N0xofI'
 };
 
 export const scanCodeApps = [
