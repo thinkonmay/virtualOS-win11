@@ -39,7 +39,6 @@ export const MicroStore = () => {
     //const isValidSub = true
     const isValidSub = stat?.plan_name == 'hour_02';
 
-    console.log(worker);
     const [isConnecting, setConnecting] = useState(false);
 
     useEffect(() => {

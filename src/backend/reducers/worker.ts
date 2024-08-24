@@ -22,6 +22,7 @@ import {
     CloseSession,
     Computer,
     GetInfo,
+    KeepaliveVolume,
     ParseRequest,
     ParseVMRequest,
     StartRequest,
@@ -103,10 +104,17 @@ export const workerAsync = {
                     throw new Error(
                         'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
                     );
-                } else if (
-                    result.type == 'vm_worker' &&
-                    result.data.length > 0
-                ) {
+                }
+                const computer: Computer = node.findParent<Computer>(
+                    result.id,
+                    'host_worker'
+                )?.info;
+                if (computer == undefined) {
+                    appDispatch(popup_close());
+                    throw new Error('invalid tree');
+                }
+
+                if (result.type == 'vm_worker' && result.data.length > 0) {
                     UserEvents({
                         type: 'remote/exit_queue_list',
                         payload: {
@@ -115,6 +123,7 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_access(result.data.at(0).id));
+                    KeepaliveVolume(computer, volume_id);
                     await PingSession(email, volume_id);
                     appDispatch(popup_close());
                     return;
@@ -130,21 +139,12 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_create(result.id));
+                    KeepaliveVolume(computer, volume_id);
                     await PingSession(email, volume_id);
                     appDispatch(popup_close());
                     return;
                 }
 
-                const computer: Computer = node.findParent<Computer>(
-                    result.id,
-                    'host_worker'
-                )?.info;
-                if (computer == undefined) {
-                    appDispatch(popup_close());
-                    throw new Error('invalid tree');
-                }
-
-                // TODO
                 const resp = await StartVirtdaemon(computer, volume_id);
                 if (resp instanceof Error) {
                     appDispatch(popup_close());

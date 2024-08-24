@@ -36,7 +36,6 @@ export const Remote = () => {
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
 
-    console.log(remote);
     useEffect(() => {
         if (!remote.active || remote.auth == undefined) return;
 
