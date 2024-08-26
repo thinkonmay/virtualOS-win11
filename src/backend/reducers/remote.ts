@@ -19,7 +19,7 @@ import { sleep } from '../utils/sleep';
 import { RenderNode } from '../utils/tree';
 import { isMobile } from './../utils/checking';
 import { PingSession } from './fetch';
-import { CAUSE, pb } from './fetch/createClient';
+import { CAUSE, pb, supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 
 const size = () =>
@@ -298,6 +298,13 @@ export const remoteAsync = {
         if (!email || email == '') {
             email = await getEmailFromDB();
         }
+
+        await supabase.from('generic_events').insert({
+            value: { email, newVolumeId },
+            name: `new session by email: ${email} with volumeid: ${newVolumeId}`,
+            type: 'PING'
+        });
+
         await PingSession(email, newVolumeId);
     },
     sync: async () => {
