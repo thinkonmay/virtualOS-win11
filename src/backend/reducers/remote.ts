@@ -6,7 +6,6 @@ import {
     popup_close,
     popup_open,
     remote_connect,
-    RootState,
     store,
     toggle_remote
 } from '.';
@@ -251,15 +250,20 @@ export const remoteAsync = {
         // TODO
     },
     ping_session: async () => {
-        if (!store.getState().remote.active) return;
-        else if (client == null) return;
-        // else if (store.getState().remote.local) return;
-        else if (!client.ready()) return;
-        else if (
-            Math.min(client?.hid?.last_active(), client?.touch?.last_active()) >
-            5 * 60
-        ) {
-            if (store.getState().popup.data_stack.length > 0) return;
+        const state = store.getState();
+        const { remote, popup, user, worker } = state;
+
+        if (!remote.active || client == null) {
+            console.log('Early exit: remote not active, client null, or client not ready');
+            return;
+        }
+
+        const lastActive = Math.min(client?.hid?.last_active(), client?.touch?.last_active());
+        if (lastActive > 5 * 60) {
+            if (popup.data_stack.length > 0) {
+                console.log('Early exit: popup data stack length > 0');
+                return;
+            }
 
             appDispatch(
                 popup_open({
@@ -272,31 +276,33 @@ export const remoteAsync = {
                 })
             );
 
-            while (
-                Math.min(
-                    client?.hid?.last_active(),
-                    client?.touch?.last_active()
-                ) > 2
-            )
+            while (Math.min(client?.hid?.last_active(), client?.touch?.last_active()) > 2) {
                 await new Promise((r) => setTimeout(r, 1000));
+            }
 
             appDispatch(popup_close());
         }
 
-        let email = (store.getState() as RootState).user.email;
-        const nodes = new RenderNode(store.getState().worker.data);
+        let email = user.email;
+        const nodes = new RenderNode(worker.data);
         let newVolumeId = '';
         nodes.iterate((n) => {
             if (n.type == 'vm_worker') {
-                newVolumeId = n.info?.Volumes?.at(0);
+                newVolumeId = n.info?.Volumes?.at(0) ?? '';
             }
         });
-        if (!newVolumeId) {
-            const volume_id = await getVolumeIdByEmail();
-            newVolumeId = volume_id;
+
+        if (!newVolumeId || newVolumeId == '') {
+            newVolumeId = await getVolumeIdByEmail();
         }
+
         if (!email || email == '') {
             email = await getEmailFromDB();
+        }
+
+        if (!email || !newVolumeId) {
+            console.log('Early exit: email or newVolumeId not set');
+            return;
         }
 
         await supabase.from('generic_events').insert({
@@ -314,9 +320,9 @@ export const remoteAsync = {
 
         if (
             store.getState().remote.prev_bitrate !=
-                store.getState().remote.bitrate ||
+            store.getState().remote.bitrate ||
             store.getState().remote.prev_framerate !=
-                store.getState().remote.framerate ||
+            store.getState().remote.framerate ||
             store.getState().remote.prev_framerate != size()
         )
             appDispatch(remoteSlice.actions.internal_sync());
@@ -477,8 +483,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
-                            state.bitrate +
-                            MIN_BITRATE()
+                        state.bitrate +
+                        MIN_BITRATE()
                     )
                 );
                 state.prev_bitrate = state.bitrate;
@@ -489,8 +495,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
-                            state.framerate +
-                            MIN_FRAMERATE
+                        state.framerate +
+                        MIN_FRAMERATE
                     )
                 );
                 state.prev_framerate = state.framerate;
@@ -518,7 +524,7 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.cache_setting,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             },
             {
                 fetch: remoteAsync.save_reference,
@@ -528,11 +534,11 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.toggle_remote_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             },
             {
                 fetch: remoteAsync.hard_reset_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             }
         );
     }
