@@ -1,5 +1,6 @@
 import { Body, Client, ResponseType, getClient } from '@tauri-apps/api/http';
 import { Child, Command } from '@tauri-apps/api/shell';
+import { v4 as uuidv4 } from 'uuid';
 import { pb } from './createClient';
 
 export const WS_PORT = 60000;
@@ -10,8 +11,8 @@ const TurnCredential = () => {
         minPort: min,
         maxPort: max,
         port: getRandomInt(min, max),
-        username: crypto.randomUUID(),
-        password: crypto.randomUUID()
+        username: uuidv4(),
+        password: uuidv4()
     };
 };
 
@@ -183,7 +184,7 @@ export async function StartVirtdaemon(
 ): Promise<Error | StartRequest> {
     const { address } = computer;
 
-    const id = crypto.randomUUID();
+    const id = uuidv4();
     const req = {
         id,
         vm: {
@@ -247,7 +248,7 @@ export async function StartThinkmayOnPeer(
         ScreenHeight: 1080
     };
 
-    const id = crypto.randomUUID();
+    const id = uuidv4();
     const req: StartRequest = {
         id,
         target,
@@ -303,7 +304,7 @@ export async function StartThinkmayOnVM(
         ScreenHeight: 1080
     };
 
-    const id = crypto.randomUUID();
+    const id = uuidv4();
     const req: StartRequest = {
         id,
         target,
@@ -355,7 +356,7 @@ export async function StartThinkmay(computer: Computer): Promise<Session> {
         ScreenHeight: 1080
     };
 
-    const id = crypto.randomUUID();
+    const id = uuidv4();
     const req: StartRequest = {
         id,
         thinkmay,
