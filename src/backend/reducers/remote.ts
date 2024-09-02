@@ -315,7 +315,7 @@ export const remoteAsync = {
             return;
         }
 
-        await PingSession(email, newVolumeId);
+        await PingSession(newVolumeId);
     },
     sync: async () => {
         if (!store.getState().remote.active) return;

@@ -123,8 +123,16 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_access(result.data.at(0).id));
-                    KeepaliveVolume(computer, volume_id);
-                    await PingSession(email, volume_id);
+                    KeepaliveVolume(
+                        computer,
+                        volume_id,
+                        async () => {
+                            await PingSession(volume_id);
+                        },
+                        () => {
+                            return false;
+                        }
+                    );
                     appDispatch(popup_close());
                     return;
                 } else if (
@@ -139,8 +147,16 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_create(result.id));
-                    KeepaliveVolume(computer, volume_id);
-                    await PingSession(email, volume_id);
+                    KeepaliveVolume(
+                        computer,
+                        volume_id,
+                        async () => {
+                            await PingSession(volume_id);
+                        },
+                        () => {
+                            return false;
+                        }
+                    );
                     appDispatch(popup_close());
                     return;
                 }
