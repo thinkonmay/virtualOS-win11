@@ -155,12 +155,15 @@ export type StartRequest = {
 export async function KeepaliveVolume(
     computer: Computer,
     volume_id: string,
+    total_time_callback?: (time_in_second: number) => Promise<void>,
     cancel_fun?: () => boolean
 ): Promise<void> {
     const { address } = computer;
     await (async () => {
         await new Promise((r) => setTimeout(r, 3000));
         let stop = false;
+        const now = () => new Date().getTime() / 1000;
+        const start = now();
         while (!stop) {
             if (
                 (await internalFetch<{}>(address, '_use', volume_id)) instanceof
@@ -172,6 +175,7 @@ export async function KeepaliveVolume(
                 await new Promise((r) => setTimeout(r, 1000 * 30));
             }
 
+            total_time_callback(now() - start);
             stop = cancel_fun ? cancel_fun() : false;
         }
     })();

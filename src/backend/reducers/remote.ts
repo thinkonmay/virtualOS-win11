@@ -6,7 +6,6 @@ import {
     popup_close,
     popup_open,
     remote_connect,
-    RootState,
     store,
     toggle_remote
 } from '.';
@@ -19,7 +18,7 @@ import { sleep } from '../utils/sleep';
 import { RenderNode } from '../utils/tree';
 import { isMobile } from './../utils/checking';
 import { PingSession } from './fetch';
-import { CAUSE, pb } from './fetch/createClient';
+import { CAUSE, pb, supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 
 const size = () =>
@@ -251,15 +250,25 @@ export const remoteAsync = {
         // TODO
     },
     ping_session: async () => {
-        if (!store.getState().remote.active) return;
-        else if (client == null) return;
-        // else if (store.getState().remote.local) return;
-        else if (!client.ready()) return;
-        else if (
-            Math.min(client?.hid?.last_active(), client?.touch?.last_active()) >
-            5 * 60
-        ) {
-            if (store.getState().popup.data_stack.length > 0) return;
+        const state = store.getState();
+        const { remote, popup, user, worker } = state;
+
+        if (!remote.active || client == null) {
+            console.log(
+                'Early exit: remote not active, client null, or client not ready'
+            );
+            return;
+        }
+
+        const lastActive = Math.min(
+            client?.hid?.last_active(),
+            client?.touch?.last_active()
+        );
+        if (lastActive > 5 * 60) {
+            if (popup.data_stack.length > 0) {
+                console.log('Early exit: popup data stack length > 0');
+                return;
+            }
 
             appDispatch(
                 popup_open({
@@ -277,28 +286,36 @@ export const remoteAsync = {
                     client?.hid?.last_active(),
                     client?.touch?.last_active()
                 ) > 2
-            )
+            ) {
                 await new Promise((r) => setTimeout(r, 1000));
+            }
 
             appDispatch(popup_close());
         }
 
-        let email = (store.getState() as RootState).user.email;
-        const nodes = new RenderNode(store.getState().worker.data);
+        let email = user.email;
+        const nodes = new RenderNode(worker.data);
         let newVolumeId = '';
         nodes.iterate((n) => {
             if (n.type == 'vm_worker') {
-                newVolumeId = n.info?.Volumes?.at(0);
+                newVolumeId = n.info?.Volumes?.at(0) ?? '';
             }
         });
-        if (!newVolumeId) {
-            const volume_id = await getVolumeIdByEmail();
-            newVolumeId = volume_id;
+
+        if (!newVolumeId || newVolumeId == '') {
+            newVolumeId = await getVolumeIdByEmail();
         }
+
         if (!email || email == '') {
             email = await getEmailFromDB();
         }
-        await PingSession(email, newVolumeId);
+
+        if (!email || !newVolumeId) {
+            console.log('Early exit: email or newVolumeId not set');
+            return;
+        }
+
+        await PingSession(newVolumeId);
     },
     sync: async () => {
         if (!store.getState().remote.active) return;
