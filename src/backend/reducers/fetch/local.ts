@@ -151,33 +151,27 @@ export type StartRequest = {
     vm?: Computer;
 };
 
-export async function KeepaliveVolume(
+type callback = () => Promise<void>;
+export function KeepaliveVolume(
     computer: Computer,
     volume_id: string,
-    total_time_callback?: (time_in_second: number) => Promise<void>,
-    cancel_fun?: () => boolean
-): Promise<void> {
+    total_time_callback?: (time_in_second: number) => Promise<void>
+): callback {
     const { address } = computer;
-    await (async () => {
-        await new Promise((r) => setTimeout(r, 3000));
-        let stop = false;
-        const now = () => new Date().getTime() / 1000;
-        const start = now();
-        while (!stop) {
-            if (
-                (await internalFetch<{}>(address, '_use', volume_id)) instanceof
-                Error
-            ) {
-                console.log('stop _use thread');
-                break;
-            } else {
-                await new Promise((r) => setTimeout(r, 1000 * 30));
-            }
+    let stop = false;
+    const now = () => new Date().getTime() / 1000;
+    const start = now();
+    return async () => {
+        if (stop) return;
 
-            total_time_callback(now() - start);
-            stop = cancel_fun ? cancel_fun() : false;
+        if (
+            (await internalFetch<{}>(address, '_use', volume_id)) instanceof
+            Error
+        ) {
+            stop = true;
         }
-    })();
+        total_time_callback(now() - start);
+    };
 }
 
 export async function StartVirtdaemon(
@@ -205,7 +199,6 @@ export async function StartVirtdaemon(
                 (await internalFetch<{}>(address, '_new', _req)) instanceof
                 Error
             ) {
-                console.log('stop _new thread');
                 break;
             } else {
                 await new Promise((r) => setTimeout(r, 1000));
