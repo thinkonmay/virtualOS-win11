@@ -4,12 +4,8 @@ import { pb } from './createClient';
 
 export const WS_PORT = 60000;
 const TurnCredential = () => {
-    const max = 65535;
-    const min = 30000;
     return {
-        minPort: min,
-        maxPort: max,
-        port: getRandomInt(min, max),
+        port: 65535,
         username: crypto.randomUUID(),
         password: crypto.randomUUID()
     };
@@ -125,8 +121,6 @@ export type StartRequest = {
     target?: string;
 
     turn?: {
-        minPort: number;
-        maxPort: number;
         port: number;
         username: string;
         password: string;

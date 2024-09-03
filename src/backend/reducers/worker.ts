@@ -57,10 +57,6 @@ export const workerAsync = {
         async (): Promise<void> => {
             await appDispatch(
                 fetch_local_worker(
-                    window.location.host.includes('localhost') ||
-                        window.location.host.includes('tauri.localhost')
-                        ? 'play.thinkmay.net'
-                        : window.location.host
                 )
             );
         }

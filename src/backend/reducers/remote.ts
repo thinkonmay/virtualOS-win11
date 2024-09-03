@@ -18,7 +18,7 @@ import { sleep } from '../utils/sleep';
 import { RenderNode } from '../utils/tree';
 import { isMobile } from './../utils/checking';
 import { PingSession } from './fetch';
-import { CAUSE, pb, supabase } from './fetch/createClient';
+import { CAUSE, getDomainURL, pb, supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 
 const size = () =>
@@ -421,7 +421,7 @@ export const remoteSlice = createSlice({
             if (token == undefined) return;
 
             navigator.clipboard.writeText(
-                `https://${window.location.host}/?ref=${token}`
+                `${getDomainURL()}/?ref=${token}`
             );
         },
         loose_focus: (state) => {

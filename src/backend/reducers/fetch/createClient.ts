@@ -21,8 +21,15 @@ const supabaseUrl = 'https://eznzbrvwojejubnxlcaq.supabase.co';
 const supabaseKey =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6bnpicnZ3b2planVibnhsY2FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE5NTU4MDAsImV4cCI6MjAyNzUzMTgwMH0.EAYuqXU7i_D1HOscFgYve1LtCzzfAyhefppchiRdBuc';
 
-export const pb = new PocketBase('https://play.thinkmay.net');
+export const pb = new PocketBase(getDomainURL());
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+export function getDomainURL() : string{
+    return window.location.host.includes('localhost') ||
+        window.location.host.includes('tauri.localhost')
+        ? 'play.thinkmay.net'
+        : window.location.host
+}
 
 export async function SupabaseFuncInvoke<T>(
     funcName: string,
