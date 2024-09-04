@@ -85,7 +85,7 @@ export async function UserSession(email: string) {
             .eq('id', session);
 
         current_stack_length = stack.length;
-    }
+    };
 
     setTimeout(analytics_report, 10 * 1000);
     setTimeout(analytics_report, 30 * 1000);
