@@ -83,12 +83,9 @@ export const ModifySubscription = async (input: IModifySubscriptionAction) => {
 };
 
 export const PingSession = async (volume_id: string) => {
-    const data = await supabase.functions.invoke(`ping_session`, {
+    await supabase.functions.invoke(`ping_session`, {
         body: {
             volume_id
         }
     });
-    if (data.error) console.log('ping session error' + data.error.message);
-
-    return data;
 };
