@@ -24,11 +24,17 @@ const supabaseKey =
 export const pb = new PocketBase(getDomainURL());
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-export function getDomainURL() : string{
+export function getDomainURL(): string {
+    return window.location.host.includes('localhost') ||
+        window.location.host.includes('tauri.localhost')
+        ? 'https://play.thinkmay.net'
+        : window.location.href;
+}
+export function getDomain(): string {
     return window.location.host.includes('localhost') ||
         window.location.host.includes('tauri.localhost')
         ? 'play.thinkmay.net'
-        : window.location.host
+        : window.location.host;
 }
 
 export async function SupabaseFuncInvoke<T>(

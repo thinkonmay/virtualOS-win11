@@ -389,9 +389,7 @@ export const remoteSlice = createSlice({
             console.log(token);
             if (token == undefined) return;
 
-            navigator.clipboard.writeText(
-                `${getDomainURL()}/?ref=${token}`
-            );
+            navigator.clipboard.writeText(`${getDomainURL()}/?ref=${token}`);
         },
         loose_focus: (state) => {
             state.focus = false;

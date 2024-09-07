@@ -17,7 +17,7 @@ import { sleep } from '../utils/sleep';
 import { fromComputer, RenderNode } from '../utils/tree';
 import { PingSession } from './fetch';
 import { UserEvents } from './fetch/analytics';
-import { pb } from './fetch/createClient';
+import { getDomain, pb } from './fetch/createClient';
 import {
     CloseSession,
     Computer,
@@ -56,10 +56,7 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
-            await appDispatch(
-                fetch_local_worker(
-                )
-            );
+            await appDispatch(fetch_local_worker(getDomain()));
         }
     ),
     wait_and_claim_volume: createAsyncThunk(
