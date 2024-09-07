@@ -31,6 +31,7 @@ import {
     StartVirtdaemon
 } from './fetch/local';
 import { BuilderHelper } from './helper';
+import { set_pinger } from './remote';
 
 type WorkerType = {
     data: any;
@@ -119,15 +120,10 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_access(result.data.at(0).id));
-                    KeepaliveVolume(
-                        computer,
-                        volume_id,
-                        async () => {
-                            await PingSession(volume_id);
-                        },
-                        () => {
-                            return false;
-                        }
+                    set_pinger(
+                        KeepaliveVolume(computer, volume_id, () =>
+                            PingSession(volume_id)
+                        )
                     );
                     appDispatch(popup_close());
                     return;
@@ -143,15 +139,10 @@ export const workerAsync = {
                         }
                     });
                     await appDispatch(vm_session_create(result.id));
-                    KeepaliveVolume(
-                        computer,
-                        volume_id,
-                        async () => {
-                            await PingSession(volume_id);
-                        },
-                        () => {
-                            return false;
-                        }
+                    set_pinger(
+                        KeepaliveVolume(computer, volume_id, () =>
+                            PingSession(volume_id)
+                        )
                     );
                     appDispatch(popup_close());
                     return;

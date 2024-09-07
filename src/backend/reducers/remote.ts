@@ -35,6 +35,12 @@ export const assign = (fun: () => RemoteDesktopClient) => {
     if (client != null) client.Close();
     client = fun();
 };
+
+let pinger = async () => {};
+export const set_pinger = (fun: () => Promise<void>) => {
+    pinger = fun;
+};
+
 export const ready = async () => {
     appDispatch(
         popup_open({
@@ -251,24 +257,15 @@ export const remoteAsync = {
     },
     ping_session: async () => {
         const state = store.getState();
-        const { remote, popup, user, worker } = state;
+        const { remote, popup } = state;
 
-        if (!remote.active || client == null) {
-            console.log(
-                'Early exit: remote not active, client null, or client not ready'
-            );
-            return;
-        }
+        if (!remote.active || client == null) return;
 
-        const lastActive = Math.min(
-            client?.hid?.last_active(),
-            client?.touch?.last_active()
-        );
-        if (lastActive > 5 * 60) {
-            if (popup.data_stack.length > 0) {
-                console.log('Early exit: popup data stack length > 0');
-                return;
-            }
+        const lastactive = () =>
+            Math.min(client?.hid?.last_active(), client?.touch?.last_active());
+
+        if (lastactive() > 5 * 60) {
+            if (popup.data_stack.length > 0) return;
 
             appDispatch(
                 popup_open({
@@ -281,41 +278,13 @@ export const remoteAsync = {
                 })
             );
 
-            while (
-                Math.min(
-                    client?.hid?.last_active(),
-                    client?.touch?.last_active()
-                ) > 2
-            ) {
+            while (lastactive() > 2)
                 await new Promise((r) => setTimeout(r, 1000));
-            }
 
             appDispatch(popup_close());
         }
 
-        let email = user.email;
-        const nodes = new RenderNode(worker.data);
-        let newVolumeId = '';
-        nodes.iterate((n) => {
-            if (n.type == 'vm_worker') {
-                newVolumeId = n.info?.Volumes?.at(0) ?? '';
-            }
-        });
-
-        if (!newVolumeId || newVolumeId == '') {
-            newVolumeId = await getVolumeIdByEmail();
-        }
-
-        if (!email || email == '') {
-            email = await getEmailFromDB();
-        }
-
-        if (!email || !newVolumeId) {
-            console.log('Early exit: email or newVolumeId not set');
-            return;
-        }
-
-        await PingSession(newVolumeId);
+        pinger();
     },
     sync: async () => {
         if (!store.getState().remote.active) return;
