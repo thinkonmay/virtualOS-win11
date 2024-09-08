@@ -17,9 +17,9 @@ export enum CAUSE {
     INVALID_REF
 }
 
-const supabaseUrl = 'https://eznzbrvwojejubnxlcaq.supabase.co';
+const supabaseUrl = getDomainURL();
 const supabaseKey =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6bnpicnZ3b2planVibnhsY2FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE5NTU4MDAsImV4cCI6MjAyNzUzMTgwMH0.EAYuqXU7i_D1HOscFgYve1LtCzzfAyhefppchiRdBuc';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzIzMTM2NDAwLAogICJleHAiOiAxODgwOTAyODAwCn0.SdW2AcXzhRFNBt9HmJw6sKa7lWDmVjbXdRF1mIjrDao';
 
 export const pb = new PocketBase(getDomainURL());
 export const supabase = createClient(supabaseUrl, supabaseKey);
