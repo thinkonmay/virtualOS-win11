@@ -5,7 +5,9 @@ import { pb } from './createClient';
 export const WS_PORT = 60000;
 const TurnCredential = () => {
     return {
-        port: 65535,
+        port: 10000,
+        MaxPort: 10000,
+        MinPort: 20000,
         username: crypto.randomUUID(),
         password: crypto.randomUUID()
     };
@@ -309,7 +311,7 @@ export async function StartThinkmay(computer: Computer): Promise<Session> {
             ? `https://${address}/handshake/client?token=${resp.thinkmay.videoToken}`
             : `http://${address}:${WS_PORT}/handshake/client?token=${resp.thinkmay.videoToken}`,
         rtc_config: {
-            iceTransportPolicy: 'all',
+            iceTransportPolicy: 'relay',
             iceServers: [
                 {
                     urls: `stun:${address}:${turn.port}`
@@ -328,25 +330,32 @@ export function ParseRequest(
     session: StartRequest
 ): Session {
     const { address } = computer;
-    const { turn, thinkmay } = session;
+    const {
+        thinkmay: {
+            audioToken,
+            videoToken,
+            turnAddress,
+            stunAddress,
+            username,
+            password
+        }
+    } = session;
 
     return {
         audioUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.audioToken}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.audioToken}`,
+            ? `https://${address}/handshake/client?token=${audioToken}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${audioToken}`,
         videoUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.videoToken}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.videoToken}`,
+            ? `https://${address}/handshake/client?token=${videoToken}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${videoToken}`,
         rtc_config: {
-            iceTransportPolicy: 'all',
+            iceTransportPolicy: 'relay',
             iceServers: [
+                { urls: stunAddress },
                 {
-                    urls: `stun:${address}:${turn.port}`
-                },
-                {
-                    urls: `turn:${address}:${turn.port}`,
-                    username: turn.username,
-                    credential: turn.password
+                    urls: turnAddress,
+                    username: username,
+                    credential: password
                 }
             ]
         }
@@ -358,25 +367,33 @@ export function ParseVMRequest(
     session: StartRequest
 ): Session {
     const { address } = computer;
-    const { turn, thinkmay, target } = session;
+    const {
+        thinkmay: {
+            stunAddress,
+            turnAddress,
+            password,
+            username,
+            videoToken,
+            audioToken
+        },
+        target
+    } = session;
 
     return {
         audioUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.audioToken}&target=${target}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.audioToken}&target=${target}`,
+            ? `https://${address}/handshake/client?token=${audioToken}&target=${target}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${audioToken}&target=${target}`,
         videoUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.videoToken}&target=${target}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.videoToken}&target=${target}`,
+            ? `https://${address}/handshake/client?token=${videoToken}&target=${target}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${videoToken}&target=${target}`,
         rtc_config: {
             iceTransportPolicy: 'relay', // preferred as VM often under double NAT
             iceServers: [
+                { urls: stunAddress },
                 {
-                    urls: `stun:${address}:${turn.port}`
-                },
-                {
-                    urls: `turn:${address}:${turn.port}`,
-                    username: turn.username,
-                    credential: turn.password
+                    urls: turnAddress,
+                    username,
+                    credential: password
                 }
             ]
         }
