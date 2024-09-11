@@ -261,8 +261,11 @@ export const remoteAsync = {
 
         if (!remote.active || client == null) return;
 
-        const lastactive = () =>
-            Math.min(client?.hid?.last_active(), client?.touch?.last_active());
+        const lastactive = () => {
+            let hidLastActive = client?.hid?.last_active() ?? 0;
+            let touchLastActive = client?.touch?.last_active() ?? 0;
+            return Math.min(hidLastActive, touchLastActive);
+        }
 
         if (lastactive() > 5 * 60) {
             if (popup.data_stack.length > 0) return;
