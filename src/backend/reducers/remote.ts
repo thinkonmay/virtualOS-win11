@@ -281,7 +281,7 @@ client: ${client} not ready`);
             }
 
             return Math.min(hidLastActive, touchLastActive);
-        }
+        };
 
         if (lastactive() > 5 * 60) {
             if (popup.data_stack.length > 0) return;
