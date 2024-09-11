@@ -259,11 +259,27 @@ export const remoteAsync = {
         const state = store.getState();
         const { remote, popup } = state;
 
-        if (!remote.active || client == null) return;
+        if (!remote.active || client == null) {
+            console.error(`
+remote: ${remote.active} not active
+client: ${client} not ready`);
+            return
+        };
 
         const lastactive = () => {
-            let hidLastActive = client?.hid?.last_active() ?? 0;
-            let touchLastActive = client?.touch?.last_active() ?? 0;
+            let hidLastActive = client?.hid?.last_active();
+            let touchLastActive = client?.touch?.last_active();
+
+            if (hidLastActive == undefined || hidLastActive == null){
+                console.error('hidLastActive is null');
+                hidLastActive = 0;
+            }
+
+            if (touchLastActive == undefined || touchLastActive == null){
+                console.error('touchLastActive is null');
+                touchLastActive = 0;
+            }
+
             return Math.min(hidLastActive, touchLastActive);
         }
 
