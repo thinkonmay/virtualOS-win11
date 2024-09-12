@@ -13,12 +13,9 @@ import { RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { AxisType } from '../../../src-tauri/core/models/hid.model';
 import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
 import { convertJSKey } from '../../../src-tauri/core/utils/convert';
-import { getEmailFromDB, getVolumeIdByEmail } from '../actions';
 import { sleep } from '../utils/sleep';
-import { RenderNode } from '../utils/tree';
 import { isMobile } from './../utils/checking';
-import { PingSession } from './fetch';
-import { CAUSE, pb, supabase } from './fetch/createClient';
+import { CAUSE, pb } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 
 const size = () =>
@@ -272,12 +269,12 @@ client: ${client} not ready`);
 
             if (hidLastActive == undefined || hidLastActive == null){
                 console.error('hidLastActive is null');
-                hidLastActive = 0;
+                hidLastActive = Infinity;
             }
 
             if (touchLastActive == undefined || touchLastActive == null){
                 console.error('touchLastActive is null');
-                touchLastActive = 0;
+                touchLastActive = Infinity;
             }
 
             return Math.min(hidLastActive, touchLastActive);
