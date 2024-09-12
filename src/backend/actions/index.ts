@@ -30,6 +30,7 @@ import { keyboardCallback } from '../reducers/remote';
 import { localStorageKey, pathNames, PlanName } from '../utils/constant';
 import { RenderNode } from '../utils/tree';
 import { fetchApp } from './background';
+import { getDomainURL } from '../reducers/fetch/createClient.ts';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -238,19 +239,16 @@ export const clickShortCut = (keys = []) => {
 
 export const bindStoreId = async (email: string, store_id: number) => {
     try {
-        const data = await fetch(
-            'https://play.thinkmay.net/access_store_volume',
-            {
-                method: 'POST',
-                headers: {
-                    Authorization: pb.authStore.token
-                },
-                body: JSON.stringify({
-                    store_id,
-                    email
-                })
-            }
-        );
+        const data = await fetch(`${getDomainURL()}/access_store_volume`, {
+            method: 'POST',
+            headers: {
+                Authorization: pb.authStore.token
+            },
+            body: JSON.stringify({
+                store_id,
+                email
+            })
+        });
         if (data.ok === false) throw await data.text();
 
         return data;

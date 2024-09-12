@@ -33,6 +33,7 @@ import {
 } from './fetch/local';
 import { BuilderHelper } from './helper';
 import { set_pinger } from './remote';
+import { getDomain } from './fetch/createClient.ts';
 
 type WorkerType = {
     data: any;
@@ -57,14 +58,7 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
-            await appDispatch(
-                fetch_local_worker(
-                    window.location.host.includes('localhost') ||
-                        window.location.host.includes('tauri.localhost')
-                        ? 'play.thinkmay.net'
-                        : window.location.host
-                )
-            );
+            await appDispatch(fetch_local_worker(getDomain()));
         }
     ),
     wait_and_claim_volume: createAsyncThunk(
@@ -383,10 +377,8 @@ export const workerAsync = {
             const computer = node.findParent<Computer>(input, 'host_worker')
                 ?.info;
             const session = node.find<StartRequest>(input)?.info;
-            const target = node.findParent<Computer>(
-                input,
-                'peer_worker'
-            )?.info.PrivateIP;
+            const target = node.findParent<Computer>(input, 'peer_worker')?.info
+                .PrivateIP;
 
             if (computer == undefined) throw new Error('invalid tree');
             if (session == undefined) throw new Error('invalid tree');

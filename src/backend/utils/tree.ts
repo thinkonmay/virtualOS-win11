@@ -160,7 +160,9 @@ export function fromComputer(
             node.data.push(child);
         });
 
-        computer.Peers?.forEach(x => node.data.push(fromComputer(x.PrivateIP,x,true)))
+        computer.Peers?.forEach((x) =>
+            node.data.push(fromComputer(x.PrivateIP, x, true))
+        );
     }
 
     return node;

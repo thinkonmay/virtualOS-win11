@@ -13,6 +13,7 @@ import { combineText } from '../../../backend/utils/combineText';
 import { customClickDispatch } from '../../../backend/utils/dispatch';
 import { Icon, Image, ToolBar } from '../../../components/shared/general';
 import './assets/fileexpo.scss';
+import { getDomainURL } from '../../../backend/reducers/fetch/createClient.ts';
 
 export const Worker = () => {
     const wnapp = useAppSelector((state) =>
@@ -224,7 +225,7 @@ const ContentArea = ({ searchtxt, data, adminPw }) => {
 
     const [usermap, setUsermap] = useState([]);
     useEffect(() => {
-        const pb = new PocketBase('https://play.thinkmay.net');
+        const pb = new PocketBase(getDomainURL());
         // todo
         if (!adminPw) return;
         pb.admins.authWithPassword(email, adminPw).then(() => {
