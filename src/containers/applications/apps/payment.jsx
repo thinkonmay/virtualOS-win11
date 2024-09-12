@@ -126,13 +126,27 @@ export const PaymentApp = () => {
             return;
         }
         if (isRejectHourSub(sub.name)) {
+            if (sub.name != 'hour_02') {
+                appDispatch(
+                    popup_open({
+                        type: 'complete',
+                        data: {
+                            success: false,
+                            content:
+                                'Gói hiện tại đang đóng do không đủ hạ tầng để phục vụ! Thời gian dự kiến: 11/11 - 25/11'
+                        }
+                    })
+                );
+                return;
+            }
+
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
                         success: false,
                         content:
-                            'Gói giờ hiện tại đang đóng!. Xin vui lòng chọn gói khác'
+                            'Gói giờ đang đóng do không đủ hạ tầng để phục vụ! Thời gian dự kiến: 11/11 - 7/12'
                     }
                 })
             );
@@ -172,15 +186,25 @@ export const PaymentApp = () => {
         );
     };
 
-    const isRejectHourSub = (subName) => {
+    const isOldUser = () => {
         let check = false;
         check =
-            subName == 'hour_02' &&
-            !isAvailableHourSub &&
-            user?.stat?.plan_name !== 'hour_02';
-        //&&
-        //user?.stat?.plan_name !== 'month_01' &&
-        //user?.stat?.plan_name !== 'unlimited_01';
+            user?.stat?.plan_name == 'hour_02' &&
+            user?.stat?.plan_name == 'month_01' &&
+            user?.stat?.plan_name == 'unlimited_01';
+        return check;
+    };
+
+    const isRejectHourSub = (subName) => {
+        //let check = false;
+        //check =
+        //    subName == 'hour_02' &&
+        //    !isAvailableHourSub &&
+        //    user?.stat?.plan_name !== 'hour_02';
+
+        //return check;
+        let check = false;
+        check = !user?.stat?.plan_name || subName == 'hour_02';
         return check;
     };
     return (

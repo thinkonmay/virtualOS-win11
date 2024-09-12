@@ -13,12 +13,9 @@ import { RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { AxisType } from '../../../src-tauri/core/models/hid.model';
 import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
 import { convertJSKey } from '../../../src-tauri/core/utils/convert';
-import { getEmailFromDB, getVolumeIdByEmail } from '../actions';
 import { sleep } from '../utils/sleep';
-import { RenderNode } from '../utils/tree';
 import { isMobile } from './../utils/checking';
-import { PingSession } from './fetch';
-import { CAUSE, pb, supabase } from './fetch/createClient';
+import { CAUSE, pb } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 
 const size = () =>
@@ -259,10 +256,29 @@ export const remoteAsync = {
         const state = store.getState();
         const { remote, popup } = state;
 
-        if (!remote.active || client == null) return;
+        if (!remote.active || client == null) {
+            console.error(`
+remote: ${remote.active} not active
+client: ${client} not ready`);
+            return;
+        }
 
-        const lastactive = () =>
-            Math.min(client?.hid?.last_active(), client?.touch?.last_active());
+        const lastactive = () => {
+            let hidLastActive = client?.hid?.last_active();
+            let touchLastActive = client?.touch?.last_active();
+
+            if (hidLastActive == undefined || hidLastActive == null) {
+                console.error('hidLastActive is null');
+                hidLastActive = Infinity;
+            }
+
+            if (touchLastActive == undefined || touchLastActive == null) {
+                console.error('touchLastActive is null');
+                touchLastActive = Infinity;
+            }
+
+            return Math.min(hidLastActive, touchLastActive);
+        };
 
         if (lastactive() > 5 * 60) {
             if (popup.data_stack.length > 0) return;
