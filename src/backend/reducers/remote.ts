@@ -260,19 +260,19 @@ export const remoteAsync = {
             console.error(`
 remote: ${remote.active} not active
 client: ${client} not ready`);
-            return
-        };
+            return;
+        }
 
         const lastactive = () => {
             let hidLastActive = client?.hid?.last_active();
             let touchLastActive = client?.touch?.last_active();
 
-            if (hidLastActive == undefined || hidLastActive == null){
+            if (hidLastActive == undefined || hidLastActive == null) {
                 console.error('hidLastActive is null');
                 hidLastActive = Infinity;
             }
 
-            if (touchLastActive == undefined || touchLastActive == null){
+            if (touchLastActive == undefined || touchLastActive == null) {
                 console.error('touchLastActive is null');
                 touchLastActive = Infinity;
             }
