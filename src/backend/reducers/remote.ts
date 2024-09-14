@@ -263,42 +263,38 @@ client: ${client} not ready`);
             return;
         }
 
-        const lastactive = () => {
-            let hidLastActive = client?.hid?.last_active();
-            let touchLastActive = client?.touch?.last_active();
+        // const lastActive = Math.min(
+        //     client?.hid?.last_active(),
+        //     client?.touch?.last_active()
+        // );
+        // if (lastActive > 5 * 60) {
+        //     if (popup.data_stack.length > 0) {
+        //         console.log('Early exit: popup data stack length > 0');
+        //         return;
+        //     }
 
-            if (hidLastActive == undefined || hidLastActive == null) {
-                console.error('hidLastActive is null');
-                hidLastActive = Infinity;
-            }
+        //     // appDispatch(
+        //     //     popup_open({
+        //     //         type: 'notify',
+        //     //         data: {
+        //     //             loading: false,
+        //     //             tips: false,
+        //     //             title: 'Please move your mouse!'
+        //     //         }
+        //     //     })
+        //     // );
 
-            if (touchLastActive == undefined || touchLastActive == null) {
-                console.error('touchLastActive is null');
-                touchLastActive = Infinity;
-            }
+        //     // while (
+        //     //     Math.min(
+        //     //         client?.hid?.last_active(),
+        //     //         client?.touch?.last_active()
+        //     //     ) > 2
+        //     // ) {
+        //     //     await new Promise((r) => setTimeout(r, 1000));
+        //     // }
 
-            return Math.min(hidLastActive, touchLastActive);
-        };
-
-        if (lastactive() > 5 * 60) {
-            if (popup.data_stack.length > 0) return;
-
-            appDispatch(
-                popup_open({
-                    type: 'notify',
-                    data: {
-                        loading: false,
-                        tips: false,
-                        title: 'Please move your mouse!'
-                    }
-                })
-            );
-
-            while (lastactive() > 2)
-                await new Promise((r) => setTimeout(r, 1000));
-
-            appDispatch(popup_close());
-        }
+        //     // appDispatch(popup_close());
+        // }
 
         pinger();
     },
