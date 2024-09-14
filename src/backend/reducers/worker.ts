@@ -18,6 +18,7 @@ import { fromComputer, RenderNode } from '../utils/tree';
 import { PingSession } from './fetch';
 import { UserEvents } from './fetch/analytics';
 import { pb } from './fetch/createClient';
+import { getDomain } from './fetch/createClient.ts';
 import {
     CloseSession,
     Computer,
@@ -33,7 +34,6 @@ import {
 } from './fetch/local';
 import { BuilderHelper } from './helper';
 import { set_pinger } from './remote';
-import { getDomain } from './fetch/createClient.ts';
 
 type WorkerType = {
     data: any;
@@ -120,9 +120,7 @@ export const workerAsync = {
                     });
                     await appDispatch(vm_session_access(result.data.at(0).id));
                     set_pinger(
-                        KeepaliveVolume(computer, volume_id, () =>
-                            PingSession(volume_id)
-                        )
+                        KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
                     return;
@@ -139,9 +137,7 @@ export const workerAsync = {
                     });
                     await appDispatch(vm_session_create(result.id));
                     set_pinger(
-                        KeepaliveVolume(computer, volume_id, () =>
-                            PingSession(volume_id)
-                        )
+                        KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
                     return;

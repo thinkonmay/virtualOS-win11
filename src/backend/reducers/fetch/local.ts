@@ -163,16 +163,16 @@ export function KeepaliveVolume(
     const now = () => new Date().getTime() / 1000;
     const start = now();
 
-    let fail_count = 0
+    let fail_count = 0;
     return async () => {
         if (stop) return;
 
         if (
             (await internalFetch<{}>(address, '_use', volume_id)) instanceof
             Error
-        ) 
-            fail_count++
-        
+        )
+            fail_count++;
+
         stop = fail_count > 10;
         total_time_callback(now() - start);
     };

@@ -1,3 +1,4 @@
+import { UserEvents } from './analytics.ts';
 import { supabase, SupabaseFuncInvoke } from './createClient.ts';
 
 export const DownloadApplication = async (
@@ -82,10 +83,11 @@ export const ModifySubscription = async (input: IModifySubscriptionAction) => {
     return result;
 };
 
-export const PingSession = async (volume_id: string) => {
-    await supabase.functions.invoke(`ping_session`, {
-        body: {
-            volume_id
+export const PingSession = async () => {
+    UserEvents({
+        type: 'remote/session',
+        payload: {
+            timestamp: new Date()
         }
     });
 };
