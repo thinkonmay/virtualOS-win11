@@ -10,7 +10,6 @@ import './assets/store.scss';
 import { FUNDING } from '@paypal/react-paypal-js';
 import {
     createPaymentLink,
-    isAlowBuyHourSub,
     wrapperAsyncFunction
 } from '../../../backend/actions';
 import { UserEvents } from '../../../backend/reducers/fetch/analytics';
@@ -88,22 +87,7 @@ export const PaymentApp = () => {
     ]);
 
     const [isAvailableHourSub, setAvailableHourSub] = useState(false);
-
-    useEffect(() => {
-        const fetch = async () => {
-            const check = await isAlowBuyHourSub();
-            setAvailableHourSub(check);
-        };
-        fetch();
-    }, [user]);
     const [iframe, setIframe] = useState('');
-    useEffect(() => {
-        setup();
-    }, []);
-    const setup = async () => {
-        // TODO
-    };
-
     const [paypage, setPaypage] = useState(null);
     const [subChoose, setSubChoose] = useState(null);
     const payment = async (price_in_vnd) => {

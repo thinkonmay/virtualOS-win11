@@ -49,47 +49,9 @@ const initialState: Data = {
     }
 };
 
-export type MenuOption = 'desk' | 'paused_app' | 'running_app' | NodeType;
+export type MenuOption = 'desk' | NodeType;
 function menu_conversion(menu: MenuOption): MenuOpt {
     switch (menu) {
-        case 'running_app':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Open',
-                        action: 'access_app'
-                    },
-                    {
-                        name: 'Reset',
-                        action: 'reset_app',
-                        icon: 'reset'
-                    },
-                    {
-                        name: 'Shutdown',
-                        action: 'pause_app',
-                        icon: 'shutdown'
-                    }
-                ]
-            };
-        case 'paused_app':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Power On',
-                        action: 'start_app',
-                        icon: 'start'
-                    },
-                    {
-                        name: 'Delete',
-                        action: 'delete_app',
-                        icon: 'delete'
-                    }
-                ]
-            };
         case 'desk':
             return {
                 width: '200px',

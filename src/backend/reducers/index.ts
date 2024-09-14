@@ -1,7 +1,7 @@
 import { ThunkMiddleware, configureStore } from '@reduxjs/toolkit';
 import * as actions from '.';
 import * as Actions from '../actions/index.js';
-import { appSlice, appsAsync } from './apps';
+import { appSlice } from './apps';
 import { deskSlice } from './desktop';
 import { globalAsync, globalSlice } from './globals';
 import { menusSlice } from './menu';
@@ -21,7 +21,6 @@ import { UserEvents } from './fetch/analytics.js';
 const blacklist = ['framerate', 'bitrate'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (window.location.href.includes('localhost'))
-        // TODO
         console.log({ ...(action as any) });
     if (blacklist.filter((x) => (action as any).type.includes(x)).length == 0)
         UserEvents(action as any);
@@ -125,14 +124,6 @@ export const {
     relative_mouse
 } = remoteSlice.actions;
 
-export const {
-    fetch_app,
-    install_app,
-    start_app,
-    pause_app,
-    delete_app,
-    access_app
-} = appsAsync;
 export const {
     fetch_local_worker,
     worker_session_access,

@@ -1,61 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { appDispatch, close_remote, ready } from '.';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppData, allApps } from '../utils';
-import { DeleteApplication, StartApplication, StopApplication } from './fetch';
 import { BuilderHelper } from './helper';
-
-export const appsAsync = {
-    fetch_app: createAsyncThunk('fetch_app', async (): Promise<any[]> => {
-        return [];
-    }),
-
-    install_app: createAsyncThunk(
-        'install_app',
-        async (
-            {
-                app_template_id
-            }: {
-                app_template_id: string;
-            },
-            { getState }
-        ): Promise<void> => {}
-    ),
-
-    access_app: createAsyncThunk(
-        'access_app',
-        async (storage_id: string, { getState }): Promise<string> => {
-            await ready();
-            return storage_id;
-        }
-    ),
-
-    start_app: createAsyncThunk(
-        'start_app',
-        async (storage_id: string, { getState }) => {
-            await StartApplication(storage_id);
-            await ready();
-            return storage_id;
-        }
-    ),
-
-    pause_app: createAsyncThunk(
-        'pause_app',
-        async (storage_id: string, { getState }): Promise<string> => {
-            await StopApplication(storage_id);
-            appDispatch(close_remote());
-            return storage_id;
-        }
-    ),
-
-    delete_app: createAsyncThunk(
-        'delete_app',
-        async (storage_id: string, { getState }): Promise<string> => {
-            await DeleteApplication(storage_id);
-            appDispatch(close_remote());
-            return storage_id;
-        }
-    )
-};
 
 type Data = {
     hz: number;
@@ -216,67 +161,6 @@ export const appSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        BuilderHelper<Data, any, any>(
-            builder,
-            {
-                fetch: appsAsync.access_app,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: appsAsync.install_app,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: appsAsync.start_app,
-                hander: (state, action) => {
-                    const obj = state.apps.find(
-                        (x) => action.payload == x.payload
-                    );
-                    if (obj == undefined) return;
-                    obj.ready = true;
-                    obj.menu = 'running_app';
-                    obj.action = 'access_app';
-                }
-            },
-            {
-                fetch: appsAsync.pause_app,
-                hander: (state, action) => {
-                    const obj = state.apps.find(
-                        (x) => action.payload == x.payload
-                    );
-                    if (obj == undefined) return;
-                    obj.ready = false;
-                    obj.menu = 'paused_app';
-                    obj.action = 'start_app';
-                }
-            },
-            {
-                fetch: appsAsync.delete_app,
-                hander: (state, action) => {
-                    const filtered = state.apps.findIndex(
-                        (x) => action.payload == x.payload
-                    );
-                    if (filtered == -1) return;
-                    state.apps.splice(filtered, 1);
-                }
-            },
-            {
-                fetch: appsAsync.fetch_app,
-                hander: (state, action) => {
-                    const app = action.payload.map((x: any) => {
-                        return {
-                            ...x,
-                            payload: x.payload,
-                            size: 'full',
-                            hide: x.id != 'settings',
-                            max: null,
-                            z: 0
-                        };
-                    });
-
-                    state.apps = [...initialState.apps, ...app];
-                }
-            }
-        );
+        BuilderHelper<Data, any, any>(builder);
     }
 });

@@ -41,6 +41,15 @@ export function UserEvents(content: { type: string; payload: any }) {
     });
 }
 
+export const PingSession = async () => {
+    UserEvents({
+        type: 'remote/session',
+        payload: {
+            timestamp: new Date()
+        }
+    });
+};
+
 export async function UserSession(email: string) {
     if (window.location.href.includes('localhost')) return;
 

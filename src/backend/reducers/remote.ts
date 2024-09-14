@@ -256,12 +256,7 @@ export const remoteAsync = {
         const state = store.getState();
         const { remote, popup } = state;
 
-        if (!remote.active || client == null) {
-            console.error(`
-remote: ${remote.active} not active
-client: ${client} not ready`);
-            return;
-        }
+        if (!remote.active || client == null) return;
 
         const lastactive = () => {
             let hidLastActive = client?.hid?.last_active();
@@ -402,7 +397,6 @@ export const remoteSlice = createSlice({
         },
         share_reference: (state) => {
             const token = state.ref;
-            console.log(token);
             if (token == undefined) return;
 
             navigator.clipboard.writeText(

@@ -257,7 +257,6 @@ export async function StartThinkmayOnPeer(
     };
 
     const resp = await internalFetch<StartRequest>(address, 'new', req);
-    console.log(resp, 'resp thinkmay');
 
     if (resp instanceof Error) throw resp;
 
@@ -394,25 +393,34 @@ export function ParseRequest(
     session: StartRequest
 ): Session {
     const { address } = computer;
-    const { turn, thinkmay } = session;
+    const {
+        thinkmay: {
+            audioToken,
+            videoToken,
+            stunAddress,
+            turnAddress,
+            username,
+            password
+        }
+    } = session;
 
     return {
         audioUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.audioToken}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.audioToken}`,
+            ? `https://${address}/handshake/client?token=${audioToken}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${audioToken}`,
         videoUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.videoToken}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.videoToken}`,
+            ? `https://${address}/handshake/client?token=${videoToken}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${videoToken}`,
         rtc_config: {
             iceTransportPolicy: 'all',
             iceServers: [
                 {
-                    urls: `stun:${address}:${turn.port}`
+                    urls: stunAddress
                 },
                 {
-                    urls: `turn:${address}:${turn.port}`,
-                    username: turn.username,
-                    credential: turn.password
+                    urls: turnAddress,
+                    username: username,
+                    credential: password
                 }
             ]
         }
@@ -424,25 +432,35 @@ export function ParseVMRequest(
     session: StartRequest
 ): Session {
     const { address } = computer;
-    const { turn, thinkmay, target } = session;
+    const {
+        thinkmay: {
+            audioToken,
+            videoToken,
+            stunAddress,
+            turnAddress,
+            username,
+            password
+        },
+        target
+    } = session;
 
     return {
         audioUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.audioToken}&target=${target}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.audioToken}&target=${target}`,
+            ? `https://${address}/handshake/client?token=${audioToken}&target=${target}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${audioToken}&target=${target}`,
         videoUrl: !userHttp(address)
-            ? `https://${address}/handshake/client?token=${thinkmay.videoToken}&target=${target}`
-            : `http://${address}:${WS_PORT}/handshake/client?token=${thinkmay.videoToken}&target=${target}`,
+            ? `https://${address}/handshake/client?token=${videoToken}&target=${target}`
+            : `http://${address}:${WS_PORT}/handshake/client?token=${videoToken}&target=${target}`,
         rtc_config: {
             iceTransportPolicy: 'relay', // preferred as VM often under double NAT
             iceServers: [
                 {
-                    urls: `stun:${address}:${turn.port}`
+                    urls: stunAddress
                 },
                 {
-                    urls: `turn:${address}:${turn.port}`,
-                    username: turn.username,
-                    credential: turn.password
+                    urls: turnAddress,
+                    username: username,
+                    credential: password
                 }
             ]
         }

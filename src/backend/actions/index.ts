@@ -257,19 +257,6 @@ export const bindStoreId = async (email: string, store_id: number) => {
     }
 };
 
-export const isAlowBuyHourSub = async () => {
-    try {
-        const { data, error } = await supabase.rpc('allow_hour_plan');
-
-        if (data.ok === false) {
-            console.log(error);
-        }
-
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
-};
 interface PaymentBody {
     buyerEmail: string;
     items: {

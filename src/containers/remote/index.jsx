@@ -31,7 +31,7 @@ export const Remote = () => {
     // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
-    const [isOpenStats, setOpenStats] = useState(true);
+    const [isOpenStats, setOpenStats] = useState(false);
     const remote = useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
@@ -183,7 +183,7 @@ export const Remote = () => {
             <div
                 className={`${
                     isOpenStats ? 'slide-in' : 'slide-out'
-                } bg-red-300   statusConnection`}
+                } bg-white-300   statusConnection`}
             >
                 <p>
                     Video status: <b>{videoConnectivity}</b>

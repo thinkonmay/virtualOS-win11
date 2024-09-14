@@ -15,8 +15,7 @@ import {
 } from '.';
 import { sleep } from '../utils/sleep';
 import { fromComputer, RenderNode } from '../utils/tree';
-import { PingSession } from './fetch';
-import { UserEvents } from './fetch/analytics';
+import { PingSession, UserEvents } from './fetch/analytics';
 import { pb } from './fetch/createClient';
 import { getDomain } from './fetch/createClient.ts';
 import {

@@ -98,18 +98,28 @@ const apps: AppData[] = [
 ];
 var { taskbar, desktop } = {
     taskbar: ['Store games'],
-    desktop: [
-        'Worker Profile',
-        //'Browser',
-        'Local Connect',
-        'Discord',
-        'Hướng dẫn',
-        'Thinkmay Fanpage',
-        'Store games',
-        'Connect YourPC',
-        'Payment'
-        //'Your Info'
-    ]
+    desktop: window.location.href.includes('localhost')
+        ? [
+              'Worker Profile',
+              'Browser',
+              'Local Connect',
+              'Discord',
+              'Hướng dẫn',
+              'Thinkmay Fanpage',
+              'Store games',
+              'Connect YourPC',
+              'Payment'
+              //'Your Info'
+          ]
+        : [
+              'Local Connect',
+              'Discord',
+              'Hướng dẫn',
+              'Thinkmay Fanpage',
+              'Store games',
+              'Connect YourPC',
+              'Payment'
+          ]
 };
 
 apps.map((x) => {
