@@ -126,19 +126,6 @@ export const PaymentApp = () => {
             return;
         }
         if (isRejectHourSub(sub.name)) {
-            if (sub.name != 'hour_02') {
-                appDispatch(
-                    popup_open({
-                        type: 'complete',
-                        data: {
-                            success: false,
-                            content:
-                                'Gói hiện tại đang đóng do không đủ hạ tầng để phục vụ! Thời gian dự kiến: 11/11 - 25/11'
-                        }
-                    })
-                );
-                return;
-            }
 
             appDispatch(
                 popup_open({
@@ -146,7 +133,7 @@ export const PaymentApp = () => {
                     data: {
                         success: false,
                         content:
-                            'Gói giờ đang đóng do không đủ hạ tầng để phục vụ! Thời gian dự kiến: 11/11 - 7/12'
+                            'Gói hiện tại đang đóng.Quý khách vui lòng quay lại sau!'
                     }
                 })
             );
@@ -196,16 +183,16 @@ export const PaymentApp = () => {
     };
 
     const isRejectHourSub = (subName) => {
-        //let check = false;
-        //check =
-        //    subName == 'hour_02' &&
-        //    !isAvailableHourSub &&
-        //    user?.stat?.plan_name !== 'hour_02';
-
-        //return check;
         let check = false;
-        check = !user?.stat?.plan_name || subName == 'hour_02';
+        check =
+            subName == 'hour_02' &&
+            !isAvailableHourSub &&
+            user?.stat?.plan_name !== 'hour_02';
+
         return check;
+        //let check = false;
+        //check = !user?.stat?.plan_name || subName == 'hour_02';
+        //return check;
     };
     return (
         <div
@@ -349,7 +336,7 @@ export const PaymentApp = () => {
 
                                             <div className="flex flex-col gap-2 mt-auto prose">
                                                 {sub.name == 'hour_02' &&
-                                                !isRejectHourSub(sub.name) ? (
+                                                    !isRejectHourSub(sub.name) ? (
                                                     <div className="flex gap-3 items-center ">
                                                         <b>Số giờ mua</b>
                                                         <input
@@ -389,13 +376,12 @@ export const PaymentApp = () => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
-                                                            ${
-                                                                isRejectHourSub(
-                                                                    sub.name
-                                                                )
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-[#328cff]'
-                                                            }  `}
+                                                            ${isRejectHourSub(
+                                                        sub.name
+                                                    )
+                                                            ? 'bg-red-500'
+                                                            : 'bg-[#328cff]'
+                                                        }  `}
                                                 >
                                                     <span className="truncate font-medium text-xl">
                                                         {isRejectHourSub(
@@ -472,10 +458,10 @@ const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
