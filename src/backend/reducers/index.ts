@@ -16,7 +16,7 @@ import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { UserEvents } from './fetch/analytics.js';
+import { UserEvents } from '../../../src-tauri/api/analytics.js';
 
 const blacklist = ['framerate', 'bitrate'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {

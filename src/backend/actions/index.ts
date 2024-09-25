@@ -1,10 +1,4 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import {
-    pb,
-    supabase,
-    SupabaseFuncInvoke
-} from '../reducers/fetch/createClient';
-import { Computer, StartRequest } from '../reducers/fetch/local';
 import '../reducers/index';
 import {
     appDispatch,
@@ -30,7 +24,12 @@ import { keyboardCallback } from '../reducers/remote';
 import { localStorageKey, pathNames, PlanName } from '../utils/constant';
 import { RenderNode } from '../utils/tree';
 import { fetchApp } from './background';
-import { getDomainURL } from '../reducers/fetch/createClient.ts';
+import { Computer, StartRequest } from '../../../src-tauri/api/local.ts';
+import {
+    getDomainURL,
+    pb,
+    SupabaseFuncInvoke
+} from '../../../src-tauri/api/createClient.ts';
 
 export const refresh = async () => {
     appDispatch(desk_hide());

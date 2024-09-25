@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
+import { UserSession } from '../src-tauri/api/analytics';
 import { preload } from './backend/actions/background';
 import {
     afterMath,
@@ -16,7 +17,6 @@ import {
     store,
     useAppSelector
 } from './backend/reducers';
-import { UserSession } from './backend/reducers/fetch/analytics';
 import { Contents } from './backend/reducers/locales';
 import { isMobile } from './backend/utils/checking';
 import { localStorageKey, pathNames } from './backend/utils/constant';

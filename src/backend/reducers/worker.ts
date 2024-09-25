@@ -13,11 +13,10 @@ import {
     worker_refresh,
     worker_vm_create_from_volume
 } from '.';
+import { PingSession, UserEvents } from '../../../src-tauri/api/analytics';
+import { getDomain, pb } from '../../../src-tauri/api/createClient';
 import { sleep } from '../utils/sleep';
 import { fromComputer, RenderNode } from '../utils/tree';
-import { PingSession, UserEvents } from './fetch/analytics';
-import { pb } from './fetch/createClient';
-import { getDomain } from './fetch/createClient.ts';
 import {
     CloseSession,
     Computer,
@@ -27,10 +26,9 @@ import {
     ParseVMRequest,
     StartRequest,
     StartThinkmay,
-    StartThinkmayOnPeer,
     StartThinkmayOnVM,
     StartVirtdaemon
-} from './fetch/local';
+} from '../../../src-tauri/api/local';
 import { BuilderHelper } from './helper';
 import { set_pinger } from './remote';
 
@@ -208,6 +206,7 @@ export const workerAsync = {
                 ?.info;
 
             const result = await StartThinkmay(computer);
+            if (result instanceof Error) throw result;
             appDispatch(fetch_local_worker(computer.address));
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
@@ -228,6 +227,7 @@ export const workerAsync = {
             if (session == undefined) throw new Error('invalid tree');
 
             const result = ParseRequest(computer, session);
+            if (result instanceof Error) throw result;
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
         }
@@ -294,6 +294,7 @@ export const workerAsync = {
             else if (vm_session == undefined) throw new Error('invalid tree');
 
             const result = await StartThinkmayOnVM(host.info, vm_session.id);
+            if (result instanceof Error) throw result;
             await sleep(15 * 1000);
             appDispatch(remote_connect(result));
             await appDispatch(fetch_local_worker(host.info.address));
@@ -358,11 +359,11 @@ export const workerAsync = {
             const host = node.findParent<Computer>(ip, 'host_worker');
             if (host == undefined) throw new Error('invalid tree');
 
-            const result = await StartThinkmayOnPeer(host.info, ip);
-            appDispatch(remote_connect(result));
+            // const result = await StartThinkmayOnPeer(host.info, ip);
+            // appDispatch(remote_connect(result));
 
-            await appDispatch(fetch_local_worker(host.info.address));
-            await appDispatch(save_reference(result));
+            // await appDispatch(fetch_local_worker(host.info.address));
+            // await appDispatch(save_reference(result));
         }
     ),
     peer_session_access: createAsyncThunk(

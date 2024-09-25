@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { pb } from './fetch/createClient';
 import { BuilderHelper } from './helper';
+import { pb } from '../../../src-tauri/api/createClient';
 
 type Data = RecordModel & {
     stat?: UsageTime;

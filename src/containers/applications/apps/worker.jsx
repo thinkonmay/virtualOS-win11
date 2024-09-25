@@ -13,7 +13,6 @@ import { combineText } from '../../../backend/utils/combineText';
 import { customClickDispatch } from '../../../backend/utils/dispatch';
 import { Icon, Image, ToolBar } from '../../../components/shared/general';
 import './assets/fileexpo.scss';
-import { getDomainURL } from '../../../backend/reducers/fetch/createClient.ts';
 
 export const Worker = () => {
     const wnapp = useAppSelector((state) =>

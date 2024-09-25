@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
-import { supabase } from './fetch/createClient';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
+import { supabase } from '../../../src-tauri/api/createClient';
 
 export type Notification = {
     urlToImage?: string;

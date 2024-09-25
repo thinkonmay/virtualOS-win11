@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { UserEvents } from '../../../../src-tauri/api/analytics';
 import {
     appDispatch,
     app_close,
     app_toggle,
     useAppSelector
 } from '../../../backend/reducers';
-import { UserEvents } from '../../../backend/reducers/fetch/analytics';
 import { Contents } from '../../../backend/reducers/locales';
 import { externalLink } from '../../../backend/utils/constant';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';

@@ -8,11 +8,11 @@ import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
 import { FUNDING } from '@paypal/react-paypal-js';
+import { UserEvents } from '../../../../src-tauri/api/analytics';
 import {
     createPaymentLink,
     wrapperAsyncFunction
 } from '../../../backend/actions';
-import { UserEvents } from '../../../backend/reducers/fetch/analytics';
 import { Contents } from '../../../backend/reducers/locales';
 import { Image } from '../../../components/shared/general';
 

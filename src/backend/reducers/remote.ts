@@ -15,8 +15,8 @@ import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
 import { convertJSKey } from '../../../src-tauri/core/utils/convert';
 import { sleep } from '../utils/sleep';
 import { isMobile } from './../utils/checking';
-import { CAUSE, pb } from './fetch/createClient';
 import { BuilderHelper } from './helper';
+import { CAUSE, getDomainURL, pb } from '../../../src-tauri/api/createClient';
 
 const size = () =>
     client != null
@@ -258,22 +258,8 @@ export const remoteAsync = {
 
         if (!remote.active || client == null) return;
 
-        const lastactive = () => {
-            let hidLastActive = client?.hid?.last_active();
-            let touchLastActive = client?.touch?.last_active();
-
-            if (hidLastActive == undefined || hidLastActive == null) {
-                console.error('hidLastActive is null');
-                hidLastActive = Infinity;
-            }
-
-            if (touchLastActive == undefined || touchLastActive == null) {
-                console.error('touchLastActive is null');
-                touchLastActive = Infinity;
-            }
-
-            return Math.min(hidLastActive, touchLastActive);
-        };
+        const lastactive = () =>
+            Math.min(client?.hid?.last_active(), client?.touch?.last_active());
 
         if (lastactive() > 5 * 60) {
             if (popup.data_stack.length > 0) return;
@@ -397,11 +383,10 @@ export const remoteSlice = createSlice({
         },
         share_reference: (state) => {
             const token = state.ref;
+            console.log(token);
             if (token == undefined) return;
 
-            navigator.clipboard.writeText(
-                `https://${window.location.host}/?ref=${token}`
-            );
+            navigator.clipboard.writeText(`${getDomainURL()}/?ref=${token}`);
         },
         loose_focus: (state) => {
             state.focus = false;

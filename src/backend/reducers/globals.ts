@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from './fetch/createClient';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
+import { supabase } from '../../../src-tauri/api/createClient';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
