@@ -17,18 +17,16 @@ import { isMobile } from '../../backend/utils/checking';
 import './remote.scss';
 
 export const Remote = () => {
+    // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
+    const [videoConnectivity, setVideoConnectivity] = useState('not started');
+    const [audioConnectivity, setAudioConnectivity] = useState('not started');
     const relative_mouse = useAppSelector((x) => x.remote.relative_mouse);
-    const wall = useAppSelector((state) => state.wallpaper);
     const keyboard = useAppSelector(
         (state) => !state.sidepane.mobileControl.keyboardHide
     );
     const gamepad = useAppSelector(
         (state) => !state.sidepane.mobileControl.gamePadHide
     );
-
-    // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
-    const [videoConnectivity, setVideoConnectivity] = useState('not started');
-    const [audioConnectivity, setAudioConnectivity] = useState('not started');
     const remote = useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
@@ -51,7 +49,6 @@ export const Remote = () => {
                     : setVideoConnectivity('connecting');
 
             if (message == ConnectionEvent.ApplicationStarted) {
-                //await TurnOnConfirm(message, text)
                 setAudioConnectivity('started');
                 setVideoConnectivity('started');
             }
@@ -100,13 +97,7 @@ export const Remote = () => {
             <video
                 className="remote"
                 ref={remoteVideo}
-                onClick={
-                    relative_mouse
-                        ? pointerlock
-                        : (e) => {
-                              afterMath(e);
-                          }
-                }
+                onClick={relative_mouse ? pointerlock : (e) => afterMath(e)}
                 autoPlay
                 muted
                 playsInline
