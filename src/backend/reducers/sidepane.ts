@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
+import { supabaseLocal } from '../../../src-tauri/api/createClient';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
-import { supabase } from '../../../src-tauri/api/createClient';
 
 export type Notification = {
     urlToImage?: string;
@@ -248,7 +248,7 @@ export const sidepaneAsync = {
         'push_message',
         async (input: Message, { getState }): Promise<void> => {
             const email = store.getState().user.email;
-            await supabase.from('generic_events').insert({
+            await supabaseLocal.from('generic_events').insert({
                 type: 'MESSAGE',
                 name: `message from ${email}`,
                 value: { email, ...input }
@@ -267,7 +267,7 @@ export const sidepaneAsync = {
     fetch_message: createAsyncThunk(
         'fetch_message',
         async (email: string, { getState }): Promise<Message[]> => {
-            supabase
+            supabaseLocal
                 .channel('schema-message-changes')
                 .on(
                     'postgres_changes',
@@ -282,7 +282,7 @@ export const sidepaneAsync = {
                 .subscribe();
 
             return await CacheRequest('message', 30, async () => {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseLocal
                     .from('generic_events')
                     .select('timestamp,value,name')
                     .order('timestamp', { ascending: false })
