@@ -294,8 +294,14 @@ export const verifyPayment = async (inputs: VerifyPaymentBody) => {
 };
 
 export const wrapperAsyncFunction = async (
-    fun: () => Promise<void>,
-    { loading = true, title = 'Loading...', text, tips = true, timeProcessing }
+    fun: () => Promise<any>,
+    {
+        loading = true,
+        title = 'Loading...',
+        text = '',
+        tips = true,
+        timeProcessing
+    }
 ) => {
     try {
         appDispatch(
