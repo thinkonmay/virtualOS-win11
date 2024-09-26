@@ -17,7 +17,6 @@ export type Message = {
     url?: string;
 
     name: string;
-    timestamp: string;
     content: string;
 };
 type IGamePadSetting = {
@@ -251,7 +250,7 @@ export const sidepaneAsync = {
             await supabaseLocal.from('generic_events').insert({
                 type: 'MESSAGE',
                 name: `message from ${email}`,
-                value: { email, ...input }
+                value: { email, ...input, timestamp: new Date().toISOString() }
             });
         }
     ),

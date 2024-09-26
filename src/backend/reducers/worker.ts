@@ -129,8 +129,7 @@ export const workerAsync = {
                 UserEvents({
                     type: 'remote/requesting_vm',
                     payload: {
-                        email,
-                        timestamp: new Date().toISOString()
+                        email
                     }
                 });
 
@@ -140,8 +139,7 @@ export const workerAsync = {
                         type: 'remote/request_vm_failure',
                         payload: {
                             email,
-                            error: resp.message,
-                            timestamp: new Date().toISOString()
+                            error: resp.message
                         }
                     });
                     appDispatch(popup_close());
@@ -151,8 +149,7 @@ export const workerAsync = {
                 UserEvents({
                     type: 'remote/request_vm_success',
                     payload: {
-                        email,
-                        timestamp: new Date().toISOString()
+                        email
                     }
                 });
 
