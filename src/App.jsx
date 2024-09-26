@@ -96,7 +96,7 @@ function App() {
         preload().finally(async () => {
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
-            UserEvents({ type: 'finish_preload', payload: { interval } });
+            UserEvents({ type: 'preload/finish', payload: { interval } });
             console.log(`finish preload in ${interval}ms`);
 
             if (isMobile()) await waitForPhoneRotation();

@@ -15,8 +15,6 @@ import {
 } from '.';
 import { PingSession, UserEvents } from '../../../src-tauri/api/analytics';
 import { getDomain, pb } from '../../../src-tauri/api/createClient';
-import { sleep } from '../utils/sleep';
-import { fromComputer, RenderNode } from '../utils/tree';
 import {
     CloseSession,
     Computer,
@@ -29,6 +27,8 @@ import {
     StartThinkmayOnVM,
     StartVirtdaemon
 } from '../../../src-tauri/api/local';
+import { sleep } from '../utils/sleep';
+import { fromComputer, RenderNode } from '../utils/tree';
 import { BuilderHelper } from './helper';
 import { set_pinger } from './remote';
 
@@ -108,13 +108,6 @@ export const workerAsync = {
                 }
 
                 if (result.type == 'vm_worker' && result.data.length > 0) {
-                    UserEvents({
-                        type: 'remote/exit_queue_list',
-                        payload: {
-                            email,
-                            end_at: new Date().toISOString()
-                        }
-                    });
                     await appDispatch(vm_session_access(result.data.at(0).id));
                     set_pinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
@@ -125,13 +118,6 @@ export const workerAsync = {
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
-                    UserEvents({
-                        type: 'remote/exit_queue_list',
-                        payload: {
-                            email,
-                            end_at: new Date().toISOString()
-                        }
-                    });
                     await appDispatch(vm_session_create(result.id));
                     set_pinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
@@ -140,11 +126,35 @@ export const workerAsync = {
                     return;
                 }
 
+                UserEvents({
+                    type: 'remote/requesting_vm',
+                    payload: {
+                        email,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
                 const resp = await StartVirtdaemon(computer, volume_id);
                 if (resp instanceof Error) {
+                    UserEvents({
+                        type: 'remote/request_vm_failure',
+                        payload: {
+                            email,
+                            error: resp.message,
+                            timestamp: new Date().toISOString()
+                        }
+                    });
                     appDispatch(popup_close());
                     throw resp;
                 }
+
+                UserEvents({
+                    type: 'remote/request_vm_success',
+                    payload: {
+                        email,
+                        timestamp: new Date().toISOString()
+                    }
+                });
 
                 await appDispatch(worker_refresh());
             }
