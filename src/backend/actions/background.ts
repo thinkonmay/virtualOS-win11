@@ -26,6 +26,7 @@ import {
     worker_refresh
 } from '../reducers';
 import { client } from '../reducers/remote';
+import { UserSession } from '../../../src-tauri/api/analytics';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -181,8 +182,8 @@ export const checkTimeUsage = async () => {
     };
 };
 
-const paymentVerify = () => {
-    return wrapperAsyncFunction(
+const paymentVerify = async () => {
+    await wrapperAsyncFunction(
         () => verifyPayment(store.getState().user.email),
         {
             loading: true,
@@ -193,10 +194,15 @@ const paymentVerify = () => {
     );
 };
 
+const StartAnalytics = async () => {
+    await UserSession(store.getState().user.email);
+};
+
 export const preload = async () => {
     try {
         await fetchUser();
         await Promise.allSettled([
+            StartAnalytics(),
             paymentVerify(),
             loadSettings(),
             fetchApp(),

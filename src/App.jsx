@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
-import { UserSession } from '../src-tauri/api/analytics';
 import { preload } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
@@ -96,11 +95,6 @@ function App() {
             setLockscreen(false);
         });
     }, []);
-    useEffect(() => {
-        if (user.id == 'unknown') return;
-
-        UserSession(user.email);
-    }, [user.id]);
 
     const fullscreen = async () => {
         const elem = document.documentElement;
