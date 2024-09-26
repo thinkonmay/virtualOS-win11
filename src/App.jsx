@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
+import { UserEvents } from '../src-tauri/api/analytics';
 import { preload } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
@@ -79,18 +80,26 @@ function App() {
         }
         window.history.replaceState({}, document.title, '/' + '');
 
-        preload().finally(async () => {
+        const waitForPhoneRotation = async () => {
             await new Promise((r) => setTimeout(r, 1000));
-            const now = new Date().getTime();
-            const timeout = () => new Date().getTime() - now > 10 * 1000;
             while (
-                isMobile() &&
                 window.screen.width < window.screen.height &&
-                !timeout()
+                !(now() - finish_fetch > 10 * 1000)
             ) {
                 setloadingText(Contents.ROTATE_PHONE);
                 await new Promise((r) => setTimeout(r, 1000));
             }
+        };
+
+        const now = () => new Date().getTime();
+        const start_fetch = now();
+        preload().finally(async () => {
+            const finish_fetch = now();
+            const interval = finish_fetch - start_fetch;
+            UserEvents({ type: 'finish_preload', payload: { interval } });
+            console.log(`finish preload in ${interval}ms`);
+
+            if (isMobile()) await waitForPhoneRotation();
 
             setLockscreen(false);
         });
