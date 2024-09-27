@@ -33,9 +33,7 @@ const VirtKeyboard = ({ close }) => {
         }
     };
 
-    const handleKeyReleased = (button) => {
-
-    };
+    const handleKeyReleased = (button) => {};
     return (
         <div
             id="keyboard"
@@ -47,7 +45,6 @@ const VirtKeyboard = ({ close }) => {
                 layoutName={layoutName}
                 onKeyPress={handleKeyPress}
                 onKeyReleased={handleKeyReleased}
-
                 disableButtonHold={true}
                 display={{
                     Backspace: '⌫',
