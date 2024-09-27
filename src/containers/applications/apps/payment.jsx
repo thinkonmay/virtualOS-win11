@@ -126,7 +126,6 @@ export const PaymentApp = () => {
             return;
         }
         if (isRejectHourSub(sub.name)) {
-
             appDispatch(
                 popup_open({
                     type: 'complete',
@@ -336,7 +335,7 @@ export const PaymentApp = () => {
 
                                             <div className="flex flex-col gap-2 mt-auto prose">
                                                 {sub.name == 'hour_02' &&
-                                                    !isRejectHourSub(sub.name) ? (
+                                                !isRejectHourSub(sub.name) ? (
                                                     <div className="flex gap-3 items-center ">
                                                         <b>Số giờ mua</b>
                                                         <input
@@ -376,12 +375,13 @@ export const PaymentApp = () => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
-                                                            ${isRejectHourSub(
-                                                        sub.name
-                                                    )
-                                                            ? 'bg-red-500'
-                                                            : 'bg-[#328cff]'
-                                                        }  `}
+                                                            ${
+                                                                isRejectHourSub(
+                                                                    sub.name
+                                                                )
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-[#328cff]'
+                                                            }  `}
                                                 >
                                                     <span className="truncate font-medium text-xl">
                                                         {isRejectHourSub(
@@ -458,10 +458,10 @@ const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                    ? prevPage()
-                    : e.key == 'ArrowRight'
-                        ? nextPage()
-                        : null;
+                  ? prevPage()
+                  : e.key == 'ArrowRight'
+                    ? nextPage()
+                    : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);

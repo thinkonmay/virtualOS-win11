@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
 import { preload } from './backend/actions/background';
-import {
-    afterMath
-} from './backend/actions/index';
+import { afterMath } from './backend/actions/index';
 import {
     appDispatch,
     direct_access,
@@ -141,7 +139,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => { });
+        job?.catch(() => {});
 
         const handleState = () => {
             const fullscreen =

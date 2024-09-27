@@ -1,9 +1,4 @@
-import {
-    useEffect,
-    useRef,
-    useState,
-    useTransition
-} from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import Draggable from 'react-draggable'; // Both at the same time
 import { MdArrowLeft, MdArrowRight } from 'react-icons/md';
 import { useAppSelector } from '../../../../backend/reducers';
@@ -29,11 +24,11 @@ export const VirtualGamepad = (props) => {
         (state) => state.sidepane.mobileControl.gamePadHide
     );
     useEffect(() => {
-        console.log(document.documentElement.clientWidth
-            , document.documentElement.clientHeight
+        console.log(
+            document.documentElement.clientWidth,
+            document.documentElement.clientHeight
         );
-
-    })
+    });
     return (
         <>
             {/*{(draggable === 'static' || draggable === 'draggable') && (*/}

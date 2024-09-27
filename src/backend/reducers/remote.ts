@@ -33,7 +33,7 @@ export const assign = (fun: () => RemoteDesktopClient) => {
     client = fun();
 };
 
-let pinger = async () => { };
+let pinger = async () => {};
 export const set_pinger = (fun: () => Promise<void>) => {
     pinger = fun;
 };
@@ -199,7 +199,7 @@ export async function keyboardCallback(val, action: 'up' | 'down') {
     trigger(action == 'up' ? EventCode.KeyUp : EventCode.KeyDown, val);
 }
 export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
-    if ("vibrate" in navigator) {
+    if ('vibrate' in navigator) {
         navigator.vibrate(1);
     }
     if (client == null) return;
@@ -308,9 +308,9 @@ client: ${client} not ready`);
 
         if (
             store.getState().remote.prev_bitrate !=
-            store.getState().remote.bitrate ||
+                store.getState().remote.bitrate ||
             store.getState().remote.prev_framerate !=
-            store.getState().remote.framerate ||
+                store.getState().remote.framerate ||
             store.getState().remote.prev_framerate != size()
         )
             appDispatch(remoteSlice.actions.internal_sync());
@@ -471,8 +471,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
-                        state.bitrate +
-                        MIN_BITRATE()
+                            state.bitrate +
+                            MIN_BITRATE()
                     )
                 );
                 state.prev_bitrate = state.bitrate;
@@ -483,8 +483,8 @@ export const remoteSlice = createSlice({
                 client?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
-                        state.framerate +
-                        MIN_FRAMERATE
+                            state.framerate +
+                            MIN_FRAMERATE
                     )
                 );
                 state.prev_framerate = state.framerate;
@@ -512,7 +512,7 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.cache_setting,
-                hander: (state, action: PayloadAction<void>) => { }
+                hander: (state, action: PayloadAction<void>) => {}
             },
             {
                 fetch: remoteAsync.save_reference,
@@ -522,11 +522,11 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.toggle_remote_async,
-                hander: (state, action: PayloadAction<void>) => { }
+                hander: (state, action: PayloadAction<void>) => {}
             },
             {
                 fetch: remoteAsync.hard_reset_async,
-                hander: (state, action: PayloadAction<void>) => { }
+                hander: (state, action: PayloadAction<void>) => {}
             }
         );
     }
