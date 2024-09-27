@@ -36,7 +36,7 @@ const VirtKeyboard = ({ close }) => {
     const handleKeyReleased = (button) => {
         //vibrate on key release
         if ("vibrate" in navigator) {
-            navigator.vibrate(100);
+            navigator.vibrate(1);
 
         }
 
