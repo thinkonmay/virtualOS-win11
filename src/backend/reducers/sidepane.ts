@@ -14,9 +14,8 @@ export type Notification = {
 };
 
 export type Message = {
-    url?: string;
-
-    name: string;
+    type: 'private' | 'public';
+    recipient: 'everyone' | 'thinkmay' | string;
     content: string;
 };
 type IGamePadSetting = {
@@ -248,8 +247,12 @@ export const sidepaneAsync = {
         async (input: Message, { getState }): Promise<void> => {
             const email = store.getState().user.email;
             await supabaseLocal.from('user_message').insert({
-                metadata: { email },
-                value: { ...input, name: `message from ${email}` }
+                metadata: {
+                    email,
+                    type: input.type,
+                    recipient: input.recipient
+                },
+                value: { content: input.content }
             });
         }
     ),

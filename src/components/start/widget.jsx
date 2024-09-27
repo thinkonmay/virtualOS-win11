@@ -16,6 +16,8 @@ export const WidPane = () => {
 
         appDispatch(
             push_message({
+                recipient: 'thinkmay',
+                type: 'private',
                 content: value.current.value
             })
         );
