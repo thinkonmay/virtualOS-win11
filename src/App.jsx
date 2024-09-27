@@ -81,13 +81,13 @@ function App() {
         window.history.replaceState({}, document.title, '/' + '');
 
         const waitForPhoneRotation = async () => {
-            await new Promise((r) => setTimeout(r, 1000));
+            const finish_fetch = now();
             while (
                 window.screen.width < window.screen.height &&
-                !(now() - finish_fetch > 10 * 1000)
+                !(now() - finish_fetch > 2 * 1000)
             ) {
                 setloadingText(Contents.ROTATE_PHONE);
-                await new Promise((r) => setTimeout(r, 1000));
+                await new Promise((r) => setTimeout(r, 100));
             }
         };
 
@@ -97,10 +97,7 @@ function App() {
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });
-            console.log(`finish preload in ${interval}ms`);
-
             if (isMobile()) await waitForPhoneRotation();
-
             setLockscreen(false);
         });
     }, []);

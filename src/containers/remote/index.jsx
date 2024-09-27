@@ -20,6 +20,7 @@ export const Remote = () => {
     // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
+    const [isOpenStats, setOpenStats] = useState(false);
     const relative_mouse = useAppSelector((x) => x.remote.relative_mouse);
     const keyboard = useAppSelector(
         (state) => !state.sidepane.mobileControl.keyboardHide
@@ -112,6 +113,28 @@ export const Remote = () => {
                 loop={true}
                 style={{ zIndex: -5, opacity: 0 }}
             ></audio>
+            <div
+                className={`${
+                    isOpenStats ? 'slide-in' : 'slide-out'
+                }  statusConnection`}
+            >
+                <p>
+                    Video: <b>{videoConnectivity}</b>
+                    <br />
+                    Audio: <b>{audioConnectivity}</b>
+                </p>
+                <button
+                    className="btn-show"
+                    onClick={() => setOpenStats((old) => !old)}
+                >
+                    {isOpenStats ? (
+                        <MdArrowBackIos style={{ fontSize: '1.2rem' }} />
+                    ) : (
+                        <MdArrowForwardIos style={{ fontSize: '1.2rem' }} />
+                    )}
+                </button>
+                <HandleSuggestion />
+            </div>
         </div>
     );
 };

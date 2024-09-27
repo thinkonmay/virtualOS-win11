@@ -200,10 +200,17 @@ export function WindowD() {
 }
 
 export async function keyboardCallback(val, action: 'up' | 'down') {
+    if ('vibrate' in navigator && action == 'down') {
+        navigator.vibrate([40, 30, 0]);
+    }
+
     if (client == null) return;
     trigger(action == 'up' ? EventCode.KeyUp : EventCode.KeyDown, val);
 }
 export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
+    if ('vibrate' in navigator && type == 'down') {
+        navigator.vibrate([40, 30, 0]);
+    }
     if (client == null) return;
     VirtualGamepadButtonSlider(type == 'down', index);
 }
@@ -395,7 +402,6 @@ export const remoteSlice = createSlice({
         },
         share_reference: (state) => {
             const token = state.ref;
-            console.log(token);
             if (token == undefined) return;
 
             navigator.clipboard.writeText(`${getDomainURL()}/?ref=${token}`);

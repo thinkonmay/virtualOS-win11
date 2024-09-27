@@ -475,13 +475,16 @@ const DownPage = ({ action }) => {
     return (
         <div
             id="storeScroll"
-            className="pagecont w-full absolute top-0 box-border p-3 sm:p-12"
+            className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4"
         >
             <p className="storeHeading mt-4">
-                Với <b className="font-bold">8k/h</b> bạn có thể chơi ngay lập
-                tức các game sau:
+                <b className="font-bold">DÀNH RIÊNG CHO GÓI GIỜ</b>
+                {/*tức các game sau:*/}
             </p>
-            <p className="storeHeading text-sm mt-2">
+            <p className="storeHeading text-base mt-4">
+                Game đã được cài sẵn, click để chơi ngay!
+            </p>
+            <p className="storeHeading text-sm mt-1 mb-4">
                 *Toàn bộ dữ liệu sẽ bị xoá khi tắt máy
             </p>
             <div className="flex flex-wrap gap-5 justify-between">

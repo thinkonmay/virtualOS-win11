@@ -31,8 +31,10 @@
   top: 0;
   transition: all ease-in-out 0.5s;
   transform: translatex(0%);
-  border-radius: 15px;
-  padding: 12px 24px;
+  border-bottom-right-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 0.9);
+  padding: 12px 14px;
   //height: 56px;
   padding-right: 32px;
 
