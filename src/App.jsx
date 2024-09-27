@@ -3,9 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
 import { preload } from './backend/actions/background';
 import {
-    afterMath,
-    verifyPayment,
-    wrapperAsyncFunction
+    afterMath
 } from './backend/actions/index';
 import {
     appDispatch,
@@ -13,7 +11,6 @@ import {
     menu_show,
     pointer_lock,
     set_fullscreen,
-    store,
     useAppSelector
 } from './backend/reducers';
 import { UserSession } from './backend/reducers/fetch/analytics';
@@ -89,15 +86,6 @@ function App() {
             await new Promise((r) => setTimeout(r, 1000));
             const now = new Date().getTime();
             const timeout = () => new Date().getTime() - now > 10 * 1000;
-            await wrapperAsyncFunction(
-                () => verifyPayment(store.getState().user.email),
-                {
-                    loading: true,
-                    tips: false,
-                    title: 'Verify payment!',
-                    timeProcessing: 0.1
-                }
-            );
             while (
                 isMobile() &&
                 window.screen.width < window.screen.height &&
@@ -153,7 +141,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => {});
+        job?.catch(() => { });
 
         const handleState = () => {
             const fullscreen =

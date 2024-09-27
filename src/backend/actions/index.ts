@@ -48,7 +48,7 @@ export const afterMath = (event: any) => {
     var actionType = '';
     try {
         actionType = event.target.dataset.action || '';
-    } catch (err) {}
+    } catch (err) { }
 
     var actionType0 = getComputedStyle(event.target).getPropertyValue(
         '--prefix'
@@ -162,9 +162,9 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => {};
+export const loginWithEmail = async (email: string, password: string) => { };
 
-export const signUpWithEmail = async (email: string, password: string) => {};
+export const signUpWithEmail = async (email: string, password: string) => { };
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     let w = window.open();
 
@@ -310,8 +310,14 @@ export const verifyPayment = async (inputs: VerifyPaymentBody) => {
 };
 
 export const wrapperAsyncFunction = async (
-    fun: () => Promise<void>,
-    { loading = true, title = 'Loading...', text, tips = true, timeProcessing }
+    fun: () => Promise<any>,
+    {
+        loading = true,
+        title = 'Loading...',
+        text = '',
+        tips = true,
+        timeProcessing
+    }
 ) => {
     try {
         appDispatch(
