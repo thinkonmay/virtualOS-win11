@@ -161,8 +161,8 @@ export const Remote = () => {
                     relative_mouse
                         ? pointerlock
                         : (e) => {
-                              afterMath(e);
-                          }
+                            afterMath(e);
+                        }
                 }
                 //style={{ backgroundImage: `url(img/wallpaper/${wall.src})` }}
                 autoPlay
@@ -181,14 +181,13 @@ export const Remote = () => {
             ></audio>
 
             <div
-                className={`${
-                    isOpenStats ? 'slide-in' : 'slide-out'
-                } bg-red-300   statusConnection`}
+                className={`${isOpenStats ? 'slide-in' : 'slide-out'
+                    }  statusConnection`}
             >
                 <p>
-                    Video status: <b>{videoConnectivity}</b>
+                    Video: <b>{videoConnectivity}</b>
                     <br />
-                    Audio status: <b>{audioConnectivity}</b>
+                    Audio: <b>{audioConnectivity}</b>
                 </p>
                 <button
                     className="btn-show"
