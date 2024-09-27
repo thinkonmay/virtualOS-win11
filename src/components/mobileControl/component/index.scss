@@ -17,8 +17,16 @@
 	}
 
 
-	.hg-standardBtn {
+	.hg-theme-default {
+		background-color: #ececec61;
+	}
 
+	.hg-standardBtn {
+		height: 24px;
+		font-size: 0.8rem;
+		width: 20px;
+
+		background-color: #ffffff78;
 
 		&[data-skbtn='Close'] {
 			background: red !important;
