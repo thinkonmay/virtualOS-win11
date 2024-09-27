@@ -247,19 +247,18 @@ export const sidepaneAsync = {
         'push_message',
         async (input: Message, { getState }): Promise<void> => {
             const email = store.getState().user.email;
-            await supabaseLocal.from('generic_events').insert({
-                type: 'MESSAGE',
-                name: `message from ${email}`,
-                value: { email, ...input, timestamp: new Date().toISOString() }
+            await supabaseLocal.from('user_message').insert({
+                metadata: { email },
+                value: { ...input, name: `message from ${email}` }
             });
         }
     ),
-    handle_message: async (payload) => {
-        if (!payload.new.name.includes(store.getState().user.email)) return;
+    handle_message: async (payload: any) => {
+        if (payload.new.metadata.email != store.getState().user.email) return;
         appDispatch(
             render_message({
                 ...payload.new.value,
-                name: payload.new.name
+                timestamp: payload.new.timestamp
             })
         );
     },
@@ -273,8 +272,7 @@ export const sidepaneAsync = {
                     {
                         event: 'INSERT',
                         schema: 'public',
-                        filter: 'type=eq.MESSAGE',
-                        table: 'generic_events'
+                        table: 'user_message'
                     },
                     sidepaneAsync.handle_message
                 )
@@ -282,32 +280,20 @@ export const sidepaneAsync = {
 
             return await CacheRequest('message', 30, async () => {
                 const { data, error } = await supabaseLocal
-                    .from('generic_events')
-                    .select('timestamp,value,name')
+                    .from('user_message')
+                    .select('timestamp,value')
                     .order('timestamp', { ascending: false })
-                    .eq('type', 'MESSAGE')
+                    .eq(`metadata->>email`, email)
                     .limit(10);
 
                 if (error) throw error;
 
-                return data
-                    .sort(
-                        (a, b) =>
-                            new Date(b.timestamp).getTime() -
-                            new Date(a.timestamp).getTime()
-                    )
-                    .map((x) => {
-                        return {
-                            content: x.value.content,
-                            name: x.name,
-                            timestamp: x.timestamp
-                        };
-                    })
-                    .filter((x) => {
-                        if (x.name.toString().includes(email)) {
-                            return x;
-                        }
-                    });
+                return data.map((x) => {
+                    return {
+                        ...x.value,
+                        timestamp: x.timestamp
+                    };
+                });
             });
         }
     )
