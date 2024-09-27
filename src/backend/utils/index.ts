@@ -38,7 +38,7 @@ const apps: AppData[] = [
         payload: 'edge'
     },
     {
-        name: 'Payment',
+        name: 'Thanh toán',
         id: 'payment',
         action: 'apps/app_toggle',
         payload: 'payment'
@@ -51,14 +51,14 @@ const apps: AppData[] = [
     },
 
     {
-        name: 'Store games',
+        name: 'Game cho gói giờ',
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store',
         size: 'mini'
     },
     {
-        name: 'Connect YourPC',
+        name: 'Máy tính cá nhân',
         id: 'connectPc',
         action: 'apps/app_toggle',
         payload: 'connectPc',
@@ -97,7 +97,7 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: ['Store games'],
+    taskbar: ['Game cho gói giờ'],
     desktop: [
         //'Worker Profile',
         //'Browser',
@@ -105,9 +105,9 @@ var { taskbar, desktop } = {
         'Discord',
         'Hướng dẫn',
         'Thinkmay Fanpage',
-        'Store games',
-        'Connect YourPC',
-        'Payment'
+        'Game cho gói giờ',
+        'Máy tính cá nhân',
+        'Thanh toán'
         //'Your Info'
     ]
 };
