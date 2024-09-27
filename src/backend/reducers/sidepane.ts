@@ -261,6 +261,7 @@ export const sidepaneAsync = {
         appDispatch(
             render_message({
                 ...payload.new.value,
+                ...payload.new.metadata,
                 timestamp: payload.new.timestamp
             })
         );
@@ -284,7 +285,7 @@ export const sidepaneAsync = {
             return await CacheRequest('message', 30, async () => {
                 const { data, error } = await supabaseLocal
                     .from('user_message')
-                    .select('timestamp,value')
+                    .select('timestamp,value,metadata')
                     .order('timestamp', { ascending: false })
                     .eq(`metadata->>email`, email)
                     .limit(10);
@@ -294,6 +295,7 @@ export const sidepaneAsync = {
                 return data.map((x) => {
                     return {
                         ...x.value,
+                        ...x.metadata,
                         timestamp: x.timestamp
                     };
                 });

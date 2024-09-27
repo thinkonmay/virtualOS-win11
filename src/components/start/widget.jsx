@@ -43,27 +43,20 @@ export const WidPane = () => {
                                         return (
                                             <a
                                                 className={`articleCont `}
-                                                href={article.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 key={i}
-                                                // loading="lazy"
                                                 style={{
                                                     backgroundColor:
-                                                        article.name.includes(
-                                                            'to'
-                                                        )
+                                                        article.recipient ==
+                                                        'thinkmay'
                                                             ? '#a8e0e3'
                                                             : 'white'
                                                 }}
                                             >
                                                 <div className="tpNews">
                                                     <div className="tpSource">
-                                                        {(article.name.includes(
-                                                            'to'
-                                                        )
-                                                            ? 'thinkmay'
-                                                            : 'user') +
+                                                        {article.recipient +
                                                             '  ' +
                                                             new Date(
                                                                 article.timestamp
