@@ -1,6 +1,5 @@
 import {
     useEffect,
-    useLayoutEffect,
     useRef,
     useState,
     useTransition
@@ -29,7 +28,12 @@ export const VirtualGamepad = (props) => {
     const isClose = useAppSelector(
         (state) => state.sidepane.mobileControl.gamePadHide
     );
+    useEffect(() => {
+        console.log(document.documentElement.clientWidth
+            , document.documentElement.clientHeight
+        );
 
+    })
     return (
         <>
             {/*{(draggable === 'static' || draggable === 'draggable') && (*/}
@@ -54,11 +58,11 @@ export const VirtualGamepad = (props) => {
 };
 
 const defaultButtonGroupRightValue = {
-    ybxa: { x: 0.92, y: 0.45 },
-    joystick: { x: 0.62, y: 0.45 },
-    funcBtn: { x: 0.75, y: 0.043 },
+    ybxa: { x: 0.93, y: 0.45 },
+    joystick: { x: 0.65, y: 0.55 },
+    funcBtn: { x: 0.82, y: 0.043 },
     subBtn: { x: 0.45, y: 0.03 },
-    rs: { x: 0.75, y: 0.8 }
+    rs: { x: 0.87, y: 0.8 }
 };
 
 export const ButtonGroupRight = (props) => {
@@ -76,7 +80,7 @@ export const ButtonGroupRight = (props) => {
         localStorage.removeItem('right_group_pos');
     }, []);
 
-    useLayoutEffect(() => {
+    const handleResize = () => {
         let cache = localStorage.getItem(`right_group_pos1`);
         if (cache === null) {
             const deviceWidth = window.innerWidth;
@@ -114,6 +118,14 @@ export const ButtonGroupRight = (props) => {
             subBtn,
             rs
         });
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const handleDrag = (e, data) => {
@@ -283,10 +295,10 @@ export const ButtonGroupRight = (props) => {
 };
 
 const defaultButtonGroupLeftValue = {
-    dpad: { x: 0.08, y: 0.45 },
-    joystick: { x: 0.3, y: 0.55 },
-    funcBtn: { x: 0.13, y: 0.043 },
-    ls: { x: 0.2, y: 0.8 }
+    dpad: { x: 0.07, y: 0.45 },
+    joystick: { x: 0.22, y: 0.55 },
+    funcBtn: { x: 0.03, y: 0.043 },
+    ls: { x: 0.07, y: 0.8 }
 };
 
 export const ButtonGroupLeft = (props) => {
@@ -304,7 +316,7 @@ export const ButtonGroupLeft = (props) => {
         localStorage.removeItem('left_group_pos');
     }, []);
 
-    useLayoutEffect(() => {
+    const handleResize = () => {
         let cache = localStorage.getItem(`left_group_pos1`);
         if (cache === null) {
             const deviceWidth = window.innerWidth;
@@ -337,8 +349,15 @@ export const ButtonGroupLeft = (props) => {
             funcBtn,
             ls
         });
-    }, []);
+    };
 
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+
+        //initial state
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     const handleDrag = (e, data) => {
         const key = data.node.id;
         const value = { x: data.x, y: data.y };
