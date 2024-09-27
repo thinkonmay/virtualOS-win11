@@ -226,6 +226,8 @@ export const SidePane = () => {
                                                 1000
                                         )}
                                     </span>
+                                    {' '} Packetloss:{' '}
+                                    <span> {remote.packetLoss}</span>
                                 </div>
                                 <div className=" sliderWrapper">
                                     <span>1mbs</span>

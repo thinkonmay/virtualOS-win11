@@ -105,6 +105,8 @@ type Data = {
     prev_framerate: number;
     prev_size: number;
 
+    packetLoss: number;
+
     auth?: AuthSessionResp;
     ref?: string;
 };
@@ -123,7 +125,8 @@ const initialState: Data = {
     prev_bitrate: 0,
     framerate: 0,
     prev_framerate: 0,
-    prev_size: 0
+    prev_size: 0,
+    packetLoss: 0
 };
 
 function VirtualGamepadButtonSlider(isDown: boolean, index: number) {
@@ -288,6 +291,8 @@ export const remoteAsync = {
         else if (client == null) return;
         else if (!client.ready()) return;
 
+        remoteSlice.actions.packetloss(client.Metrics.video.packetloss.last);
+
         if (
             store.getState().remote.prev_bitrate !=
                 store.getState().remote.bitrate ||
@@ -441,6 +446,9 @@ export const remoteSlice = createSlice({
         },
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
+        },
+        packetloss: (state, action: PayloadAction<number>) => {
+            state.packetLoss = action.payload;
         },
         internal_sync: (state) => {
             if (
