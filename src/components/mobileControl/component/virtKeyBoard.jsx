@@ -34,10 +34,7 @@ const VirtKeyboard = ({ close }) => {
     };
 
     const handleKeyReleased = (button) => {
-        //vibrate on key release
-        if ('vibrate' in navigator) {
-            navigator.vibrate(1);
-        }
+
     };
     return (
         <div
@@ -50,11 +47,13 @@ const VirtKeyboard = ({ close }) => {
                 layoutName={layoutName}
                 onKeyPress={handleKeyPress}
                 onKeyReleased={handleKeyReleased}
+
                 disableButtonHold={true}
                 display={{
-                    Backspace: 'Back',
+                    Backspace: '⌫',
                     Close: '🅇',
-                    Control: 'Ctrl'
+                    Control: 'Ctrl',
+                    Enter: '⏎'
                 }}
                 layout={{
                     default: [
