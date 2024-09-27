@@ -18,11 +18,13 @@ import { workerAsync, workerSlice } from './worker';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { UserEvents } from '../../../src-tauri/api/analytics.js';
 
-const blacklist = ['framerate', 'bitrate'];
+const blacklist = ['framerate', 'bitrate', 'internal_sync'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (window.location.href.includes('localhost'))
         console.log({ ...(action as any) });
-    if (blacklist.filter((x) => (action as any).type.includes(x)).length == 0)
+    else if (
+        blacklist.filter((x) => (action as any).type.includes(x)).length == 0
+    )
         UserEvents(action as any);
 
     return await next(action);
