@@ -1,4 +1,4 @@
-import { Computer, StartRequest } from '../reducers/fetch/local';
+import { Computer, StartRequest } from '../../../src-tauri/api/local';
 
 export type TreeResult = {
     tree: RenderNode<any>;
@@ -160,7 +160,9 @@ export function fromComputer(
             node.data.push(child);
         });
 
-        computer.Peers?.forEach(x => node.data.push(fromComputer(x.PrivateIP,x,true)))
+        // computer.Peers?.forEach((x) =>
+        //     node.data.push(fromComputer(x.PrivateIP, x, true))
+        // );
     }
 
     return node;

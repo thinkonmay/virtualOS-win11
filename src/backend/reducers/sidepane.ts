@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
-import { supabase } from './fetch/createClient';
+import { supabaseLocal } from '../../../src-tauri/api/createClient';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 
@@ -14,10 +14,8 @@ export type Notification = {
 };
 
 export type Message = {
-    url?: string;
-
-    name: string;
-    timestamp: string;
+    type: 'private' | 'public';
+    recipient: 'everyone' | 'thinkmay' | string;
     content: string;
 };
 type IGamePadSetting = {
@@ -248,67 +246,59 @@ export const sidepaneAsync = {
         'push_message',
         async (input: Message, { getState }): Promise<void> => {
             const email = store.getState().user.email;
-            await supabase.from('generic_events').insert({
-                type: 'MESSAGE',
-                name: `message from ${email}`,
-                value: { email, ...input }
+            await supabaseLocal.from('user_message').insert({
+                metadata: {
+                    email,
+                    type: input.type,
+                    recipient: input.recipient
+                },
+                value: { content: input.content }
             });
         }
     ),
-    handle_message: async (payload) => {
-        if (!payload.new.name.includes(store.getState().user.email)) return;
+    handle_message: async (payload: any) => {
+        if (payload.new.metadata.email != store.getState().user.email) return;
         appDispatch(
             render_message({
                 ...payload.new.value,
-                name: payload.new.name
+                ...payload.new.metadata,
+                timestamp: payload.new.timestamp
             })
         );
     },
     fetch_message: createAsyncThunk(
         'fetch_message',
         async (email: string, { getState }): Promise<Message[]> => {
-            supabase
+            supabaseLocal
                 .channel('schema-message-changes')
                 .on(
                     'postgres_changes',
                     {
                         event: 'INSERT',
                         schema: 'public',
-                        filter: 'type=eq.MESSAGE',
-                        table: 'generic_events'
+                        table: 'user_message'
                     },
                     sidepaneAsync.handle_message
                 )
                 .subscribe();
 
             return await CacheRequest('message', 30, async () => {
-                const { data, error } = await supabase
-                    .from('generic_events')
-                    .select('timestamp,value,name')
+                const { data, error } = await supabaseLocal
+                    .from('user_message')
+                    .select('timestamp,value,metadata')
                     .order('timestamp', { ascending: false })
-                    .eq('type', 'MESSAGE')
+                    .eq(`metadata->>email`, email)
                     .limit(10);
 
                 if (error) throw error;
 
-                return data
-                    .sort(
-                        (a, b) =>
-                            new Date(b.timestamp).getTime() -
-                            new Date(a.timestamp).getTime()
-                    )
-                    .map((x) => {
-                        return {
-                            content: x.value.content,
-                            name: x.name,
-                            timestamp: x.timestamp
-                        };
-                    })
-                    .filter((x) => {
-                        if (x.name.toString().includes(email)) {
-                            return x;
-                        }
-                    });
+                return data.map((x) => {
+                    return {
+                        ...x.value,
+                        ...x.metadata,
+                        timestamp: x.timestamp
+                    };
+                });
             });
         }
     )

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // import UTC plugin
+import { verifyPayment, wrapperAsyncFunction } from '.';
 import {
     RootState,
     appDispatch,
@@ -25,6 +26,7 @@ import {
     worker_refresh
 } from '../reducers';
 import { client } from '../reducers/remote';
+import { UserSession } from '../../../src-tauri/api/analytics';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -144,7 +146,7 @@ const fetchMessage = async () => {
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
-export const checkTimeUsage = () => {
+export const checkTimeUsage = async () => {
     const subInfo = store.getState().user?.stat;
 
     const totalTime = +(subInfo?.plan_hour + subInfo?.additional_time);
@@ -180,17 +182,39 @@ export const checkTimeUsage = () => {
     };
 };
 
+const paymentVerify = async () => {
+    await wrapperAsyncFunction(
+        () => verifyPayment(store.getState().user.email),
+        {
+            loading: true,
+            tips: false,
+            title: 'Verify payment!',
+            timeProcessing: 0.1
+        }
+    );
+};
+
+const StartAnalytics = async () => {
+    await UserSession(store.getState().user.email);
+};
+
 export const preload = async () => {
-    await fetchUser(),
-        await Promise.all([
+    try {
+        await fetchUser();
+        await Promise.allSettled([
+            StartAnalytics(),
+            paymentVerify(),
             loadSettings(),
             fetchApp(),
             fetchSetting(),
             fetchMessage(),
-            fetchStore()
+            fetchStore(),
+            checkTimeUsage()
         ]);
+    } catch (e) {
+        console.log(`error ${e} in preload function`);
+    }
 
-    checkTimeUsage();
     setInterval(check_worker, 30 * 1000);
     setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 100);

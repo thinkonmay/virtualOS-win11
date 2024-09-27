@@ -1,5 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from './fetch/createClient';
+import {
+    supabaseGlobal,
+    supabaseLocal
+} from '../../../src-tauri/api/createClient';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -200,34 +203,27 @@ const initialState = {
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        const { data, error } = await supabase.rpc('fetch_store');
-
+        const { data, error } = await supabaseGlobal.rpc('fetch_store');
         if (error) throw new Error(error.message);
-
         return data as IGame[];
     }),
     fetch_under_maintenance: createAsyncThunk(
         'fetch_under_maintenance',
         async () => {
-            const { data, error } = await supabase.rpc(
-                'fetch_under_maintenance'
-            );
-
+            const {
+                data: [{ value: info }],
+                error
+            } = await supabaseLocal
+                .from('constant')
+                .select('value')
+                .eq('name', 'mantainance');
             if (error) throw new Error(error.message);
 
-            let isMaintaining = false;
-
-            const info = data.at(0);
-            if (
+            return info != undefined &&
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
-            )
-                isMaintaining = true;
-
-            return {
-                ...info,
-                isMaintaining
-            };
+                ? info
+                : {};
         }
     )
 };

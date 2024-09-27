@@ -13,11 +13,8 @@ import {
     worker_refresh,
     worker_vm_create_from_volume
 } from '.';
-import { sleep } from '../utils/sleep';
-import { fromComputer, RenderNode } from '../utils/tree';
-import { PingSession } from './fetch';
-import { UserEvents } from './fetch/analytics';
-import { pb } from './fetch/createClient';
+import { PingSession, UserEvents } from '../../../src-tauri/api/analytics';
+import { getDomain, pb } from '../../../src-tauri/api/createClient';
 import {
     CloseSession,
     Computer,
@@ -27,10 +24,11 @@ import {
     ParseVMRequest,
     StartRequest,
     StartThinkmay,
-    StartThinkmayOnPeer,
     StartThinkmayOnVM,
     StartVirtdaemon
-} from './fetch/local';
+} from '../../../src-tauri/api/local';
+import { sleep } from '../utils/sleep';
+import { fromComputer, RenderNode } from '../utils/tree';
 import { BuilderHelper } from './helper';
 import { set_pinger } from './remote';
 
@@ -57,14 +55,7 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
-            await appDispatch(
-                fetch_local_worker(
-                    window.location.host.includes('localhost') ||
-                        window.location.host.includes('tauri.localhost')
-                        ? 'play.thinkmay.net'
-                        : window.location.host
-                )
-            );
+            await appDispatch(fetch_local_worker(getDomain()));
         }
     ),
     wait_and_claim_volume: createAsyncThunk(
@@ -117,18 +108,9 @@ export const workerAsync = {
                 }
 
                 if (result.type == 'vm_worker' && result.data.length > 0) {
-                    UserEvents({
-                        type: 'remote/exit_queue_list',
-                        payload: {
-                            email,
-                            end_at: new Date().toISOString()
-                        }
-                    });
                     await appDispatch(vm_session_access(result.data.at(0).id));
                     set_pinger(
-                        KeepaliveVolume(computer, volume_id, () =>
-                            PingSession(volume_id)
-                        )
+                        KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
                     return;
@@ -136,28 +118,40 @@ export const workerAsync = {
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
-                    UserEvents({
-                        type: 'remote/exit_queue_list',
-                        payload: {
-                            email,
-                            end_at: new Date().toISOString()
-                        }
-                    });
                     await appDispatch(vm_session_create(result.id));
                     set_pinger(
-                        KeepaliveVolume(computer, volume_id, () =>
-                            PingSession(volume_id)
-                        )
+                        KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
                     return;
                 }
 
+                UserEvents({
+                    type: 'remote/requesting_vm',
+                    payload: {
+                        email
+                    }
+                });
+
                 const resp = await StartVirtdaemon(computer, volume_id);
                 if (resp instanceof Error) {
+                    UserEvents({
+                        type: 'remote/request_vm_failure',
+                        payload: {
+                            email,
+                            error: resp.message
+                        }
+                    });
                     appDispatch(popup_close());
                     throw resp;
                 }
+
+                UserEvents({
+                    type: 'remote/request_vm_success',
+                    payload: {
+                        email
+                    }
+                });
 
                 await appDispatch(worker_refresh());
             }
@@ -219,6 +213,7 @@ export const workerAsync = {
                 ?.info;
 
             const result = await StartThinkmay(computer);
+            if (result instanceof Error) throw result;
             appDispatch(fetch_local_worker(computer.address));
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
@@ -239,6 +234,7 @@ export const workerAsync = {
             if (session == undefined) throw new Error('invalid tree');
 
             const result = ParseRequest(computer, session);
+            if (result instanceof Error) throw result;
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
         }
@@ -305,6 +301,7 @@ export const workerAsync = {
             else if (vm_session == undefined) throw new Error('invalid tree');
 
             const result = await StartThinkmayOnVM(host.info, vm_session.id);
+            if (result instanceof Error) throw result;
             await sleep(15 * 1000);
             appDispatch(remote_connect(result));
             await appDispatch(fetch_local_worker(host.info.address));
@@ -369,11 +366,11 @@ export const workerAsync = {
             const host = node.findParent<Computer>(ip, 'host_worker');
             if (host == undefined) throw new Error('invalid tree');
 
-            const result = await StartThinkmayOnPeer(host.info, ip);
-            appDispatch(remote_connect(result));
+            // const result = await StartThinkmayOnPeer(host.info, ip);
+            // appDispatch(remote_connect(result));
 
-            await appDispatch(fetch_local_worker(host.info.address));
-            await appDispatch(save_reference(result));
+            // await appDispatch(fetch_local_worker(host.info.address));
+            // await appDispatch(save_reference(result));
         }
     ),
     peer_session_access: createAsyncThunk(
@@ -383,10 +380,8 @@ export const workerAsync = {
             const computer = node.findParent<Computer>(input, 'host_worker')
                 ?.info;
             const session = node.find<StartRequest>(input)?.info;
-            const target = node.findParent<Computer>(
-                input,
-                'peer_worker'
-            )?.info.PrivateIP;
+            const target = node.findParent<Computer>(input, 'peer_worker')?.info
+                .PrivateIP;
 
             if (computer == undefined) throw new Error('invalid tree');
             if (session == undefined) throw new Error('invalid tree');

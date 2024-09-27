@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
+import { UserEvents } from '../src-tauri/api/analytics';
 import { preload } from './backend/actions/background';
-import {
-    afterMath,
-    verifyPayment,
-    wrapperAsyncFunction
-} from './backend/actions/index';
+import { afterMath } from './backend/actions/index';
 import {
     appDispatch,
     direct_access,
     menu_show,
     pointer_lock,
     set_fullscreen,
-    store,
     useAppSelector
 } from './backend/reducers';
-import { UserSession } from './backend/reducers/fetch/analytics';
 import { Contents } from './backend/reducers/locales';
 import { isMobile } from './backend/utils/checking';
 import { localStorageKey, pathNames } from './backend/utils/constant';
@@ -85,36 +80,27 @@ function App() {
         }
         window.history.replaceState({}, document.title, '/' + '');
 
-        preload().finally(async () => {
-            await new Promise((r) => setTimeout(r, 1000));
-            const now = new Date().getTime();
-            const timeout = () => new Date().getTime() - now > 10 * 1000;
-            await wrapperAsyncFunction(
-                () => verifyPayment(store.getState().user.email),
-                {
-                    loading: true,
-                    tips: false,
-                    title: 'Verify payment!',
-                    timeProcessing: 0.1
-                }
-            );
+        const waitForPhoneRotation = async () => {
+            const finish_fetch = now();
             while (
-                isMobile() &&
                 window.screen.width < window.screen.height &&
-                !timeout()
+                !(now() - finish_fetch > 2 * 1000)
             ) {
                 setloadingText(Contents.ROTATE_PHONE);
-                await new Promise((r) => setTimeout(r, 1000));
+                await new Promise((r) => setTimeout(r, 100));
             }
+        };
 
+        const now = () => new Date().getTime();
+        const start_fetch = now();
+        preload().finally(async () => {
+            const finish_fetch = now();
+            const interval = finish_fetch - start_fetch;
+            UserEvents({ type: 'preload/finish', payload: { interval } });
+            if (isMobile()) await waitForPhoneRotation();
             setLockscreen(false);
         });
     }, []);
-    useEffect(() => {
-        if (user.id == 'unknown') return;
-
-        UserSession(user.email);
-    }, [user.id]);
 
     const fullscreen = async () => {
         const elem = document.documentElement;

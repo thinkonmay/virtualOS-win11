@@ -10,21 +10,19 @@ import './widget.scss';
 
 export const WidPane = () => {
     const widget = useAppSelector((state) => state.sidepane);
-    const img = useAppSelector((state) => state.wallpaper.src);
     const value = useRef();
     const finish = () => {
-        if (value.current.value.length > 0) {
-            appDispatch(
-                push_message({
-                    timestamp: new Date().toISOString(),
-                    content: value.current.value
-                })
-            );
-            value.current.value = null;
-        }
-    };
+        if (value.current.value.length == 0) return;
 
-    //if (widget.banhide) return <></>;
+        appDispatch(
+            push_message({
+                recipient: 'thinkmay',
+                type: 'private',
+                content: value.current.value
+            })
+        );
+        value.current.value = null;
+    };
 
     return (
         <>
@@ -45,27 +43,20 @@ export const WidPane = () => {
                                         return (
                                             <a
                                                 className={`articleCont `}
-                                                href={article.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 key={i}
-                                                // loading="lazy"
                                                 style={{
                                                     backgroundColor:
-                                                        article.name.includes(
-                                                            'to'
-                                                        )
+                                                        article.recipient ==
+                                                        'thinkmay'
                                                             ? '#a8e0e3'
                                                             : 'white'
                                                 }}
                                             >
                                                 <div className="tpNews">
                                                     <div className="tpSource">
-                                                        {(article.name.includes(
-                                                            'to'
-                                                        )
-                                                            ? 'thinkmay'
-                                                            : 'user') +
+                                                        {article.recipient +
                                                             '  ' +
                                                             new Date(
                                                                 article.timestamp
@@ -111,35 +102,6 @@ export const WidPane = () => {
                     </div>
                 </LazyComponent>
             </div>
-
-            {/*<div
-                style={{ '--prefix': 'BAND' }}
-                className="inputCont"
-                data-hide={widget.banhide}
-            >
-                <LazyComponent show={!widget.banhide}>
-                    <div className="win11Scroll">
-                        <div className="inputCont relative flex ">
-                            <input
-                                className="messageCont"
-                                ref={value}
-                                onKeyDown={(e) =>
-                                    e.key == 'Enter' ? finish() : null
-                                }
-                                placeholder="Send us a message"
-                                type="text"
-                            />
-                            <Icon
-                                className="z-1 handcr ml-2 articleCont"
-                                src="mail"
-                                width={50}
-                                margin="0 10px"
-                                onClick={finish}
-                            />
-                        </div>
-                    </div>
-                </LazyComponent>
-            </div>*/}
         </>
     );
 };

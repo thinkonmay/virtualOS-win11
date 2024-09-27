@@ -225,7 +225,10 @@ export const SidePane = () => {
                                                 MIN_BITRATE()) /
                                                 1000
                                         )}
-                                    </span>
+                                    </span>{' '}
+                                    Packetloss:{' '}
+                                    <span> {remote.packetLoss}</span> IDR:{' '}
+                                    <span> {remote.idrcount}</span>
                                 </div>
                                 <div className=" sliderWrapper">
                                     <span>1mbs</span>

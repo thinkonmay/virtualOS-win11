@@ -8,12 +8,11 @@ import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
 import { FUNDING } from '@paypal/react-paypal-js';
+import { UserEvents } from '../../../../src-tauri/api/analytics';
 import {
     createPaymentLink,
-    isAlowBuyHourSub,
     wrapperAsyncFunction
 } from '../../../backend/actions';
-import { UserEvents } from '../../../backend/reducers/fetch/analytics';
 import { Contents } from '../../../backend/reducers/locales';
 import { Image } from '../../../components/shared/general';
 
@@ -88,22 +87,7 @@ export const PaymentApp = () => {
     ]);
 
     const [isAvailableHourSub, setAvailableHourSub] = useState(false);
-
-    useEffect(() => {
-        const fetch = async () => {
-            const check = await isAlowBuyHourSub();
-            setAvailableHourSub(check);
-        };
-        fetch();
-    }, [user]);
     const [iframe, setIframe] = useState('');
-    useEffect(() => {
-        setup();
-    }, []);
-    const setup = async () => {
-        // TODO
-    };
-
     const [paypage, setPaypage] = useState(null);
     const [subChoose, setSubChoose] = useState(null);
     const payment = async (price_in_vnd) => {
@@ -126,27 +110,13 @@ export const PaymentApp = () => {
             return;
         }
         if (isRejectHourSub(sub.name)) {
-            if (sub.name != 'hour_02') {
-                appDispatch(
-                    popup_open({
-                        type: 'complete',
-                        data: {
-                            success: false,
-                            content:
-                                'Gói hiện tại đang đóng do không đủ hạ tầng để phục vụ! Thời gian dự kiến: 11/11 - 25/11'
-                        }
-                    })
-                );
-                return;
-            }
-
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
                         success: false,
                         content:
-                            'Gói giờ đang đóng do không đủ hạ tầng để phục vụ! Thời gian dự kiến: 11/11 - 7/12'
+                            'Gói hiện tại đang đóng.Quý khách vui lòng quay lại sau!'
                     }
                 })
             );
@@ -196,16 +166,16 @@ export const PaymentApp = () => {
     };
 
     const isRejectHourSub = (subName) => {
-        //let check = false;
-        //check =
-        //    subName == 'hour_02' &&
-        //    !isAvailableHourSub &&
-        //    user?.stat?.plan_name !== 'hour_02';
-
-        //return check;
         let check = false;
-        check = !user?.stat?.plan_name || subName == 'hour_02';
+        check =
+            subName == 'hour_02' &&
+            !isAvailableHourSub &&
+            user?.stat?.plan_name !== 'hour_02';
+
         return check;
+        //let check = false;
+        //check = !user?.stat?.plan_name || subName == 'hour_02';
+        //return check;
     };
     return (
         <div

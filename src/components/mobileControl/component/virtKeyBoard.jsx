@@ -15,7 +15,7 @@ const VirtKeyboard = ({ close }) => {
     const isClose = useAppSelector(
         (state) => state.sidepane.mobileControl.keyboardHide
     );
-    const onKeyPress = (button) => {
+    const handleKeyPress = (button) => {
         if (button === 'Shift') {
             setLayoutName(layoutName === 'default' ? 'shift' : 'default');
             return;
@@ -33,6 +33,7 @@ const VirtKeyboard = ({ close }) => {
         }
     };
 
+    const handleKeyReleased = (button) => {};
     return (
         <div
             id="keyboard"
@@ -42,12 +43,14 @@ const VirtKeyboard = ({ close }) => {
         >
             <Keyboard
                 layoutName={layoutName}
-                onKeyPress={onKeyPress}
+                onKeyPress={handleKeyPress}
+                onKeyReleased={handleKeyReleased}
                 disableButtonHold={true}
                 display={{
-                    Backspace: 'Back',
+                    Backspace: '⌫',
                     Close: '🅇',
-                    Control: 'Ctrl'
+                    Control: 'Ctrl',
+                    Enter: '⏎'
                 }}
                 layout={{
                     default: [

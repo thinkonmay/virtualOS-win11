@@ -1,10 +1,4 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import {
-    pb,
-    supabase,
-    SupabaseFuncInvoke
-} from '../reducers/fetch/createClient';
-import { Computer, StartRequest } from '../reducers/fetch/local';
 import '../reducers/index';
 import {
     appDispatch,
@@ -30,6 +24,12 @@ import { keyboardCallback } from '../reducers/remote';
 import { localStorageKey, pathNames, PlanName } from '../utils/constant';
 import { RenderNode } from '../utils/tree';
 import { fetchApp } from './background';
+import { Computer, StartRequest } from '../../../src-tauri/api/local.ts';
+import {
+    getDomainURL,
+    pb,
+    SupabaseFuncInvoke
+} from '../../../src-tauri/api/createClient.ts';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -238,19 +238,16 @@ export const clickShortCut = (keys = []) => {
 
 export const bindStoreId = async (email: string, store_id: number) => {
     try {
-        const data = await fetch(
-            'https://play.thinkmay.net/access_store_volume',
-            {
-                method: 'POST',
-                headers: {
-                    Authorization: pb.authStore.token
-                },
-                body: JSON.stringify({
-                    store_id,
-                    email
-                })
-            }
-        );
+        const data = await fetch(`${getDomainURL()}/access_store_volume`, {
+            method: 'POST',
+            headers: {
+                Authorization: pb.authStore.token
+            },
+            body: JSON.stringify({
+                store_id,
+                email
+            })
+        });
         if (data.ok === false) throw await data.text();
 
         return data;
@@ -259,19 +256,6 @@ export const bindStoreId = async (email: string, store_id: number) => {
     }
 };
 
-export const isAlowBuyHourSub = async () => {
-    try {
-        const { data, error } = await supabase.rpc('allow_hour_plan');
-
-        if (data.ok === false) {
-            console.log(error);
-        }
-
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
-};
 interface PaymentBody {
     buyerEmail: string;
     items: {
@@ -310,8 +294,14 @@ export const verifyPayment = async (inputs: VerifyPaymentBody) => {
 };
 
 export const wrapperAsyncFunction = async (
-    fun: () => Promise<void>,
-    { loading = true, title = 'Loading...', text, tips = true, timeProcessing }
+    fun: () => Promise<any>,
+    {
+        loading = true,
+        title = 'Loading...',
+        text = '',
+        tips = true,
+        timeProcessing
+    }
 ) => {
     try {
         appDispatch(

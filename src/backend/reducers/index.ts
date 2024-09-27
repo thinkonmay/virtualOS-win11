@@ -1,7 +1,7 @@
 import { ThunkMiddleware, configureStore } from '@reduxjs/toolkit';
 import * as actions from '.';
 import * as Actions from '../actions/index.js';
-import { appSlice, appsAsync } from './apps';
+import { appSlice } from './apps';
 import { deskSlice } from './desktop';
 import { globalAsync, globalSlice } from './globals';
 import { menusSlice } from './menu';
@@ -16,14 +16,21 @@ import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { UserEvents } from './fetch/analytics.js';
+import { UserEvents } from '../../../src-tauri/api/analytics.js';
 
-const blacklist = ['framerate', 'bitrate'];
+const blacklist = [
+    'framerate',
+    'bitrate',
+    'internal_sync',
+    'idrcount',
+    'packetloss'
+];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (window.location.href.includes('localhost'))
-        // TODO
         console.log({ ...(action as any) });
-    if (blacklist.filter((x) => (action as any).type.includes(x)).length == 0)
+    else if (
+        blacklist.filter((x) => (action as any).type.includes(x)).length == 0
+    )
         UserEvents(action as any);
 
     return await next(action);
@@ -126,14 +133,6 @@ export const {
 } = remoteSlice.actions;
 
 export const {
-    fetch_app,
-    install_app,
-    start_app,
-    pause_app,
-    delete_app,
-    access_app
-} = appsAsync;
-export const {
     fetch_local_worker,
     worker_session_access,
     worker_session_close,
@@ -148,7 +147,7 @@ export const {
     vm_session_close,
     peer_session_create,
     peer_session_access,
-    peer_session_close,
+    peer_session_close
 } = workerAsync;
 export const { fetch_user } = userAsync;
 export const {
