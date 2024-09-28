@@ -223,9 +223,9 @@ export const globalAsync = {
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
                 ? {
-                    info,
-                    isMaintaining: true
-                }
+                      ...info,
+                      isMaintaining: true
+                  }
                 : {};
         }
     )

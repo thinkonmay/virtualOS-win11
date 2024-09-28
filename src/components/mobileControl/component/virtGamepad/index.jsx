@@ -26,7 +26,6 @@ export const VirtualGamepad = (props) => {
 
     return (
         <>
-            {/*{(draggable === 'static' || draggable === 'draggable') && (*/}
             <div
                 className={`virtGamepad ${!isClose ? 'slide-in' : 'slide-out'}`}
             >
