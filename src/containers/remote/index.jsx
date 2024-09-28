@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { AudioWrapper } from '../../../src-tauri/core/pipeline/sink/audio/wrapper';
 import { VideoWrapper } from '../../../src-tauri/core/pipeline/sink/video/wrapper';
+import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import {
     AddNotifier,
     ConnectionEvent
@@ -133,7 +134,6 @@ export const Remote = () => {
                         <MdArrowForwardIos style={{ fontSize: '1.2rem' }} />
                     )}
                 </button>
-                <HandleSuggestion />
             </div>
         </div>
     );
