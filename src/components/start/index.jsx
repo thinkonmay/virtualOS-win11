@@ -227,8 +227,9 @@ export const SidePane = () => {
                                         )}
                                     </span>{' '}
                                     Packetloss:{' '}
-                                    <span> {remote.packetLoss}</span> IDR:{' '}
-                                    <span> {remote.idrcount}</span>
+                                    <span> {remote.packetLoss}</span>
+                                    IDR: <span> {remote.idrcount}</span>
+                                    decodeFPS: <span> {remote.realfps}</span>
                                 </div>
                                 <div className=" sliderWrapper">
                                     <span>1mbs</span>

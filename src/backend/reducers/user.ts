@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { BuilderHelper } from './helper';
-import { pb } from '../../../src-tauri/api/createClient';
+import { pb, supabaseGlobal } from '../../../src-tauri/api/createClient';
 
 type Data = RecordModel & {
     stat?: UsageTime;
@@ -34,25 +34,28 @@ const initialState: Data = {
 
 export const userAsync = {
     fetch_user: createAsyncThunk('fetch_user', async (): Promise<Data> => {
-        const {
-            items: [result]
-        } = await pb.collection('users').getList<Data>(1);
+        const result = await pb.collection('users').getList(1);
+        const payloadUser = result.items.at(0) ?? initialState;
 
-        return result != null
-            ? {
-                  ...result,
-                  stat: {
-                      start_time: '',
-                      end_time: '',
-                      plan_name: 'month_01',
-                      usage_hour: 100,
-                      remain_time: 100,
-                      pre_remain_time: 100,
-                      additional_time: '',
-                      plan_hour: ''
-                  }
-              }
-            : initialState;
+        const { data, error } = await supabaseGlobal.rpc('get_user_infov2', {
+            email: payloadUser.email
+        });
+        const userStats = await supabaseGlobal.rpc('get_user_stats', {
+            email: payloadUser.email
+        });
+        if (error != null) {
+            // console.log(`Not found infor subscription of ${payloadUser.email}`);
+        }
+        if (userStats.error != null) {
+            // console.log(`Not found stat subscription of ${payloadUser.email}`);
+        }
+
+        payloadUser.stat = {
+            ...data.at(0),
+            ...userStats.data.at(0)
+        };
+
+        return payloadUser;
     })
 };
 

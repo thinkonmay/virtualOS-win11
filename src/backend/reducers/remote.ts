@@ -107,6 +107,7 @@ type Data = {
 
     packetLoss: number;
     idrcount: number;
+    realfps: number;
 
     auth?: AuthSessionResp;
     ref?: string;
@@ -128,6 +129,7 @@ const initialState: Data = {
     prev_framerate: 0,
     prev_size: 0,
     idrcount: 0,
+    realfps: 0,
     packetLoss: 0
 };
 
@@ -301,10 +303,11 @@ export const remoteAsync = {
         else if (!client.ready()) return;
 
         appDispatch(
-            remoteSlice.actions.packetloss(client.Metrics.video.packetloss.last)
-        );
-        appDispatch(
-            remoteSlice.actions.idrcount(client.Metrics.video.idrcount.last)
+            remoteSlice.actions.metrics({
+                packetloss: client.Metrics.video.packetloss.last,
+                idrcount: client.Metrics.video.idrcount.last,
+                fps: client.Metrics.video.frame.persecond
+            })
         );
 
         if (
@@ -460,11 +463,17 @@ export const remoteSlice = createSlice({
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
         },
-        idrcount: (state, action: PayloadAction<number>) => {
-            state.idrcount = action.payload;
-        },
-        packetloss: (state, action: PayloadAction<number>) => {
-            state.packetLoss = action.payload;
+        metrics: (
+            state,
+            action: PayloadAction<{
+                packetloss: number;
+                idrcount: number;
+                fps: number;
+            }>
+        ) => {
+            state.idrcount = action.payload.idrcount;
+            state.packetLoss = action.payload.packetloss;
+            state.realfps = action.payload.fps;
         },
         internal_sync: (state) => {
             if (
