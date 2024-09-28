@@ -108,6 +108,7 @@ type Data = {
     packetLoss: number;
     idrcount: number;
     realfps: number;
+    realbitrate: number;
 
     auth?: AuthSessionResp;
     ref?: string;
@@ -130,7 +131,8 @@ const initialState: Data = {
     prev_size: 0,
     idrcount: 0,
     realfps: 0,
-    packetLoss: 0
+    packetLoss: 0,
+    realbitrate: 0
 };
 
 function VirtualGamepadButtonSlider(isDown: boolean, index: number) {
@@ -306,6 +308,7 @@ export const remoteAsync = {
             remoteSlice.actions.metrics({
                 packetloss: client.Metrics.video.packetloss.last,
                 idrcount: client.Metrics.video.idrcount.last,
+                bitrate: client.Metrics.video.bitrate.persecond,
                 fps: client.Metrics.video.frame.persecond
             })
         );
@@ -468,11 +471,13 @@ export const remoteSlice = createSlice({
             action: PayloadAction<{
                 packetloss: number;
                 idrcount: number;
+                bitrate: number;
                 fps: number;
             }>
         ) => {
             state.idrcount = action.payload.idrcount;
             state.packetLoss = action.payload.packetloss;
+            state.realbitrate = action.payload.bitrate;
             state.realfps = action.payload.fps;
         },
         internal_sync: (state) => {

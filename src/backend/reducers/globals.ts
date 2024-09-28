@@ -222,7 +222,10 @@ export const globalAsync = {
             return info != undefined &&
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
-                ? info
+                ? {
+                    info,
+                    isMaintaining: true
+                }
                 : {};
         }
     )

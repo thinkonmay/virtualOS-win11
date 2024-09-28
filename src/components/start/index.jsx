@@ -210,8 +210,12 @@ export const SidePane = () => {
                         <div className="sliderCont flex flex-col items-start">
                             <div className="containerSlider">
                                 <p className="sliderName">
-                                    {t[Contents.SUGGEST_BITRATE_FPS]}{' '}
-                                    <b>6 & 60</b>
+                                    Packetloss:{' '}
+                                    <span> {remote.packetLoss}</span>
+                                    IDR: <span> {remote.idrcount}</span>
+                                    decodeFPS: <span> {remote.realfps}</span>
+                                    bitrate: <span> {remote.realbitrate}</span>
+                                    kbps
                                 </p>
 
                                 <div className="sliderName">
@@ -225,11 +229,7 @@ export const SidePane = () => {
                                                 MIN_BITRATE()) /
                                                 1000
                                         )}
-                                    </span>{' '}
-                                    Packetloss:{' '}
-                                    <span> {remote.packetLoss}</span>
-                                    IDR: <span> {remote.idrcount}</span>
-                                    decodeFPS: <span> {remote.realfps}</span>
+                                    </span>
                                 </div>
                                 <div className=" sliderWrapper">
                                     <span>1mbs</span>
