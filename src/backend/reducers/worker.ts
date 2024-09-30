@@ -135,7 +135,12 @@ export const workerAsync = {
                     }
                 });
 
-                const resp = await StartVirtdaemon(computer, volume_id, ram, vcpu);
+                const resp = await StartVirtdaemon(
+                    computer,
+                    volume_id,
+                    ram,
+                    vcpu
+                );
                 if (resp instanceof Error) {
                     UserEvents({
                         type: 'remote/request_vm_failure',
