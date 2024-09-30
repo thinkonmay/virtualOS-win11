@@ -62,6 +62,8 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const email = (getState() as RootState).user.email;
+            const ram = (getState() as RootState).user.stat.ram;
+            const vcpu = (getState() as RootState).user.stat.vcpu;
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
@@ -133,7 +135,7 @@ export const workerAsync = {
                     }
                 });
 
-                const resp = await StartVirtdaemon(computer, volume_id);
+                const resp = await StartVirtdaemon(computer, volume_id, ram, vcpu);
                 if (resp instanceof Error) {
                     UserEvents({
                         type: 'remote/request_vm_failure',
