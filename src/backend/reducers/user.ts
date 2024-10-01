@@ -18,6 +18,8 @@ type UsageTime = {
     pre_remain_time: number;
     additional_time: string;
     plan_hour: string;
+    ram?: string;
+    vcpu?: string;
 };
 
 const initialState: Data = {
