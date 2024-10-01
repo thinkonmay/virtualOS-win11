@@ -238,7 +238,7 @@ export const clickShortCut = (keys = []) => {
 
 export const bindStoreId = async (email: string, store_id: number) => {
     try {
-        const data = await fetch(`${getDomainURL()}/access_store_volume`, {
+        const data = await fetch(`${getDomainURL()}access_store_volume`, {
             method: 'POST',
             headers: {
                 Authorization: pb.authStore.token
