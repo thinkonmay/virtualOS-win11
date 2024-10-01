@@ -325,11 +325,30 @@ export const remoteAsync = {
     direct_access: createAsyncThunk(
         'direct_access',
         async ({ ref }: { ref: string }) => {
-            const resultList = await pb
-                .collection('reference')
-                .getFirstListItem(`token = "${ref}"`);
+            try {
+                const resp = await fetch(
+                    window.location.origin +
+                        '/api/collections/reference/records?page=1&perPage=1&filter=token=' +
+                        `"${ref}"` +
+                        '&skipTotal=1',
+                    {
+                        method: 'GET',
+                        headers: {
+                            Authorization: pb.authStore.token,
+                            'Content-type': 'application/json'
+                        }
+                    }
+                );
 
-            appDispatch(remote_connect({ ...(resultList as any) }));
+                const data = await resp.json();
+
+                if (data.items.length == 0)
+                    throw new Error('not found any query');
+
+                appDispatch(remote_connect({ ...(data.items[0] as any) }));
+            } catch (e) {
+                throw new Error('Failed to query ' + e);
+            }
         }
     ),
     save_reference: createAsyncThunk(
