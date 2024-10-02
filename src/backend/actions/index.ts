@@ -272,66 +272,56 @@ export const createPaymentLink = async (inputs: PaymentBody) => {
     return result;
 };
 
-interface VerifyPaymentBody {
-    email: string;
-}
+export const verifyPayment = async (email: string): Promise<void> => {
+    if (localStorage.getItem(localStorageKey.PATH_NAME) != 'true') return;
 
-export const verifyPayment = async (inputs: VerifyPaymentBody) => {
-    const oldPathName = localStorage.getItem(localStorageKey.PATH_NAME);
+    const result = await SupabaseFuncInvoke('verify_payment', { email });
     localStorage.removeItem(localStorageKey.PATH_NAME);
-    if (oldPathName != pathNames.VERIFY_PAYMENT || !inputs) {
-        return;
-    }
-
-    const result = await SupabaseFuncInvoke('verify_payment', {
-        email: inputs
-    });
-
     if (result instanceof Error) throw result;
-
     await appDispatch(fetch_user());
-    return result;
 };
 
 export const wrapperAsyncFunction = async (
-    fun: () => Promise<any>,
+    fun: () => Promise<void>,
     {
         loading = true,
         title = 'Loading...',
         text = '',
         tips = true,
-        timeProcessing
+        timeProcessing = 0
     }
-) => {
+): Promise<void> => {
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: {
+                loading,
+                title,
+                text,
+                tips,
+                timeProcessing
+            }
+        })
+    );
+
+    let err: Error | undefined = undefined;
     try {
-        appDispatch(
-            popup_open({
-                type: 'notify',
-                data: {
-                    loading,
-                    title,
-                    text,
-                    tips,
-                    timeProcessing
-                }
-            })
-        );
-        const data = await fun();
-        appDispatch(popup_close());
-        return data;
+        await fun();
     } catch (error) {
-        appDispatch(popup_close());
+        err = error;
+    }
+
+    appDispatch(popup_close());
+    if (err != undefined)
         appDispatch(
             popup_open({
                 type: 'complete',
                 data: {
                     success: false,
-                    content: error.message
+                    content: err.message
                 }
             })
         );
-    } finally {
-    }
 };
 
 //Connecting to old session

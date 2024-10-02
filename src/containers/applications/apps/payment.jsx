@@ -141,15 +141,9 @@ export const PaymentApp = () => {
             ]
         };
         wrapperAsyncFunction(
-            async () => {
-                const link = await createPaymentLink(inputs);
-                window.open(link, '_self');
-                //setIframe(link)
-                //setPaypage(1)
-            },
+            async () => window.open(await createPaymentLink(inputs), '_self'),
             {
                 title: 'Creating Payment',
-                //text: 'Please wait a few seconds',
                 tips: false,
                 timeProcessing: 0.5
             }
