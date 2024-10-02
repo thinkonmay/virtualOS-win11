@@ -38,7 +38,7 @@ export function LeftFuncButton(props) {
         width: size,
         height: size
     };
-    const Touch = (index, type) => {
+    const onTouch = (index, type) => {
         gamePadBtnCallback(index, type);
     };
     return (
@@ -46,16 +46,16 @@ export function LeftFuncButton(props) {
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => Touch(6, 'down')}
-                onTouchEnd={(e) => Touch(6, 'up')}
+                onTouchStart={(e) => onTouch(6, 'down')}
+                onTouchEnd={(e) => onTouch(6, 'up')}
             >
                 LT
             </div>
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => Touch(4, 'down')}
-                onTouchEnd={(e) => Touch(4, 'up')}
+                onTouchStart={(e) => onTouch(4, 'down')}
+                onTouchEnd={(e) => onTouch(4, 'up')}
             >
                 LB
             </div>

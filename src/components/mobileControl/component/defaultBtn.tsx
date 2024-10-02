@@ -54,9 +54,9 @@ const GamepadButton = ({
         <div
             ref={buttonRef}
             className={`${className} defaultButton`}
-            onPointerDown={handleTouchStart}
-            onPointerUp={handleTouchEnd}
-            onPointerCancel={handleTouchCancel}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
             style={style}
         >
             {children}

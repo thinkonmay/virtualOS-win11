@@ -189,9 +189,7 @@ export const ButtonGroupRight = (props) => {
                     <RightFuncButton
                         ref={funcBtnRef}
                         name="funcBtn"
-                        Touch={(index, type) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
@@ -207,9 +205,7 @@ export const ButtonGroupRight = (props) => {
                     <YBXA
                         ref={ybxaRef}
                         size={BUTTON_SIZE * btnSize}
-                        onTouch={(e, type, index) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                     />
                 </div>
             </Draggable>
@@ -414,9 +410,7 @@ export const ButtonGroupLeft = (props) => {
                 <div ref={funcBtnRef} id="funcBtn" className="wrapperDraggable">
                     <LeftFuncButton
                         ref={funcBtnRef}
-                        Touch={(index, type) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
@@ -432,9 +426,7 @@ export const ButtonGroupLeft = (props) => {
                     <DPad
                         ref={dpadRef}
                         size={BUTTON_SIZE * btnSize}
-                        onTouch={(e, type, index) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                     />
                 </div>
             </Draggable>
