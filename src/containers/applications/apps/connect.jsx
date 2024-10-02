@@ -20,20 +20,11 @@ export const ConnectApp = () => {
     );
     const stats = useAppSelector((state) => state.user.stat);
     const available = useAppSelector(
-        (state) => new RenderNode(state.worker.data).data.at(0)?.info?.available
+        (state) =>
+            new RenderNode(state.worker.data).data.at(0)?.info?.available &&
+            !state.globals.maintenance?.isMaintaining
     );
     const user = useAppSelector((state) => state.user);
-    const isMaintaining = useAppSelector(
-        (state) => state.globals.maintenance?.isMaintaining
-    );
-
-    const [selector, setSelector] = useState({
-        feeling: '',
-        control: {
-            choose: false
-        },
-        text: ''
-    });
 
     const emailSplit = () => {
         let result = '';
