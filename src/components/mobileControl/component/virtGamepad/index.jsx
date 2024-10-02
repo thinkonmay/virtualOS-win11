@@ -189,7 +189,6 @@ export const ButtonGroupRight = (props) => {
                     <RightFuncButton
                         ref={funcBtnRef}
                         name="funcBtn"
-
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
@@ -202,11 +201,7 @@ export const ButtonGroupRight = (props) => {
                 nodeRef={ybxaRef}
             >
                 <div ref={ybxaRef} id="ybxa" className="wrapperDraggable">
-                    <YBXA
-                        ref={ybxaRef}
-                        size={BUTTON_SIZE * btnSize}
-
-                    />
+                    <YBXA ref={ybxaRef} size={BUTTON_SIZE * btnSize} />
                 </div>
             </Draggable>
             <Draggable
@@ -410,7 +405,6 @@ export const ButtonGroupLeft = (props) => {
                 <div ref={funcBtnRef} id="funcBtn" className="wrapperDraggable">
                     <LeftFuncButton
                         ref={funcBtnRef}
-
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
@@ -423,11 +417,7 @@ export const ButtonGroupLeft = (props) => {
                 nodeRef={dpadRef}
             >
                 <div ref={dpadRef} id="dpad" className="wrapperDraggable">
-                    <DPad
-                        ref={dpadRef}
-                        size={BUTTON_SIZE * btnSize}
-
-                    />
+                    <DPad ref={dpadRef} size={BUTTON_SIZE * btnSize} />
                 </div>
             </Draggable>
             <Draggable
