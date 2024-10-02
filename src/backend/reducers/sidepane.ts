@@ -143,9 +143,9 @@ const initialState: Data = {
         },
         {
             ui: true,
-            src: 'MdOutlineKeyboard',
-            name: [Contents.SCAN_CODE],
-            state: 'strict_timing',
+            src: 'MdNetworkWifi2Bar',
+            name: [Contents.STRICT_TIMING],
+            state: 'no_strict_timing',
             action: 'remote/strict_timing_toggle'
         },
         {

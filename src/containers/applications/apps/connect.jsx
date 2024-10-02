@@ -19,8 +19,9 @@ export const ConnectApp = () => {
     );
     const stats = useAppSelector((state) => state.user.stat);
     const available = useAppSelector(
-        (state) => new RenderNode(state.worker.data).data[0]?.info?.available &&
-        !state.globals.maintenance?.isMaintaining
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.available &&
+            !state.globals.maintenance?.isMaintaining
     );
     const user = useAppSelector((state) => state.user);
 
