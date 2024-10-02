@@ -1,4 +1,5 @@
 import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
+import GamepadButton from '../defaultBtn';
 import './index.scss';
 
 export default function YBXA(props) {
@@ -14,34 +15,34 @@ export default function YBXA(props) {
                 className="mainContent"
                 style={{ width: `${size ?? 20}px`, height: `${size ?? 20}px` }}
             >
-                <button
+                <GamepadButton
                     className="button-y"
                     onTouchStart={(e) => onTouch(e, 'down', 3)}
                     onTouchEnd={(e) => onTouch(e, 'up', 3)}
                 >
                     Y
-                </button>
-                <button
+                </GamepadButton>
+                <GamepadButton
                     className="button-b"
                     onTouchStart={(e) => onTouch(e, 'down', 0)}
                     onTouchEnd={(e) => onTouch(e, 'up', 0)}
                 >
                     A
-                </button>
-                <button
+                </GamepadButton>
+                <GamepadButton
                     className="button-x"
                     onTouchStart={(e) => onTouch(e, 'down', 1)}
                     onTouchEnd={(e) => onTouch(e, 'up', 1)}
                 >
                     B
-                </button>
-                <button
+                </GamepadButton>
+                <GamepadButton
                     className="button-a"
                     onTouchStart={(e) => onTouch(e, 'down', 2)}
                     onTouchEnd={(e) => onTouch(e, 'up', 2)}
                 >
                     X
-                </button>
+                </GamepadButton>
             </div>
         </div>
     );

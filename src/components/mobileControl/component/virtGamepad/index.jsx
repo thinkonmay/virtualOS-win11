@@ -6,6 +6,7 @@ import {
     gamepadAxisCallback,
     gamePadBtnCallback
 } from '../../../../backend/reducers/remote';
+import GamepadButton from '../defaultBtn';
 import { CustomJoyStick } from '../joystick';
 import DPad from './dpad';
 import { LeftFuncButton, RightFuncButton } from './funcBtn';
@@ -167,6 +168,7 @@ export const ButtonGroupRight = (props) => {
 
     const ybxaRef = useRef(null);
     const joystickRef = useRef(null);
+    const joystickWrapperRef = useRef(null);
     const funcBtnRef = useRef(null);
     const subBtnRef = useRef(null);
     const rsRef = useRef(null);
@@ -187,9 +189,7 @@ export const ButtonGroupRight = (props) => {
                     <RightFuncButton
                         ref={funcBtnRef}
                         name="funcBtn"
-                        Touch={(index, type) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
@@ -205,9 +205,7 @@ export const ButtonGroupRight = (props) => {
                     <YBXA
                         ref={ybxaRef}
                         size={BUTTON_SIZE * btnSize}
-                        onTouch={(e, type, index) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                     />
                 </div>
             </Draggable>
@@ -216,14 +214,17 @@ export const ButtonGroupRight = (props) => {
                 position={{ x: posBtn.joystick.x, y: posBtn.joystick.y }}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={joystickRef}
+                nodeRef={joystickWrapperRef}
             >
                 <div
-                    ref={joystickRef}
                     id="joystick"
                     className="wrapperDraggable"
+                    ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
+                        //className={'wrapperDraggable'}
+                        //id={'joystick'}
+                        //ref={joystickRef}
                         ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSize}
@@ -263,9 +264,8 @@ export const ButtonGroupRight = (props) => {
                 nodeRef={rsRef}
             >
                 <div id="rs" className="wrapperDraggable" ref={rsRef}>
-                    <button
+                    <GamepadButton
                         id="rs"
-                        className="defaultButton"
                         style={{
                             width: `${BUTTON_SIZE * btnSize}px`,
                             height: `${BUTTON_SIZE * btnSize}px`
@@ -274,7 +274,7 @@ export const ButtonGroupRight = (props) => {
                         onTouchEnd={() => gamePadBtnCallback(11, 'up')}
                     >
                         RS
-                    </button>
+                    </GamepadButton>
                 </div>
             </Draggable>
         </>
@@ -392,6 +392,7 @@ export const ButtonGroupLeft = (props) => {
 
     const dpadRef = useRef(null);
     const joystickRef = useRef(null);
+    const joystickWrapperRef = useRef(null);
     const funcBtnRef = useRef(null);
     const lsRef = useRef(null);
     const gamepadCallBack = async (x, y) => {
@@ -409,9 +410,7 @@ export const ButtonGroupLeft = (props) => {
                 <div ref={funcBtnRef} id="funcBtn" className="wrapperDraggable">
                     <LeftFuncButton
                         ref={funcBtnRef}
-                        Touch={(index, type) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                         size={BUTTON_SIZE * btnSize}
                     />
                 </div>
@@ -427,9 +426,7 @@ export const ButtonGroupLeft = (props) => {
                     <DPad
                         ref={dpadRef}
                         size={BUTTON_SIZE * btnSize}
-                        onTouch={(e, type, index) =>
-                            props.ButtonCallback(index, type)
-                        }
+
                     />
                 </div>
             </Draggable>
@@ -441,18 +438,17 @@ export const ButtonGroupLeft = (props) => {
                 nodeRef={lsRef}
             >
                 <div id="ls" className="wrapperDraggable" ref={lsRef}>
-                    <button
+                    <GamepadButton
                         onTouchStart={() => gamePadBtnCallback(10, 'down')}
                         onTouchEnd={() => gamePadBtnCallback(10, 'up')}
                         draggable={props.draggable}
-                        className="defaultButton"
                         style={{
                             width: `${BUTTON_SIZE * btnSize}px`,
                             height: `${BUTTON_SIZE * btnSize}px`
                         }}
                     >
                         LS
-                    </button>
+                    </GamepadButton>
                 </div>
             </Draggable>
             <Draggable
@@ -460,14 +456,15 @@ export const ButtonGroupLeft = (props) => {
                 position={{ x: posBtn.joystick.x, y: posBtn.joystick.y }}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={joystickRef}
+                nodeRef={joystickWrapperRef}
             >
                 <div
-                    ref={joystickRef}
                     id="joystick"
                     className="wrapperDraggable"
+                    ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
+                        color="black"
                         moveCallback={gamepadCallBack}
                         ref={joystickRef}
                         draggable={props.draggable}

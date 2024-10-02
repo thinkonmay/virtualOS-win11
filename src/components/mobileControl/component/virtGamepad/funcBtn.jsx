@@ -1,4 +1,5 @@
 import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
+import GamepadButton from '../defaultBtn';
 import './index.scss';
 
 export function RightFuncButton(props) {
@@ -8,27 +9,25 @@ export function RightFuncButton(props) {
         width: size,
         height: size
     };
-    const Touch = (index, type) => {
+    const onTouch = (index, type) => {
         gamePadBtnCallback(index, type);
     };
     return (
         <div className={`rightFuncBtn ${className}`} {...rest}>
-            <div
-                className="defaultButton"
+            <GamepadButton
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => Touch(7, 'down')}
-                onTouchEnd={(e) => Touch(7, 'up')}
+                onTouchStart={(e) => onTouch(7, 'down')}
+                onTouchEnd={(e) => onTouch(7, 'up')}
             >
                 RT
-            </div>
-            <div
-                className="defaultButton"
+            </GamepadButton>
+            <GamepadButton
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => Touch(5, 'down')}
-                onTouchEnd={(e) => Touch(5, 'up')}
+                onTouchStart={(e) => onTouch(5, 'down')}
+                onTouchEnd={(e) => onTouch(5, 'up')}
             >
                 RB
-            </div>
+            </GamepadButton>
         </div>
     );
 }
@@ -39,7 +38,7 @@ export function LeftFuncButton(props) {
         width: size,
         height: size
     };
-    const Touch = (index, type) => {
+    const onTouch = (index, type) => {
         gamePadBtnCallback(index, type);
     };
     return (
@@ -47,16 +46,16 @@ export function LeftFuncButton(props) {
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => Touch(6, 'down')}
-                onTouchEnd={(e) => Touch(6, 'up')}
+                onTouchStart={(e) => onTouch(6, 'down')}
+                onTouchEnd={(e) => onTouch(6, 'up')}
             >
                 LT
             </div>
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => Touch(4, 'down')}
-                onTouchEnd={(e) => Touch(4, 'up')}
+                onTouchStart={(e) => onTouch(4, 'down')}
+                onTouchEnd={(e) => onTouch(4, 'up')}
             >
                 LB
             </div>
