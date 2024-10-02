@@ -97,6 +97,7 @@ type Data = {
     local: boolean;
 
     scancode: boolean;
+    strict_timing: boolean;
     frame_drop: boolean;
 
     bitrate: number;
@@ -119,6 +120,7 @@ const initialState: Data = {
     focus: true,
     active: false,
     scancode: false,
+    strict_timing: true,
     fullscreen: false,
     pointer_lock: false,
     relative_mouse: false,
@@ -457,6 +459,13 @@ export const remoteSlice = createSlice({
             if (client == null) return;
 
             client?.HardReset();
+        },
+        strict_timing_toggle: (state) => {
+            state.strict_timing = !state.strict_timing ;
+            if (client) client.Metrics.video.idrcount.strict_timing = state.strict_timing;
+        },
+        strict_timing: (state, action: PayloadAction<boolean>) => {
+            state.strict_timing = action.payload;
         },
         scancode_toggle: (state) => {
             state.scancode = !state.scancode;

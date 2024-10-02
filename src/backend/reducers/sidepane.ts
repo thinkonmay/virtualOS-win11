@@ -143,6 +143,13 @@ const initialState: Data = {
         },
         {
             ui: true,
+            src: 'MdOutlineKeyboard',
+            name: [Contents.SCAN_CODE],
+            state: 'strict_timing',
+            action: 'remote/strict_timing_toggle'
+        },
+        {
+            ui: true,
             src: 'MdOutlineLink',
             name: [Contents.EXTERNAL_TAB],
             state: 'share_reference',

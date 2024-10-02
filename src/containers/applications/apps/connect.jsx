@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     appDispatch,
     useAppSelector,
@@ -20,9 +19,8 @@ export const ConnectApp = () => {
     );
     const stats = useAppSelector((state) => state.user.stat);
     const available = useAppSelector(
-        (state) =>
-            new RenderNode(state.worker.data).data.at(0)?.info?.available &&
-            !state.globals.maintenance?.isMaintaining
+        (state) => new RenderNode(state.worker.data).data[0]?.info?.available &&
+        !state.globals.maintenance?.isMaintaining
     );
     const user = useAppSelector((state) => state.user);
 
@@ -69,6 +67,7 @@ export const ConnectApp = () => {
         }
     ];
     const connect = () => appDispatch(wait_and_claim_volume());
+    const pay = () => appDispatch(app_toggle('payment'));
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -118,7 +117,14 @@ export const ConnectApp = () => {
                                 >
                                     Connect
                                 </button>
-                            ) : null}
+                            ) : (
+                                <button
+                                    onClick={pay}
+                                    className="instbtn connectBtn"
+                                >
+                                    Pay Now
+                                </button>
+                            )}
                         </div>
                     </div>
                 </LazyComponent>
