@@ -143,13 +143,6 @@ const initialState: Data = {
         },
         {
             ui: true,
-            src: 'MdNetworkWifi2Bar',
-            name: [Contents.STRICT_TIMING],
-            state: 'no_strict_timing',
-            action: 'remote/strict_timing_toggle'
-        },
-        {
-            ui: true,
             src: 'MdOutlineLink',
             name: [Contents.EXTERNAL_TAB],
             state: 'share_reference',
@@ -169,7 +162,14 @@ const initialState: Data = {
             state: 'shutdown',
             action: 'shutDownVm',
             style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-        }
+        },
+        {
+            ui: true,
+            src: 'MdNetworkWifi2Bar',
+            name: [Contents.STRICT_TIMING],
+            state: 'no_strict_timing',
+            action: 'remote/strict_timing_toggle'
+        },
     ],
     shortcuts: listDesktopShortCut,
 
