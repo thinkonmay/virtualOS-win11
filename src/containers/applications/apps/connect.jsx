@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import {
-    app_toggle,
     appDispatch,
-    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -13,7 +11,7 @@ import {
 } from '../../../components/shared/general';
 
 import { Contents } from '../../../backend/reducers/locales';
-import { PlanName } from '../../../backend/utils/constant';
+import { RenderNode } from '../../../backend/utils/tree';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -21,6 +19,9 @@ export const ConnectApp = () => {
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const stats = useAppSelector((state) => state.user.stat);
+    const available = useAppSelector(
+        (state) => new RenderNode(state.worker.data).data.at(0)?.info?.available
+    );
     const user = useAppSelector((state) => state.user);
     const isMaintaining = useAppSelector(
         (state) => state.globals.maintenance?.isMaintaining
@@ -54,10 +55,6 @@ export const ConnectApp = () => {
 
         return storage;
     };
-    const hasComputer = () => {
-        const planName = stats?.plan_name;
-        return planName == PlanName.month_01 || planName == PlanName.hour_01;
-    };
     const listSpec = [
         {
             name: 'GPU:',
@@ -80,43 +77,7 @@ export const ConnectApp = () => {
             text: 'Window 10'
         }
     ];
-    const connect = () => {
-        if (!stats.plan_name) {
-            appDispatch(app_toggle('payment'));
-            return;
-        }
-        if (stats?.plan_name == 'hour_02') {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        content:
-                            'Truy cập Store Games để cài game, do tải khoản của bạn chưa thuê PC riêng',
-                        success: false
-                    }
-                })
-            );
-
-            return;
-        }
-        if (user.isExpired) {
-            appDispatch(popup_open({ type: 'warning', data: {} }));
-            return;
-        }
-
-        if (isMaintaining) {
-            popup_open({
-                type: 'complete',
-                data: {
-                    content: 'Server is Offline!!!',
-                    success: false
-                }
-            });
-            return;
-        }
-        appDispatch(wait_and_claim_volume());
-    };
-
+    const connect = () => appDispatch(wait_and_claim_volume());
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -159,12 +120,14 @@ export const ConnectApp = () => {
                                 </div>
                             </div>
 
-                            <button
-                                onClick={connect}
-                                className="instbtn connectBtn"
-                            >
-                                {hasComputer() ? 'Connect' : 'Payment'}
-                            </button>
+                            {available ? (
+                                <button
+                                    onClick={connect}
+                                    className="instbtn connectBtn"
+                                >
+                                    Connect
+                                </button>
+                            ) : null}
                         </div>
                     </div>
                 </LazyComponent>
