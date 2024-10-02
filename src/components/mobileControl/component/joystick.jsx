@@ -8,7 +8,7 @@
 //    const move = (event) => {
 //        if (draggable === 'draggable') return;
 
-import { forwardRef, useCallback, useId, useState } from "react";
+import { forwardRef, useCallback, useId, useState } from 'react';
 
 //        if (event.type == 'move') {
 //            //if (!enableJT) {
@@ -80,42 +80,43 @@ import { forwardRef, useCallback, useId, useState } from "react";
 //    );
 //};
 
-
 export const CustomJoyStick = forwardRef((props, ref) => {
-    const { size = 100, color = '#007bff', moveCallback = () => { } } = props
+    const { size = 100, color = '#007bff', moveCallback = () => {} } = props;
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [touching, setTouching] = useState(false);
     //const ref = useRef(null);
     const knobRadius = size * 0.2;
 
-    const id = useId()
-    const knobId = useId()
-    console.log(ref);
-    const updatePosition = useCallback((touch) => {
-        if (ref.current) {
-            const rect = ref.current.getBoundingClientRect();
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            let x = touch.clientX - rect.left - centerX;
-            let y = touch.clientY - rect.top - centerY;
+    const id = useId();
+    const knobId = useId();
+    const updatePosition = useCallback(
+        (touch) => {
+            if (ref.current) {
+                const rect = ref.current.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                let x = touch.clientX - rect.left - centerX;
+                let y = touch.clientY - rect.top - centerY;
 
-            const distance = Math.sqrt(x * x + y * y);
-            const maxDistance = (size / 2) - knobRadius;
+                const distance = Math.sqrt(x * x + y * y);
+                const maxDistance = size / 2 - knobRadius;
 
-            if (distance > maxDistance) {
-                const scale = maxDistance / distance;
-                x *= scale;
-                y *= scale;
+                if (distance > maxDistance) {
+                    const scale = maxDistance / distance;
+                    x *= scale;
+                    y *= scale;
+                }
+
+                const normalizedX = x / maxDistance;
+                const normalizedY = y / maxDistance;
+
+                setPosition({ x, y });
+                moveCallback(normalizedX, normalizedY);
             }
-
-            const normalizedX = x / maxDistance;
-            const normalizedY = y / maxDistance;
-
-            setPosition({ x, y });
-            moveCallback(normalizedX, normalizedY);
-        }
-    }, [knobRadius, moveCallback]);
+        },
+        [knobRadius, moveCallback]
+    );
 
     const handlePointerDown = (e) => {
         e.target.setPointerCapture(e.pointerId);
@@ -135,7 +136,6 @@ export const CustomJoyStick = forwardRef((props, ref) => {
         moveCallback({ x: 0, y: 0, id });
     };
 
-
     return (
         <div
             ref={ref}
@@ -150,13 +150,12 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 touchAction: 'none',
-                position: 'relative',
+                position: 'relative'
             }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-
         >
             <div
                 //className="joystick-knob"
@@ -168,10 +167,9 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                     backgroundColor: color,
                     position: 'absolute',
                     transform: `translate(${position.x}px, ${position.y}px)`,
-                    transition: touching ? 'none' : 'transform 0.1s ease-out',
+                    transition: touching ? 'none' : 'transform 0.1s ease-out'
                 }}
-
             />
         </div>
     );
-})
+});
