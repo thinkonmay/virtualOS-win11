@@ -22,7 +22,7 @@ import {
     wall_set,
     worker_refresh
 } from '../reducers';
-import { client } from '../reducers/remote';
+import { CLIENT } from '../../../src-tauri/singleton';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -118,7 +118,7 @@ const fetchSetting = async () => {
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (client == null || !client?.ready()) return;
+        if (CLIENT == null || !CLIENT?.ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
         if (!(store.getState() as RootState).remote.focus)
@@ -126,7 +126,7 @@ const handleClipboard = async () => {
         if (clipboard == old_clipboard) return;
 
         old_clipboard = clipboard;
-        client?.SetClipboard(clipboard);
+        CLIENT?.SetClipboard(clipboard);
     } catch {
         if ((store.getState() as RootState).remote.focus)
             appDispatch(loose_focus());

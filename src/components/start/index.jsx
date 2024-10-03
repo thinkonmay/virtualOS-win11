@@ -10,6 +10,12 @@ import { getTreeValue } from '../../backend/actions';
 
 import { useDispatch } from 'react-redux';
 import {
+    MAX_BITRATE,
+    MAX_FRAMERATE,
+    MIN_BITRATE,
+    MIN_FRAMERATE
+} from '../../../src-tauri/singleton';
+import {
     appDispatch,
     change_bitrate,
     change_btnGp_size,
@@ -22,13 +28,6 @@ import {
     toggle_gamepad_setting,
     useAppSelector
 } from '../../backend/reducers';
-import { Contents } from '../../backend/reducers/locales';
-import {
-    MAX_BITRATE,
-    MAX_FRAMERATE,
-    MIN_BITRATE,
-    MIN_FRAMERATE
-} from '../../backend/reducers/remote';
 import {
     clickDispatch,
     customClickDispatch

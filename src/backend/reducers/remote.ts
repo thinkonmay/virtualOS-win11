@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
-    close_remote,
     hard_reset,
     popup_close,
     popup_open,
@@ -9,63 +8,19 @@ import {
     store,
     toggle_remote
 } from '.';
-import { CAUSE, getDomainURL, POCKETBASE } from '../../../src-tauri/api';
-import { EventCode, RemoteDesktopClient } from '../../../src-tauri/core';
+import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
+import { EventCode, isMobile } from '../../../src-tauri/core';
+import {
+    CLIENT,
+    MAX_BITRATE,
+    MAX_FRAMERATE,
+    MIN_BITRATE,
+    MIN_FRAMERATE,
+    PINGER,
+    SIZE
+} from '../../../src-tauri/singleton';
 import { sleep } from '../utils/sleep';
-import { isMobile } from './../utils/checking';
 import { BuilderHelper } from './helper';
-
-const size = () =>
-    client != null
-        ? client.video.video.videoHeight * client.video.video.videoWidth
-        : 1920 * 1080;
-export const MAX_BITRATE = () => (15000 / (1920 * 1080)) * size();
-export const MIN_BITRATE = () => (1000 / (1920 * 1080)) * size();
-export const MAX_FRAMERATE = 120; //240
-export const MIN_FRAMERATE = 40;
-
-export let client: RemoteDesktopClient | null = null;
-export const assign = (fun: () => RemoteDesktopClient) => {
-    if (client != null) client.Close();
-    client = fun();
-};
-
-let pinger = async () => {};
-export const set_pinger = (fun: () => Promise<void>) => {
-    pinger = fun;
-};
-
-export const ready = async () => {
-    appDispatch(
-        popup_open({
-            type: 'notify',
-            data: {
-                loading: true
-            }
-        })
-    );
-
-    let start = new Date().getTime();
-    while (client == null || !client?.ready()) {
-        const now = new Date().getTime();
-        if (now - start > 60 * 1000) {
-            appDispatch(popup_close());
-            appDispatch(close_remote());
-            throw new Error(
-                JSON.stringify({
-                    message: 'remote timeout connect to machine',
-                    code: CAUSE.REMOTE_TIMEOUT
-                })
-            );
-        }
-
-        await new Promise((r) => setTimeout(r, 1000));
-    }
-    if (isMobile) client.PointerVisible(true);
-
-    appDispatch(remoteSlice.actions.internal_sync());
-    appDispatch(popup_close());
-};
 
 export type AuthSessionResp = {
     id: string;
@@ -135,8 +90,8 @@ const initialState: Data = {
 };
 
 export function WindowD() {
-    if (client == null) return;
-    client.VirtualKeyboard(
+    if (CLIENT == null) return;
+    CLIENT.VirtualKeyboard(
         { code: EventCode.KeyDown, jsKey: 'lwin' },
         { code: EventCode.KeyDown, jsKey: 'd' },
         { code: EventCode.KeyUp, jsKey: 'd' },
@@ -149,8 +104,8 @@ export async function keyboardCallback(val, action: 'up' | 'down') {
         navigator.vibrate([40, 30, 0]);
     }
 
-    if (client == null) return;
-    client.VirtualKeyboard({
+    if (CLIENT == null) return;
+    CLIENT.VirtualKeyboard({
         code: action == 'up' ? EventCode.KeyUp : EventCode.KeyDown,
         jsKey: val
     });
@@ -159,8 +114,8 @@ export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
     if ('vibrate' in navigator && type == 'down') {
         navigator.vibrate([40, 30, 0]);
     }
-    if (client == null) return;
-    client.VirtualGamepadButton(type == 'down', index);
+    if (CLIENT == null) return;
+    CLIENT.VirtualGamepadButton(type == 'down', index);
 }
 
 export async function gamepadAxisCallback(
@@ -168,14 +123,14 @@ export async function gamepadAxisCallback(
     y: number,
     type: 'left' | 'right'
 ) {
-    if (client == null) return;
-    client.VirtualGamepadAxis(x, y, type);
+    if (CLIENT == null) return;
+    CLIENT.VirtualGamepadAxis(x, y, type);
 }
 
 export const setClipBoard = async (content: string) => {
-    if (client == null) return;
+    if (CLIENT == null) return;
 
-    client?.SetClipboard(content);
+    CLIENT?.SetClipboard(content);
 };
 
 export function openRemotePage(
@@ -207,8 +162,8 @@ export const remoteAsync = {
     check_worker: async () => {
         if (!store.getState().remote.active) return;
         else if (store.getState().remote.local) return;
-        else if (client == null) return;
-        else if (!client.ready()) return;
+        else if (CLIENT == null) return;
+        else if (!CLIENT.ready()) return;
 
         // TODO
     },
@@ -216,10 +171,10 @@ export const remoteAsync = {
         const state = store.getState();
         const { remote, popup } = state;
 
-        if (!remote.active || client == null) return;
+        if (!remote.active || CLIENT == null) return;
 
         const lastactive = () =>
-            Math.min(client?.hid?.last_active(), client?.touch?.last_active());
+            Math.min(CLIENT?.hid?.last_active(), CLIENT?.touch?.last_active());
 
         if (lastactive() > 5 * 60) {
             if (popup.data_stack.length > 0) return;
@@ -241,19 +196,19 @@ export const remoteAsync = {
             appDispatch(popup_close());
         }
 
-        pinger();
+        PINGER();
     },
     sync: async () => {
         if (!store.getState().remote.active) return;
-        else if (client == null) return;
-        else if (!client.ready()) return;
+        else if (CLIENT == null) return;
+        else if (!CLIENT.ready()) return;
 
         appDispatch(
             remoteSlice.actions.metrics({
-                packetloss: client.Metrics.video.packetloss.last,
-                idrcount: client.Metrics.video.idrcount.last,
-                bitrate: client.Metrics.video.bitrate.persecond,
-                fps: client.Metrics.video.frame.persecond
+                packetloss: CLIENT.Metrics.video.packetloss.last,
+                idrcount: CLIENT.Metrics.video.idrcount.last,
+                bitrate: CLIENT.Metrics.video.bitrate.persecond,
+                fps: CLIENT.Metrics.video.frame.persecond
             })
         );
 
@@ -262,7 +217,7 @@ export const remoteAsync = {
                 store.getState().remote.bitrate ||
             store.getState().remote.prev_framerate !=
                 store.getState().remote.framerate ||
-            store.getState().remote.prev_framerate != size()
+            store.getState().remote.prev_framerate != SIZE()
         )
             appDispatch(remoteSlice.actions.internal_sync());
     },
@@ -333,10 +288,9 @@ export const remoteAsync = {
     hard_reset_async: createAsyncThunk(
         'hard_reset_async',
         async (_: void, { getState }) => {
-            if (client == null) return;
+            if (CLIENT == null) return;
 
             appDispatch(hard_reset());
-            await ready();
             return;
         }
     )
@@ -377,7 +331,7 @@ export const remoteSlice = createSlice({
         },
         loose_focus: (state) => {
             state.focus = false;
-            client?.hid?.ResetKeyStuck();
+            CLIENT?.hid?.ResetKeyStuck();
         },
         have_focus: (state) => {
             state.focus = true;
@@ -386,26 +340,26 @@ export const remoteSlice = createSlice({
             state.active = false;
             state.auth = undefined;
             state.fullscreen = false;
-            setTimeout(() => client?.Close(), 100);
+            setTimeout(() => CLIENT?.Close(), 100);
         },
         toggle_remote: (state) => {
             if (!state.active) {
                 state.fullscreen = true;
             } else {
                 state.fullscreen = false;
-                setTimeout(() => client?.Close(), 100);
+                setTimeout(() => CLIENT?.Close(), 100);
             }
             state.active = !state.active;
         },
         hard_reset: () => {
-            if (client == null) return;
+            if (CLIENT == null) return;
 
-            client?.HardReset();
+            CLIENT?.HardReset();
         },
         strict_timing_toggle: (state) => {
             state.no_strict_timing = !state.no_strict_timing;
-            if (client)
-                client.Metrics.video.idrcount.strict_timing =
+            if (CLIENT)
+                CLIENT.Metrics.video.idrcount.strict_timing =
                     !state.no_strict_timing;
         },
         strict_timing: (state, action: PayloadAction<boolean>) => {
@@ -413,7 +367,7 @@ export const remoteSlice = createSlice({
         },
         scancode_toggle: (state) => {
             state.scancode = !state.scancode;
-            if (client) client.hid.scancode = state.scancode;
+            if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         scancode: (state, action: PayloadAction<boolean>) => {
             state.scancode = action.payload;
@@ -432,8 +386,8 @@ export const remoteSlice = createSlice({
         },
         pointer_lock: (state, action: PayloadAction<boolean>) => {
             state.pointer_lock = action.payload;
-            if (client == null) return;
-            client.PointerVisible(action.payload);
+            if (CLIENT == null) return;
+            CLIENT.PointerVisible(action.payload);
         },
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
@@ -455,10 +409,10 @@ export const remoteSlice = createSlice({
         internal_sync: (state) => {
             if (
                 (state.bitrate != state.prev_bitrate ||
-                    state.prev_size != size()) &&
-                size() > 0
+                    state.prev_size != SIZE()) &&
+                SIZE() > 0
             ) {
-                client?.ChangeBitrate(
+                CLIENT?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
                             state.bitrate +
@@ -466,11 +420,11 @@ export const remoteSlice = createSlice({
                     )
                 );
                 state.prev_bitrate = state.bitrate;
-                state.prev_size = size();
+                state.prev_size = SIZE();
             }
 
             if (state.framerate != state.prev_framerate) {
-                client?.ChangeFramerate(
+                CLIENT?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
                             state.framerate +

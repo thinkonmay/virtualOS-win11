@@ -32,9 +32,9 @@ import {
     StartVirtdaemon,
     UserEvents
 } from '../../../src-tauri/api';
+import { SetPinger } from '../../../src-tauri/singleton';
 import { sleep } from '../utils/sleep';
 import { BuilderHelper } from './helper';
-import { set_pinger } from './remote';
 
 type WorkerType = {
     data: any;
@@ -115,7 +115,7 @@ export const workerAsync = {
 
                 if (result.type == 'vm_worker' && result.data.length > 0) {
                     await appDispatch(vm_session_access(result.data.at(0).id));
-                    set_pinger(
+                    SetPinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
@@ -125,7 +125,7 @@ export const workerAsync = {
                     result.data.length == 0
                 ) {
                     await appDispatch(vm_session_create(result.id));
-                    set_pinger(
+                    SetPinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
@@ -267,7 +267,7 @@ export const workerAsync = {
         }
     ),
     personal_worker_session_close: createAsyncThunk(
-        'personal_worker_session_close',
+        '',
         async (_: void, { getState }): Promise<any> => {
             const all = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;

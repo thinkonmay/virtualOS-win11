@@ -162,7 +162,6 @@ export const {
 export const { fetch_store, fetch_under_maintenance } = globalAsync;
 export const { push_message, fetch_message } = sidepaneAsync;
 
-export { ready } from './remote';
 export const dispatch_generic = async ({
     type,
     payload
