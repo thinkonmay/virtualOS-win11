@@ -1,7 +1,7 @@
 import { Contents } from '../reducers/locales';
 
+import { CAUSE } from '../../../src-tauri/api';
 import { store } from '../reducers';
-import { CAUSE } from '../../../src-tauri/api/createClient';
 
 const map: Map<CAUSE, Contents> = new Map<CAUSE, Contents>();
 map.set(CAUSE.UNKNOWN, Contents.STORE_DESCRIPTIONR);

@@ -1,11 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { RootState } from '.';
-import {
-    getDomain,
-    pb,
-    supabaseGlobal
-} from '../../../src-tauri/api/createClient';
+import { getDomain, pb, supabaseGlobal } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 
 type Data = RecordModel & {};

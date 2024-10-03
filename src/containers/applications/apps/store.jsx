@@ -1,8 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 //import { Icon, Image, LazyComponent, ToolBar } from '../../../'
 
-import { bindStoreId, hasHourSession } from '../../../backend/actions';
+import { bindStoreId } from '../../../backend/actions';
 import {
     appDispatch,
     fetch_store,
@@ -84,9 +83,7 @@ export const MicroStore = () => {
 
     const handleReconnect = async () => {
         await appDispatch(worker_refresh());
-        const check = await hasHourSession();
-
-        if (!check) {
+        if (true) {
             setConnecting(false);
             appDispatch(
                 popup_open({

@@ -1,7 +1,7 @@
 import {
+    app_toggle,
     appDispatch,
     useAppSelector,
-    app_toggle,
     wait_and_claim_volume
 } from '../../../backend/reducers';
 import {
@@ -10,8 +10,8 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
+import { RenderNode } from '../../../../src-tauri/api';
 import { Contents } from '../../../backend/reducers/locales';
-import { RenderNode } from '../../../backend/utils/tree';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);

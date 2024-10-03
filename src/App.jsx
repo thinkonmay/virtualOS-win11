@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
-import { UserEvents } from '../src-tauri/api/analytics';
+import { UserEvents } from '../src-tauri/api';
 import { preload } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
@@ -14,7 +14,6 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import { isMobile } from './backend/utils/checking';
-import { localStorageKey, pathNames } from './backend/utils/constant';
 import ActMenu from './components/menu';
 import {
     DesktopApp,

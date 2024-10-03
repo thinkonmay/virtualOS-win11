@@ -6,7 +6,7 @@ import {
     ConnectionEvent,
     RemoteDesktopClient,
     VideoWrapper
-} from '../../../src-tauri/core/app';
+} from '../../../src-tauri/core';
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,

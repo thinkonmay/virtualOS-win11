@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
-import { supabaseLocal } from '../../../src-tauri/api/createClient';
+import { supabaseLocal } from '../../../src-tauri/api';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 

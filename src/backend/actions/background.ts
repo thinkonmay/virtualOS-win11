@@ -1,10 +1,9 @@
 import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // import UTC plugin
+import { UserSession } from '../../../src-tauri/api';
 import {
     RootState,
     appDispatch,
-    app_toggle,
     change_bitrate,
     change_framerate,
     check_worker,
@@ -15,7 +14,6 @@ import {
     have_focus,
     loose_focus,
     ping_session,
-    popup_open,
     setting_theme,
     sidepane_panethem,
     store,
@@ -25,7 +23,6 @@ import {
     worker_refresh
 } from '../reducers';
 import { client } from '../reducers/remote';
-import { UserSession } from '../../../src-tauri/api/analytics';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');

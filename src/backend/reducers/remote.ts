@@ -9,8 +9,8 @@ import {
     store,
     toggle_remote
 } from '.';
-import { CAUSE, getDomainURL, pb } from '../../../src-tauri/api/createClient';
-import { EventCode, RemoteDesktopClient } from '../../../src-tauri/core/app';
+import { CAUSE, getDomainURL, pb } from '../../../src-tauri/api';
+import { EventCode, RemoteDesktopClient } from '../../../src-tauri/core';
 import { sleep } from '../utils/sleep';
 import { isMobile } from './../utils/checking';
 import { BuilderHelper } from './helper';
