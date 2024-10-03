@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { RootState } from '.';
-import { getDomain, pb, supabaseGlobal } from '../../../src-tauri/api';
+import { getDomain, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 
 type Data = RecordModel & {};
@@ -20,7 +20,7 @@ export const userAsync = {
     fetch_user: createAsyncThunk('fetch_user', async (): Promise<Data> => {
         const {
             items: [result]
-        } = await pb.collection('users').getList(1);
+        } = await POCKETBASE.collection('users').getList(1);
 
         return result ?? initialState;
     }),
@@ -37,7 +37,7 @@ export const userAsync = {
                 user: { email }
             } = getState() as RootState;
 
-            const { data: sub, error: errr } = await supabaseGlobal
+            const { data: sub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id')
                 .eq('user', email);
@@ -46,7 +46,7 @@ export const userAsync = {
                 const {
                     data: [{ checkoutUrl }],
                     error: err
-                } = await supabaseGlobal
+                } = await GLOBAL()
                     .from('payment_request')
                     .select('result->data->>checkoutUrl')
                     .eq('subscription', sub[0]?.id);
@@ -56,7 +56,7 @@ export const userAsync = {
                 const {
                     data: [{ id: plan }],
                     error: errrr
-                } = await supabaseGlobal
+                } = await GLOBAL()
                     .from('plans')
                     .select('id')
                     .eq('name', plan_name);
@@ -65,7 +65,7 @@ export const userAsync = {
                 const {
                     data: [{ id: cluster }],
                     error: errrrr
-                } = await supabaseGlobal
+                } = await GLOBAL()
                     .from('clusters')
                     .select('id')
                     .eq('domain', getDomain());
@@ -74,7 +74,7 @@ export const userAsync = {
                 const {
                     data: [{ id: subscription }],
                     error
-                } = await supabaseGlobal
+                } = await GLOBAL()
                     .from('subscriptions')
                     .insert({ user: email, plan, cluster })
                     .select('id');
@@ -83,7 +83,7 @@ export const userAsync = {
                 const {
                     data: [{ checkoutUrl }],
                     error: err
-                } = await supabaseGlobal
+                } = await GLOBAL()
                     .from('payment_request')
                     .insert({ expire_at, subscription })
                     .select('result->data->>checkoutUrl');
@@ -116,7 +116,7 @@ export const userSlice = createSlice({
         user_delete: (state) => {
             state.id = initialState.id;
             state.stat = initialState.stat;
-            pb.authStore.clear();
+            POCKETBASE.authStore.clear();
         }
     },
     extraReducers: (builder) => {

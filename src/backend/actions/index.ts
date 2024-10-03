@@ -1,5 +1,5 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import { getDomainURL, pb } from '../../../src-tauri/api';
+import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
 import '../reducers/index';
 import {
     appDispatch,
@@ -161,13 +161,13 @@ export const login = async (provider: 'google' | 'facebook' | 'discord') => {
 
     const {
         record: { id }
-    } = await pb.collection('users').authWithOAuth2({
+    } = await POCKETBASE.collection('users').authWithOAuth2({
         provider: 'google',
         urlCallback: (url) => {
             w.location.href = url;
         }
     });
-    const record = await pb.collection('users').getOne(id);
+    const record = await POCKETBASE.collection('users').getOne(id);
     appDispatch(user_update(record));
     await appDispatch(fetch_user());
 };
@@ -190,7 +190,7 @@ export const bindStoreId = async (email: string, store_id: number) => {
         const data = await fetch(`${getDomainURL()}/access_store_volume`, {
             method: 'POST',
             headers: {
-                Authorization: pb.authStore.token
+                Authorization: POCKETBASE.authStore.token
             },
             body: JSON.stringify({
                 store_id,

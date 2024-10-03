@@ -9,7 +9,7 @@ import {
     store,
     toggle_remote
 } from '.';
-import { CAUSE, getDomainURL, pb } from '../../../src-tauri/api';
+import { CAUSE, getDomainURL, POCKETBASE } from '../../../src-tauri/api';
 import { EventCode, RemoteDesktopClient } from '../../../src-tauri/core';
 import { sleep } from '../utils/sleep';
 import { isMobile } from './../utils/checking';
@@ -278,7 +278,7 @@ export const remoteAsync = {
                     {
                         method: 'GET',
                         headers: {
-                            Authorization: pb.authStore.token,
+                            Authorization: POCKETBASE.authStore.token,
                             'Content-type': 'application/json'
                         }
                     }
@@ -303,7 +303,7 @@ export const remoteAsync = {
             rtc_config: RTCConfiguration;
         }): Promise<string> => {
             const token = crypto.randomUUID();
-            await pb.collection('reference').create({ ...info, token });
+            await POCKETBASE.collection('reference').create({ ...info, token });
             return token;
         }
     ),

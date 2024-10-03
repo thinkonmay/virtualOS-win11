@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
-import { supabaseLocal } from '../../../src-tauri/api';
+import { LOCAL } from '../../../src-tauri/api';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 
@@ -253,14 +253,16 @@ export const sidepaneAsync = {
         'push_message',
         async (input: Message, { getState }): Promise<void> => {
             const email = store.getState().user.email;
-            await supabaseLocal.from('user_message').insert({
-                metadata: {
-                    email,
-                    type: input.type,
-                    recipient: input.recipient
-                },
-                value: { content: input.content }
-            });
+            await LOCAL()
+                .from('user_message')
+                .insert({
+                    metadata: {
+                        email,
+                        type: input.type,
+                        recipient: input.recipient
+                    },
+                    value: { content: input.content }
+                });
         }
     ),
     handle_message: async (payload: any) => {
@@ -276,7 +278,7 @@ export const sidepaneAsync = {
     fetch_message: createAsyncThunk(
         'fetch_message',
         async (email: string, { getState }): Promise<Message[]> => {
-            supabaseLocal
+            LOCAL()
                 .channel('schema-message-changes')
                 .on(
                     'postgres_changes',
@@ -290,7 +292,7 @@ export const sidepaneAsync = {
                 .subscribe();
 
             return await CacheRequest('message', 30, async () => {
-                const { data, error } = await supabaseLocal
+                const { data, error } = await LOCAL()
                     .from('user_message')
                     .select('timestamp,value,metadata')
                     .order('timestamp', { ascending: false })

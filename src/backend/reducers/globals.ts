@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabaseLocal } from '../../../src-tauri/api';
+import { LOCAL } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -210,7 +210,7 @@ export const globalAsync = {
             const {
                 data: [{ value: info }],
                 error
-            } = await supabaseLocal
+            } = await LOCAL()
                 .from('constant')
                 .select('value')
                 .eq('name', 'mantainance');

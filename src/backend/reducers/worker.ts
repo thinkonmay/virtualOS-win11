@@ -23,8 +23,8 @@ import {
     KeepaliveVolume,
     ParseRequest,
     ParseVMRequest,
-    pb,
     PingSession,
+    POCKETBASE,
     RenderNode,
     StartRequest,
     StartThinkmay,
@@ -76,7 +76,7 @@ export const workerAsync = {
                 })
             );
 
-            const all = await pb.collection('volumes').getFullList<{
+            const all = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;
             }>();
             const volume_id = all.at(0)?.local_id;
@@ -176,7 +176,7 @@ export const workerAsync = {
         async (_: void, { getState }): Promise<Computer | Error> => {
             const node = new RenderNode((getState() as RootState).worker.data);
 
-            const all = await pb.collection('volumes').getFullList<{
+            const all = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;
             }>();
 
@@ -213,9 +213,9 @@ export const workerAsync = {
                 return node.any();
             }
 
-            const all = await pb
-                .collection('volumes')
-                .getFullList<{ local_id: string }>();
+            const all = await POCKETBASE.collection('volumes').getFullList<{
+                local_id: string;
+            }>();
             const volume_id = all.at(0)?.local_id;
 
             let found: RenderNode<Computer> | undefined = undefined;
@@ -269,7 +269,7 @@ export const workerAsync = {
     personal_worker_session_close: createAsyncThunk(
         'personal_worker_session_close',
         async (_: void, { getState }): Promise<any> => {
-            const all = await pb.collection('volumes').getFullList<{
+            const all = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;
             }>();
 
