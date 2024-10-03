@@ -81,7 +81,7 @@ import { forwardRef, useCallback, useId, useState } from 'react';
 //};
 
 export const CustomJoyStick = forwardRef((props, ref) => {
-    const { size = 100, moveCallback = () => { } } = props;
+    const { size = 100, moveCallback = () => {} } = props;
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [touching, setTouching] = useState(false);

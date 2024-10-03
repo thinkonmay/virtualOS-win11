@@ -132,6 +132,7 @@ export enum Contents {
     FULLSCREEN,
     RELATIVE_MOUSE,
     SCAN_CODE,
+    STRICT_TIMING,
     EXTERNAL_TAB,
     QUALITY,
     FRAMERATE,
@@ -758,6 +759,9 @@ export function language() {
 
     en.set(Contents.SCAN_CODE, 'Fix keyboard');
     vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
+
+    en.set(Contents.STRICT_TIMING, 'Bad network mode');
+    vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
 
     en.set(Contents.EXTERNAL_TAB, 'Share link');
     vn.set(Contents.EXTERNAL_TAB, 'Chia sẻ link');

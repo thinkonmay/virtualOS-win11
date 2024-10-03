@@ -61,16 +61,14 @@ function App() {
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
 
     useEffect(() => {
-        const url = new URL(window.location.href).searchParams;
-        const pathName = new URL(window.location.href).pathname;
-        const pathNameSegment = pathName.replace('/', '');
-        if (pathNameSegment == pathNames.VERIFY_PAYMENT) {
-            localStorage.setItem(localStorageKey.PATH_NAME, pathNameSegment);
-        }
-        const ref = url.get('ref');
+        const url = new URL(window.location.href);
+
+        if (url.pathname.includes(pathNames.VERIFY_PAYMENT))
+            localStorage.setItem(localStorageKey.PATH_NAME, 'true');
+
+        const ref = url.searchParams.get('ref');
         if (ref != null) {
             appDispatch(direct_access({ ref }));
-            //window.history.replaceState({}, document.title, '/' + '');
             window.onbeforeunload = (e) => {
                 const text = 'Are you sure (｡◕‿‿◕｡)';
                 e = e || window.event;
@@ -78,7 +76,6 @@ function App() {
                 return text;
             };
         }
-        window.history.replaceState({}, document.title, '/' + '');
 
         const waitForPhoneRotation = async () => {
             const finish_fetch = now();
@@ -94,6 +91,7 @@ function App() {
         const now = () => new Date().getTime();
         const start_fetch = now();
         preload().finally(async () => {
+            window.history.replaceState({}, document.title, '/' + '');
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });

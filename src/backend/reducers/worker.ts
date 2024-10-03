@@ -62,6 +62,8 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const email = (getState() as RootState).user.email;
+            const ram = (getState() as RootState).user.stat.ram;
+            const vcpu = (getState() as RootState).user.stat.vcpu;
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
@@ -133,7 +135,12 @@ export const workerAsync = {
                     }
                 });
 
-                const resp = await StartVirtdaemon(computer, volume_id);
+                const resp = await StartVirtdaemon(
+                    computer,
+                    volume_id,
+                    ram,
+                    vcpu
+                );
                 if (resp instanceof Error) {
                     UserEvents({
                         type: 'remote/request_vm_failure',
@@ -202,7 +209,23 @@ export const workerAsync = {
                 return node.any();
             }
 
-            return fromComputer(address, result).any();
+            const all = await pb
+                .collection('volumes')
+                .getFullList<{ local_id: string }>();
+            const volume_id = all.at(0)?.local_id;
+
+            let found: RenderNode<Computer> | undefined = undefined;
+            const node = fromComputer(address, result);
+            node.iterate((x) => {
+                if (
+                    found == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    found = x;
+            });
+
+            node.info.available = found != undefined;
+            return node.any();
         }
     ),
     worker_session_create: createAsyncThunk(
@@ -459,6 +482,7 @@ export const workerSlice = createSlice({
                     let target = new RenderNode<any>(state.data);
 
                     const node = new RenderNode<Computer>(action.payload);
+
                     const overlapp = target.data.findIndex(
                         (x) => x.id == node.id
                     );
