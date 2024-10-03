@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { RemoteDesktopClient } from '../../../src-tauri/core/app';
-import { AudioWrapper } from '../../../src-tauri/core/pipeline/sink/audio/wrapper';
-import { VideoWrapper } from '../../../src-tauri/core/pipeline/sink/video/wrapper';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import {
     AddNotifier,
-    ConnectionEvent
-} from '../../../src-tauri/core/utils/log';
+    AudioWrapper,
+    ConnectionEvent,
+    RemoteDesktopClient,
+    VideoWrapper
+} from '../../../src-tauri/core/app';
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,

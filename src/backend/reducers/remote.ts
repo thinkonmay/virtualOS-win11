@@ -9,14 +9,11 @@ import {
     store,
     toggle_remote
 } from '.';
-import { RemoteDesktopClient } from '../../../src-tauri/core/app';
-import { AxisType } from '../../../src-tauri/core/models/hid.model';
-import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
-import { convertJSKey } from '../../../src-tauri/core/utils/convert';
+import { CAUSE, getDomainURL, pb } from '../../../src-tauri/api/createClient';
+import { EventCode, RemoteDesktopClient } from '../../../src-tauri/core/app';
 import { sleep } from '../utils/sleep';
 import { isMobile } from './../utils/checking';
 import { BuilderHelper } from './helper';
-import { CAUSE, getDomainURL, pb } from '../../../src-tauri/api/createClient';
 
 const size = () =>
     client != null
@@ -137,72 +134,14 @@ const initialState: Data = {
     realbitrate: 0
 };
 
-function VirtualGamepadButtonSlider(isDown: boolean, index: number) {
-    if (index == 6 || index == 7) {
-        // slider
-        client?.SendRawHID(
-            new HIDMsg(EventCode.GamepadSlide, {
-                gamepad_id: 0,
-                index: index,
-                val: !isDown ? 0 : 1
-            }).ToString()
-        );
-        return;
-    }
-
-    client?.SendRawHID(
-        new HIDMsg(
-            !isDown ? EventCode.GamepadButtonDown : EventCode.GamepadButtonUp,
-            {
-                gamepad_id: 0,
-                index: index
-            }
-        ).ToString()
-    );
-}
-
-function VirtualGamepadAxis(x: number, y: number, type: AxisType) {
-    let axisx, axisy: number;
-    switch (type) {
-        case 'left':
-            axisx = 0;
-            axisy = 1;
-            break;
-        case 'right':
-            axisx = 2;
-            axisy = 3;
-            break;
-    }
-
-    client?.SendRawHID(
-        new HIDMsg(EventCode.GamepadAxis, {
-            gamepad_id: 0,
-            index: axisx,
-            val: x
-        }).ToString()
-    );
-    client?.SendRawHID(
-        new HIDMsg(EventCode.GamepadAxis, {
-            gamepad_id: 0,
-            index: axisy,
-            val: y
-        }).ToString()
-    );
-}
-
-const trigger = (code: EventCode, jsKey: string) => {
-    const key = convertJSKey(jsKey, 0);
-    if (key == undefined) return;
-    const data = new HIDMsg(code, { key }).ToString();
-    client?.SendRawHID(data);
-};
-
 export function WindowD() {
     if (client == null) return;
-    trigger(EventCode.KeyDown, 'lwin');
-    trigger(EventCode.KeyDown, 'd');
-    trigger(EventCode.KeyUp, 'd');
-    trigger(EventCode.KeyUp, 'lwin');
+    client.VirtualKeyboard(
+        { code: EventCode.KeyDown, jsKey: 'lwin' },
+        { code: EventCode.KeyDown, jsKey: 'd' },
+        { code: EventCode.KeyUp, jsKey: 'd' },
+        { code: EventCode.KeyUp, jsKey: 'lwin' }
+    );
 }
 
 export async function keyboardCallback(val, action: 'up' | 'down') {
@@ -211,14 +150,17 @@ export async function keyboardCallback(val, action: 'up' | 'down') {
     }
 
     if (client == null) return;
-    trigger(action == 'up' ? EventCode.KeyUp : EventCode.KeyDown, val);
+    client.VirtualKeyboard({
+        code: action == 'up' ? EventCode.KeyUp : EventCode.KeyDown,
+        jsKey: val
+    });
 }
 export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
     if ('vibrate' in navigator && type == 'down') {
         navigator.vibrate([40, 30, 0]);
     }
     if (client == null) return;
-    VirtualGamepadButtonSlider(type == 'down', index);
+    client.VirtualGamepadButton(type == 'down', index);
 }
 
 export async function gamepadAxisCallback(
@@ -227,7 +169,7 @@ export async function gamepadAxisCallback(
     type: 'left' | 'right'
 ) {
     if (client == null) return;
-    VirtualGamepadAxis(x, y, type);
+    client.VirtualGamepadAxis(x, y, type);
 }
 
 export const setClipBoard = async (content: string) => {
