@@ -28,19 +28,6 @@ function UserInfo() {
     const additionalTime = stats?.additional_time ?? 0;
     const preTime = stats?.pre_remain_time ?? 0;
     const planUsageTime = stats?.plan_hour ?? 0;
-    const _planName = stats?.plan_name ?? '';
-    //const totalTime = +planUsageTime + +additionalTime;
-
-    const totalTime = useMemo(() => {
-        let total = 0;
-        if (_planName == 'hour_01') {
-            total = +additionalTime;
-        } else {
-            total = +planUsageTime + +additionalTime;
-        }
-
-        return total;
-    }, [_planName]);
 
     const renderPlanName = (planName) => {
         let name = '';
@@ -59,7 +46,7 @@ function UserInfo() {
     const PlanMonth = () => {
         return (
             <div className="restWindow w-full  flex flex-col ">
-                <div className="w-full flex gap-4 justify-between mt-1">
+                {/* <div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">{t[Contents.PLAN_NAME]}</span>
                     <span>{renderPlanName(stats?.plan_name)}</span>
                 </div>
@@ -70,7 +57,7 @@ function UserInfo() {
                 <div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">{t[Contents.ENDAT]}</span>
                     <span>{formatDate(stats?.end_time)}</span>
-                </div>
+                </div> */}
                 <div className="w-full flex gap-4 justify-between mt-3 items-end">
                     <span className="text-left">
                         {t[Contents.PLAN_USAGE_TIME]}
@@ -98,10 +85,10 @@ function UserInfo() {
     const PlanHours = () => {
         return (
             <div className="restWindow w-full  flex flex-col ">
-                <div className="w-full flex gap-4 justify-between mt-1">
+                {/* <div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">{t[Contents.PLAN_NAME]}:</span>
                     <span>{renderPlanName(stats?.plan_name)}</span>
-                </div>
+                </div> */}
                 {/*<div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">
                         {t[Contents.STARTAT]}
@@ -187,7 +174,7 @@ function UserInfo() {
                     </div>
 
                     {/* here */}
-                    {_planName.includes('hour') ? <PlanHours /> : <PlanMonth />}
+                    {/* {_planName.includes('hour') ? <PlanHours /> : <PlanMonth />} */}
                 </div>
             </div>
 

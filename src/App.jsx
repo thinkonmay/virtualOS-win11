@@ -63,9 +63,6 @@ function App() {
     useEffect(() => {
         const url = new URL(window.location.href);
 
-        if (url.pathname.includes(pathNames.VERIFY_PAYMENT))
-            localStorage.setItem(localStorageKey.PATH_NAME, 'true');
-
         const ref = url.searchParams.get('ref');
         if (ref != null) {
             appDispatch(direct_access({ ref }));

@@ -25,11 +25,7 @@ import { localStorageKey, pathNames, PlanName } from '../utils/constant';
 import { RenderNode } from '../utils/tree';
 import { fetchApp } from './background';
 import { Computer, StartRequest } from '../../../src-tauri/api/local.ts';
-import {
-    getDomainURL,
-    pb,
-    SupabaseFuncInvoke
-} from '../../../src-tauri/api/createClient.ts';
+import { getDomainURL, pb } from '../../../src-tauri/api/createClient.ts';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -254,31 +250,6 @@ export const bindStoreId = async (email: string, store_id: number) => {
     } catch (error) {
         throw error;
     }
-};
-
-interface PaymentBody {
-    buyerEmail: string;
-    items: {
-        name: PlanName;
-        price: number;
-        quantity: number;
-    }[];
-}
-
-export const createPaymentLink = async (inputs: PaymentBody) => {
-    const result = await SupabaseFuncInvoke('create_payment_link', inputs);
-    if (result instanceof Error) throw result;
-
-    return result;
-};
-
-export const verifyPayment = async (email: string): Promise<void> => {
-    if (localStorage.getItem(localStorageKey.PATH_NAME) != 'true') return;
-
-    const result = await SupabaseFuncInvoke('verify_payment', { email });
-    localStorage.removeItem(localStorageKey.PATH_NAME);
-    if (result instanceof Error) throw result;
-    await appDispatch(fetch_user());
 };
 
 export const wrapperAsyncFunction = async (

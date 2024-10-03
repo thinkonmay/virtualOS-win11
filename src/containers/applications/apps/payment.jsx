@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     appDispatch,
-    popup_open,
+    get_payment,
     useAppSelector
 } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
@@ -9,10 +9,6 @@ import './assets/store.scss';
 
 import { FUNDING } from '@paypal/react-paypal-js';
 import { UserEvents } from '../../../../src-tauri/api/analytics';
-import {
-    createPaymentLink,
-    wrapperAsyncFunction
-} from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
 import { Image } from '../../../components/shared/general';
 
@@ -86,91 +82,16 @@ export const PaymentApp = () => {
         }
     ]);
 
-    const [isAvailableHourSub, setAvailableHourSub] = useState(false);
     const [iframe, setIframe] = useState('');
     const [paypage, setPaypage] = useState(null);
     const [subChoose, setSubChoose] = useState(null);
-    const payment = async (price_in_vnd) => {
-        setPaypage(price_in_vnd);
-    };
-
-    const [hoursChoose, setHoursChoose] = useState(5);
-
-    const handleChooseSub = async (sub) => {
-        if (hoursChoose < 5 && sub.name == 'hour_02') {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content: 'Cần mua ít nhất 5h'
-                    }
-                })
-            );
-            return;
-        }
-        if (isRejectHourSub(sub.name)) {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content:
-                            'Gói hiện tại đang đóng.Quý khách vui lòng quay lại sau!'
-                    }
-                })
-            );
-            return;
-        }
-        //payment(
-        //    sub.price_in_vnd
-        //);
-        setSubChoose({
-            ...sub,
-            hoursChoose
-        });
-
-        const inputs = {
-            buyerEmail: user.email,
-            items: [
-                {
-                    name: sub.name,
-                    price: +sub.price_in_vnd * 1000,
-                    quantity: sub.name == 'hour_02' ? +hoursChoose : 1
-                }
-            ]
-        };
-        wrapperAsyncFunction(
-            async () => window.open(await createPaymentLink(inputs), '_self'),
-            {
-                title: 'Creating Payment',
-                tips: false,
-                timeProcessing: 0.5
-            }
+    const handleChooseSub = async (sub) =>
+        appDispatch(
+            get_payment({
+                plan: 'month1'
+            })
         );
-    };
 
-    const isOldUser = () => {
-        let check = false;
-        check =
-            user?.stat?.plan_name == 'hour_02' &&
-            user?.stat?.plan_name == 'month_01' &&
-            user?.stat?.plan_name == 'unlimited_01';
-        return check;
-    };
-
-    const isRejectHourSub = (subName) => {
-        let check = false;
-        check =
-            subName == 'hour_02' &&
-            !isAvailableHourSub &&
-            user?.stat?.plan_name !== 'hour_02';
-
-        return check;
-        //let check = false;
-        //check = !user?.stat?.plan_name || subName == 'hour_02';
-        //return check;
-    };
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -312,26 +233,6 @@ export const PaymentApp = () => {
                                             </ul>
 
                                             <div className="flex flex-col gap-2 mt-auto prose">
-                                                {sub.name == 'hour_02' &&
-                                                !isRejectHourSub(sub.name) ? (
-                                                    <div className="flex gap-3 items-center ">
-                                                        <b>Số giờ mua</b>
-                                                        <input
-                                                            value={hoursChoose}
-                                                            onChange={(e) =>
-                                                                setHoursChoose(
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                            className="p-2 rounded-sm"
-                                                            type="number"
-                                                            min={5}
-                                                            name=""
-                                                            id=""
-                                                        />
-                                                    </div>
-                                                ) : null}
                                                 <div className="space-y-2">
                                                     <p className="text-[13px] whitespace-pre-wrap">
                                                         {/* Free projects are paused after 1 week of inactivity. */}
@@ -353,20 +254,10 @@ export const PaymentApp = () => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
-                                                            ${
-                                                                isRejectHourSub(
-                                                                    sub.name
-                                                                )
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-[#328cff]'
-                                                            }  `}
+                                                            bg-red-500  `}
                                                 >
                                                     <span className="truncate font-medium text-xl">
-                                                        {isRejectHourSub(
-                                                            sub.name
-                                                        )
-                                                            ? 'Đang đóng!'
-                                                            : 'Mua Ngay'}
+                                                        Đang đóng!
                                                     </span>
                                                 </button>
                                             </div>

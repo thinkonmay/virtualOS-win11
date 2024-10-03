@@ -169,7 +169,7 @@ const initialState: Data = {
             name: [Contents.STRICT_TIMING],
             state: 'no_strict_timing',
             action: 'remote/strict_timing_toggle'
-        },
+        }
     ],
     shortcuts: listDesktopShortCut,
 

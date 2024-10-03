@@ -1,6 +1,7 @@
 import {
     appDispatch,
     useAppSelector,
+    app_toggle,
     wait_and_claim_volume
 } from '../../../backend/reducers';
 import {
@@ -58,10 +59,10 @@ export const ConnectApp = () => {
             name: 'CPU:',
             text: 'Intel Xeon™ (up to 3.1 GHz) 8 vCores'
         },
-        {
-            name: 'STORAGE:',
-            text: renderPlanStorage(stats?.plan_name)
-        },
+        // {
+        //     name: 'STORAGE:',
+        //     text: renderPlanStorage(stats?.plan_name)
+        // },
         {
             name: 'OS:',
             text: 'Window 10'
