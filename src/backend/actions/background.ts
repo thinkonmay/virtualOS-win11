@@ -4,6 +4,7 @@ import { UserSession } from '../../../src-tauri/api';
 import {
     RootState,
     appDispatch,
+    app_toggle,
     change_bitrate,
     change_framerate,
     check_worker,
@@ -24,6 +25,7 @@ import {
     worker_refresh
 } from '../reducers';
 import { CLIENT } from '../../../src-tauri/singleton';
+import { useState } from 'react';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -180,6 +182,12 @@ const startAnalytics = async () => {
 
 const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
+
+    const subscription = store.getState().user.subscription as any;
+    if ((subscription.plan as string).includes('month'))
+        appDispatch(app_toggle('connectPc'));
+    else if ((subscription.plan as string).includes('hour'))
+        appDispatch(app_toggle('store'));
 };
 
 export const preload = async () => {

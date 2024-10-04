@@ -106,71 +106,118 @@ const listDesktopShortCut = [
 ];
 
 const initialState: Data = {
-    quicks: [
-        {
-            ui: true,
-            src: 'FiVideoOff',
-            name: [Contents.VIDEO_TOGGLE],
-            state: 'active',
-            action: 'toggle_remote_async'
-        },
-        {
-            ui: true,
-            src: 'MdOutlineResetTv',
-            name: [Contents.RESET_VIDEO],
-            state: 'network.airplane',
-            action: 'hard_reset_async'
-        },
-        //{
-        //    ui: true,
-        //    src: 'FaWindows',
-        //    name: [Contents.HOMESCREEN],
-        //    action: 'remote/homescreen'
-        //},
-        {
-            ui: true,
-            src: 'MdFullscreen',
-            name: [Contents.FULLSCREEN],
-            state: 'fullscreen',
-            action: 'remote/toggle_fullscreen'
-        },
-        {
-            ui: true,
-            src: 'MdOutlineKeyboard',
-            name: [Contents.SCAN_CODE],
-            state: 'scancode',
-            action: 'remote/scancode_toggle'
-        },
-        {
-            ui: true,
-            src: 'MdOutlineLink',
-            name: [Contents.EXTERNAL_TAB],
-            state: 'share_reference',
-            action: 'remote/share_reference'
-        },
-        {
-            ui: true,
-            src: 'FaMousePointer',
-            name: [Contents.RELATIVE_MOUSE],
-            state: 'relative_mouse',
-            action: 'remote/relative_mouse'
-        },
-        {
-            ui: true,
-            src: 'MdOutlinePowerSettingsNew',
-            name: [Contents.SHUT_DOWN],
-            state: 'shutdown',
-            action: 'shutDownVm',
-            style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-        },
-        {
-            ui: true,
-            src: 'MdNetworkWifi2Bar',
-            name: [Contents.STRICT_TIMING],
-            state: 'no_strict_timing',
-            action: 'remote/strict_timing_toggle'
-        }
-    ],
+    quicks: window.location.href.includes('localhost')
+        ? [
+              {
+                  ui: true,
+                  src: 'FiVideoOff',
+                  name: [Contents.VIDEO_TOGGLE],
+                  state: 'active',
+                  action: 'toggle_remote_async'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineResetTv',
+                  name: [Contents.RESET_VIDEO],
+                  state: 'network.airplane',
+                  action: 'hard_reset_async'
+              },
+              {
+                  ui: true,
+                  src: 'MdFullscreen',
+                  name: [Contents.FULLSCREEN],
+                  state: 'fullscreen',
+                  action: 'remote/toggle_fullscreen'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineKeyboard',
+                  name: [Contents.SCAN_CODE],
+                  state: 'scancode',
+                  action: 'remote/scancode_toggle'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineLink',
+                  name: [Contents.EXTERNAL_TAB],
+                  state: 'share_reference',
+                  action: 'remote/share_reference'
+              },
+              {
+                  ui: true,
+                  src: 'FaMousePointer',
+                  name: [Contents.RELATIVE_MOUSE],
+                  state: 'relative_mouse',
+                  action: 'remote/relative_mouse'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlinePowerSettingsNew',
+                  name: [Contents.SHUT_DOWN],
+                  state: 'shutdown',
+                  action: 'shutDownVm',
+                  style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+              },
+              {
+                  ui: true,
+                  src: 'MdNetworkWifi2Bar',
+                  name: [Contents.STRICT_TIMING],
+                  state: 'no_strict_timing',
+                  action: 'remote/strict_timing_toggle'
+              }
+          ]
+        : [
+              {
+                  ui: true,
+                  src: 'MdOutlineResetTv',
+                  name: [Contents.RESET_VIDEO],
+                  state: 'network.airplane',
+                  action: 'hard_reset_async'
+              },
+              {
+                  ui: true,
+                  src: 'MdFullscreen',
+                  name: [Contents.FULLSCREEN],
+                  state: 'fullscreen',
+                  action: 'remote/toggle_fullscreen'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineKeyboard',
+                  name: [Contents.SCAN_CODE],
+                  state: 'scancode',
+                  action: 'remote/scancode_toggle'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineLink',
+                  name: [Contents.EXTERNAL_TAB],
+                  state: 'share_reference',
+                  action: 'remote/share_reference'
+              },
+              {
+                  ui: true,
+                  src: 'FaMousePointer',
+                  name: [Contents.RELATIVE_MOUSE],
+                  state: 'relative_mouse',
+                  action: 'remote/relative_mouse'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlinePowerSettingsNew',
+                  name: [Contents.SHUT_DOWN],
+                  state: 'shutdown',
+                  action: 'shutDownVm',
+                  style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+              },
+              {
+                  ui: true,
+                  src: 'MdNetworkWifi2Bar',
+                  name: [Contents.STRICT_TIMING],
+                  state: 'no_strict_timing',
+                  action: 'remote/strict_timing_toggle'
+              }
+          ],
     shortcuts: listDesktopShortCut,
 
     mobileControl: {

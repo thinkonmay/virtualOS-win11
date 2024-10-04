@@ -4,25 +4,27 @@ import { RootState } from '.';
 import { getDomain, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 
-type PaymentStatus = {
-    status: 'PAID'
-    plan: string
-    cluster: string
+type PaymentStatus =
+    | {
+          status: 'PAID';
+          plan: string;
+          cluster: string;
 
-    local_metadata: {
-
-    }
-} | {
-    status: 'NO_ACTION'
-} | {
-    status: 'PENDING'
-} | {
-    status: 'CANCEL'
-}
+          local_metadata: {};
+      }
+    | {
+          status: 'NO_ACTION';
+      }
+    | {
+          status: 'PENDING';
+      }
+    | {
+          status: 'CANCEL';
+      };
 
 type Data = RecordModel & {
     subscription: PaymentStatus | {};
-}
+};
 
 const initialState: Data = {
     collectionId: '',
@@ -36,19 +38,19 @@ const initialState: Data = {
 };
 
 export const userAsync = {
-    fetch_user: createAsyncThunk('fetch_user', async (): Promise<Data> => {
-        const {
-            items: [result]
-        } = await POCKETBASE.collection('users').getList(1);
+    fetch_user: createAsyncThunk(
+        'fetch_user',
+        async (): Promise<RecordModel> => {
+            const {
+                items: [result]
+            } = await POCKETBASE.collection('users').getList(1);
 
-        return { ...result, status: undefined } ?? initialState;
-    }),
+            return result ?? initialState;
+        }
+    ),
     fetch_subscription: createAsyncThunk(
         'fetch_subscription',
-        async (
-            _: void,
-            { getState }
-        ): Promise<PaymentStatus> => {
+        async (_: void, { getState }): Promise<PaymentStatus> => {
             const {
                 user: { email }
             } = getState() as RootState;
@@ -57,28 +59,31 @@ export const userAsync = {
                 .from('subscriptions')
                 .select('id,plan,cluster,local_metadata')
                 .eq('user', email)
-                .order('created_at',{ascending: false})
+                .order('created_at', { ascending: false })
                 .limit(1);
             if (errr) throw new Error(errr.message);
-            else if (sub.length == 0) return {status: 'NO_ACTION'}
+            else if (sub.length == 0) return { status: 'NO_ACTION' };
 
-            const [{id:subscription_id,plan:plan_id,cluster:cluster_id,local_metadata}] = sub
-            const {
-                data,
-                error: err
-            } = await GLOBAL()
+            const [
+                {
+                    id: subscription_id,
+                    plan: plan_id,
+                    cluster: cluster_id,
+                    local_metadata
+                }
+            ] = sub;
+            const { data, error: err } = await GLOBAL()
                 .from('payment_request')
                 .select('status')
                 .eq('subscription', subscription_id);
             if (err) throw new Error(err.message);
 
-            const [{ status }] = data as {status:string}[]
-            let result = {} as PaymentStatus
-
+            const [{ status }] = data as { status: string }[];
+            let result = {} as PaymentStatus;
 
             if (status == 'PENDING') {
-                result = {status}
-            } else if (status == 'PAID'){
+                result = { status };
+            } else if (status == 'PAID') {
                 const {
                     data: [{ name: plan }],
                     error: errrr
@@ -102,12 +107,12 @@ export const userAsync = {
                     cluster,
                     plan,
                     local_metadata
-                } as PaymentStatus
+                } as PaymentStatus;
             }
 
-
-            return result
-        }),
+            return result;
+        }
+    ),
     get_payment: createAsyncThunk(
         'get_payment',
         async (
@@ -127,29 +132,22 @@ export const userAsync = {
                 .eq('user', email);
             if (errr) throw new Error(errr.message);
             else if (sub.length > 0) {
-                const {
-                    data,
-                    error: err
-                } = await GLOBAL()
+                const { data, error: err } = await GLOBAL()
                     .from('payment_request')
                     .select('result->data->>checkoutUrl,status')
                     .eq('subscription', sub[0]?.id);
                 if (err) throw new Error(err.message);
 
-                const [{ checkoutUrl, status }] = data
-                if (status == 'PENDING')
-                    return checkoutUrl
+                const [{ checkoutUrl, status }] = data;
+                if (status == 'PENDING') return checkoutUrl;
                 else if (status == 'PAID')
-                    throw new Error('you already paid for our service')
+                    throw new Error('you already paid for our service');
             }
 
             const {
                 data: [{ id: plan }],
                 error: errrr
-            } = await GLOBAL()
-                .from('plans')
-                .select('id')
-                .eq('name', plan_name);
+            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
             if (errrr) throw new Error(errrr.message);
 
             const {
@@ -188,7 +186,7 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        user_update: (state, action: PayloadAction<RecordModel & Data>) => {
+        user_update: (state, action: PayloadAction<RecordModel>) => {
             state.id = action.payload.id;
             state.collectionId = action.payload.collectionId;
             state.collectionName = action.payload.collectionName;

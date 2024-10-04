@@ -146,7 +146,7 @@ export const {
     peer_session_access,
     peer_session_close
 } = workerAsync;
-export const { fetch_user,fetch_subscription, get_payment } = userAsync;
+export const { fetch_user, fetch_subscription, get_payment } = userAsync;
 export const {
     ping_session,
     sync,

@@ -9,9 +9,11 @@ import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
 
-
 function UserInfo() {
-    const { email, subscription: { status, plan } } = useAppSelector((state) => state.user);
+    const {
+        email,
+        subscription: { status, plan }
+    } = useAppSelector((state) => state.user);
     const thm = useAppSelector((state) => state.setting.person.theme);
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
@@ -25,8 +27,9 @@ function UserInfo() {
     };
 
     const renderPlanName = {
-        'month1': <div className="restWindow w-full  flex flex-col ">
-            {/* <div className="w-full flex gap-4 justify-between mt-1">
+        month1: (
+            <div className="restWindow w-full  flex flex-col ">
+                {/* <div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">{t[Contents.PLAN_NAME]}</span>
                     <span>{renderPlanName(stats?.plan_name)}</span>
                 </div>
@@ -38,36 +41,36 @@ function UserInfo() {
                     <span className="text-left">{t[Contents.ENDAT]}</span>
                     <span>{formatDate(stats?.end_time)}</span>
                 </div> */}
-            <div className="w-full flex gap-4 justify-between mt-3 items-end">
-                <span className="text-left">
-                    Payment Status
-                </span>
-                <span>{status}</span>
+                <div className="w-full flex gap-4 justify-between mt-3 items-end">
+                    <span className="text-left">Payment Status</span>
+                    <span>{status}</span>
+                </div>
+                <div className="w-full flex gap-4 justify-between mt-3 items-end">
+                    <span className="text-left">
+                        {t[Contents.PLAN_USAGE_TIME]}
+                    </span>
+                    {/* <span>{planUsageTime}h</span> */}
+                </div>
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">
+                        {t[Contents.ADDITIONAL_TIME]}
+                    </span>
+                    {/* <span>{additionalTime}h</span> */}
+                </div>
+                <hr className="my-[14px]" />
+                <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
+                    <span className="text-left">{t[Contents.TIME]}</span>
+                    {/* <span> {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h / {totalTime + 'h'} </span> */}
+                </div>
             </div>
-            <div className="w-full flex gap-4 justify-between mt-3 items-end">
-                <span className="text-left">
-                    {t[Contents.PLAN_USAGE_TIME]}
-                </span>
-                {/* <span>{planUsageTime}h</span> */}
-            </div>
-            <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                <span className="text-left">
-                    {t[Contents.ADDITIONAL_TIME]}
-                </span>
-                {/* <span>{additionalTime}h</span> */}
-            </div>
-            <hr className="my-[14px]" />
-            <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
-                <span className="text-left">{t[Contents.TIME]}</span>
-                {/* <span> {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h / {totalTime + 'h'} </span> */}
-            </div>
-        </div>,
-        'hour1': <div className="restWindow w-full  flex flex-col ">
-            {/* <div className="w-full flex gap-4 justify-between mt-1">
+        ),
+        hour1: (
+            <div className="restWindow w-full  flex flex-col ">
+                {/* <div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">{t[Contents.PLAN_NAME]}:</span>
                     <span>{renderPlanName(stats?.plan_name)}</span>
                 </div> */}
-            {/*<div className="w-full flex gap-4 justify-between mt-1">
+                {/*<div className="w-full flex gap-4 justify-between mt-1">
                     <span className="text-left">
                         {t[Contents.STARTAT]}
                     </span>
@@ -79,30 +82,32 @@ function UserInfo() {
                     </span>
                     <span>{formatDate(stats?.end_time)}</span>
                 </div>*/}
-            <div className="w-full flex gap-4 justify-between mt-2 items-end">
-                <span className="text-left">Time:</span>
-                {/* <span>{additionalTime + preTime}h</span> */}
-            </div>
-            <div className="w-full flex gap-4 justify-between  mt-2 ">
-                <span className="text-left">{t[Contents.TIME]}:</span>
-                {/* <span className="text-right"> {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h </span> */}
-            </div>
-            <hr className="my-[14px]" />
+                <div className="w-full flex gap-4 justify-between mt-2 items-end">
+                    <span className="text-left">Time:</span>
+                    {/* <span>{additionalTime + preTime}h</span> */}
+                </div>
+                <div className="w-full flex gap-4 justify-between  mt-2 ">
+                    <span className="text-left">{t[Contents.TIME]}:</span>
+                    {/* <span className="text-right"> {stats?.usage_hour ? stats?.usage_hour.toFixed(1) : 0}h </span> */}
+                </div>
+                <hr className="my-[14px]" />
 
-            <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
-                <span className="text-left">Thời gian còn lại</span>
-                {/* <span className="text-right"> {stats?.remain_time ? stats?.remain_time.toFixed(1) : 0} h </span> */}
+                <div className="w-full flex gap-4 justify-between  mt-0 md:mt-[14px]">
+                    <span className="text-left">Thời gian còn lại</span>
+                    {/* <span className="text-right"> {stats?.remain_time ? stats?.remain_time.toFixed(1) : 0} h </span> */}
+                </div>
+                <p></p>
             </div>
-            <p></p>
-        </div>,
-        undefined: <div className="restWindow w-full  flex flex-col ">
-            <div className="w-full flex gap-4 justify-between mt-2 items-end">
-                <span className="text-left">You haven't paid yet</span>
+        ),
+        undefined: (
+            <div className="restWindow w-full  flex flex-col ">
+                <div className="w-full flex gap-4 justify-between mt-2 items-end">
+                    <span className="text-left">You haven't paid yet</span>
+                </div>
+                <p></p>
             </div>
-            <p></p>
-        </div>,
-    }
-
+        )
+    };
 
     return (
         <div className="userManager">
@@ -134,7 +139,7 @@ function UserInfo() {
                                 ui={true}
                                 src={icon}
                                 width={14}
-                            //invert={pnstates[idx] ? true : null}
+                                //invert={pnstates[idx] ? true : null}
                             />
                         </div>
                     </div>
