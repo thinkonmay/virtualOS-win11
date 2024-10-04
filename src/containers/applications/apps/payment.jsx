@@ -4,7 +4,7 @@ import {
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
-import { LazyComponent, ToolBar } from '../../../components/shared/general';
+import { Image, LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
 import { FUNDING } from '@paypal/react-paypal-js';
@@ -182,9 +182,18 @@ const isRejectHourSub = (subName, planName) => {
 };
 const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoose }) => {
     const user = useAppSelector((state) => state.user);
+    const gameChooseSubscription = useAppSelector(state => state.globals.gameChooseSubscription)
+
+    const gameChoose = useAppSelector(state => state.globals.gamesInSubscription.find(item => item.volumeId == gameChooseSubscription?.volumeId))
+
     const planName = useAppSelector((state) => state.user?.stat?.plan_name);
 
 
+    console.log(gameChooseSubscription, '123');
+    const openChooseGames = (subName) => {
+
+        appDispatch(popup_open({ type: 'gameChoose', data: { planName: subName } }))
+    }
     return (
 
         <div className="sub relative">
@@ -275,13 +284,15 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                         </ul>
                     ))}
 
-                    {sub.storage ? (
+                    {/*{sub.storage ? (
                         <p className="text-foreground-light text-[13px] mt-8 mb-2">
                             Dung lượng mua thêm:
                         </p>
-                    ) : null}
+                    ) : null}*/}
 
-                    <ul
+                    <></>
+
+                    {/*<ul
                         role="list"
                         className="list-decimal text-[13px] text-foreground-lighter"
                     >
@@ -295,8 +306,25 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                                 </span>
                             </li>
                         ))}
-                    </ul>
+                    </ul>*/}
+                    <button className='mt-4 w-80 mx-auto bg-red-500 btn btn-secondary' onClick={() => openChooseGames(sub.name)}>Chọn game cài sẵn</button>
 
+                    {gameChoose?.volumeId && sub.name == gameChooseSubscription.planName ? <div
+                        key={gameChoose.name}
+                        className="flex flex-col py-4 w-[80px] mx-auto mt-5 h-[100px] rounded-lg bg-[#2d3146]"
+                    >
+                        <Image
+                            w={40}
+                            h={40}
+                            ext
+                            absolute
+                            src={gameChoose.logo}
+                        />
+                        <div className="name mt-auto capitalize text-white  text-xs text-center font-semibold">
+                            {gameChoose.name}
+                        </div>
+
+                    </div> : null}
                     <div className="flex flex-col gap-2 mt-auto prose">
                         {sub.name == 'hour_02' &&
                             !isRejectHourSub(sub.name, planName) ? (
