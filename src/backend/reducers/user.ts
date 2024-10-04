@@ -44,53 +44,58 @@ export const userAsync = {
             if (errr) throw new Error(errr.message);
             else if (sub.length > 0) {
                 const {
-                    data: [{ checkoutUrl }],
+                    data,
                     error: err
                 } = await GLOBAL()
                     .from('payment_request')
-                    .select('result->data->>checkoutUrl')
+                    .select('result->data->>checkoutUrl,status')
                     .eq('subscription', sub[0]?.id);
                 if (err) throw new Error(err.message);
-                return checkoutUrl;
-            } else {
-                const {
-                    data: [{ id: plan }],
-                    error: errrr
-                } = await GLOBAL()
-                    .from('plans')
-                    .select('id')
-                    .eq('name', plan_name);
-                if (errrr) throw new Error(errrr.message);
 
-                const {
-                    data: [{ id: cluster }],
-                    error: errrrr
-                } = await GLOBAL()
-                    .from('clusters')
-                    .select('id')
-                    .eq('domain', getDomain());
-                if (errrrr) throw new Error(errrrr.message);
-
-                const {
-                    data: [{ id: subscription }],
-                    error
-                } = await GLOBAL()
-                    .from('subscriptions')
-                    .insert({ user: email, plan, cluster })
-                    .select('id');
-                if (error) throw new Error(error.message);
-
-                const {
-                    data: [{ checkoutUrl }],
-                    error: err
-                } = await GLOBAL()
-                    .from('payment_request')
-                    .insert({ expire_at, subscription })
-                    .select('result->data->>checkoutUrl');
-                if (err) throw new Error(err.message);
-
-                return checkoutUrl;
+                const [{checkoutUrl,status}] = data
+                if (status == 'PENDING')
+                    return checkoutUrl
+                else if (status == 'PAID')
+                    throw new Error('you already paid for our service')
             }
+
+            const {
+                data: [{ id: plan }],
+                error: errrr
+            } = await GLOBAL()
+                .from('plans')
+                .select('id')
+                .eq('name', plan_name);
+            if (errrr) throw new Error(errrr.message);
+
+            const {
+                data: [{ id: cluster }],
+                error: errrrr
+            } = await GLOBAL()
+                .from('clusters')
+                .select('id')
+                .eq('domain', getDomain());
+            if (errrrr) throw new Error(errrrr.message);
+
+            const {
+                data: [{ id: subscription }],
+                error
+            } = await GLOBAL()
+                .from('subscriptions')
+                .insert({ user: email, plan, cluster })
+                .select('id');
+            if (error) throw new Error(error.message);
+
+            const {
+                data: [{ checkoutUrl }],
+                error: err
+            } = await GLOBAL()
+                .from('payment_request')
+                .insert({ expire_at, subscription })
+                .select('result->data->>checkoutUrl');
+            if (err) throw new Error(err.message);
+
+            return checkoutUrl;
         }
     )
 };
