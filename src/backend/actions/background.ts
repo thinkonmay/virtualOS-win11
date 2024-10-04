@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // import UTC plugin
 import { verifyPayment, wrapperAsyncFunction } from '.';
+import { UserSession } from '../../../src-tauri/api/analytics';
 import {
     RootState,
     appDispatch,
@@ -26,7 +27,7 @@ import {
     worker_refresh
 } from '../reducers';
 import { client } from '../reducers/remote';
-import { UserSession } from '../../../src-tauri/api/analytics';
+import { PlanName } from '../utils/constant';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -53,9 +54,9 @@ export const fetchUser = async () => {
 
     appDispatch(app_toggle('usermanager'));
 
-    if (stat.plan_name == 'hour_02' || !stat.plan_name) {
+    if (stat.plan_name == PlanName.hour_02) {
         appDispatch(app_toggle('store'));
-    } else {
+    } else if (stat.plan_name == PlanName.month_01 || stat.plan_name == PlanName.unlimited) {
         appDispatch(app_toggle('connectPc'));
     }
     checkMaintain();
