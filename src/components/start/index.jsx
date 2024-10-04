@@ -9,6 +9,7 @@ import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
 
 import { useDispatch } from 'react-redux';
+import { isMobile } from '../../../src-tauri/core';
 import {
     MAX_BITRATE,
     MAX_FRAMERATE,
@@ -124,19 +125,6 @@ export const SidePane = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const [pnstates, setPnstate] = useState([]);
     const dispatch = appDispatch;
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 1024);
-        };
-
-        // Attach event listener
-        window.addEventListener('resize', handleResize);
-
-        // Detach event listener on cleanup
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
     useEffect(() => {
         const framerateSlider = document.querySelector('.framerateSlider');
         const bitrateSlider = document.querySelector('.bitrateSlider');
@@ -170,7 +158,7 @@ export const SidePane = () => {
 
     useEffect(() => {
         var tmp = [];
-        var states = isMobile
+        var states = isMobile()
             ? sidepane.mobileControl.buttons
             : sidepane.quicks;
         const mobileState = {
@@ -198,7 +186,7 @@ export const SidePane = () => {
             >
                 <div className="mainContent">
                     <div className="quickSettings ">
-                        {isMobile ? (
+                        {isMobile() ? (
                             <MobileComponent
                                 pnstates={pnstates}
                             ></MobileComponent>
@@ -281,7 +269,7 @@ export const SidePane = () => {
                     </div>
                 </div>*/}
             </div>
-            {isMobile ? (
+            {isMobile() ? (
                 <>
                     <VirtKeyboard></VirtKeyboard>
                     <VirtualGamepad></VirtualGamepad>
