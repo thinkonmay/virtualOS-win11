@@ -1,43 +1,51 @@
 type PopupData =
     | {
-          type: 'complete';
-          data: {
-              success: boolean;
-              content: string | Contents;
-          };
-      }
+        type: 'complete';
+        data: {
+            success: boolean;
+            content: string | Contents;
+        };
+    }
     | {
-          type: 'guidance';
-          data: {
-              content: string;
-          };
-      }
+        type: 'guidance';
+        data: {
+            content: string;
+        };
+    }
     | {
-          type: 'notify';
-          data: {
-              title?: string;
-              loading: boolean;
-              tips?: boolean;
-              text?: any;
-              timeProcessing?: number;
-          };
-      }
+        type: 'notify';
+        data: {
+            title?: string;
+            loading: boolean;
+            tips?: boolean;
+            text?: any;
+            timeProcessing?: number;
+        };
+    }
     | {
-          type: 'warning';
-          data: {
-              title?: string;
-              loading: boolean;
-              tips?: boolean;
-              text?: any;
-          };
-      }
+        type: 'warning';
+        data: {
+            title?: string;
+            loading: boolean;
+            tips?: boolean;
+            text?: any;
+        };
+    }
     | {
-          type: 'maintain';
-          data: {
-              start: string;
-              end: string;
-          };
-      };
+        type: 'maintain';
+        data: {
+            start: string;
+            end: string;
+        };
+    }
+    | {
+        type: 'gameChoose';
+        data: {
+            planName: string
+        };
+    };
+
+
 
 type Data = {
     data_stack: PopupData[];
@@ -46,7 +54,7 @@ type Data = {
 const initialState: Data = {
     data_stack: [
         //{
-        //    type: 'maintain',
+        //    type: 'gameChoose',
         //    data: {}
         //}
     ]
