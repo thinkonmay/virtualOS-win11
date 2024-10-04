@@ -68,6 +68,7 @@ export const PaymentApp = () => {
     const handleChooseSub = async (sub) =>
         appDispatch(
             get_payment({
+                template: 'fc_online',
                 plan: 'month1'
             })
         );
