@@ -9,6 +9,7 @@ import {
     check_worker,
     fetch_message,
     fetch_store,
+    fetch_subscription,
     fetch_under_maintenance,
     fetch_user,
     have_focus,
@@ -44,10 +45,6 @@ const loadSettings = async () => {
 
 export const fetchUser = async () => {
     await appDispatch(fetch_user());
-
-    const stat = store.getState().user.stat;
-
-    checkMaintain();
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());
@@ -181,13 +178,19 @@ const startAnalytics = async () => {
     await UserSession(store.getState().user.email);
 };
 
+const fetchSubscription = async () => {
+    await appDispatch(fetch_subscription());
+};
+
 export const preload = async () => {
     try {
         await fetchUser();
         await Promise.allSettled([
             startAnalytics(),
             loadSettings(),
+            checkMaintain(),
             fetchApp(),
+            fetchSubscription(),
             fetchSetting(),
             fetchMessage(),
             fetchStore(),
