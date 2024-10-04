@@ -1,35 +1,17 @@
 import { useState } from 'react';
 import {
     appDispatch,
-    popup_open,
+    get_payment,
     useAppSelector
 } from '../../../backend/reducers';
 import { Image, LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
-import { FUNDING } from '@paypal/react-paypal-js';
-import {
-    createPaymentLink,
-    wrapperAsyncFunction
-} from '../../../backend/actions';
-
-const mb = '970422';
-
-const model = 'BsXBiU7'; //'sS1SemI'
-
-const FUNDING_SOURCES = [FUNDING.PAYPAL, FUNDING.CARD, FUNDING.PAYU];
-const initialOptions = {
-    'client-id':
-        'AUGjxD_5EwowYxfVHGQSqtBsy0G7F05x850-iRLbbZZFTAZxYXn2ois63R1hZyA0ufbDch1I4lv9XUAZ',
-    'enable-funding': '',
-    vault: true
-};
-
 export const PaymentApp = () => {
+    const user = useAppSelector((state) => state.user);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const user = useAppSelector((state) => state.user);
     const [listSubs, setListSubs] = useState([
         {
             highlight: false,
@@ -42,7 +24,7 @@ export const PaymentApp = () => {
             period: 'h',
             bonus: [
                 'Chơi sẵn các game trong store games',
-                'Không lưu dữ liệu sau khi tắt máy',
+                'Không lưu dữ liệu sau khi tắt máy'
             ],
             hoursChoose: 5
         },
@@ -81,61 +63,15 @@ export const PaymentApp = () => {
         }
     ]);
 
+    const [paypage, setPaypage] = useState(null);
     const [subChoose, setSubChoose] = useState(null);
-
-    const [hoursChoose, setHoursChoose] = useState(5);
-
-    const handleChooseSub = async (sub) => {
-        if (hoursChoose < 5 && sub.name == 'hour_02') {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content: 'Cần mua ít nhất 5h'
-                    }
-                })
-            );
-            return;
-        }
-        if (isRejectHourSub(sub.name, user?.stat.plan_name)) {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content:
-                            'Gói hiện tại đang đóng.Quý khách vui lòng quay lại sau!'
-                    }
-                })
-            );
-            return;
-        }
-        setSubChoose({
-            ...sub,
-            hoursChoose
-        });
-
-        const inputs = {
-            buyerEmail: user.email,
-            items: [
-                {
-                    name: sub.name,
-                    price: +sub.price_in_vnd * 1000,
-                    quantity: sub.name == 'hour_02' ? +hoursChoose : 1
-                }
-            ]
-        };
-        wrapperAsyncFunction(
-            async () => window.open(await createPaymentLink(inputs), '_self'),
-            {
-                title: 'Creating Payment',
-                tips: false,
-                timeProcessing: 0.5
-            }
+    const handleChooseSub = async (sub) =>
+        appDispatch(
+            get_payment({
+                template: 'fc_online',
+                plan: 'month1'
+            })
         );
-    };
-
 
     return (
         <div
@@ -159,7 +95,13 @@ export const PaymentApp = () => {
                 <LazyComponent show={!wnapp.hide}>
                     <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
                         {listSubs.map((sub, index) => (
-                            <SubscriptionCard subInfo={sub} onChooseSub={handleChooseSub} setHoursChoose={setHoursChoose} hoursChoose={hoursChoose}></SubscriptionCard>
+                            <SubscriptionCard
+                                key={index}
+                                subInfo={sub}
+                                onChooseSub={handleChooseSub}
+                            // setHoursChoose={setHoursChoose}
+                            // hoursChoose={hoursChoose}
+                            ></SubscriptionCard>
                         ))}
                     </div>
                 </LazyComponent>
@@ -168,19 +110,21 @@ export const PaymentApp = () => {
     );
 };
 
-
 const isRejectHourSub = (subName, planName) => {
     let check = false;
-    check =
-        subName == 'hour_02' &&
-        planName !== 'hour_02';
+    check = subName == 'hour_02' && planName !== 'hour_02';
 
     return check;
     //let check = false;
     //check = !user?.stat?.plan_name || subName == 'hour_02';
     //return check;
 };
-const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoose }) => {
+const SubscriptionCard = ({
+    subInfo: sub,
+    onChooseSub,
+    setHoursChoose,
+    hoursChoose
+}) => {
     const user = useAppSelector((state) => state.user);
     const gameChooseSubscription = useAppSelector(state => state.globals.gameChooseSubscription)
 
@@ -195,7 +139,6 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
         appDispatch(popup_open({ type: 'gameChoose', data: { planName: subName } }))
     }
     return (
-
         <div className="sub relative">
             {sub.highlight ? (
                 <div className="absolute rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
@@ -229,19 +172,14 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                                                         : `\$${sub.price}`}
                                                 </h3>
                                                 <p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
-                                                    /{' '}
-                                                    {
-                                                        sub.period
-                                                    }{' '}
+                                                    / {sub.period}{' '}
                                                 </p>
                                             </>
                                         }
                                     </div>
                                     <p className="-mt-2">
                                         <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                            {
-                                                sub.under_price
-                                            }
+                                            {sub.under_price}
                                         </span>
                                     </p>
                                 </div>
@@ -333,10 +271,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                                 <input
                                     value={hoursChoose}
                                     onChange={(e) =>
-                                        setHoursChoose(
-                                            e.target
-                                                .value
-                                        )
+                                        setHoursChoose(e.target.value)
                                     }
                                     className="p-2 rounded-sm"
                                     type="number"
@@ -353,9 +288,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                         </div>
 
                         <button
-                            onClick={() =>
-                                onChooseSub(sub)
-                            }
+                            onClick={() => onChooseSub(sub)}
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
                                                             space-x-2 text-center font-regular ease-out duration-200 rounded-md 
@@ -368,16 +301,15 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
                                                             ${isRejectHourSub(
-                                sub.name, planName
+                                sub.name,
+                                planName
                             )
                                     ? 'bg-red-500'
                                     : 'bg-[#328cff]'
                                 }  `}
                         >
                             <span className="truncate font-medium text-xl">
-                                {isRejectHourSub(
-                                    sub.name, planName
-                                )
+                                {isRejectHourSub(sub.name, planName)
                                     ? 'Đang đóng!'
                                     : 'Mua Ngay'}
                             </span>
@@ -386,6 +318,5 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub, setHoursChoose, hoursChoo
                 </div>
             </div>
         </div>
-
-    )
-}
+    );
+};

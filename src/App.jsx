@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
-import { UserEvents } from '../src-tauri/api/analytics';
+import { UserEvents } from '../src-tauri/api';
 import { preload } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
@@ -13,8 +13,6 @@ import {
     useAppSelector
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
-import { isMobile } from './backend/utils/checking';
-import { localStorageKey, pathNames } from './backend/utils/constant';
 import ActMenu from './components/menu';
 import {
     DesktopApp,
@@ -27,7 +25,9 @@ import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
 import { Background, BootScreen, LockScreen } from './containers/background';
 import Popup from './containers/popup';
+import { isMobile } from '../src-tauri/core';
 import { Remote } from './containers/remote';
+import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
 
@@ -62,9 +62,6 @@ function App() {
 
     useEffect(() => {
         const url = new URL(window.location.href);
-
-        if (url.pathname.includes(pathNames.VERIFY_PAYMENT))
-            localStorage.setItem(localStorageKey.PATH_NAME, 'true');
 
         const ref = url.searchParams.get('ref');
         if (ref != null) {
@@ -196,7 +193,14 @@ function App() {
                         </>
                     )}
 
-                    {remote.active ? <Remote /> : <Background />}
+                    {remote.active ? (
+                        <>
+                            <Remote />
+                            <Status />
+                        </>
+                    ) : (
+                        <Background />
+                    )}
                     {!remote.active ? (
                         <div className="desktop" data-menu="desk">
                             <DesktopApp />

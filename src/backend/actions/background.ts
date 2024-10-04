@@ -1,8 +1,6 @@
 import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // import UTC plugin
-import { verifyPayment, wrapperAsyncFunction } from '.';
-import { UserSession } from '../../../src-tauri/api/analytics';
+import { UserSession } from '../../../src-tauri/api';
 import {
     RootState,
     appDispatch,
@@ -12,12 +10,12 @@ import {
     check_worker,
     fetch_message,
     fetch_store,
+    fetch_subscription,
     fetch_under_maintenance,
     fetch_user,
     have_focus,
     loose_focus,
     ping_session,
-    popup_open,
     setting_theme,
     sidepane_panethem,
     store,
@@ -26,8 +24,8 @@ import {
     wall_set,
     worker_refresh
 } from '../reducers';
-import { client } from '../reducers/remote';
-import { PlanName } from '../utils/constant';
+import { CLIENT } from '../../../src-tauri/singleton';
+import { useState } from 'react';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -49,56 +47,51 @@ const loadSettings = async () => {
 
 export const fetchUser = async () => {
     await appDispatch(fetch_user());
-
-    const stat = store.getState().user.stat;
-
-    appDispatch(app_toggle('usermanager'));
-
-    if (stat.plan_name == PlanName.hour_02) {
-        appDispatch(app_toggle('store'));
-    } else if (stat.plan_name == PlanName.month_01 || stat.plan_name == PlanName.unlimited) {
-        appDispatch(app_toggle('connectPc'));
-    }
-    checkMaintain();
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());
     const info = store.getState().globals.maintenance;
 
     dayjs.extend(utc);
-    dayjs.extend(timezone);
+    // appDispatch(app_toggle('usermanager'));
+
+    // if (stat.plan_name == 'hour_02' || !stat.plan_name) {
+    //     appDispatch(app_toggle('store'));
+    // } else {
+    //     appDispatch(app_toggle('connectPc'));
+    // }  dayjs.extend(timezone);
 
     let startAtTime = dayjs.utc(info.created_at);
     let endAtTime = dayjs.utc(info.ended_at);
 
     // Convert to GMT+7
-    let startAt = startAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-    let endAt = endAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
+    // let startAt = startAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
+    // let endAt = endAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
 
     // Extract hour, day, and month
-    const hourStart = startAt.hour();
-    const dayStart = startAt.date();
-    const monthStart = startAt.month() + 1;
+    // const hourStart = startAt.hour();
+    // const dayStart = startAt.date();
+    // const monthStart = startAt.month() + 1;
 
-    const startText = `${hourStart}h ${dayStart}/${monthStart}`;
+    // const startText = `${hourStart}h ${dayStart}/${monthStart}`;
 
-    const hourEnd = endAt.hour();
-    const dayEnd = endAt.date();
-    const monthEnd = endAt.month() + 1;
+    // const hourEnd = endAt.hour();
+    // const dayEnd = endAt.date();
+    // const monthEnd = endAt.month() + 1;
 
-    const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
+    // const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
 
-    if (dayjs() < endAt) {
-        appDispatch(
-            popup_open({
-                type: 'maintain',
-                data: {
-                    start: startText,
-                    end: endText
-                }
-            })
-        );
-    }
+    // if (dayjs() < endAt) {
+    //     appDispatch(
+    //         popup_open({
+    //             type: 'maintain',
+    //             data: {
+    //                 start: startText,
+    //                 end: endText
+    //             }
+    //         })
+    //     );
+    // }
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());
@@ -124,7 +117,7 @@ const fetchSetting = async () => {
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (client == null || !client?.ready()) return;
+        if (CLIENT == null || !CLIENT?.ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
         if (!(store.getState() as RootState).remote.focus)
@@ -132,7 +125,7 @@ const handleClipboard = async () => {
         if (clipboard == old_clipboard) return;
 
         old_clipboard = clipboard;
-        client?.SetClipboard(clipboard);
+        CLIENT?.SetClipboard(clipboard);
     } catch {
         if ((store.getState() as RootState).remote.focus)
             appDispatch(loose_focus());
@@ -183,30 +176,29 @@ export const checkTimeUsage = async () => {
     };
 };
 
-const paymentVerify = async () => {
-    await wrapperAsyncFunction(
-        () => verifyPayment(store.getState().user.email),
-        {
-            loading: true,
-            tips: false,
-            title: 'Verify payment!',
-            timeProcessing: 0.1
-        }
-    );
+const startAnalytics = async () => {
+    await UserSession(store.getState().user.email);
 };
 
-const StartAnalytics = async () => {
-    await UserSession(store.getState().user.email);
+const fetchSubscription = async () => {
+    await appDispatch(fetch_subscription());
+
+    const subscription = store.getState().user.subscription as any;
+    if ((subscription.plan as string).includes('month'))
+        appDispatch(app_toggle('connectPc'));
+    else if ((subscription.plan as string).includes('hour'))
+        appDispatch(app_toggle('store'));
 };
 
 export const preload = async () => {
     try {
         await fetchUser();
         await Promise.allSettled([
-            StartAnalytics(),
-            paymentVerify(),
+            startAnalytics(),
             loadSettings(),
+            checkMaintain(),
             fetchApp(),
+            fetchSubscription(),
             fetchSetting(),
             fetchMessage(),
             fetchStore(),

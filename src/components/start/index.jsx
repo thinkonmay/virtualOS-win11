@@ -9,6 +9,13 @@ import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
 
 import { useDispatch } from 'react-redux';
+import { isMobile } from '../../../src-tauri/core';
+import {
+    MAX_BITRATE,
+    MAX_FRAMERATE,
+    MIN_BITRATE,
+    MIN_FRAMERATE
+} from '../../../src-tauri/singleton';
 import {
     appDispatch,
     change_bitrate,
@@ -23,13 +30,6 @@ import {
     toggle_gamepad_setting,
     useAppSelector
 } from '../../backend/reducers';
-import {
-    MAX_BITRATE,
-    MAX_FRAMERATE,
-    MIN_BITRATE,
-    MIN_FRAMERATE
-} from '../../backend/reducers/remote';
-import { PlanName } from '../../backend/utils/constant';
 import {
     clickDispatch,
     customClickDispatch
@@ -49,39 +49,11 @@ export const DesktopApp = () => {
         state.apps.apps.filter((x) => state.desktop.apps.includes(x.id))
     );
 
-    const subscriptionPlan = useAppSelector((state) => state.user?.stat?.plan_name)
     const desk = useAppSelector((state) => state.desktop);
     const [holding, setHolding] = useState(false);
     const timeoutRef = useRef(null);
     const dispatch = useDispatch();
 
-    const handleTouchStart = (e) => {
-        return;
-        Actions.afterMath(e);
-        timeoutRef.current = setTimeout(() => {
-            setHolding(true);
-            e.preventDefault();
-            var touch = e.touches[0] || e.changedTouches[0];
-
-            var data = {
-                top: touch.clientY,
-                left: touch.clientX
-            };
-            data.menu = e.target.dataset.menu;
-            data.dataset = { ...e.target.dataset };
-            dispatch(menu_show(data));
-        }, 300); // 1000 milliseconds = 1 second
-    };
-
-    useEffect(() => {
-        if (subscriptionPlan == PlanName.hour_02) {
-            appDispatch(desk_remove('connectPc'))
-        }
-        else if (subscriptionPlan == PlanName.month_01) {
-            appDispatch(desk_remove('store'))
-        }
-
-    }, [subscriptionPlan])
     const handleTouchEnd = async (e) => {
         //clearTimeout(timeoutRef.current);
         await sleep(200);
@@ -91,7 +63,9 @@ export const DesktopApp = () => {
 
     return (
         <div className="desktopCont">
-            <OnboardingNewUser />
+            {!window.location.host.includes('localhost') ? (
+                <OnboardingNewUser />
+            ) : null}
             {!desk.hide &&
                 deskApps.map((app, i) => {
                     return (
@@ -105,7 +79,6 @@ export const DesktopApp = () => {
                             data-id={app.id ?? 'null'}
                             data-name={app.name}
                             onDoubleClick={handleDouble}
-                            onTouchStart={handleTouchStart}
                             onTouchEnd={handleTouchEnd}
                         >
                             <Icon
@@ -137,19 +110,6 @@ export const SidePane = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const [pnstates, setPnstate] = useState([]);
     const dispatch = appDispatch;
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 1024);
-        };
-
-        // Attach event listener
-        window.addEventListener('resize', handleResize);
-
-        // Detach event listener on cleanup
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
     useEffect(() => {
         const framerateSlider = document.querySelector('.framerateSlider');
         const bitrateSlider = document.querySelector('.bitrateSlider');
@@ -183,7 +143,7 @@ export const SidePane = () => {
 
     useEffect(() => {
         var tmp = [];
-        var states = isMobile
+        var states = isMobile()
             ? sidepane.mobileControl.buttons
             : sidepane.quicks;
         const mobileState = {
@@ -211,7 +171,7 @@ export const SidePane = () => {
             >
                 <div className="mainContent">
                     <div className="quickSettings ">
-                        {isMobile ? (
+                        {isMobile() ? (
                             <MobileComponent
                                 pnstates={pnstates}
                             ></MobileComponent>
@@ -239,7 +199,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                            1000
+                                                1000
                                         )}
                                     </span>
                                 </div>
@@ -265,8 +225,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                                remote.framerate +
+                                                MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -294,7 +254,7 @@ export const SidePane = () => {
                     </div>
                 </div>*/}
             </div>
-            {isMobile ? (
+            {isMobile() ? (
                 <>
                     <VirtKeyboard></VirtKeyboard>
                     <VirtualGamepad></VirtualGamepad>

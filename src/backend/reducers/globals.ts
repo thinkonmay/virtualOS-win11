@@ -1,9 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {
-    supabaseGlobal,
-    supabaseLocal
-} from '../../../src-tauri/api/createClient';
-import { PlanName } from '../utils/constant';
+import { LOCAL } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -226,9 +222,9 @@ const initialState = {
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        const { data, error } = await supabaseGlobal.rpc('fetch_store');
-        if (error) throw new Error(error.message);
-        return data as IGame[];
+        // const { data, error } = await supabaseGlobal.rpc('fetch_store');
+        // if (error) throw new Error(error.message);
+        return [] as IGame[];
     }),
     fetch_under_maintenance: createAsyncThunk(
         'fetch_under_maintenance',
@@ -236,7 +232,7 @@ export const globalAsync = {
             const {
                 data: [{ value: info }],
                 error
-            } = await supabaseLocal
+            } = await LOCAL()
                 .from('constant')
                 .select('value')
                 .eq('name', 'mantainance');

@@ -216,8 +216,9 @@ const Taskbar = () => {
                         </div>
                     )}
                     <div
-                        className={`${open ? 'slide-in' : 'slide-out'
-                            } taskright`}
+                        className={`${
+                            open ? 'slide-in' : 'slide-out'
+                        } taskright`}
                         data-remote={remote.active}
                     >
                         {remote.active ? (
@@ -243,7 +244,6 @@ const Taskbar = () => {
                                 onClick={clickDispatch}
                                 data-action="sidepane/sidepane_bandtogg"
                                 style={{ '--prefix': 'BAND' }}
-
                             >
                                 <div
                                     className="text-xm font-semibold"

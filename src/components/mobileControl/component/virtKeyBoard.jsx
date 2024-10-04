@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
-import { useShift } from '../../../../src-tauri/core/utils/convert';
+import { useShift } from '../../../../src-tauri/core';
 import {
     appDispatch,
     toggle_keyboard,

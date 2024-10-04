@@ -1,4 +1,5 @@
 import {
+    app_toggle,
     appDispatch,
     useAppSelector,
     wait_and_claim_volume
@@ -9,8 +10,8 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
+import { RenderNode } from '../../../../src-tauri/api';
 import { Contents } from '../../../backend/reducers/locales';
-import { RenderNode } from '../../../backend/utils/tree';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -58,10 +59,10 @@ export const ConnectApp = () => {
             name: 'CPU:',
             text: 'Intel Xeon™ (up to 3.1 GHz) 8 vCores'
         },
-        {
-            name: 'STORAGE:',
-            text: renderPlanStorage(stats?.plan_name)
-        },
+        // {
+        //     name: 'STORAGE:',
+        //     text: renderPlanStorage(stats?.plan_name)
+        // },
         {
             name: 'OS:',
             text: 'Window 10'

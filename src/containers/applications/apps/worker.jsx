@@ -1,5 +1,6 @@
 import PocketBase from 'pocketbase';
 import { useEffect, useRef, useState } from 'react';
+import { getDomainURL } from '../../../../src-tauri/api';
 import { afterMath } from '../../../backend/actions';
 import {
     appDispatch,
@@ -12,7 +13,6 @@ import { isAdmin } from '../../../backend/utils/checking';
 import { combineText } from '../../../backend/utils/combineText';
 import { customClickDispatch } from '../../../backend/utils/dispatch';
 import { Icon, Image, ToolBar } from '../../../components/shared/general';
-import { getDomainURL } from '../../../../src-tauri/api/createClient';
 import './assets/fileexpo.scss';
 
 export const Worker = () => {

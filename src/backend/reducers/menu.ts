@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { NodeType } from '../utils/tree';
+import { NodeType } from '../../../src-tauri/api';
 
 type Opts =
     | {

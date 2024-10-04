@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { UserEvents } from '../../../../src-tauri/api/analytics';
+import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
     app_close,

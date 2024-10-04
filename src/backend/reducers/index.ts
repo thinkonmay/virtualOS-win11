@@ -16,7 +16,7 @@ import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { UserEvents } from '../../../src-tauri/api/analytics.js';
+import { UserEvents } from '../../../src-tauri/api';
 
 const blacklist = ['framerate', 'bitrate', 'internal_sync', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
@@ -129,6 +129,7 @@ export const {
 } = remoteSlice.actions;
 
 export const {
+    personal_worker_session_close,
     fetch_local_worker,
     worker_session_access,
     worker_session_close,
@@ -145,7 +146,7 @@ export const {
     peer_session_access,
     peer_session_close
 } = workerAsync;
-export const { fetch_user } = userAsync;
+export const { fetch_user, fetch_subscription, get_payment } = userAsync;
 export const {
     ping_session,
     sync,
@@ -161,7 +162,6 @@ export const {
 export const { fetch_store, fetch_under_maintenance } = globalAsync;
 export const { push_message, fetch_message } = sidepaneAsync;
 
-export { ready } from './remote';
 export const dispatch_generic = async ({
     type,
     payload
