@@ -116,7 +116,7 @@ export const userAsync = {
     get_payment: createAsyncThunk(
         'get_payment',
         async (
-            { plan: plan_name,template }: { plan: string,template?: string },
+            { plan: plan_name, template }: { plan: string; template?: string },
             { getState }
         ): Promise<string> => {
             const expire_at = new Date(
@@ -164,7 +164,12 @@ export const userAsync = {
                 error
             } = await GLOBAL()
                 .from('subscriptions')
-                .insert({ user: email, plan, cluster, local_metadata : { template } })
+                .insert({
+                    user: email,
+                    plan,
+                    cluster,
+                    local_metadata: { template }
+                })
                 .select('id');
             if (error) throw new Error(error.message);
 

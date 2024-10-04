@@ -18,34 +18,14 @@ export const ConnectApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
-    const stats = useAppSelector((state) => state.user.stat);
     const available = useAppSelector(
         (state) =>
             new RenderNode(state.worker.data).data[0]?.info?.available &&
             !state.globals.maintenance?.isMaintaining
     );
     const user = useAppSelector((state) => state.user);
+    const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
 
-    const emailSplit = () => {
-        let result = '';
-        result = user?.email?.split('@')?.at(0) || 'Your';
-
-        return result;
-    };
-
-    const renderPlanStorage = (planName) => {
-        let storage = '150GB + Cloud save';
-        if (planName == 'month_01') {
-            storage = '150GB + Cloud save';
-        }
-        if (planName == 'hour_01') {
-            storage = '130GB + Cloud save';
-        } else if (planName == 'month_02') {
-            storage = '200GB + Cloud save';
-        }
-
-        return storage;
-    };
     const listSpec = [
         {
             name: 'GPU:',

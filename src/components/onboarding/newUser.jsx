@@ -93,7 +93,6 @@ export const OnboardingNewUser = () => {
             setRun(false);
         }
 
-        console.log(isShow, hasUser);
         if (!isShow && hasUser && !hasSubscription) {
             setRun(true);
         }
