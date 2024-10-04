@@ -18,11 +18,11 @@ type PaymentStatus = {
     status: 'PENDING'
 } | {
     status: 'CANCEL'
-} | {
-    status: undefined | string
 }
 
-type Data = RecordModel & PaymentStatus;
+type Data = RecordModel & {
+    subscription: PaymentStatus | {};
+}
 
 const initialState: Data = {
     collectionId: '',
@@ -32,8 +32,7 @@ const initialState: Data = {
     email: '',
     created: '',
     updated: '',
-
-    status: undefined
+    subscription: {}
 };
 
 export const userAsync = {
@@ -223,6 +222,12 @@ export const userSlice = createSlice({
                     state.expand = action.payload.expand;
                     state.email = action.payload.email;
                     state.stat = action.payload.stat;
+                }
+            },
+            {
+                fetch: userAsync.fetch_subscription,
+                hander: (state, action) => {
+                    state.subscription = action.payload;
                 }
             },
             {
