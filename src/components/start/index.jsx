@@ -5,7 +5,6 @@ import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
 import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
 import { PiPauseBold } from 'react-icons/pi';
-import Joyride, { STATUS } from 'react-joyride';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
 
@@ -15,6 +14,7 @@ import {
     change_bitrate,
     change_btnGp_size,
     change_framerate,
+    desk_remove,
     menu_show,
     sidepane_panehide,
     toggle_default_gamepad_position,
@@ -29,6 +29,7 @@ import {
     MIN_BITRATE,
     MIN_FRAMERATE
 } from '../../backend/reducers/remote';
+import { PlanName } from '../../backend/utils/constant';
 import {
     clickDispatch,
     customClickDispatch
@@ -36,6 +37,7 @@ import {
 import { sleep } from '../../backend/utils/sleep';
 import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
 import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
+import { OnboardingNewUser } from '../onboarding/newUser';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';
@@ -46,11 +48,11 @@ export const DesktopApp = () => {
     const deskApps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.desktop.apps.includes(x.id))
     );
+
+    const subscriptionPlan = useAppSelector((state) => state.user?.stat?.plan_name)
     const desk = useAppSelector((state) => state.desktop);
     const [holding, setHolding] = useState(false);
     const timeoutRef = useRef(null);
-    const lastTap = useRef(null);
-
     const dispatch = useDispatch();
 
     const handleTouchStart = (e) => {
@@ -71,6 +73,15 @@ export const DesktopApp = () => {
         }, 300); // 1000 milliseconds = 1 second
     };
 
+    useEffect(() => {
+        if (subscriptionPlan == PlanName.hour_02) {
+            appDispatch(desk_remove('connectPc'))
+        }
+        else if (subscriptionPlan == PlanName.month_01) {
+            appDispatch(desk_remove('store'))
+        }
+
+    }, [subscriptionPlan])
     const handleTouchEnd = async (e) => {
         //clearTimeout(timeoutRef.current);
         await sleep(200);
@@ -80,7 +91,7 @@ export const DesktopApp = () => {
 
     return (
         <div className="desktopCont">
-            <Tutorial></Tutorial>
+            <OnboardingNewUser />
             {!desk.hide &&
                 deskApps.map((app, i) => {
                     return (
@@ -563,137 +574,4 @@ function DesktopComponent({ pnstates }) {
             </div>
         </>
     );
-}
-
-
-const steps = [
-    {
-        content: <div>
-            <h2>Welcome to Thinkmay CloudPC!</h2>
-            <p className='mt-2'>Thoả sức chơi game PC cấu hình cao ngay trên chiếc điện thoai, laptop của bạn</p>
-        </div>,
-        locale: { next: 'Next' },
-        placement: 'center',
-        target: 'body',
-    },
-    {
-        content: 'Để sử dụng CloudPC, bạn cần chọn gói dịch vụ và hoàn tất thanh toán.',
-        floaterProps: {
-            disableAnimation: true,
-        },
-        spotlightPadding: 20,
-        locale: {
-            next: 'Next'  // Continue with "Next",
-        },
-        target: '.payment',
-        title: 'Thanh toán',
-
-    },
-    {
-        content: 'Với gói tháng, bạn vô đây để truy cập tới PC của mình',
-        placement: 'bottom',
-        locale: {
-            next: 'Next'  // Continue with "Next"
-        },
-        spotlightPadding: 20,
-        styles: {
-            options: {
-                width: 300,
-            },
-        },
-        target: '.connectPc',
-        title: 'Gói tháng',
-    },
-    {
-        content: 'Với gói theo giờ, bạn vô đây để chơi các game đã được cài sẵn',
-        placement: 'bottom',
-        spotlightPadding: 20,
-
-        locale: {
-            next: 'Next'  // Continue with "Next"
-        },
-
-
-        styles: {
-            options: {
-                width: 300,
-            },
-        },
-        target: '.store',
-        title: 'Gói giờ',
-    },
-    {
-        content: (
-            <div>
-                Bạn có thể vô đây để xem chi tiết hướng dẫn sử dụng
-            </div>
-        ),
-        placement: 'top',
-        spotlightPadding: 20,
-
-        target: '.hdsd',
-        title: 'Video hướng dẫn',
-    },
-    {
-        content: <h2>Bạn vô đây để được support khi gặp sự cố</h2>,
-        placement: 'top',
-        target: '.supportNow'
-    },
-]
-const Tutorial = () => {
-    const [test, _] = useState(steps)
-
-    const [run, setRun] = useState(true)
-
-    const hasUser = useAppSelector(state => state.user?.email)
-    const hasSubscription = useAppSelector(state => state.user?.stat?.plan_name)
-    useEffect(() => {
-        return
-        const isShow = localStorage.getItem('showTutorial')
-
-        if (isShow != null) { setRun(false) }
-
-        console.log(isShow, hasUser);
-        if (!isShow && hasUser && !hasSubscription) {
-            setRun(true)
-        }
-    }, [hasUser])
-    const handleJoyrideCallback = (data) => {
-        const { status, type } = data;
-        const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
-
-        if (finishedStatuses.includes(status)) {
-            setRun(false)
-            localStorage.setItem('showTutorial', false)
-        }
-
-    };
-    return <Joyride
-        callback={handleJoyrideCallback}
-        scrollToFirstStep
-        continuous
-        showProgress
-        disableOverlayClose
-
-        steps={test}
-        run={run}
-        styles={{
-            options: {
-                zIndex: 10000,
-                overlayColor: 'rgba(0, 0, 0, 0.8)',
-
-            },
-            buttonNext: {
-                backgroundColor: '#007bff',  // Custom background color for the Next button
-                borderRadius: '4px',         // Rounded corners for the button
-                color: '#fff',               // Text color
-                fontSize: '16px',            // Custom font size
-                padding: '8px 16px',         // Padding inside the button
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',  // Add a shadow effect
-            },
-            buttonClose: {
-                display: 'none',             // This will hide the close button
-            },
-        }} />
-
 }
