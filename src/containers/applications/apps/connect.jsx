@@ -1,6 +1,6 @@
 import {
-    app_toggle,
     appDispatch,
+    app_toggle,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -19,10 +19,12 @@ export const ConnectApp = () => {
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const available = useAppSelector(
-        (state) =>
-            new RenderNode(state.worker.data).data[0]?.info?.available &&
-            !state.globals.maintenance?.isMaintaining
+        (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
+    const isMaintain = useAppSelector(
+        (state) => !state.globals.maintenance?.isMaintaining
+    );
+
     const user = useAppSelector((state) => state.user);
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
 
@@ -92,12 +94,16 @@ export const ConnectApp = () => {
                                 </div>
                             </div>
 
-                            {available ? (
+                            {available == 'ready' ? (
                                 <button
                                     onClick={connect}
                                     className="instbtn connectBtn"
                                 >
                                     Connect
+                                </button>
+                            ) : available == 'not_ready' ? (
+                                <button disabled className="instbtn connectBtn">
+                                    Máy đang được khởi tạo
                                 </button>
                             ) : (
                                 <button

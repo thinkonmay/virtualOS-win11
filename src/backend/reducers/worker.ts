@@ -21,6 +21,7 @@ import {
     getDomain,
     GetInfo,
     KeepaliveVolume,
+    LOCAL,
     ParseRequest,
     ParseVMRequest,
     PingSession,
@@ -228,7 +229,18 @@ export const workerAsync = {
                     found = x;
             });
 
-            node.info.available = found != undefined;
+            if (found != undefined) {
+                const { data: job, error: err } = await LOCAL()
+                    .from('job')
+                    .select('result')
+                    .eq('arguments->>id', volume_id)
+                    .limit(1);
+                if (err) throw new Error(err.message);
+                else if (job.length > 0 && job[0].result == 'success')
+                    node.info.available = 'ready';
+                else node.info.available = 'not_ready';
+            }
+
             return node.any();
         }
     ),
