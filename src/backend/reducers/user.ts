@@ -129,7 +129,11 @@ export const userAsync = {
             const { data: sub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id')
-                .eq('user', email);
+                .eq('user', email)
+                .gt('ended_at', new Date().toISOString())
+                .is('cancelled_at', null)
+                .order('created_at', { ascending: false })
+                .limit(1);
             if (errr) throw new Error(errr.message);
             else if (sub.length > 0) {
                 const { data, error: err } = await GLOBAL()
