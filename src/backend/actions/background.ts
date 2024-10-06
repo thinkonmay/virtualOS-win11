@@ -115,19 +115,19 @@ const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 
     const { plan, status } = store.getState().user.subscription as any;
-    if (
-        status == 'NO_ACTION' &&
+    let app: string = undefined;
+    if (status == 'PENDING') app = 'payment';
+    else if (status == 'PAID' && (plan as string).includes('month'))
+        app = 'connectPc';
+    else if (status == 'PAID' && (plan as string).includes('hour'))
+        app = 'store';
+    else if (
         localStorage.getItem('shownTutorial') != 'true' &&
         !window.location.host.includes('localhost')
     ) {
         appDispatch(show_tutorial(true));
         localStorage.setItem('shownTutorial', 'true');
     }
-
-    let app: string = undefined;
-    if (status == 'PENDING') app = 'payment';
-    else if ((plan as string).includes('month')) app = 'connectPc';
-    else if ((plan as string).includes('hour')) app = 'store';
 
     if (app != undefined) {
         appDispatch(app_toggle(app));
