@@ -12,6 +12,7 @@ import {
 
 import { RenderNode } from '../../../../src-tauri/api';
 import { Contents } from '../../../backend/reducers/locales';
+import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -25,31 +26,10 @@ export const ConnectApp = () => {
         (state) => !state.globals.maintenance?.isMaintaining
     );
 
+    const { browser } = detectBrowserAndOS()
+
     const user = useAppSelector((state) => state.user);
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
-
-    const listSpec = [
-        {
-            name: 'GPU:',
-            text: 'Nvidia RTX 3060Ti'
-        },
-        {
-            name: 'RAM:',
-            text: '16Gb Ram'
-        },
-        {
-            name: 'CPU:',
-            text: 'Intel Xeon™ (up to 3.1 GHz) 8 vCores'
-        },
-        // {
-        //     name: 'STORAGE:',
-        //     text: renderPlanStorage(stats?.plan_name)
-        // },
-        {
-            name: 'OS:',
-            text: 'Window 10'
-        }
-    ];
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     return (
@@ -78,21 +58,19 @@ export const ConnectApp = () => {
                     <div className="content">
                         <div className="title">
                             <Icon src="monitor"></Icon>
-                            {emailSplit()} PC
+                            {emailSplit()}
                         </div>
 
                         <div className="containerSpec">
-                            <div className="flex flex-col gap-3">
-                                {listSpec.map((spec) => (
-                                    <div key={spec.text} className="spec">
-                                        <b className="">{spec.name}</b>
-                                        {spec.text}
+                            {
+                                !browser.includes('Chrome')
+                                    ? <div className="flex flex-col gap-3">
+                                        <div className="spec mt-4">
+                                            {t[Contents.SUGGEST_BROWSER]}
+                                        </div>
                                     </div>
-                                ))}
-                                <div className="spec mt-4">
-                                    {t[Contents.SUGGEST_BROWSER]}
-                                </div>
-                            </div>
+                                    : null
+                            }
 
                             {available == 'ready' ? (
                                 <button

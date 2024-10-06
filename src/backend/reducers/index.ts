@@ -84,6 +84,8 @@ export const {
     app_close,
     app_external,
     app_showdesk,
+    app_maximize,
+    app_minimize,
     app_url
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;

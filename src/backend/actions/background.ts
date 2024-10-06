@@ -1,9 +1,9 @@
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc'; // import UTC plugin
 import { UserSession } from '../../../src-tauri/api';
+import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
+    app_maximize,
     app_toggle,
     change_bitrate,
     change_framerate,
@@ -20,12 +20,9 @@ import {
     sidepane_panethem,
     store,
     sync,
-    user_check_sub,
     wall_set,
     worker_refresh
 } from '../reducers';
-import { CLIENT } from '../../../src-tauri/singleton';
-import { useState } from 'react';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -50,38 +47,7 @@ export const fetchUser = async () => {
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());
-    const info = store.getState().globals.maintenance;
-
-    dayjs.extend(utc);
-    // appDispatch(app_toggle('usermanager'));
-
-    // if (stat.plan_name == 'hour_02' || !stat.plan_name) {
-    //     appDispatch(app_toggle('store'));
-    // } else {
-    //     appDispatch(app_toggle('connectPc'));
-    // }  dayjs.extend(timezone);
-
-    let startAtTime = dayjs.utc(info.created_at);
-    let endAtTime = dayjs.utc(info.ended_at);
-
-    // Convert to GMT+7
-    // let startAt = startAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-    // let endAt = endAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-
-    // Extract hour, day, and month
-    // const hourStart = startAt.hour();
-    // const dayStart = startAt.date();
-    // const monthStart = startAt.month() + 1;
-
-    // const startText = `${hourStart}h ${dayStart}/${monthStart}`;
-
-    // const hourEnd = endAt.hour();
-    // const dayEnd = endAt.date();
-    // const monthEnd = endAt.month() + 1;
-
-    // const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
-
-    // if (dayjs() < endAt) {
+    // const info = store.getState().globals.maintenance;
     //     appDispatch(
     //         popup_open({
     //             type: 'maintain',
@@ -91,7 +57,6 @@ const checkMaintain = async () => {
     //             }
     //         })
     //     );
-    // }
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());
@@ -140,41 +105,6 @@ const fetchMessage = async () => {
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
-export const checkTimeUsage = async () => {
-    const subInfo = store.getState().user?.stat;
-
-    const totalTime = +(subInfo?.plan_hour + subInfo?.additional_time);
-    let isExpired = false;
-    const now = new Date();
-
-    // Check if now is within 2 days of end_time
-    const endTime = new Date(subInfo?.end_time);
-    const twoDaysBeforeEndTime = new Date(endTime);
-    twoDaysBeforeEndTime.setDate(endTime.getDate() - 2);
-
-    // Check if now is between twoDaysBeforeEndTime and endTime
-    const isNearbyEndTime = now >= twoDaysBeforeEndTime && now <= endTime;
-
-    // Check if usage_hour is within 2 hours of 2 * plan_hour
-    const isNearbyUsageHour = subInfo?.remain_time <= 2;
-
-    if (now > endTime || subInfo?.remain_time <= 0) {
-        isExpired = true;
-    }
-
-    appDispatch(
-        user_check_sub({
-            isNearbyEndTime,
-            isNearbyUsageHour,
-            isExpired
-        })
-    );
-    return {
-        isNearbyEndTime: isNearbyEndTime,
-        isNearbyUsageHour: isNearbyUsageHour,
-        isExpired
-    };
-};
 
 const startAnalytics = async () => {
     await UserSession(store.getState().user.email);
@@ -183,11 +113,21 @@ const startAnalytics = async () => {
 const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 
-    const subscription = store.getState().user.subscription as any;
-    if ((subscription.plan as string).includes('month'))
-        appDispatch(app_toggle('connectPc'));
-    else if ((subscription.plan as string).includes('hour'))
-        appDispatch(app_toggle('store'));
+    const { plan, status } = store.getState().user.subscription as any;
+    if (status == 'NO_ACTION') { }
+
+    let app: string = undefined
+    if (status == 'PENDING')
+        app = 'payment'
+    else if ((plan as string).includes('month'))
+        app = 'connectPc'
+    else if ((plan as string).includes('hour'))
+        app = 'store'
+
+    if (app != undefined) {
+        appDispatch(app_toggle(app));
+        appDispatch(app_maximize(app));
+    }
 };
 
 export const preload = async () => {
@@ -202,7 +142,6 @@ export const preload = async () => {
             fetchSetting(),
             fetchMessage(),
             fetchStore(),
-            checkTimeUsage()
         ]);
     } catch (e) {
         console.log(`error ${e} in preload function`);
