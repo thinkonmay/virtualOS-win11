@@ -114,15 +114,13 @@ const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 
     const { plan, status } = store.getState().user.subscription as any;
-    if (status == 'NO_ACTION') { }
+    if (status == 'NO_ACTION') {
+    }
 
-    let app: string = undefined
-    if (status == 'PENDING')
-        app = 'payment'
-    else if ((plan as string).includes('month'))
-        app = 'connectPc'
-    else if ((plan as string).includes('hour'))
-        app = 'store'
+    let app: string = undefined;
+    if (status == 'PENDING') app = 'payment';
+    else if ((plan as string).includes('month')) app = 'connectPc';
+    else if ((plan as string).includes('hour')) app = 'store';
 
     if (app != undefined) {
         appDispatch(app_toggle(app));
@@ -141,7 +139,7 @@ export const preload = async () => {
             fetchSubscription(),
             fetchSetting(),
             fetchMessage(),
-            fetchStore(),
+            fetchStore()
         ]);
     } catch (e) {
         console.log(`error ${e} in preload function`);

@@ -26,7 +26,7 @@ export const ConnectApp = () => {
         (state) => !state.globals.maintenance?.isMaintaining
     );
 
-    const { browser } = detectBrowserAndOS()
+    const { browser } = detectBrowserAndOS();
 
     const user = useAppSelector((state) => state.user);
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
@@ -62,15 +62,13 @@ export const ConnectApp = () => {
                         </div>
 
                         <div className="containerSpec">
-                            {
-                                !browser.includes('Chrome')
-                                    ? <div className="flex flex-col gap-3">
-                                        <div className="spec mt-4">
-                                            {t[Contents.SUGGEST_BROWSER]}
-                                        </div>
+                            {!browser.includes('Chrome') ? (
+                                <div className="flex flex-col gap-3">
+                                    <div className="spec mt-4">
+                                        {t[Contents.SUGGEST_BROWSER]}
                                     </div>
-                                    : null
-                            }
+                                </div>
+                            ) : null}
 
                             {available == 'ready' ? (
                                 <button
