@@ -17,6 +17,7 @@ import {
     loose_focus,
     ping_session,
     setting_theme,
+    show_tutorial,
     sidepane_panethem,
     store,
     sync,
@@ -114,7 +115,13 @@ const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 
     const { plan, status } = store.getState().user.subscription as any;
-    if (status == 'NO_ACTION') {
+    if (
+        status == 'NO_ACTION' &&
+        localStorage.getItem('shownTutorial') != 'true' &&
+        !window.location.host.includes('localhost')
+    ) {
+        appDispatch(show_tutorial(true));
+        localStorage.setItem('shownTutorial', 'true');
     }
 
     let app: string = undefined;

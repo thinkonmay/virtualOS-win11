@@ -195,8 +195,8 @@ function App() {
 
                     {remote.active ? (
                         <>
-                            <Remote />
                             <Status />
+                            <Remote />
                         </>
                     ) : (
                         <Background />

@@ -197,6 +197,7 @@ const initialState = {
     ],
 
     service_available: false,
+    tutorial: false,
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     apps: [],
@@ -269,6 +270,9 @@ export const globalSlice = createSlice({
         },
         choose_game: (state, action: any) => {
             state.gameChooseSubscription = action.payload;
+        },
+        show_tutorial: (state, action: PayloadAction<boolean>) => {
+            state.tutorial = action.payload;
         }
     },
     extraReducers: (builder) => {
