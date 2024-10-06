@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Joyride, { STATUS } from 'react-joyride';
+import { useAppSelector } from '../../backend/reducers';
 
 export const OnboardingNewUser = () => {
     const test = [
@@ -80,7 +81,12 @@ export const OnboardingNewUser = () => {
         }
     ];
 
-    const [run, setRun] = useState(true);
+    const logged_in = useAppSelector((state) => state.user.id != 'unknown');
+    const [run, setRun] = useState(false);
+    useEffect(() => {
+        if (logged_in) setRun(true);
+    }, [logged_in]);
+
     const handleJoyrideCallback = (data) => {
         const { status } = data;
         const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
