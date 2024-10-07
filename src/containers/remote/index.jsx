@@ -21,6 +21,14 @@ export const Remote = () => {
     const gamepad = useAppSelector(
         (state) => !state.sidepane.mobileControl.gamePadHide
     );
+    const { active, auth, scancode } = useAppSelector((store) => store.remote);
+    const remoteVideo = useRef(null);
+    const remoteAudio = useRef(null);
+    useEffect(() => {
+        if (!active || auth == undefined) return;
+        setupWebRTC();
+    }, [active]);
+
     useEffect(() => {
         if (CLIENT == null) return;
         else if (isMobile()) CLIENT?.PointerVisible(true);
@@ -36,15 +44,8 @@ export const Remote = () => {
                 : 'none';
     }, [gamepad, keyboard]);
 
-    const { active, auth, scancode } = useAppSelector((store) => store.remote);
-    const remoteVideo = useRef(null);
-    const remoteAudio = useRef(null);
-    useEffect(() => {
-        if (!active || auth == undefined) return;
-        SetupWebRTC();
-    }, [active]);
 
-    const SetupWebRTC = () =>
+    const setupWebRTC = () =>
         Assign(
             () =>
                 new RemoteDesktopClient(
