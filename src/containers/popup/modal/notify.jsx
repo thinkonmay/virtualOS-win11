@@ -4,7 +4,7 @@ import { TbLoader3 } from 'react-icons/tb';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
-const TIME_RUN_OUT_OF_GPU = 200 * 1000; //sec
+const TIME_RUN_OUT_OF_GPU = 60 * 1000; //sec
 export function notify({
     data: { title, tips = true, loading = true, text, timeProcessing = 3.5 }
 }) {
