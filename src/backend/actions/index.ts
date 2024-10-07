@@ -157,7 +157,7 @@ export const loginWithEmail = async (email: string, password: string) => {};
 
 export const signUpWithEmail = async (email: string, password: string) => {};
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
-    provider = 'google'
+    provider = 'google';
     await POCKETBASE.collection('users').authWithOAuth2({
         provider,
         urlCallback: (url) => {

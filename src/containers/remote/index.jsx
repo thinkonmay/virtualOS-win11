@@ -44,7 +44,6 @@ export const Remote = () => {
                 : 'none';
     }, [gamepad, keyboard]);
 
-
     const setupWebRTC = () =>
         Assign(
             () =>
