@@ -60,12 +60,11 @@ export const PaymentApp = () => {
             name: 'month_01',
             period: 'tháng',
             bonus: [
-                'Sở hữu PC riêng, dữ liệu cá nhân',
-                'Có lưu dữ liệu sau khi tắt máy',
                 'RTX 3060TI',
                 '16GB ram',
-                '150GB dung lượng',
-                'Không giới hạn thời gian mỗi session'
+                '150GB dung lượng riêng, Cloud-save',
+                'Không giới hạn thời gian mỗi session',
+                'Có hàng chờ'
             ],
             storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
         },
@@ -78,9 +77,10 @@ export const PaymentApp = () => {
             under_price: 'Không giới hạn giờ sử dụng',
             name: 'unlimited_01',
             bonus: [
+                'Sở hữu PC riêng',
                 'Không hàng chờ',
                 'Cấu hình giống gói tháng',
-                '250GB dung lượng',
+                '250GB dung lượng riêng, cloud-save',
                 'Không giới hạn thời gian mỗi session'
             ]
         }
@@ -313,7 +313,7 @@ export const PaymentApp = () => {
 
                                             <div className="flex flex-col gap-2 mt-auto prose">
                                                 {sub.name == 'hour_02' &&
-                                                !isRejectHourSub(sub.name) ? (
+                                                    !isRejectHourSub(sub.name) ? (
                                                     <div className="flex gap-3 items-center ">
                                                         <b>Số giờ mua</b>
                                                         <input
@@ -353,13 +353,12 @@ export const PaymentApp = () => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
-                                                            ${
-                                                                isRejectHourSub(
-                                                                    sub.name
-                                                                )
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-[#328cff]'
-                                                            }  `}
+                                                            ${isRejectHourSub(
+                                                        sub.name
+                                                    )
+                                                            ? 'bg-red-500'
+                                                            : 'bg-[#328cff]'
+                                                        }  `}
                                                 >
                                                     <span className="truncate font-medium text-xl">
                                                         {isRejectHourSub(
@@ -436,10 +435,10 @@ const Payment = ({ onClose, price, subInfo, iframe = '' }) => {
             e.key == 'Enter'
                 ? nextPage()
                 : e.key == 'ArrowLeft'
-                  ? prevPage()
-                  : e.key == 'ArrowRight'
-                    ? nextPage()
-                    : null;
+                    ? prevPage()
+                    : e.key == 'ArrowRight'
+                        ? nextPage()
+                        : null;
         window.addEventListener('keydown', handle);
         return () => {
             window.removeEventListener('keydown', handle);
