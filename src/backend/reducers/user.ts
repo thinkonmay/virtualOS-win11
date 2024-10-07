@@ -55,14 +55,28 @@ export const userAsync = {
                 user: { email }
             } = getState() as RootState;
 
-            const { data: sub, error: errr } = await GLOBAL()
+            const { data: sub1, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,plan,cluster,local_metadata')
                 .eq('user', email)
+                .gt('ended_at', new Date().toISOString())
+                .is('cancelled_at', null)
                 .order('created_at', { ascending: false })
                 .limit(1);
-            if (errr) throw new Error(errr.message);
-            else if (sub.length == 0) return { status: 'NO_ACTION' };
+            const { data: sub2, error: errr2 } = await GLOBAL()
+                .from('subscriptions')
+                .select('id,plan,cluster,local_metadata')
+                .eq('user', email)
+                .is('ended_at', null)
+                .is('cancelled_at', null)
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            if (errr1) throw new Error(errr1.message);
+            else if (errr2) throw new Error(errr2.message);
+
+            const sub = [...sub1, ...sub2];
+            if (sub.length == 0) return { status: 'NO_ACTION' };
 
             const [
                 {
@@ -116,7 +130,7 @@ export const userAsync = {
     get_payment: createAsyncThunk(
         'get_payment',
         async (
-            { plan: plan_name,template }: { plan: string,template?: string },
+            { plan: plan_name, template }: { plan: string; template?: string },
             { getState }
         ): Promise<string> => {
             const expire_at = new Date(
@@ -126,12 +140,27 @@ export const userAsync = {
                 user: { email }
             } = getState() as RootState;
 
-            const { data: sub, error: errr } = await GLOBAL()
+            const { data: sub1, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id')
-                .eq('user', email);
+                .eq('user', email)
+                .gt('ended_at', new Date().toISOString())
+                .is('cancelled_at', null)
+                .order('created_at', { ascending: false })
+                .limit(1);
             if (errr) throw new Error(errr.message);
-            else if (sub.length > 0) {
+            const { data: sub2, error: errr2 } = await GLOBAL()
+                .from('subscriptions')
+                .select('id,plan,cluster,local_metadata')
+                .eq('user', email)
+                .is('ended_at', null)
+                .is('cancelled_at', null)
+                .order('created_at', { ascending: false })
+                .limit(1);
+            if (errr2) throw new Error(errr2.message);
+
+            const sub = [...sub1, ...sub2];
+            if (sub.length > 0) {
                 const { data, error: err } = await GLOBAL()
                     .from('payment_request')
                     .select('result->data->>checkoutUrl,status')
@@ -164,7 +193,12 @@ export const userAsync = {
                 error
             } = await GLOBAL()
                 .from('subscriptions')
-                .insert({ user: email, plan, cluster, local_metadata : { template } })
+                .insert({
+                    user: email,
+                    plan,
+                    cluster,
+                    local_metadata: { template }
+                })
                 .select('id');
             if (error) throw new Error(error.message);
 

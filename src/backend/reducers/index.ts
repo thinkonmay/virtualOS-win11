@@ -55,7 +55,8 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const appDispatch = store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const { update_language, update_game_choose_subscription } = globalSlice.actions;
+export const { update_language, choose_game, show_tutorial } =
+    globalSlice.actions;
 export const { user_delete, user_update, user_check_sub } = userSlice.actions;
 export const { wall_next, wall_set, wall_lock, wall_unlock } =
     wallSlice.actions;
@@ -84,6 +85,8 @@ export const {
     app_close,
     app_external,
     app_showdesk,
+    app_maximize,
+    app_minimize,
     app_url
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;

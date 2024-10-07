@@ -2,76 +2,70 @@ import { useState } from 'react';
 import {
     appDispatch,
     get_payment,
+    popup_open,
     useAppSelector
 } from '../../../backend/reducers';
-import { Image, LazyComponent, ToolBar } from '../../../components/shared/general';
+import {
+    Image,
+    LazyComponent,
+    ToolBar
+} from '../../../components/shared/general';
 import './assets/store.scss';
 
+const listSubs = [
+    {
+        highlight: false,
+        title: 'Gói giờ',
+        price_in_vnd: '8',
+        name: 'hour2',
+        period: 'h',
+        bonus: [
+            'Chơi sẵn các game trong store games',
+            'Không lưu dữ liệu sau khi tắt máy'
+        ],
+        hoursChoose: 5
+    },
+    {
+        highlight: true,
+        title: 'Tiết kiệm',
+        price_in_vnd: '299',
+        total_time: '150',
+        under_price: 'Giới hạn 150h sử dụng trong tháng',
+        name: 'month1',
+        period: 'tháng',
+        bonus: [
+            'RTX 3060TI',
+            '16GB ram',
+            '150GB dung lượng riêng, Cloud-save',
+            'Không giới hạn thời gian mỗi session',
+            'Có hàng chờ'
+        ],
+        storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
+    },
+    {
+        highlight: false,
+        title: 'Unlimited',
+        price_in_vnd: '1699',
+        period: 'tháng',
+        total_time: 'Không giới hạn',
+        under_price: 'Không giới hạn giờ sử dụng',
+        name: 'month2',
+        bonus: [
+            'Sở hữu PC riêng',
+            'Không hàng chờ',
+            'Cấu hình giống gói tháng',
+            '250GB dung lượng riêng, cloud-save',
+            'Không giới hạn thời gian mỗi session'
+        ]
+    }
+];
 export const PaymentApp = () => {
-    const user = useAppSelector((state) => state.user);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [listSubs, setListSubs] = useState([
-        {
-            highlight: false,
-            title: 'Gói giờ',
-            price_in_vnd: '8',
-            //total_time: '110',
-            //under_price: 'Lần đầu, bạn cần mua ít nhất 20h.',
 
-            name: 'hour_02',
-            period: 'h',
-            bonus: [
-                'Chơi sẵn các game trong store games',
-                'Không lưu dữ liệu sau khi tắt máy'
-            ],
-            hoursChoose: 5
-        },
-        {
-            highlight: true,
-            title: 'Tiết kiệm',
-            price_in_vnd: '299',
-            total_time: '150',
-            under_price: 'Giới hạn 150h sử dụng trong tháng',
-            name: 'month_01',
-            period: 'tháng',
-            bonus: [
-                'RTX 3060TI',
-                '16GB ram',
-                '150GB dung lượng riêng, Cloud-save',
-                'Không giới hạn thời gian mỗi session',
-                'Có hàng chờ'
-            ],
-            storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
-        },
-        {
-            highlight: false,
-            title: 'Unlimited',
-            price_in_vnd: '1699',
-            period: 'tháng',
-            total_time: 'Không giới hạn',
-            under_price: 'Không giới hạn giờ sử dụng',
-            name: 'unlimited_01',
-            bonus: [
-                'Sở hữu PC riêng',
-                'Không hàng chờ',
-                'Cấu hình giống gói tháng',
-                '250GB dung lượng riêng, cloud-save',
-                'Không giới hạn thời gian mỗi session'
-            ]
-        }
-    ]);
-
-    const [paypage, setPaypage] = useState(null);
-    const [subChoose, setSubChoose] = useState(null);
-    const handleChooseSub = async (sub) =>
-        appDispatch(
-            get_payment({
-                template: 'fc_online',
-                plan: 'month1'
-            })
-        );
+    const handleChooseSub = async (plan, template) =>
+        appDispatch(get_payment({ template, plan }));
 
     return (
         <div
@@ -99,8 +93,6 @@ export const PaymentApp = () => {
                                 key={index}
                                 subInfo={sub}
                                 onChooseSub={handleChooseSub}
-                            // setHoursChoose={setHoursChoose}
-                            // hoursChoose={hoursChoose}
                             ></SubscriptionCard>
                         ))}
                     </div>
@@ -110,34 +102,20 @@ export const PaymentApp = () => {
     );
 };
 
-const isRejectHourSub = (subName, planName) => {
-    let check = false;
-    check = subName == 'hour_02' && planName !== 'hour_02';
+const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
+    const gameChooseSubscription = useAppSelector(
+        (state) => state.globals.gameChooseSubscription
+    );
+    const gameChoose = useAppSelector((state) =>
+        state.globals.gamesInSubscription.find(
+            (item) => item.volumeId == gameChooseSubscription?.volumeId
+        )
+    );
+    const openChooseGames = (subName) =>
+        appDispatch(
+            popup_open({ type: 'gameChoose', data: { planName: subName } })
+        );
 
-    return check;
-    //let check = false;
-    //check = !user?.stat?.plan_name || subName == 'hour_02';
-    //return check;
-};
-const SubscriptionCard = ({
-    subInfo: sub,
-    onChooseSub,
-    setHoursChoose,
-    hoursChoose
-}) => {
-    const user = useAppSelector((state) => state.user);
-    const gameChooseSubscription = useAppSelector(state => state.globals.gameChooseSubscription)
-
-    const gameChoose = useAppSelector(state => state.globals.gamesInSubscription.find(item => item.volumeId == gameChooseSubscription?.volumeId))
-
-    const planName = useAppSelector((state) => state.user?.stat?.plan_name);
-
-
-    console.log(gameChooseSubscription, '123');
-    const openChooseGames = (subName) => {
-
-        appDispatch(popup_open({ type: 'gameChoose', data: { planName: subName } }))
-    }
     return (
         <div className="sub relative">
             {sub.highlight ? (
@@ -221,74 +199,42 @@ const SubscriptionCard = ({
                             </li>
                         </ul>
                     ))}
+                    {sub.name.includes('month') ? (
+                        <button
+                            className="mt-4 w-80 mx-auto bg-red-500 btn btn-secondary"
+                            onClick={() => openChooseGames(sub.name)}
+                        >
+                            Chọn game cài sẵn
+                        </button>
+                    ) : null}
 
-                    {/*{sub.storage ? (
-                        <p className="text-foreground-light text-[13px] mt-8 mb-2">
-                            Dung lượng mua thêm:
-                        </p>
-                    ) : null}*/}
-
-                    <></>
-
-                    {/*<ul
-                        role="list"
-                        className="list-decimal text-[13px] text-foreground-lighter"
-                    >
-                        {sub.storage?.map((x, i) => (
-                            <li
-                                key={i}
-                                className="flex items-center py-[8px] first:mt-0"
-                            >
-                                <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
-                                    {x}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>*/}
-                    <button className='mt-4 w-80 mx-auto bg-red-500 btn btn-secondary' onClick={() => openChooseGames(sub.name)}>Chọn game cài sẵn</button>
-
-                    {gameChoose?.volumeId && sub.name == gameChooseSubscription.planName ? <div
-                        key={gameChoose.name}
-                        className="flex flex-col py-4 w-[80px] mx-auto mt-5 h-[100px] rounded-lg bg-[#2d3146]"
-                    >
-                        <Image
-                            w={40}
-                            h={40}
-                            ext
-                            absolute
-                            src={gameChoose.logo}
-                        />
-                        <div className="name mt-auto capitalize text-white  text-xs text-center font-semibold">
-                            {gameChoose.name}
-                        </div>
-
-                    </div> : null}
-                    <div className="flex flex-col gap-2 mt-auto prose">
-                        {sub.name == 'hour_02' &&
-                            !isRejectHourSub(sub.name, planName) ? (
-                            <div className="flex gap-3 items-center ">
-                                <b>Số giờ mua</b>
-                                <input
-                                    value={hoursChoose}
-                                    onChange={(e) =>
-                                        setHoursChoose(e.target.value)
-                                    }
-                                    className="p-2 rounded-sm"
-                                    type="number"
-                                    min={5}
-                                    name=""
-                                    id=""
-                                />
+                    {gameChoose?.volumeId &&
+                    sub.name == gameChooseSubscription.planName ? (
+                        <div
+                            key={gameChoose.name}
+                            className="flex flex-col py-4 w-[80px] mx-auto mt-5 h-[100px] rounded-lg bg-[#2d3146]"
+                        >
+                            <Image
+                                w={40}
+                                h={40}
+                                ext
+                                absolute
+                                src={gameChoose.logo}
+                            />
+                            <div className="name mt-auto capitalize text-white  text-xs text-center font-semibold">
+                                {gameChoose.name}
                             </div>
-                        ) : null}
+                        </div>
+                    ) : null}
+                    <div className="flex flex-col gap-2 mt-auto prose">
                         <div className="space-y-2">
-                            <p className="text-[13px] whitespace-pre-wrap">
-                                {/* Free projects are paused after 1 week of inactivity. */}
-                            </p>
+                            <p className="text-[13px] whitespace-pre-wrap"></p>
                         </div>
 
                         <button
-                            onClick={() => onChooseSub(sub)}
+                            onClick={() =>
+                                onChooseSub(sub.name, gameChoose.volumeId)
+                            }
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
                                                             space-x-2 text-center font-regular ease-out duration-200 rounded-md 
@@ -300,16 +246,16 @@ const SubscriptionCard = ({
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
-                                                            ${isRejectHourSub(
-                                sub.name,
-                                planName
-                            )
-                                    ? 'bg-red-500'
-                                    : 'bg-[#328cff]'
-                                }  `}
+                                                            ${
+                                                                sub.name.includes(
+                                                                    'hour'
+                                                                )
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-[#328cff]'
+                                                            }  `}
                         >
                             <span className="truncate font-medium text-xl">
-                                {isRejectHourSub(sub.name, planName)
+                                {sub.name.includes('hour')
                                     ? 'Đang đóng!'
                                     : 'Mua Ngay'}
                             </span>

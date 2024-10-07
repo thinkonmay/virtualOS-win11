@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { LOCAL } from '../../../src-tauri/api';
+import { PlanName } from '../utils/constant';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -23,9 +24,8 @@ interface Maintain {
     isMaintaining?: boolean;
 }
 interface GameChooseInSubscription {
-    planName: PlanName,
-    volumeId: string
-
+    planName: PlanName;
+    volumeId: string;
 }
 const initialState = {
     lays: [
@@ -197,26 +197,28 @@ const initialState = {
     ],
 
     service_available: false,
+    tutorial: false,
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     apps: [],
     games: [] as IGame[],
     gameChooseSubscription: {} as GameChooseInSubscription,
-    gamesInSubscription: [{
-        name: 'Máy trống',
-        logo: 'https://vmon.vn/images/vmon/icon-windows.svg',
-        volumeId: '1'
-    },
-    {
-        name: 'Black Myth Wukong',
-        logo: 'https://professorvn.net/wp-content/uploads/2024/09/logo.png',
-        volumeId: '2'
-    },
-    {
-        name: 'FC Online',
-        logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPXVIF_Dk5lR8MrlpA8Pu8DuYW07dcF5sBpw&s',
-        volumeId: '3'
-    }
+    gamesInSubscription: [
+        {
+            name: 'Máy trống',
+            logo: 'https://vmon.vn/images/vmon/icon-windows.svg',
+            volumeId: undefined
+        },
+        {
+            name: 'Black Myth Wukong',
+            logo: 'https://professorvn.net/wp-content/uploads/2024/09/logo.png',
+            volumeId: 'wukong'
+        },
+        {
+            name: 'FC Online',
+            logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPXVIF_Dk5lR8MrlpA8Pu8DuYW07dcF5sBpw&s',
+            volumeId: 'fc_online'
+        }
     ]
 };
 
@@ -242,9 +244,9 @@ export const globalAsync = {
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
                 ? {
-                    ...info,
-                    isMaintaining: true
-                }
+                      ...info,
+                      isMaintaining: true
+                  }
                 : {};
         }
     )
@@ -266,11 +268,12 @@ export const globalSlice = createSlice({
         update_store_data: (state, payload: any) => {
             state.games = payload;
         },
-        update_game_choose_subscription: (state, action: any) => {
-            console.log(action.payload);
+        choose_game: (state, action: any) => {
             state.gameChooseSubscription = action.payload;
         },
-
+        show_tutorial: (state, action: PayloadAction<boolean>) => {
+            state.tutorial = action.payload;
+        }
     },
     extraReducers: (builder) => {
         BuilderHelper(

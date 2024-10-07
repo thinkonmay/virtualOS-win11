@@ -2,111 +2,97 @@ import { useEffect, useState } from 'react';
 import Joyride, { STATUS } from 'react-joyride';
 import { useAppSelector } from '../../backend/reducers';
 
-const steps = [
-    {
-        content: (
-            <div>
-                <h2>Welcome to Thinkmay CloudPC!</h2>
-                <p className="mt-2">
-                    Thoả sức chơi game PC cấu hình cao ngay trên chiếc điện
-                    thoai, laptop của bạn
-                </p>
-            </div>
-        ),
-        locale: { next: 'Next' },
-        placement: 'center',
-        target: 'body'
-    },
-    {
-        content:
-            'Để sử dụng CloudPC, bạn cần chọn gói dịch vụ và hoàn tất thanh toán.',
-        floaterProps: {
-            disableAnimation: true
-        },
-        spotlightPadding: 20,
-        locale: {
-            next: 'Next' // Continue with "Next",
-        },
-        target: '.payment',
-        title: 'Thanh toán'
-    },
-    {
-        content: 'Với gói tháng, bạn vô đây để truy cập tới PC của mình',
-        placement: 'bottom',
-        locale: {
-            next: 'Next' // Continue with "Next"
-        },
-        spotlightPadding: 20,
-        styles: {
-            options: {
-                width: 300
-            }
-        },
-        target: '.connectPc',
-        title: 'Gói tháng'
-    },
-    {
-        content:
-            'Với gói theo giờ, bạn vô đây để chơi các game đã được cài sẵn',
-        placement: 'bottom',
-        spotlightPadding: 20,
-
-        locale: {
-            next: 'Next' // Continue with "Next"
-        },
-
-        styles: {
-            options: {
-                width: 300
-            }
-        },
-        target: '.store',
-        title: 'Gói giờ'
-    },
-    {
-        content: <div>Bạn có thể vô đây để xem chi tiết hướng dẫn sử dụng</div>,
-        placement: 'top',
-        spotlightPadding: 20,
-
-        target: '.hdsd',
-        title: 'Video hướng dẫn'
-    },
-    {
-        content: <h2>Bạn vô đây để được support khi gặp sự cố</h2>,
-        placement: 'top',
-        target: '.supportNow'
-    }
-];
 export const OnboardingNewUser = () => {
-    const [test, _] = useState(steps);
+    const test = [
+        {
+            content: (
+                <div>
+                    <h2>Welcome to Thinkmay CloudPC!</h2>
+                    <p className="mt-2">
+                        Thoả sức chơi game PC cấu hình cao ngay trên chiếc điện
+                        thoai, laptop của bạn
+                    </p>
+                </div>
+            ),
+            locale: { next: 'Next' },
+            placement: 'center',
+            target: 'body'
+        },
+        {
+            content:
+                'Để sử dụng CloudPC, bạn cần chọn gói dịch vụ và hoàn tất thanh toán.',
+            floaterProps: {
+                disableAnimation: true
+            },
+            spotlightPadding: 20,
+            locale: {
+                next: 'Next' // Continue with "Next",
+            },
+            target: '.payment',
+            title: 'Thanh toán'
+        },
+        {
+            content: 'Với gói tháng, bạn vô đây để truy cập tới PC của mình',
+            placement: 'bottom',
+            locale: {
+                next: 'Next' // Continue with "Next"
+            },
+            spotlightPadding: 20,
+            styles: {
+                options: {
+                    width: 300
+                }
+            },
+            target: '.connectPc',
+            title: 'Gói tháng'
+        },
+        {
+            content:
+                'Với gói theo giờ, bạn vô đây để chơi các game đã được cài sẵn',
+            placement: 'bottom',
+            spotlightPadding: 20,
 
+            locale: {
+                next: 'Next' // Continue with "Next"
+            },
+
+            styles: {
+                options: {
+                    width: 300
+                }
+            },
+            target: '.store',
+            title: 'Gói giờ'
+        },
+        {
+            content: (
+                <div>Bạn có thể vô đây để xem chi tiết hướng dẫn sử dụng</div>
+            ),
+            placement: 'top',
+            spotlightPadding: 20,
+
+            target: '.hdsd',
+            title: 'Video hướng dẫn'
+        },
+        {
+            content: <h2>Bạn vô đây để được support khi gặp sự cố</h2>,
+            placement: 'top',
+            target: '.supportNow'
+        }
+    ];
+
+    const logged_in = useAppSelector((state) => state.user.id != 'unknown');
     const [run, setRun] = useState(false);
-
-    const hasUser = useAppSelector((state) => state.user?.email);
-    const hasSubscription = useAppSelector(
-        (state) => state.user?.stat?.plan_name
-    );
     useEffect(() => {
-        const isShow = localStorage.getItem('showTutorial');
+        if (logged_in) setRun(true);
+    }, [logged_in]);
 
-        if (isShow != null) {
-            setRun(false);
-        }
-
-        console.log(isShow, hasUser);
-        if (!isShow && hasUser && !hasSubscription) {
-            setRun(true);
-        }
-    }, [hasUser]);
     const handleJoyrideCallback = (data) => {
-        const { status, type } = data;
+        const { status } = data;
         const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
-
-        if (finishedStatuses.includes(status)) {
-            setRun(false);
-            localStorage.setItem('showTutorial', false);
-        }
+        if (finishedStatuses.includes(status)) setRun(false);
     };
+
     return (
         <Joyride
             callback={handleJoyrideCallback}

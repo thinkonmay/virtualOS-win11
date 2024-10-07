@@ -50,10 +50,7 @@ export const DesktopApp = () => {
     );
 
     const desk = useAppSelector((state) => state.desktop);
-    const [holding, setHolding] = useState(false);
-    const timeoutRef = useRef(null);
-    const dispatch = useDispatch();
-
+    const tutorial = useAppSelector((state) => state.globals.tutorial);
     const handleTouchEnd = async (e) => {
         //clearTimeout(timeoutRef.current);
         await sleep(200);
@@ -63,9 +60,7 @@ export const DesktopApp = () => {
 
     return (
         <div className="desktopCont">
-            {!window.location.host.includes('localhost') ? (
-                <OnboardingNewUser />
-            ) : null}
+            {tutorial ? <OnboardingNewUser /> : null}
             {!desk.hide &&
                 deskApps.map((app, i) => {
                     return (

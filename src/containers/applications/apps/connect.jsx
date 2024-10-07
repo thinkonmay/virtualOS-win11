@@ -1,6 +1,6 @@
 import {
-    app_toggle,
     appDispatch,
+    app_toggle,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -12,62 +12,24 @@ import {
 
 import { RenderNode } from '../../../../src-tauri/api';
 import { Contents } from '../../../backend/reducers/locales';
+import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
-    const stats = useAppSelector((state) => state.user.stat);
     const available = useAppSelector(
-        (state) =>
-            new RenderNode(state.worker.data).data[0]?.info?.available &&
-            !state.globals.maintenance?.isMaintaining
+        (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
+    const isMaintain = useAppSelector(
+        (state) => !state.globals.maintenance?.isMaintaining
+    );
+
+    const { browser } = detectBrowserAndOS();
+
     const user = useAppSelector((state) => state.user);
-
-    const emailSplit = () => {
-        let result = '';
-        result = user?.email?.split('@')?.at(0) || 'Your';
-
-        return result;
-    };
-
-    const renderPlanStorage = (planName) => {
-        let storage = '150GB + Cloud save';
-        if (planName == 'month_01') {
-            storage = '150GB + Cloud save';
-        }
-        if (planName == 'hour_01') {
-            storage = '130GB + Cloud save';
-        } else if (planName == 'month_02') {
-            storage = '200GB + Cloud save';
-        }
-
-        return storage;
-    };
-    const listSpec = [
-        {
-            name: 'GPU:',
-            text: 'Nvidia RTX 3060Ti'
-        },
-        {
-            name: 'RAM:',
-            text: '16Gb Ram'
-        },
-        {
-            name: 'CPU:',
-            text: 'Intel Xeon™ (up to 3.1 GHz) 8 vCores'
-        },
-        // {
-        //     name: 'STORAGE:',
-        //     text: renderPlanStorage(stats?.plan_name)
-        // },
-        {
-            name: 'OS:',
-            text: 'Window 10'
-        }
-    ];
+    const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     return (
@@ -96,28 +58,28 @@ export const ConnectApp = () => {
                     <div className="content">
                         <div className="title">
                             <Icon src="monitor"></Icon>
-                            {emailSplit()} PC
+                            {emailSplit()}
                         </div>
 
                         <div className="containerSpec">
-                            <div className="flex flex-col gap-3">
-                                {listSpec.map((spec) => (
-                                    <div key={spec.text} className="spec">
-                                        <b className="">{spec.name}</b>
-                                        {spec.text}
+                            {!browser.includes('Chrome') ? (
+                                <div className="flex flex-col gap-3">
+                                    <div className="spec mt-4">
+                                        {t[Contents.SUGGEST_BROWSER]}
                                     </div>
-                                ))}
-                                <div className="spec mt-4">
-                                    {t[Contents.SUGGEST_BROWSER]}
                                 </div>
-                            </div>
+                            ) : null}
 
-                            {available ? (
+                            {available == 'ready' ? (
                                 <button
                                     onClick={connect}
                                     className="instbtn connectBtn"
                                 >
                                     Connect
+                                </button>
+                            ) : available == 'not_ready' ? (
+                                <button disabled className="instbtn connectBtn">
+                                    Máy đang được khởi tạo
                                 </button>
                             ) : (
                                 <button

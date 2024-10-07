@@ -49,7 +49,6 @@
 	}
 
 	.connectBtn {
-		margin-top: 40px;
 		border-radius: 8px;
 		outline: none;
 		border: none;
@@ -63,7 +62,7 @@
 	.connectAppContent {
 		background: linear-gradient(180deg, #040218 0%, #140B7E 100%);
 		padding: 16px;
-		overflow-y: scroll;
+		overflow-y: hidden;
 		width: 100%;
 		height: 100%;
 
@@ -75,17 +74,10 @@
 			padding-top: 44px;
 			padding-bottom: 40px;
 			width: 340px;
-			height: 480px;
 			color: aliceblue;
 			border: 2px solid #AD00FF;
 			border-radius: 16px;
 			background: #050433;
-
-
-
-
-
-
 		}
 	}
 
@@ -136,7 +128,7 @@
 		.connectAppContent {
 			background: linear-gradient(180deg, #040218 0%, #140B7E 100%);
 			padding: 16px;
-			overflow-y: scroll;
+			overflow-y: hidden;
 			width: 100%;
 			height: 100%;
 
