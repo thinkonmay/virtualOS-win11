@@ -126,9 +126,15 @@ const fetchSubscription = async () => {
 
     let app: string = undefined;
     if (status == 'PENDING') app = 'payment';
-    else if (status == 'PAID' && (plan as string).includes('month'))
+    else if (
+        (status == 'PAID' || status == 'IMPORTED') &&
+        (plan as string).includes('month')
+    )
         app = 'connectPc';
-    else if (status == 'PAID' && (plan as string).includes('hour'))
+    else if (
+        (status == 'PAID' || status == 'IMPORTED') &&
+        (plan as string).includes('hour')
+    )
         app = 'store';
     else if (
         localStorage.getItem('shownTutorial') != 'true' &&

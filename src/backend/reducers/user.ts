@@ -6,7 +6,7 @@ import { BuilderHelper } from './helper';
 
 type PaymentStatus =
     | {
-          status: 'PAID';
+          status: 'PAID' | 'IMPORTED';
           plan: string;
           cluster: string;
 
@@ -106,7 +106,7 @@ export const userAsync = {
 
             if (status == 'PENDING') {
                 result = { status };
-            } else if (status == 'PAID') {
+            } else if (status == 'PAID' || status == 'IMPORTED') {
                 const {
                     data: [{ name: plan }],
                     error: errrr
@@ -178,7 +178,7 @@ export const userAsync = {
 
                 const [{ checkoutUrl, status }] = data;
                 if (status == 'PENDING') return checkoutUrl;
-                else if (status == 'PAID')
+                else if (status == 'PAID' || status == 'IMPORTED')
                     throw new Error('you already paid for our service');
             }
 
