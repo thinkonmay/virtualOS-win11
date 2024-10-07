@@ -77,11 +77,7 @@ export const workerAsync = {
                 })
             );
 
-            const all = await POCKETBASE.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-            const volume_id = all.at(0)?.local_id;
-
+            const volume_id = (getState() as RootState).user.volume_id;
             const now = () => new Date().getTime() / 1000 / 60;
             const start = now();
             while (now() - start < 180) {
@@ -177,11 +173,7 @@ export const workerAsync = {
         async (_: void, { getState }): Promise<Computer | Error> => {
             const node = new RenderNode((getState() as RootState).worker.data);
 
-            const all = await POCKETBASE.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-
-            const volume_id = all.at(0)?.local_id;
+            const volume_id = (getState() as RootState).user.volume_id;
             let result: RenderNode<Computer> | undefined = undefined;
             node.iterate((x) => {
                 if (
@@ -206,7 +198,7 @@ export const workerAsync = {
     ),
     fetch_local_worker: createAsyncThunk(
         'fetch_local_worker',
-        async (address: string): Promise<any> => {
+        async (address: string, { getState }): Promise<any> => {
             const result = await GetInfo(address);
             if (result instanceof Error) {
                 const node = new RenderNode<{}>();
@@ -214,10 +206,7 @@ export const workerAsync = {
                 return node.any();
             }
 
-            const all = await POCKETBASE.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-            const volume_id = all.at(0)?.local_id;
+            const volume_id = (getState() as RootState).user.volume_id;
 
             let found: RenderNode<Computer> | undefined = undefined;
             const node = fromComputer(address, result);
@@ -279,13 +268,9 @@ export const workerAsync = {
         }
     ),
     personal_worker_session_close: createAsyncThunk(
-        '',
+        'personal_worker_session_close',
         async (_: void, { getState }): Promise<any> => {
-            const all = await POCKETBASE.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-
-            const volume_id = all.at(0)?.local_id;
+            const volume_id = (getState() as RootState).user.volume_id;
 
             const node = new RenderNode((getState() as RootState).worker.data);
 

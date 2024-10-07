@@ -158,17 +158,12 @@ export const loginWithEmail = async (email: string, password: string) => {};
 export const signUpWithEmail = async (email: string, password: string) => {};
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
     let w = window.open();
-
-    const {
-        record: { id }
-    } = await POCKETBASE.collection('users').authWithOAuth2({
+    await POCKETBASE.collection('users').authWithOAuth2({
         provider: 'google',
         urlCallback: (url) => {
             w.location.href = url;
         }
     });
-    const record = await POCKETBASE.collection('users').getOne(id);
-    appDispatch(user_update(record));
     await appDispatch(fetch_user());
 };
 

@@ -24,6 +24,7 @@ type PaymentStatus =
 
 type Data = RecordModel & {
     subscription: PaymentStatus | {};
+    volume_id: string;
 };
 
 const initialState: Data = {
@@ -32,6 +33,7 @@ const initialState: Data = {
 
     id: 'unknown',
     email: '',
+    volume_id: '',
     created: '',
     updated: '',
     subscription: {}
@@ -40,12 +42,19 @@ const initialState: Data = {
 export const userAsync = {
     fetch_user: createAsyncThunk(
         'fetch_user',
-        async (): Promise<RecordModel> => {
+        async (): Promise<RecordModel & { volume_id: string }> => {
             const {
                 items: [result]
             } = await POCKETBASE.collection('users').getList(1);
+            const [vol] = await POCKETBASE.collection('volumes').getFullList<{
+                local_id: string;
+            }>();
 
-            return result ?? initialState;
+            return result != undefined
+                ? vol != undefined
+                    ? { ...result, volume_id: vol.local_id }
+                    : { ...result, volume_id: '' }
+                : initialState;
         }
     ),
     fetch_subscription: createAsyncThunk(
@@ -220,7 +229,10 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        user_update: (state, action: PayloadAction<RecordModel>) => {
+        user_update: (
+            state,
+            action: PayloadAction<RecordModel & { volume_id: string }>
+        ) => {
             state.id = action.payload.id;
             state.collectionId = action.payload.collectionId;
             state.collectionName = action.payload.collectionName;
@@ -228,6 +240,7 @@ export const userSlice = createSlice({
             state.updated = action.payload.updated;
             state.email = action.payload.email;
             state.expand = action.payload.expand;
+            state.volume_id = action.payload.volume_id;
         },
         user_check_sub: (state, action) => {
             state.isExpired = action.payload.isExpired;
@@ -248,6 +261,7 @@ export const userSlice = createSlice({
                 hander: (state, action) => {
                     state.id = action.payload.id;
                     state.collectionId = action.payload.collectionId;
+                    state.volume_id = action.payload.volume_id;
                     state.collectionName = action.payload.collectionName;
                     state.created = action.payload.created;
                     state.updated = action.payload.updated;
