@@ -62,7 +62,6 @@ const apps: AppData[] = [
         id: 'connectPc',
         action: 'apps/app_toggle',
         payload: 'connectPc',
-        max: false,
         size: 'mini'
     },
     {
@@ -70,18 +69,6 @@ const apps: AppData[] = [
         id: 'hdsd',
         action: 'apps/app_external',
         payload: externalLink.GUIDE_VIDEO
-    },
-    //{
-    //    name: 'Guideline',
-    //    id: 'about',
-    //    action: 'apps/app_url',
-    //    payload: 'https://thinkmay.net'
-    //},
-    {
-        name: 'Your Info',
-        id: 'usermanager',
-        action: 'apps/app_toggle',
-        payload: 'usermanager'
     },
     {
         name: 'Discord',

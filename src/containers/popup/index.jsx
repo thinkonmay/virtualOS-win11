@@ -19,7 +19,9 @@ const Popup = () => {
     );
 
     const closeModal = () => {
-        popup.type == 'complete' || popup.type == 'maintain'
+        popup.type == 'complete' ||
+        popup.type == 'maintain' ||
+        popup.type == 'gameChoose'
             ? appDispatch(popup_close())
             : null;
     };

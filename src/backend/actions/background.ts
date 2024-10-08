@@ -1,32 +1,29 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc'; // import UTC plugin
-import { verifyPayment, wrapperAsyncFunction } from '.';
+import { UserSession } from '../../../src-tauri/api';
+import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
+    app_maximize,
     app_toggle,
     change_bitrate,
     change_framerate,
     check_worker,
     fetch_message,
     fetch_store,
+    fetch_subscription,
     fetch_under_maintenance,
     fetch_user,
     have_focus,
     loose_focus,
     ping_session,
-    popup_open,
     setting_theme,
+    show_tutorial,
     sidepane_panethem,
     store,
     sync,
-    user_check_sub,
     wall_set,
     worker_refresh
 } from '../reducers';
-import { client } from '../reducers/remote';
-import { UserSession } from '../../../src-tauri/api/analytics';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -48,56 +45,19 @@ const loadSettings = async () => {
 
 export const fetchUser = async () => {
     await appDispatch(fetch_user());
-
-    const stat = store.getState().user.stat;
-
-    appDispatch(app_toggle('usermanager'));
-
-    if (stat.plan_name == 'hour_02' || !stat.plan_name) {
-        appDispatch(app_toggle('store'));
-    } else {
-        appDispatch(app_toggle('connectPc'));
-    }
-    checkMaintain();
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());
-    const info = store.getState().globals.maintenance;
-
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
-
-    let startAtTime = dayjs.utc(info.created_at);
-    let endAtTime = dayjs.utc(info.ended_at);
-
-    // Convert to GMT+7
-    let startAt = startAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-    let endAt = endAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-
-    // Extract hour, day, and month
-    const hourStart = startAt.hour();
-    const dayStart = startAt.date();
-    const monthStart = startAt.month() + 1;
-
-    const startText = `${hourStart}h ${dayStart}/${monthStart}`;
-
-    const hourEnd = endAt.hour();
-    const dayEnd = endAt.date();
-    const monthEnd = endAt.month() + 1;
-
-    const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
-
-    if (dayjs() < endAt) {
-        appDispatch(
-            popup_open({
-                type: 'maintain',
-                data: {
-                    start: startText,
-                    end: endText
-                }
-            })
-        );
-    }
+    // const info = store.getState().globals.maintenance;
+    //     appDispatch(
+    //         popup_open({
+    //             type: 'maintain',
+    //             data: {
+    //                 start: startText,
+    //                 end: endText
+    //             }
+    //         })
+    //     );
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());
@@ -123,7 +83,7 @@ const fetchSetting = async () => {
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (client == null || !client?.ready()) return;
+        if (CLIENT == null || !CLIENT?.ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
         if (!(store.getState() as RootState).remote.focus)
@@ -131,7 +91,7 @@ const handleClipboard = async () => {
         if (clipboard == old_clipboard) return;
 
         old_clipboard = clipboard;
-        client?.SetClipboard(clipboard);
+        CLIENT?.SetClipboard(clipboard);
     } catch {
         if ((store.getState() as RootState).remote.focus)
             appDispatch(loose_focus());
@@ -146,70 +106,62 @@ const fetchMessage = async () => {
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
-export const checkTimeUsage = async () => {
-    const subInfo = store.getState().user?.stat;
 
-    const totalTime = +(subInfo?.plan_hour + subInfo?.additional_time);
-    let isExpired = false;
-    const now = new Date();
+const startAnalytics = async () => {
+    await UserSession(store.getState().user.email);
+};
 
-    // Check if now is within 2 days of end_time
-    const endTime = new Date(subInfo?.end_time);
-    const twoDaysBeforeEndTime = new Date(endTime);
-    twoDaysBeforeEndTime.setDate(endTime.getDate() - 2);
+const fetchSubscription = async () => {
+    const allowed_domains = 'thinkmay.net';
+    await appDispatch(fetch_subscription());
 
-    // Check if now is between twoDaysBeforeEndTime and endTime
-    const isNearbyEndTime = now >= twoDaysBeforeEndTime && now <= endTime;
+    const { plan, status, cluster } = store.getState().user.subscription as any;
+    if (
+        cluster != undefined &&
+        !window.location.host.includes('localhost') &&
+        cluster != window.location.host &&
+        cluster.includes(allowed_domains)
+    )
+        window.open(`https://${cluster}`, '_self');
 
-    // Check if usage_hour is within 2 hours of 2 * plan_hour
-    const isNearbyUsageHour = subInfo?.remain_time <= 2;
-
-    if (now > endTime || subInfo?.remain_time <= 0) {
-        isExpired = true;
+    let app: string = undefined;
+    if (status == 'PENDING') app = 'payment';
+    else if (
+        (status == 'PAID' || status == 'IMPORTED') &&
+        (plan as string).includes('month')
+    )
+        app = 'connectPc';
+    else if (
+        (status == 'PAID' || status == 'IMPORTED') &&
+        (plan as string).includes('hour')
+    )
+        app = 'store';
+    else if (
+        localStorage.getItem('shownTutorial') != 'true' &&
+        !window.location.host.includes('localhost')
+    ) {
+        appDispatch(show_tutorial(true));
+        localStorage.setItem('shownTutorial', 'true');
     }
 
-    appDispatch(
-        user_check_sub({
-            isNearbyEndTime,
-            isNearbyUsageHour,
-            isExpired
-        })
-    );
-    return {
-        isNearbyEndTime: isNearbyEndTime,
-        isNearbyUsageHour: isNearbyUsageHour,
-        isExpired
-    };
-};
-
-const paymentVerify = async () => {
-    await wrapperAsyncFunction(
-        () => verifyPayment(store.getState().user.email),
-        {
-            loading: true,
-            tips: false,
-            title: 'Verify payment!',
-            timeProcessing: 0.1
-        }
-    );
-};
-
-const StartAnalytics = async () => {
-    await UserSession(store.getState().user.email);
+    if (app != undefined) {
+        appDispatch(app_toggle(app));
+        appDispatch(app_maximize(app));
+    }
 };
 
 export const preload = async () => {
     try {
         await fetchUser();
         await Promise.allSettled([
-            StartAnalytics(),
-            paymentVerify(),
+            startAnalytics(),
             loadSettings(),
+            checkMaintain(),
             fetchApp(),
+            fetchSubscription(),
             fetchSetting(),
             fetchMessage(),
-            fetchStore(),
-            checkTimeUsage()
+            fetchStore()
         ]);
     } catch (e) {
         console.log(`error ${e} in preload function`);

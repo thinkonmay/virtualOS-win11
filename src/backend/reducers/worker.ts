@@ -11,26 +11,31 @@ import {
     vm_session_access,
     vm_session_create,
     worker_refresh,
+    worker_session_close,
     worker_vm_create_from_volume
 } from '.';
-import { PingSession, UserEvents } from '../../../src-tauri/api/analytics';
-import { getDomain, pb } from '../../../src-tauri/api/createClient';
 import {
     CloseSession,
     Computer,
+    fromComputer,
+    getDomain,
     GetInfo,
     KeepaliveVolume,
+    LOCAL,
     ParseRequest,
     ParseVMRequest,
+    PingSession,
+    POCKETBASE,
+    RenderNode,
     StartRequest,
     StartThinkmay,
     StartThinkmayOnVM,
-    StartVirtdaemon
-} from '../../../src-tauri/api/local';
+    StartVirtdaemon,
+    UserEvents
+} from '../../../src-tauri/api';
+import { SetPinger } from '../../../src-tauri/singleton';
 import { sleep } from '../utils/sleep';
-import { fromComputer, RenderNode } from '../utils/tree';
 import { BuilderHelper } from './helper';
-import { set_pinger } from './remote';
 
 type WorkerType = {
     data: any;
@@ -62,8 +67,8 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const email = (getState() as RootState).user.email;
-            const ram = (getState() as RootState).user.stat.ram;
-            const vcpu = (getState() as RootState).user.stat.vcpu;
+            const ram = (getState() as RootState).user.stat?.ram ?? '16';
+            const vcpu = (getState() as RootState).user.stat?.vcpu ?? '16';
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
@@ -72,11 +77,7 @@ export const workerAsync = {
                 })
             );
 
-            const all = await pb.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-            const volume_id = all.at(0)?.local_id;
-
+            const volume_id = (getState() as RootState).user.volume_id;
             const now = () => new Date().getTime() / 1000 / 60;
             const start = now();
             while (now() - start < 180) {
@@ -111,7 +112,7 @@ export const workerAsync = {
 
                 if (result.type == 'vm_worker' && result.data.length > 0) {
                     await appDispatch(vm_session_access(result.data.at(0).id));
-                    set_pinger(
+                    SetPinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
@@ -121,7 +122,7 @@ export const workerAsync = {
                     result.data.length == 0
                 ) {
                     await appDispatch(vm_session_create(result.id));
-                    set_pinger(
+                    SetPinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
                     );
                     appDispatch(popup_close());
@@ -172,11 +173,7 @@ export const workerAsync = {
         async (_: void, { getState }): Promise<Computer | Error> => {
             const node = new RenderNode((getState() as RootState).worker.data);
 
-            const all = await pb.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-
-            const volume_id = all.at(0)?.local_id;
+            const volume_id = (getState() as RootState).user.volume_id;
             let result: RenderNode<Computer> | undefined = undefined;
             node.iterate((x) => {
                 if (
@@ -201,7 +198,7 @@ export const workerAsync = {
     ),
     fetch_local_worker: createAsyncThunk(
         'fetch_local_worker',
-        async (address: string): Promise<any> => {
+        async (address: string, { getState }): Promise<any> => {
             const result = await GetInfo(address);
             if (result instanceof Error) {
                 const node = new RenderNode<{}>();
@@ -209,10 +206,7 @@ export const workerAsync = {
                 return node.any();
             }
 
-            const all = await pb
-                .collection('volumes')
-                .getFullList<{ local_id: string }>();
-            const volume_id = all.at(0)?.local_id;
+            const volume_id = (getState() as RootState).user.volume_id;
 
             let found: RenderNode<Computer> | undefined = undefined;
             const node = fromComputer(address, result);
@@ -224,7 +218,18 @@ export const workerAsync = {
                     found = x;
             });
 
-            node.info.available = found != undefined;
+            if (found != undefined) {
+                const { data: job, error: err } = await LOCAL()
+                    .from('job')
+                    .select('result')
+                    .eq('arguments->>id', volume_id)
+                    .limit(1);
+                if (err) throw new Error(err.message);
+                else if (job.length > 0 && job[0].result == 'success')
+                    node.info.available = 'ready';
+                else node.info.available = 'not_ready';
+            }
+
             return node.any();
         }
     ),
@@ -260,6 +265,29 @@ export const workerAsync = {
             if (result instanceof Error) throw result;
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
+        }
+    ),
+    personal_worker_session_close: createAsyncThunk(
+        'personal_worker_session_close',
+        async (_: void, { getState }): Promise<any> => {
+            const volume_id = (getState() as RootState).user.volume_id;
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+
+            let volumeFound: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    volumeFound == undefined &&
+                    x.info?.Volumes?.includes(volume_id)
+                )
+                    volumeFound = x;
+            });
+
+            const host_session = node.findParent(
+                volumeFound.id,
+                'host_session'
+            );
+            await appDispatch(worker_session_close(host_session.id ?? ''));
         }
     ),
     worker_session_close: createAsyncThunk(
@@ -513,6 +541,10 @@ export const workerSlice = createSlice({
                         state.cdata = target.data.map((x) => x.any());
                     }
                 }
+            },
+            {
+                fetch: workerAsync.personal_worker_session_close,
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.worker_session_close,

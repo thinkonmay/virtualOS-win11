@@ -1,10 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 //import { Icon, Image, LazyComponent, ToolBar } from '../../../'
 
-import { bindStoreId, hasHourSession } from '../../../backend/actions';
+import { bindStoreId } from '../../../backend/actions';
 import {
-    app_toggle,
     appDispatch,
     fetch_store,
     popup_close,
@@ -34,22 +32,8 @@ export const MicroStore = () => {
     const [tab, setTab] = useState('sthome');
     const [page, setPage] = useState(1);
     const [opapp, setOpapp] = useState({});
-    const stat = useAppSelector((state) => state.user.stat);
-    const worker = useAppSelector((state) => state.worker);
-    //const isValidSub = true
-    const isValidSub = stat?.plan_name == 'hour_02';
-
     const [isConnecting, setConnecting] = useState(false);
 
-    useEffect(() => {
-        const checking = async () => {
-            const result = await hasHourSession();
-            setConnecting(result);
-        };
-        if (isValidSub) {
-            checking();
-        }
-    }, [worker]);
     const totab = (e) => {
         var x = e.target && e.target.dataset.action;
         if (x) {
@@ -98,11 +82,8 @@ export const MicroStore = () => {
     };
 
     const handleReconnect = async () => {
-        if (!isValidSub) return;
         await appDispatch(worker_refresh());
-        const check = await hasHourSession();
-
-        if (!check) {
+        if (true) {
             setConnecting(false);
             appDispatch(
                 popup_open({
@@ -159,7 +140,7 @@ export const MicroStore = () => {
 						/>*/}
                         {/* <Icon onClick={() => {}} width={30} ui={true} src={"nvidia"} /> */}
 
-                        {isValidSub && isConnecting ? (
+                        {isConnecting ? (
                             <div className="absolute top-1 z-[1] right-4 rounded-lg p-3 bg-slate-200 flex flex-col">
                                 <p className="text-orange-700 text-[14px] font-semibold">
                                     Tiếp tục session cũ
@@ -192,32 +173,21 @@ const stars = 5;
 const reviews = 5000;
 
 const DetailPage = ({ app }) => {
-    const [dstate, setDown] = useState(0);
-
     const t = (e) => {};
-    const [Options, SetOptions] = useState([]);
     const user = useAppSelector((state) => state.user);
-    const stat = useAppSelector((state) => state.user.stat);
     const isMaintaining = useAppSelector(
         (state) => state.globals.maintenance?.isMaintaining
     );
-
-    const region = ['Hà Nội', 'India'];
 
     useLayoutEffect(() => {
         const element = document.getElementById('storeScroll');
         element.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
-    const dispatch = useDispatch();
 
     const download = async (appId) => {
         const email = user.email;
 
         try {
-            if (stat?.plan_name !== 'hour_02') {
-                appDispatch(app_toggle('payment'));
-                throw 'Tài khoản chưa mua gói giờ lẻ';
-            }
             if (user.isExpired) {
                 appDispatch(popup_open({ type: 'warning', data: {} }));
                 return;

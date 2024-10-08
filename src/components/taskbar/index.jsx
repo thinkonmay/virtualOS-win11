@@ -240,7 +240,7 @@ const Taskbar = () => {
 
                         <>
                             <div
-                                className="p-2 prtclk handcr hvlight flex rounded "
+                                className="supportNow p-2 prtclk handcr hvlight flex rounded "
                                 onClick={clickDispatch}
                                 data-action="sidepane/sidepane_bandtogg"
                                 style={{ '--prefix': 'BAND' }}

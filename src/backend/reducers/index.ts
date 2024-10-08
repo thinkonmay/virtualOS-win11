@@ -16,7 +16,7 @@ import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { UserEvents } from '../../../src-tauri/api/analytics.js';
+import { UserEvents } from '../../../src-tauri/api';
 
 const blacklist = ['framerate', 'bitrate', 'internal_sync', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
@@ -55,7 +55,8 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const appDispatch = store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const { update_language } = globalSlice.actions;
+export const { update_language, choose_game, show_tutorial } =
+    globalSlice.actions;
 export const { user_delete, user_update, user_check_sub } = userSlice.actions;
 export const { wall_next, wall_set, wall_lock, wall_unlock } =
     wallSlice.actions;
@@ -84,6 +85,8 @@ export const {
     app_close,
     app_external,
     app_showdesk,
+    app_maximize,
+    app_minimize,
     app_url
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
@@ -129,6 +132,7 @@ export const {
 } = remoteSlice.actions;
 
 export const {
+    personal_worker_session_close,
     fetch_local_worker,
     worker_session_access,
     worker_session_close,
@@ -145,7 +149,7 @@ export const {
     peer_session_access,
     peer_session_close
 } = workerAsync;
-export const { fetch_user } = userAsync;
+export const { fetch_user, fetch_subscription, get_payment } = userAsync;
 export const {
     ping_session,
     sync,
@@ -161,7 +165,6 @@ export const {
 export const { fetch_store, fetch_under_maintenance } = globalAsync;
 export const { push_message, fetch_message } = sidepaneAsync;
 
-export { ready } from './remote';
 export const dispatch_generic = async ({
     type,
     payload

@@ -1,8 +1,9 @@
 {
-   "typescript.tsdk": "node_modules\\typescript\\lib",    
+    "typescript.tsdk": "node_modules/typescript/lib",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",
         "source.removeUnusedImports": "explicit"
-    }
+    },
+    "deno.enable": false
 }

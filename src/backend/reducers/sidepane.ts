@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
-import { supabaseLocal } from '../../../src-tauri/api/createClient';
+import { LOCAL } from '../../../src-tauri/api';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 
@@ -106,71 +106,118 @@ const listDesktopShortCut = [
 ];
 
 const initialState: Data = {
-    quicks: [
-        {
-            ui: true,
-            src: 'FiVideoOff',
-            name: [Contents.VIDEO_TOGGLE],
-            state: 'active',
-            action: 'toggle_remote_async'
-        },
-        {
-            ui: true,
-            src: 'MdOutlineResetTv',
-            name: [Contents.RESET_VIDEO],
-            state: 'network.airplane',
-            action: 'hard_reset_async'
-        },
-        //{
-        //    ui: true,
-        //    src: 'FaWindows',
-        //    name: [Contents.HOMESCREEN],
-        //    action: 'remote/homescreen'
-        //},
-        {
-            ui: true,
-            src: 'MdFullscreen',
-            name: [Contents.FULLSCREEN],
-            state: 'fullscreen',
-            action: 'remote/toggle_fullscreen'
-        },
-        {
-            ui: true,
-            src: 'MdOutlineKeyboard',
-            name: [Contents.SCAN_CODE],
-            state: 'scancode',
-            action: 'remote/scancode_toggle'
-        },
-        {
-            ui: true,
-            src: 'MdOutlineLink',
-            name: [Contents.EXTERNAL_TAB],
-            state: 'share_reference',
-            action: 'remote/share_reference'
-        },
-        {
-            ui: true,
-            src: 'FaMousePointer',
-            name: [Contents.RELATIVE_MOUSE],
-            state: 'relative_mouse',
-            action: 'remote/relative_mouse'
-        },
-        {
-            ui: true,
-            src: 'MdOutlinePowerSettingsNew',
-            name: [Contents.SHUT_DOWN],
-            state: 'shutdown',
-            action: 'shutDownVm',
-            style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-        },
-        {
-            ui: true,
-            src: 'MdNetworkWifi2Bar',
-            name: [Contents.STRICT_TIMING],
-            state: 'no_strict_timing',
-            action: 'remote/strict_timing_toggle'
-        }
-    ],
+    quicks: window.location.href.includes('localhost')
+        ? [
+              {
+                  ui: true,
+                  src: 'FiVideoOff',
+                  name: [Contents.VIDEO_TOGGLE],
+                  state: 'active',
+                  action: 'toggle_remote_async'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineResetTv',
+                  name: [Contents.RESET_VIDEO],
+                  state: 'network.airplane',
+                  action: 'hard_reset_async'
+              },
+              {
+                  ui: true,
+                  src: 'MdFullscreen',
+                  name: [Contents.FULLSCREEN],
+                  state: 'fullscreen',
+                  action: 'remote/toggle_fullscreen'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineKeyboard',
+                  name: [Contents.SCAN_CODE],
+                  state: 'scancode',
+                  action: 'remote/scancode_toggle'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineLink',
+                  name: [Contents.EXTERNAL_TAB],
+                  state: 'share_reference',
+                  action: 'remote/share_reference'
+              },
+              {
+                  ui: true,
+                  src: 'FaMousePointer',
+                  name: [Contents.RELATIVE_MOUSE],
+                  state: 'relative_mouse',
+                  action: 'remote/relative_mouse'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlinePowerSettingsNew',
+                  name: [Contents.SHUT_DOWN],
+                  state: 'shutdown',
+                  action: 'shutDownVm',
+                  style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+              },
+              {
+                  ui: true,
+                  src: 'MdNetworkWifi2Bar',
+                  name: [Contents.STRICT_TIMING],
+                  state: 'no_strict_timing',
+                  action: 'remote/strict_timing_toggle'
+              }
+          ]
+        : [
+              {
+                  ui: true,
+                  src: 'MdOutlineResetTv',
+                  name: [Contents.RESET_VIDEO],
+                  state: 'network.airplane',
+                  action: 'hard_reset_async'
+              },
+              {
+                  ui: true,
+                  src: 'MdFullscreen',
+                  name: [Contents.FULLSCREEN],
+                  state: 'fullscreen',
+                  action: 'remote/toggle_fullscreen'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineKeyboard',
+                  name: [Contents.SCAN_CODE],
+                  state: 'scancode',
+                  action: 'remote/scancode_toggle'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlineLink',
+                  name: [Contents.EXTERNAL_TAB],
+                  state: 'share_reference',
+                  action: 'remote/share_reference'
+              },
+              {
+                  ui: true,
+                  src: 'FaMousePointer',
+                  name: [Contents.RELATIVE_MOUSE],
+                  state: 'relative_mouse',
+                  action: 'remote/relative_mouse'
+              },
+              {
+                  ui: true,
+                  src: 'MdOutlinePowerSettingsNew',
+                  name: [Contents.SHUT_DOWN],
+                  state: 'shutdown',
+                  action: 'shutDownVm',
+                  style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+              },
+              {
+                  ui: true,
+                  src: 'MdNetworkWifi2Bar',
+                  name: [Contents.STRICT_TIMING],
+                  state: 'no_strict_timing',
+                  action: 'remote/strict_timing_toggle'
+              }
+          ],
     shortcuts: listDesktopShortCut,
 
     mobileControl: {
@@ -259,14 +306,16 @@ export const sidepaneAsync = {
         'push_message',
         async (input: Message, { getState }): Promise<void> => {
             const email = store.getState().user.email;
-            await supabaseLocal.from('user_message').insert({
-                metadata: {
-                    email,
-                    type: input.type,
-                    recipient: input.recipient
-                },
-                value: { content: input.content }
-            });
+            await LOCAL()
+                .from('user_message')
+                .insert({
+                    metadata: {
+                        email,
+                        type: input.type,
+                        recipient: input.recipient
+                    },
+                    value: { content: input.content }
+                });
         }
     ),
     handle_message: async (payload: any) => {
@@ -282,7 +331,7 @@ export const sidepaneAsync = {
     fetch_message: createAsyncThunk(
         'fetch_message',
         async (email: string, { getState }): Promise<Message[]> => {
-            supabaseLocal
+            LOCAL()
                 .channel('schema-message-changes')
                 .on(
                     'postgres_changes',
@@ -296,7 +345,7 @@ export const sidepaneAsync = {
                 .subscribe();
 
             return await CacheRequest('message', 30, async () => {
-                const { data, error } = await supabaseLocal
+                const { data, error } = await LOCAL()
                     .from('user_message')
                     .select('timestamp,value,metadata')
                     .order('timestamp', { ascending: false })

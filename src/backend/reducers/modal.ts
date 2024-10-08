@@ -37,6 +37,12 @@ type PopupData =
               start: string;
               end: string;
           };
+      }
+    | {
+          type: 'gameChoose';
+          data: {
+              planName: string;
+          };
       };
 
 type Data = {
@@ -46,7 +52,7 @@ type Data = {
 const initialState: Data = {
     data_stack: [
         //{
-        //    type: 'maintain',
+        //    type: 'gameChoose',
         //    data: {}
         //}
     ]
