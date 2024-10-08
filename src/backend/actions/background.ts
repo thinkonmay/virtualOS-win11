@@ -147,18 +147,15 @@ const fetchSubscription = async () => {
         (status == 'PAID' || status == 'IMPORTED') &&
         (plan as string).includes('month')
     ) {
-        app = 'connectPc'
-        appDispatch(desk_remove('store'))
-    }
-
-    else if (
+        app = 'connectPc';
+        appDispatch(desk_remove('store'));
+    } else if (
         (status == 'PAID' || status == 'IMPORTED') &&
         (plan as string).includes('hour')
     ) {
-        app = 'store'
-        appDispatch(desk_remove('connectPc'))
-    }
-    else if (
+        app = 'store';
+        appDispatch(desk_remove('connectPc'));
+    } else if (
         localStorage.getItem('shownTutorial') != 'true' &&
         !window.location.host.includes('localhost')
     ) {
