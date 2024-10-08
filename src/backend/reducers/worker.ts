@@ -230,6 +230,9 @@ export const workerAsync = {
                 else node.info.available = 'not_ready';
             }
 
+            if (found.type == 'vm_worker' && node.info.available == 'ready')
+                node.info.available = 'started';
+
             return node.any();
         }
     ),
