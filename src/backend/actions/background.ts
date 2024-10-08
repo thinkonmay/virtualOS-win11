@@ -1,4 +1,5 @@
 import { UserSession } from '../../../src-tauri/api';
+import { LOCAL } from '../../../src-tauri/api/database.ts';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -123,6 +124,21 @@ const fetchSubscription = async () => {
         cluster.includes(allowed_domains)
     )
         window.open(`https://${cluster}`, '_self');
+    else if (
+        status == 'NO_ACTION' &&
+        !window.location.host.includes('localhost')
+    ) {
+        const { data, error } = await LOCAL()
+            .from('constant')
+            .select('value->>destination')
+            .eq('name', 'redirect');
+        if (error) throw error;
+        else if (
+            data.length == 1 &&
+            !data.at(0).destination.includes(window.location.host)
+        )
+            window.open(data.at(0).destination, '_self');
+    }
 
     let app: string = undefined;
     if (status == 'PENDING') app = 'payment';
