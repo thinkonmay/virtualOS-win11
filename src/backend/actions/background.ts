@@ -9,6 +9,7 @@ import {
     change_bitrate,
     change_framerate,
     check_worker,
+    desk_remove,
     fetch_message,
     fetch_store,
     fetch_subscription,
@@ -145,13 +146,18 @@ const fetchSubscription = async () => {
     else if (
         (status == 'PAID' || status == 'IMPORTED') &&
         (plan as string).includes('month')
-    )
-        app = 'connectPc';
+    ) {
+        app = 'connectPc'
+        appDispatch(desk_remove('store'))
+    }
+
     else if (
         (status == 'PAID' || status == 'IMPORTED') &&
         (plan as string).includes('hour')
-    )
-        app = 'store';
+    ) {
+        app = 'store'
+        appDispatch(desk_remove('connectPc'))
+    }
     else if (
         localStorage.getItem('shownTutorial') != 'true' &&
         !window.location.host.includes('localhost')

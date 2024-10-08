@@ -64,18 +64,20 @@ export const ConnectApp = () => {
                         <div className="containerSpec">
                             {!browser.includes('Chrome') ? (
                                 <div className="flex flex-col gap-3">
-                                    <div className="spec mt-4">
+                                    <div className="spec my-5">
                                         {t[Contents.SUGGEST_BROWSER]}
                                     </div>
                                 </div>
                             ) : null}
 
-                            {available == 'ready' ? (
+                            {available == 'ready' || available == 'started' ? (
                                 <button
                                     onClick={connect}
                                     className="instbtn connectBtn"
                                 >
-                                    Connect
+                                    {available == 'ready'
+                                        ? 'Khởi tạo'
+                                        : 'Kết nối'}
                                 </button>
                             ) : available == 'not_ready' ? (
                                 <button disabled className="instbtn connectBtn">

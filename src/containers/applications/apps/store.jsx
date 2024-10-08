@@ -173,7 +173,7 @@ const stars = 5;
 const reviews = 5000;
 
 const DetailPage = ({ app }) => {
-    const t = (e) => {};
+    const t = (e) => { };
     const user = useAppSelector((state) => state.user);
     const isMaintaining = useAppSelector(
         (state) => state.globals.maintenance?.isMaintaining
@@ -379,7 +379,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => {};
+    const t = (e) => { };
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -451,9 +451,13 @@ const DownPage = ({ action }) => {
                 <b className="font-bold">DÀNH RIÊNG CHO GÓI GIỜ</b>
                 {/*tức các game sau:*/}
             </p>
-            <p className="storeHeading text-base mt-4">
-                Game đã được cài sẵn, click để chơi ngay!
+            <p className="storeHeading mt-2 text-orange-400">
+                <b className="font-bold">Gói đang bảo trì</b>
+                {/*tức các game sau:*/}
             </p>
+            {/*<p className="storeHeading text-base mt-4">
+                Game đã được cài sẵn, click để chơi ngay!
+            </p>*/}
             <p className="storeHeading text-sm mt-1 mb-4">
                 *Toàn bộ dữ liệu sẽ bị xoá khi tắt máy
             </p>
@@ -496,20 +500,20 @@ const DownPage = ({ action }) => {
                 {games.length > 0
                     ? renderSearchResult()
                     : listDraftApp.map((i) => (
-                          <div
-                              key={i}
-                              className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
-                              data-action="page2"
-                          >
-                              <Image
-                                  className="mx-4 mb-6 rounded bg-slate-200"
-                                  w={100}
-                                  h={100}
-                                  ext
-                              />
-                              <div className="capitalize text-xs text-center font-semibold"></div>
-                          </div>
-                      ))}
+                        <div
+                            key={i}
+                            className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
+                            data-action="page2"
+                        >
+                            <Image
+                                className="mx-4 mb-6 rounded bg-slate-200"
+                                w={100}
+                                h={100}
+                                ext
+                            />
+                            <div className="capitalize text-xs text-center font-semibold"></div>
+                        </div>
+                    ))}
             </div>
         </div>
     );

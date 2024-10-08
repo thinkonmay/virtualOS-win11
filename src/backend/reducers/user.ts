@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { RootState } from '.';
-import { getDomain, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
+import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 
 type PaymentStatus =
@@ -10,6 +10,12 @@ type PaymentStatus =
           plan: string;
           cluster: string;
 
+          total_usage: number;
+          created_at: string;
+
+          limit_hour?: number;
+          ended_at?: string;
+          template?: string;
           local_metadata: {};
       }
     | {
@@ -61,12 +67,14 @@ export const userAsync = {
         'fetch_subscription',
         async (_: void, { getState }): Promise<PaymentStatus> => {
             const {
-                user: { email }
+                user: { email, volume_id }
             } = getState() as RootState;
 
             const { data: sub1, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
-                .select('id,plan,cluster,local_metadata')
+                .select(
+                    'id,plan,cluster,local_metadata,created_at,ended_at,local_metadata->>template'
+                )
                 .eq('user', email)
                 .gt('ended_at', new Date().toISOString())
                 .is('cancelled_at', null)
@@ -74,7 +82,9 @@ export const userAsync = {
                 .limit(1);
             const { data: sub2, error: errr2 } = await GLOBAL()
                 .from('subscriptions')
-                .select('id,plan,cluster,local_metadata')
+                .select(
+                    'id,plan,cluster,local_metadata,created_at,ended_at,local_metadata->>template'
+                )
                 .eq('user', email)
                 .is('ended_at', null)
                 .is('cancelled_at', null)
@@ -92,6 +102,9 @@ export const userAsync = {
                     id: subscription_id,
                     plan: plan_id,
                     cluster: cluster_id,
+                    created_at,
+                    ended_at,
+                    template,
                     local_metadata
                 }
             ] = sub;
@@ -108,11 +121,11 @@ export const userAsync = {
                 result = { status };
             } else if (status == 'PAID' || status == 'IMPORTED') {
                 const {
-                    data: [{ name: plan }],
+                    data: [{ name: plan, limit_hour }],
                     error: errrr
                 } = await GLOBAL()
                     .from('plans')
-                    .select('name')
+                    .select('name,policy->limit_hour')
                     .eq('id', plan_id);
                 if (errrr) throw new Error(errrr.message);
 
@@ -125,11 +138,23 @@ export const userAsync = {
                     .eq('id', cluster_id);
                 if (errrrr) throw new Error(errrrr.message);
 
+                const { data, error } = await LOCAL().rpc('get_volume_usage', {
+                    volume_id,
+                    _to: new Date().toISOString(),
+                    _from: created_at
+                });
+                if (error) throw error;
+
                 result = {
                     status,
                     cluster,
                     plan,
-                    local_metadata
+                    local_metadata,
+                    limit_hour,
+                    created_at,
+                    ended_at,
+                    template,
+                    total_usage: data
                 } as PaymentStatus;
             }
 
