@@ -219,15 +219,25 @@ export const workerAsync = {
             });
 
             if (found != undefined) {
-                const { data: job, error: err } = await LOCAL()
-                    .from('job')
-                    .select('result')
-                    .eq('arguments->>id', volume_id)
+                const { data, error: errr } = await LOCAL()
+                    .from('volume_map')
+                    .select('id')
+                    .eq('id', volume_id)
+                    .eq('status', 'IMPORTED')
                     .limit(1);
-                if (err) throw new Error(err.message);
-                else if (job.length > 0 && job[0].result == 'success')
-                    node.info.available = 'ready';
-                else node.info.available = 'not_ready';
+                if (errr) throw new Error(errr.message);
+                else if (data.length == 1) node.info.available = 'ready';
+                else {
+                    const { data, error: err } = await LOCAL()
+                        .from('job')
+                        .select('result')
+                        .eq('arguments->>id', volume_id)
+                        .limit(1);
+                    if (err) throw new Error(err.message);
+                    else if (data.length > 0 && data[0].result == 'success')
+                        node.info.available = 'ready';
+                    else node.info.available = 'not_ready';
+                }
             }
 
             return node.any();
