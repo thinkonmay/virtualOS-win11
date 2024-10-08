@@ -1,3 +1,4 @@
+import { MdOutlinePowerSettingsNew } from 'react-icons/md';
 import { RenderNode } from '../../../src-tauri/api';
 import { changeTheme } from '../../backend/actions';
 import {
@@ -11,6 +12,7 @@ import { Contents } from '../../backend/reducers/locales';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
+
 
 function UserInfo() {
     const {
@@ -43,30 +45,25 @@ function UserInfo() {
     const renderPlanName = {
         month1: (
             <div className="restWindow w-full  flex flex-col ">
-                <div className="w-full flex gap-4 justify-between mt-3 items-end">
+                {/*<div className="w-full flex gap-4 justify-between mt-3 items-end">
                     <span className="text-left">Payment Status</span>
                     <span>{status}</span>
-                </div>
-                <div className="w-full flex gap-4 justify-between mt-3 items-end">
-                    <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>{total_usage}minutes</span>
-                </div>
+                </div>*/}
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">
-                        {t[Contents.PLAN_USAGE_TIME]}
-                    </span>
-                    <span>{limit_hour}h</span>
-                </div>
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">From</span>
+                    <span className="text-left">{t[Contents.STARTAT]}</span>
                     <span>{formatDate(created_at)}</span>
                 </div>
                 {ended_at ? (
                     <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                        <span className="text-left">To</span>
+                        <span className="text-left">{t[Contents.ENDAT]}</span>
                         <span>{formatDate(ended_at)}</span>
                     </div>
                 ) : null}
+                <div className="w-full flex gap-4 justify-between mt-4 items-end">
+                    <span className="text-left">{t[Contents.TIME]}</span>
+                    <span>{(+total_usage / 60).toFixed(2)}h / {limit_hour}h</span>
+                </div>
+
                 {template ? (
                     <div className="w-full flex gap-4 justify-between mt-1 items-end">
                         <span className="text-left">Template</span>
@@ -120,9 +117,9 @@ function UserInfo() {
                         </div>
                     </div>
                     <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] ">
-                        <span>Cloud PC</span>
+                        <span>Shut down</span>
                         {shutdownable == 'ready' ||
-                        shutdownable == 'started' ? (
+                            shutdownable == 'started' ? (
                             shutdownable == 'ready' ? (
                                 <div
                                     className="strBtn handcr prtclk"
@@ -132,12 +129,7 @@ function UserInfo() {
                                         )
                                     }
                                 >
-                                    <Icon
-                                        className="quickIcon"
-                                        ui={true}
-                                        src={'power'}
-                                        width={14}
-                                    />
+                                    <MdOutlinePowerSettingsNew size={'1rem'} />
                                 </div>
                             ) : (
                                 <div
