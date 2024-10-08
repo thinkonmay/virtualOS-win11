@@ -121,7 +121,8 @@ const filterActions = [
     'fetch_user',
     'fetch_store',
     'fetch_under_maintenance',
-    'fetch_message'
+    'fetch_message',
+    'fetch_subscription'
 ];
 
 const isFilterAction = (acctionType: string) => {
@@ -148,32 +149,32 @@ const isRejected = (action: UnknownAction) =>
 
 export const isPendingAction =
     (prefixs: string[]) =>
-    (action: UnknownAction): action is UnknownAction => {
-        // Note: this cast to UnknownAction could also be `any` or whatever fits your case best
-        return (
-            prefixs.find((prefix) => action.type.includes(prefix)) !=
+        (action: UnknownAction): action is UnknownAction => {
+            // Note: this cast to UnknownAction could also be `any` or whatever fits your case best
+            return (
+                prefixs.find((prefix) => action.type.includes(prefix)) !=
                 undefined && isPending(action)
-        );
-    };
+            );
+        };
 
 export const isRejectedAction =
     (prefixs: string[]) =>
-    (action: UnknownAction): action is UnknownAction => {
-        // Note: this cast to UnknownAction could also be `any` or whatever fits your case best - like if you had standardized errors and used `rejectWithValue`
-        return (
-            prefixs.find((prefix) => action.type.includes(prefix)) !=
+        (action: UnknownAction): action is UnknownAction => {
+            // Note: this cast to UnknownAction could also be `any` or whatever fits your case best - like if you had standardized errors and used `rejectWithValue`
+            return (
+                prefixs.find((prefix) => action.type.includes(prefix)) !=
                 undefined && isRejected(action)
-        );
-    };
+            );
+        };
 
 export const isFulfilledAction =
     (prefixs: string[]) =>
-    (action: UnknownAction): action is UnknownAction => {
-        return (
-            prefixs.find((prefix) => action.type.includes(prefix)) !=
+        (action: UnknownAction): action is UnknownAction => {
+            return (
+                prefixs.find((prefix) => action.type.includes(prefix)) !=
                 undefined && isFulfilled(action)
-        );
-    };
+            );
+        };
 
 export async function BuilderHelper<T, U, V>(
     builder: ActionReducerMapBuilder<T>,
