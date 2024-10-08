@@ -167,6 +167,27 @@ export const userAsync = {
             { plan: plan_name, template }: { plan: string; template?: string },
             { getState }
         ): Promise<string> => {
+            const {
+                data: [_plans],
+                error: errrr
+            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
+            if (errrr) throw new Error(errrr.message);
+            else if (_plans == undefined)
+                throw new Error('gói dịch vụ hiện đang tạm đóng');
+            const { id: plan } = _plans;
+
+            const {
+                data: [cluster_ele],
+                error: errrrr
+            } = await GLOBAL()
+                .from('clusters')
+                .select('id')
+                .eq('domain', getDomain());
+            if (errrrr) throw new Error(errrrr.message);
+            else if (cluster_ele == undefined)
+                throw new Error('dịch vụ hiện chưa triển khai trên domain');
+            const { id: cluster } = cluster_ele;
+
             const expire_at = new Date(
                 new Date().getTime() + 1000 * 60 * 15
             ).toISOString();
@@ -206,21 +227,6 @@ export const userAsync = {
                 else if (status == 'PAID' || status == 'IMPORTED')
                     throw new Error('you already paid for our service');
             }
-
-            const {
-                data: [{ id: plan }],
-                error: errrr
-            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
-            if (errrr) throw new Error(errrr.message);
-
-            const {
-                data: [{ id: cluster }],
-                error: errrrr
-            } = await GLOBAL()
-                .from('clusters')
-                .select('id')
-                .eq('domain', getDomain());
-            if (errrrr) throw new Error(errrrr.message);
 
             const {
                 data: [{ id: subscription }],
