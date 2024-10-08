@@ -238,10 +238,10 @@ export const workerAsync = {
                         node.info.available = 'ready';
                     else node.info.available = 'not_ready';
                 }
-            }
 
-            if (found.type == 'vm_worker' && node.info.available == 'ready')
-                node.info.available = 'started';
+                if (found.type == 'vm_worker' && node.info.available == 'ready')
+                    node.info.available = 'started';
+            }
 
             return node.any();
         }
