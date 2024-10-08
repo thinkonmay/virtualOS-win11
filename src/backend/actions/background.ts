@@ -117,28 +117,28 @@ const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 
     const { plan, status, cluster } = store.getState().user.subscription as any;
-    if (
-        cluster != undefined &&
-        !window.location.host.includes('localhost') &&
-        cluster != window.location.host &&
-        cluster.includes(allowed_domains)
-    )
-        window.open(`https://${cluster}`, '_self');
-    else if (
-        status == 'NO_ACTION' &&
-        !window.location.host.includes('localhost')
-    ) {
-        const { data, error } = await LOCAL()
-            .from('constant')
-            .select('value->>destination')
-            .eq('name', 'redirect');
-        if (error) throw error;
-        else if (
-            data.length == 1 &&
-            !data.at(0).destination.includes(window.location.host)
-        )
-            window.open(data.at(0).destination, '_self');
-    }
+    // if (
+    //     cluster != undefined &&
+    //     !window.location.origin.includes('localhost') &&
+    //     !window.location.origin.includes(cluster) &&
+    //     cluster.includes(allowed_domains)
+    // )
+    //     window.open(`https://${cluster}`, '_self');
+    // else if (
+    //     status == 'NO_ACTION' &&
+    //     !window.location.origin.includes('localhost')
+    // ) {
+    //     const { data, error } = await LOCAL()
+    //         .from('constant')
+    //         .select('value->>destination')
+    //         .eq('name', 'redirect');
+    //     if (error) throw error;
+    //     else if (
+    //         data.length == 1 &&
+    //         !data.at(0).destination.includes(window.location.host)
+    //     )
+    //         window.open(data.at(0).destination, '_self');
+    // }
 
     let app: string = undefined;
     if (status == 'PENDING') app = 'payment';

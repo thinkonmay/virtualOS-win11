@@ -66,9 +66,9 @@ export const workerAsync = {
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
-            const email = (getState() as RootState).user.email;
-            const ram = (getState() as RootState).user.stat?.ram ?? '16';
-            const vcpu = (getState() as RootState).user.stat?.vcpu ?? '16';
+            const { email, local_metadata } = (getState() as RootState).user;
+            const ram = local_metadata?.ram ?? '16';
+            const vcpu = local_metadata?.vcpu ?? '16';
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
