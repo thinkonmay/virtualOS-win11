@@ -28,6 +28,7 @@ export const ConnectApp = () => {
 
     const { browser } = detectBrowserAndOS();
 
+    console.log(browser);
     const user = useAppSelector((state) => state.user);
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
     const connect = () => appDispatch(wait_and_claim_volume());
@@ -62,9 +63,9 @@ export const ConnectApp = () => {
                         </div>
 
                         <div className="containerSpec">
-                            {!browser.includes('Chrome') ? (
+                            {browser.includes('Chrome') ? (
                                 <div className="flex flex-col gap-3">
-                                    <div className="spec mt-4">
+                                    <div className="spec my-5">
                                         {t[Contents.SUGGEST_BROWSER]}
                                     </div>
                                 </div>
