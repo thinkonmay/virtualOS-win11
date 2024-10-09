@@ -118,10 +118,10 @@ const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 
     const subscription = store.getState().user.subscription as PaymentStatus;
-    const { status } = subscription
-    if ( status == 'PAID' || status == 'IMPORTED') {
-        const { cluster } = subscription
-        const origin = new URL(window.location.href).host
+    const { status } = subscription;
+    if (status == 'PAID' || status == 'IMPORTED') {
+        const { cluster } = subscription;
+        const origin = new URL(window.location.href).host;
 
         if (origin != 'localhost' && origin != cluster)
             window.open(`https://${cluster}`, '_self');
@@ -145,7 +145,7 @@ const fetchSubscription = async () => {
     let app: string = undefined;
     if (status == 'PENDING') app = 'payment';
     else if (status == 'PAID' || status == 'IMPORTED') {
-        const { plan } = subscription
+        const { plan } = subscription;
         if (plan.includes('month')) {
             app = 'connectPc';
             appDispatch(desk_remove('store'));
