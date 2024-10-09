@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 import {
     appDispatch,
     claim_volume,
@@ -129,9 +130,11 @@ export const workerAsync = {
                     return;
                 }
 
+                const id = uuidv4();
                 UserEvents({
                     type: 'remote/requesting_vm',
                     payload: {
+                        id,
                         email
                     }
                 });
@@ -146,6 +149,7 @@ export const workerAsync = {
                     UserEvents({
                         type: 'remote/request_vm_failure',
                         payload: {
+                            id,
                             email,
                             error: resp.message
                         }
@@ -157,6 +161,7 @@ export const workerAsync = {
                 UserEvents({
                     type: 'remote/request_vm_success',
                     payload: {
+                        id,
                         email
                     }
                 });
