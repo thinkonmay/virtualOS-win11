@@ -1,4 +1,4 @@
-import { UserSession } from '../../../src-tauri/api';
+import { LOCAL, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -115,32 +115,28 @@ const startAnalytics = async () => {
 
 const fetchSubscription = async () => {
     const allowed_domains = 'thinkmay.net';
+    const origin = new URL(window.location.href).host;
     await appDispatch(fetch_subscription());
 
     const subscription = store.getState().user.subscription as PaymentStatus;
     const { status } = subscription;
     if (status == 'PAID' || status == 'IMPORTED') {
         const { cluster } = subscription;
-        const origin = new URL(window.location.href).host;
 
         if (origin != 'localhost' && origin != cluster)
             window.open(`https://${cluster}`, '_self');
+    } else if (status == 'NO_ACTION') {
+        const { data, error } = await LOCAL()
+            .from('constant')
+            .select('value->>destination')
+            .eq('name', 'redirect');
+        if (error) throw error;
+        else if (data.length == 1) {
+            const [{ destination }] = data;
+            if (origin != 'localhost' && origin != destination)
+                window.open(destination, '_self');
+        }
     }
-    // else if (
-    //     status == 'NO_ACTION' &&
-    //     !window.location.origin.includes('localhost')
-    // ) {
-    //     const { data, error } = await LOCAL()
-    //         .from('constant')
-    //         .select('value->>destination')
-    //         .eq('name', 'redirect');
-    //     if (error) throw error;
-    //     else if (
-    //         data.length == 1 &&
-    //         !data.at(0).destination.includes(window.location.host)
-    //     )
-    //         window.open(data.at(0).destination, '_self');
-    // }
 
     let app: string = undefined;
     if (status == 'PENDING') app = 'payment';
