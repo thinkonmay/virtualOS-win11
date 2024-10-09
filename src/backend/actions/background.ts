@@ -123,8 +123,9 @@ const fetchSubscription = async () => {
     if (status == 'PAID' || status == 'IMPORTED') {
         const { cluster } = subscription;
 
-        if (origin != 'localhost' && origin != cluster)
-            window.open(`https://${cluster}`, '_self');
+        if (origin != 'localhost' && origin != cluster) {
+            //window.open(`https://${cluster}`, '_self');
+        }
     } else if (status == 'NO_ACTION') {
         const { data, error } = await LOCAL()
             .from('constant')
@@ -133,8 +134,9 @@ const fetchSubscription = async () => {
         if (error) throw error;
         else if (data.length == 1) {
             const [{ destination }] = data;
-            if (origin != 'localhost' && origin != destination)
-                window.open(destination, '_self');
+            if (origin != 'localhost' && origin != destination) {
+                //window.open(destination, '_self');
+            }
         }
     }
 
