@@ -4,7 +4,7 @@ import { RootState } from '.';
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 
-type PaymentStatus =
+export type PaymentStatus =
     | {
           status: 'PAID' | 'IMPORTED';
           plan: string;
