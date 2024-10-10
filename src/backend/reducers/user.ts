@@ -219,13 +219,15 @@ export const userAsync = {
                 const { data, error: err } = await GLOBAL()
                     .from('payment_request')
                     .select('result->data->>checkoutUrl,status')
-                    .eq('subscription', sub[0]?.id);
+                    .eq('subscription', sub[0]?.id)
+                    .gt('expire_at', new Date().toISOString());
                 if (err) throw new Error(err.message);
-
-                const [{ checkoutUrl, status }] = data;
-                if (status == 'PENDING') return checkoutUrl;
-                else if (status == 'PAID' || status == 'IMPORTED')
-                    throw new Error('you already paid for our service');
+                else if (data.length > 0) {
+                    const [{ checkoutUrl, status }] = data;
+                    if (status == 'PENDING') return checkoutUrl;
+                    else if (status == 'PAID' || status == 'IMPORTED')
+                        throw new Error('you already paid for our service');
+                }
             }
 
             const {
