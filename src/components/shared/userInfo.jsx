@@ -18,6 +18,8 @@ function UserInfo() {
         email,
         subscription: {
             status,
+            node,
+            cluster,
             plan,
             total_usage,
             limit_hour,
@@ -69,6 +71,18 @@ function UserInfo() {
                     <div className="w-full flex gap-4 justify-between mt-1 items-end">
                         <span className="text-left">Template</span>
                         <span>{template}</span>
+                    </div>
+                ) : null}
+                {cluster ? (
+                    <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                        <span className="text-left">Domain</span>
+                        <span>{cluster}</span>
+                    </div>
+                ) : null}
+                {node ? (
+                    <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                        <span className="text-left">Node</span>
+                        <span>{node}</span>
                     </div>
                 ) : null}
             </div>

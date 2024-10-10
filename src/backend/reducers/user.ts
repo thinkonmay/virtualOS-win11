@@ -9,6 +9,7 @@ export type PaymentStatus =
           status: 'PAID' | 'IMPORTED';
           plan: string;
           cluster: string;
+          node: string;
 
           total_usage: number;
           created_at: string;
@@ -145,9 +146,19 @@ export const userAsync = {
                 });
                 if (error) throw error;
 
+                let node = 'unknown';
+                const { data: map, error: errr } = await LOCAL()
+                    .from('volume_map')
+                    .select('node')
+                    .eq('id', volume_id)
+                    .limit(1);
+                if (errr) throw errr;
+                else if (map.length > 0) node = map[0].node;
+
                 result = {
                     status,
                     cluster,
+                    node,
                     plan,
                     local_metadata,
                     limit_hour,
