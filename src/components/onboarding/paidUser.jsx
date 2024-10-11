@@ -67,17 +67,7 @@ const mobileGuide = [
         spotlightPadding: 1,
         content: 'Để trách gặp lỗi không đáng có!'
     },
-    {
-        placement: 'top',
-        target: '.lowNetworkBtn',
-        title: 'Chế độ sóng yếu',
-        content: (
-            <p>
-                Bật khi mạng không ổn định, đặt bitrate <b>40</b>
-            </p>
-        ),
-        spotlightPadding: 1
-    },
+
     {
         placement: 'top',
         target: '.shareLinkBtn',
@@ -190,18 +180,6 @@ const desktopGuide = [
         title: 'Tắt máy đúng cách',
         spotlightPadding: 1,
         content: 'Để trách gặp lỗi không đáng có!'
-    },
-
-    {
-        placement: 'top',
-        target: '.lowNetworkBtn',
-        title: 'Chế độ sóng yếu',
-        content: (
-            <p>
-                Bật khi mạng không ổn định, đặt bitrate <b>40</b>
-            </p>
-        ),
-        spotlightPadding: 1
     },
     {
         placement: 'top',

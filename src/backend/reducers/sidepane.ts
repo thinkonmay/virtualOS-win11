@@ -170,13 +170,17 @@ const initialState: Data = {
         : [
             {
                 ui: true,
+                id: 'resetVideoBtn',
+
                 src: 'MdOutlineResetTv',
                 name: [Contents.RESET_VIDEO],
                 state: 'network.airplane',
                 action: 'hard_reset_async'
+                
             },
             {
                 ui: true,
+                id:'fullscrenBtn',
                 src: 'MdFullscreen',
                 name: [Contents.FULLSCREEN],
                 state: 'fullscreen',
@@ -184,6 +188,8 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id:'fixKeyboardBtn',
+
                 src: 'MdOutlineKeyboard',
                 name: [Contents.SCAN_CODE],
                 state: 'scancode',
@@ -191,6 +197,8 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id:'shareLinkBtn',
+
                 src: 'MdOutlineLink',
                 name: [Contents.EXTERNAL_TAB],
                 state: 'share_reference',
@@ -198,6 +206,8 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id:'gamingMouseBtn',
+
                 src: 'FaMousePointer',
                 name: [Contents.RELATIVE_MOUSE],
                 state: 'relative_mouse',
@@ -205,6 +215,8 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id:'shutdownBtn',
+
                 src: 'MdOutlinePowerSettingsNew',
                 name: [Contents.SHUT_DOWN],
                 state: 'shutdown',
@@ -267,6 +279,8 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id: 'shutdownBtn',
+
                 src: 'MdOutlinePowerSettingsNew',
                 name: [Contents.SHUT_DOWN],
                 state: 'shutdown',
