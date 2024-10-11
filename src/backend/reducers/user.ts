@@ -7,31 +7,31 @@ import { BuilderHelper } from './helper';
 
 export type PaymentStatus =
     | {
-        status: 'PAID' | 'IMPORTED';
-        plan: string;
-        cluster: string;
-        node: string;
+          status: 'PAID' | 'IMPORTED';
+          plan: string;
+          cluster: string;
+          node: string;
 
-        total_usage: number;
-        created_at: string;
+          total_usage: number;
+          created_at: string;
 
-        limit_hour?: number;
-        ended_at?: string;
-        template?: string;
-        local_metadata?: {
-            ram?: string;
-            vcpu?: string;
-        };
-    }
+          limit_hour?: number;
+          ended_at?: string;
+          template?: string;
+          local_metadata?: {
+              ram?: string;
+              vcpu?: string;
+          };
+      }
     | {
-        status: 'NO_ACTION';
-    }
+          status: 'NO_ACTION';
+      }
     | {
-        status: 'PENDING';
-    }
+          status: 'PENDING';
+      }
     | {
-        status: 'CANCEL';
-    };
+          status: 'CANCEL';
+      };
 
 type Data = RecordModel & {
     subscription: PaymentStatus;

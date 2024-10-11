@@ -146,7 +146,7 @@ export const workerAsync = {
                     computer,
                     volume_id,
                     `${ram ?? 16}`,
-                    `${vcpu ?? 16}`,
+                    `${vcpu ?? 16}`
                 );
                 if (resp instanceof Error) {
                     UserEvents({
