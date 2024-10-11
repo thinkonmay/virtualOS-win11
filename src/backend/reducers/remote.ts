@@ -112,7 +112,7 @@ export async function keyboardCallback(val, action: 'up' | 'down') {
     });
 }
 export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
-    if ('vibrate' in navigator && type == 'down') 
+    if ('vibrate' in navigator && type == 'down')
         navigator.vibrate([40, 30, 0]);
     await CLIENT?.VirtualGamepadButton(type == 'down', index);
 }
