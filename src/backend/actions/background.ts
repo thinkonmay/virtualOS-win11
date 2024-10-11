@@ -162,7 +162,7 @@ const fetchSubscription = async () => {
     } else if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        (status != 'PAID')
+        status != 'PAID'
         //&&
         //!window.location.host.includes('localhost')
     ) {

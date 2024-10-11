@@ -251,7 +251,6 @@ export const OnboardingPaidUser = () => {
             appDispatch(show_paid_user_tutorial(false));
             localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
         }
-        console.log(index);
         if (index == 2) {
             appDispatch(sidepane_paneopen());
         }

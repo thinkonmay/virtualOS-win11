@@ -2,39 +2,39 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { RootState } from '.';
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
-import { BuilderHelper } from './helper';
 import { addDays } from '../utils/dateHandler';
+import { BuilderHelper } from './helper';
 
 export type PaymentStatus =
     | {
-          status: 'PAID' | 'IMPORTED';
-          plan: string;
-          cluster: string;
-          node: string;
+        status: 'PAID' | 'IMPORTED';
+        plan: string;
+        cluster: string;
+        node: string;
 
-          total_usage: number;
-          created_at: string;
+        total_usage: number;
+        created_at: string;
 
-          limit_hour?: number;
-          ended_at?: string;
-          template?: string;
-          local_metadata?: {
+        limit_hour?: number;
+        ended_at?: string;
+        template?: string;
+        local_metadata?: {
             ram?: string;
             vcpu?: string;
-          };
-      }
+        };
+    }
     | {
-          status: 'NO_ACTION';
-      }
+        status: 'NO_ACTION';
+    }
     | {
-          status: 'PENDING';
-      }
+        status: 'PENDING';
+    }
     | {
-          status: 'CANCEL';
-      };
+        status: 'CANCEL';
+    };
 
 type Data = RecordModel & {
-    subscription: PaymentStatus | '';
+    subscription: PaymentStatus;
     volume_id: string;
 };
 
@@ -47,7 +47,9 @@ const initialState: Data = {
     volume_id: '',
     created: '',
     updated: '',
-    subscription: ''
+    subscription: {
+        status: 'NO_ACTION'
+    }
 };
 
 export const userAsync = {
@@ -120,7 +122,7 @@ export const userAsync = {
             if (err) throw new Error(err.message);
 
             const [{ status }] = data as { status: string }[];
-            let result = {} as PaymentStatus;
+            let result = { status: 'NO_ACTION' } as PaymentStatus;
 
             if (status == 'PENDING') {
                 result = { status };
@@ -213,7 +215,9 @@ export const userAsync = {
                 .from('subscriptions')
                 .select('id')
                 .eq('user', email)
-                .or(`ended_at.gt.${new Date().toISOString()}, ended_at.is.${null}`)
+                .or(
+                    `ended_at.gt.${new Date().toISOString()}, ended_at.is.${null}`
+                )
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false })
                 .limit(1);
@@ -226,25 +230,24 @@ export const userAsync = {
                     .eq('status', 'PENDING')
                     .eq('subscription', existSub[0]?.id);
                 if (errr) throw new Error(errr.message);
-
-                if (payPending.length != 0)
+                else if (payPending.length != 0)
                     return payPending[0].checkoutUrl;
-                
-                const { data: paymentPaid, error: err} = await GLOBAL()
+
+                const { data: paymentPaid, error: err } = await GLOBAL()
                     .from('payment_request')
                     .select('id')
                     .or('status.eq.PAID,status.eq.IMPORTED')
                     .eq('subscription', existSub[0]?.id);
                 if (err) throw new Error(errr.message);
-                if (paymentPaid.length != 0){
+                else if (paymentPaid.length != 0) {
                     const {
                         data: [{ checkoutUrl }],
                         error: err
                     } = await GLOBAL()
                         .from('payment_request')
-                        .insert({ subscription: existSub[0]?.id, expire_at})
+                        .insert({ subscription: existSub[0]?.id, expire_at })
                         .select('result->data->>checkoutUrl');
-                if (err) throw new Error(err.message);
+                    if (err) throw new Error(err.message);
                     return checkoutUrl;
                 }
             }

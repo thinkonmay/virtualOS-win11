@@ -35,7 +35,6 @@ import {
     UserEvents
 } from '../../../src-tauri/api';
 import { ready, SetPinger } from '../../../src-tauri/singleton';
-import { sleep } from '../utils/sleep';
 import { BuilderHelper } from './helper';
 
 type WorkerType = {
@@ -68,11 +67,12 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const { email, subscription } = (getState() as RootState).user;
+            const { status } = subscription;
+            const { vcpu, ram } =
+                status == 'PAID' || status == 'IMPORTED'
+                    ? subscription.local_metadata
+                    : { vcpu: '16', ram: '16' };
 
-            const local_metadata = subscription != '' ? subscription.status === 'PAID' || subscription.status === 'IMPORTED' ? subscription.local_metadata : null : null;
-            
-            const ram = local_metadata.vcpu.toString() ?? '16';
-            const vcpu = local_metadata.vcpu.toString() ?? '16';
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
@@ -145,8 +145,8 @@ export const workerAsync = {
                 const resp = await StartVirtdaemon(
                     computer,
                     volume_id,
-                    ram,
-                    vcpu
+                    `${ram ?? 16}`,
+                    `${vcpu ?? 16}`,
                 );
                 if (resp instanceof Error) {
                     UserEvents({
