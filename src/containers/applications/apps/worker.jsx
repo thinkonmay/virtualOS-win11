@@ -71,7 +71,7 @@ export const Worker = () => {
                                 className="path-field"
                                 type="text"
                                 value={files.cpath}
-                                onChange={() => { }}
+                                onChange={() => {}}
                             />
                         </div>
                         <div className="srchbar">

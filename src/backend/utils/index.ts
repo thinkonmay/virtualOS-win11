@@ -86,14 +86,14 @@ const apps: AppData[] = [
 var { taskbar, desktop } = {
     taskbar: [],
     desktop: [
-              'Local Connect',
-              'Discord',
-              'Hướng dẫn',
-              'Thinkmay Fanpage',
-              'Game cho gói giờ',
-              'Máy tính cá nhân',
-              'Thanh toán'
-          ]
+        'Local Connect',
+        'Discord',
+        'Hướng dẫn',
+        'Thinkmay Fanpage',
+        'Game cho gói giờ',
+        'Máy tính cá nhân',
+        'Thanh toán'
+    ]
 };
 
 apps.map((x) => {

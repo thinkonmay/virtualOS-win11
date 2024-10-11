@@ -16,11 +16,7 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
-import {
-    DesktopApp,
-    SidePane,
-    StartMenu
-} from './components/start';
+import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { WidPane } from './components/start/widget';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
@@ -135,7 +131,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => { });
+        job?.catch(() => {});
 
         const handleState = () => {
             const fullscreen =
@@ -203,13 +199,12 @@ function App() {
                             <Background />
                             <div className="desktop" data-menu="desk">
                                 <DesktopApp />
-                                {Object.keys(Applications)
-                                    .map((key, idx) => {
-                                        var WinApp = Applications[key];
-                                        return (key != 'Worker' || DevEnv)
-                                            ? <WinApp key={idx} />
-                                            : null;
-                                    })}
+                                {Object.keys(Applications).map((key, idx) => {
+                                    var WinApp = Applications[key];
+                                    return key != 'Worker' || DevEnv ? (
+                                        <WinApp key={idx} />
+                                    ) : null;
+                                })}
                             </div>
                         </>
                     )}

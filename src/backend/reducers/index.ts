@@ -21,8 +21,7 @@ import { DevEnv } from '../../../src-tauri/api/database';
 
 const blacklist = ['framerate', 'bitrate', 'internal_sync', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
-    if (DevEnv)
-        console.log({ ...(action as any) });
+    if (DevEnv) console.log({ ...(action as any) });
     else if (
         blacklist.filter((x) => (action as any).type.includes(x)).length == 0
     )
