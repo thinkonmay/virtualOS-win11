@@ -97,13 +97,6 @@ const mobileGuide = [
         spotlightPadding: 1
     },
     {
-        placement: 'top',
-        target: '.resetVideoBtn',
-        title: 'Reset lại kết nối khi gặp lỗi',
-        content: 'Bấm khi bị lỗi đường truyền',
-        spotlightPadding: 1
-    },
-    {
         content: <p>Ngày đăng kí, giờ sử dụng còn lại</p>,
         placement: 'top',
         target: '.infoBtn',
@@ -209,13 +202,7 @@ const desktopGuide = [
         content: 'Nên bật khi chơi',
         spotlightPadding: 1
     },
-    {
-        placement: 'top',
-        target: '.resetVideoBtn',
-        title: 'Reset lại kết nối khi gặp lỗi',
-        content: 'Bấm khi bị lỗi đường truyền',
-        spotlightPadding: 1
-    },
+
     {
         content: <p>Ngày đăng kí, giờ sử dụng còn lại</p>,
         placement: 'top',

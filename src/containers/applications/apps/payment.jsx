@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import { UserEvents } from '../../../../src-tauri/api';
+import { isMobile } from '../../../../src-tauri/core';
 import {
     appDispatch,
     get_payment,
@@ -12,7 +14,6 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 import './assets/store.scss';
-import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
@@ -116,11 +117,16 @@ export const PaymentApp = () => {
 
 const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
 
-    console.log(sub);
     const [isShowDetail, setShowDetail] = useState(sub.name == "month1" ? true : false)
     const gameChooseSubscription = useAppSelector(
         (state) => state.globals.gameChooseSubscription
     );
+
+    useEffect(() => {
+        let check = sub.name == "month1" && !isMobile()
+
+        setShowDetail(check)
+    }, [])
     const gameChoose = useAppSelector((state) =>
         state.globals.gamesInSubscription.find(
             (item) => item.volumeId == gameChooseSubscription?.volumeId
@@ -255,13 +261,13 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                 <div className='flex flex-col gap-2 mb-4'>
                                     <label className='text-blue-500 flex gap-2 items-center' htmlFor="server1">
                                         <input checked type="radio" name="server" id="server1" />
-                                        <span name='play' className='text-blue-500'>play</span>
+                                        <span name='play' className='text-blue-500'>play.thinkmay.net</span>
                                         <div className='flex gap-2 items-center text-xs'>50 available slots <GreenLight /> </div>
                                     </label>
 
-                                    <label className='text-blue-500 flex gap-2 items-center' htmlFor="server2">
+                                    <label className='text-gray-500 flex gap-2 items-center' htmlFor="server2">
                                         <input disabled type="radio" name="server" id="server2" />
-                                        play.0
+                                        play.0.thinkmay.net
                                         <div className='flex gap-1 items-center text-xs'>0 available slots </div>
 
                                     </label>
