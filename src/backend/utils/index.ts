@@ -84,19 +84,8 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: [''],
-    desktop: window.location.href.includes('localhost')
-        ? [
-              'Worker Profile',
-              'Local Connect',
-              'Discord',
-              'Hướng dẫn',
-              'Thinkmay Fanpage',
-              'Game cho gói giờ',
-              'Máy tính cá nhân',
-              'Thanh toán'
-          ]
-        : [
+    taskbar: [],
+    desktop: [
               'Local Connect',
               'Discord',
               'Hướng dẫn',

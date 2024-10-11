@@ -9,7 +9,6 @@ import {
     useAppSelector,
     worker_prev
 } from '../../../backend/reducers';
-import { isAdmin } from '../../../backend/utils/checking';
 import { combineText } from '../../../backend/utils/combineText';
 import { customClickDispatch } from '../../../backend/utils/dispatch';
 import { Icon, Image, ToolBar } from '../../../components/shared/general';
@@ -56,92 +55,88 @@ export const Worker = () => {
                 size={wnapp.size}
                 name={wnapp.name}
             />
-            {isAdmin(email) ? (
-                <div className="windowScreen flex flex-col">
-                    <Ribbon />
-                    <div className="restWindow flex-grow flex flex-col">
-                        <div className="sec1">
+            <div className="windowScreen flex flex-col">
+                <Ribbon />
+                <div className="restWindow flex-grow flex flex-col">
+                    <div className="sec1">
+                        <Icon
+                            className="navIcon hvtheme"
+                            fafa="faArrowUp"
+                            width={14}
+                            click="worker/worker_prev"
+                            pr
+                        />
+                        <div className="path-bar noscroll" tabIndex="-1">
+                            <input
+                                className="path-field"
+                                type="text"
+                                value={files.cpath}
+                                onChange={() => { }}
+                            />
+                        </div>
+                        <div className="srchbar">
+                            <Icon
+                                className="searchIcon"
+                                src="search"
+                                width={12}
+                            />
+                            <input
+                                type="text"
+                                onChange={handleIPChanges}
+                                onKeyDown={(e) =>
+                                    e.key == 'Enter' ? handleEnter() : null
+                                }
+                                value={ip}
+                                placeholder="Enter worker IP"
+                            />
                             <Icon
                                 className="navIcon hvtheme"
                                 fafa="faArrowUp"
                                 width={14}
-                                click="worker/worker_prev"
+                                onClick={handleEnter}
                                 pr
                             />
-                            <div className="path-bar noscroll" tabIndex="-1">
-                                <input
-                                    className="path-field"
-                                    type="text"
-                                    value={files.cpath}
-                                    onChange={() => {}}
-                                />
-                            </div>
-                            <div className="srchbar">
-                                <Icon
-                                    className="searchIcon"
-                                    src="search"
-                                    width={12}
-                                />
-                                <input
-                                    type="text"
-                                    onChange={handleIPChanges}
-                                    onKeyDown={(e) =>
-                                        e.key == 'Enter' ? handleEnter() : null
-                                    }
-                                    value={ip}
-                                    placeholder="Enter worker IP"
-                                />
-                                <Icon
-                                    className="navIcon hvtheme"
-                                    fafa="faArrowUp"
-                                    width={14}
-                                    onClick={handleEnter}
-                                    pr
-                                />
-                            </div>
-
-                            <div className="srchbar">
-                                <Icon
-                                    className="searchIcon"
-                                    src="search"
-                                    width={12}
-                                />
-                                <input
-                                    type="text"
-                                    onChange={handleSearchChange}
-                                    value={searchtxt}
-                                    placeholder="Search"
-                                />
-                            </div>
-                            <form onSubmit={loginAdmin} className="srchbar">
-                                <Icon
-                                    className="searchIcon"
-                                    src="search"
-                                    width={12}
-                                    onClick={loginAdmin}
-                                />
-                                <input
-                                    type="password"
-                                    ref={pwRef}
-                                    onChange={(e) => {
-                                        pwRef.current = e.target.value;
-                                    }}
-                                    placeholder="password"
-                                />
-                            </form>
                         </div>
-                        <div className="sec2">
-                            <ContentArea
-                                adminPw={adminPw}
-                                searchtxt={searchtxt}
-                                data={files}
+
+                        <div className="srchbar">
+                            <Icon
+                                className="searchIcon"
+                                src="search"
+                                width={12}
+                            />
+                            <input
+                                type="text"
+                                onChange={handleSearchChange}
+                                value={searchtxt}
+                                placeholder="Search"
                             />
                         </div>
+                        <form onSubmit={loginAdmin} className="srchbar">
+                            <Icon
+                                className="searchIcon"
+                                src="search"
+                                width={12}
+                                onClick={loginAdmin}
+                            />
+                            <input
+                                type="password"
+                                ref={pwRef}
+                                onChange={(e) => {
+                                    pwRef.current = e.target.value;
+                                }}
+                                placeholder="password"
+                            />
+                        </form>
+                    </div>
+                    <div className="sec2">
+                        <ContentArea
+                            adminPw={adminPw}
+                            searchtxt={searchtxt}
+                            data={files}
+                        />
                     </div>
                 </div>
-            ) : (
-                <h1 className="m-auto">Tính năng đang phát triển</h1>
-            )}
+            </div>
         </div>
     );
 };

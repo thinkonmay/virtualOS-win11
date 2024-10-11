@@ -162,8 +162,6 @@ const fetchSubscription = async () => {
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
         status != 'PAID'
-        //&&
-        //!window.location.host.includes('localhost')
     ) {
         appDispatch(show_tutorial(true));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');

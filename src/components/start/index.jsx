@@ -381,17 +381,6 @@ const GamePadSetting = () => {
     );
 };
 
-export const LogMaintain = () => {
-    return (
-        <div class="bg-red-600 absolute flex gap-4 items-center right-[50%] translate-x-[50%] top-0 text-white font-bold py-2 px-4 rounded">
-            <md.MdOutlineSettingsSuggest
-                fontSize={'1.5rem'}
-            ></md.MdOutlineSettingsSuggest>
-            Server is offline
-        </div>
-    );
-};
-
 function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
     const t = useAppSelector((state) => state.globals.translation);
