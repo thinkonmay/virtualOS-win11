@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 import {
     appDispatch,
     get_payment,
@@ -17,6 +18,8 @@ const listSubs = [
         highlight: false,
         title: 'Gói giờ',
         price_in_vnd: '8',
+        under_price: 'Mua tối thiểu 5 giờ mỗi lần',
+
         name: 'hour2',
         period: 'h',
         bonus: [
@@ -103,6 +106,9 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
+
+    console.log(sub);
+    const [isShowDetail, setShowDetail] = useState(sub.name == "month1" ? true : false)
     const gameChooseSubscription = useAppSelector(
         (state) => state.globals.gameChooseSubscription
     );
@@ -116,6 +122,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
             popup_open({ type: 'gameChoose', data: { planName: subName } })
         );
 
+
     return (
         <div className="sub relative">
             {sub.highlight ? (
@@ -126,7 +133,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                 </div>
             ) : null}
 
-            <div className="flex flex-col overflow-hidden border h-full rounded-[4px]">
+            <div className="flex flex-col flex-1 overflow-hidden border h-full rounded-[4px]">
                 <div className="bg-surface-100 px-4 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
                     <div className="flex items-center gap-2">
                         <div className="flex items-center gap-2">
@@ -166,16 +173,27 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                     </div>
                     <hr className="border-[#504646]" />
                 </div>
-                <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-8 xl:px-4 2xl:px-8 py-6 ">
-                    <p className="text-foreground-light text-[13px] mt-2 mb-2">
-                        Chi tiết:
-                    </p>
+                <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-4 2xl:px-8 py-6 ">
+                    <div
 
-                    {sub.bonus.map((x, i) => (
+                        onClick={() => {
+                            setShowDetail(old => !old)
+                        }}
+                        className="flex items-center text-foreground-light text-[13px] mt-2 mb-2">
+
+                        {isShowDetail ? (
+                            <MdArrowDropDown style={{ fontSize: '1.6rem' }} />
+                        ) : (
+                            <MdArrowRight style={{ fontSize: '1.6rem' }} />
+                        )}
+                        Chi tiết:
+                    </div>
+
+                    {isShowDetail && sub.bonus.map((x, i) => (
                         <ul
                             key={i}
                             role="list"
-                            className="text-[13px] text-foreground-lighter"
+                            className="text-[13px] px-4 text-foreground-lighter"
                         >
                             <li className="flex items-center py-[8px] first:mt-0">
                                 <svg
@@ -199,68 +217,111 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                             </li>
                         </ul>
                     ))}
-                    {sub.name == 'month1' ? (
-                        <button
-                            className="mt-4 w-80 mx-auto bg-red-500 btn btn-secondary"
-                            onClick={() => openChooseGames(sub.name)}
-                        >
-                            Chọn game cài sẵn
-                        </button>
-                    ) : null}
 
-                    {gameChoose?.volumeId &&
-                    sub.name == gameChooseSubscription.planName ? (
-                        <div
-                            key={gameChoose.name}
-                            className="flex flex-col py-4 w-[80px] mx-auto mt-5 h-[100px] rounded-lg bg-[#2d3146]"
-                        >
-                            <Image
-                                w={40}
-                                h={40}
-                                ext
-                                absolute
-                                src={gameChoose.logo}
-                            />
-                            <div className="name mt-auto capitalize text-white  text-xs text-center font-semibold">
-                                {gameChoose.name}
-                            </div>
-                        </div>
-                    ) : null}
+
+
                     <div className="flex flex-col gap-2 mt-auto prose">
                         <div className="space-y-2">
                             <p className="text-[13px] whitespace-pre-wrap"></p>
                         </div>
+                        {sub.name == 'month1' ? (
+                            <div className='flex flex-col'>
 
+                                <button
+                                    className="mt-4 w-full mx-auto border-[#000] border-[1px] border-solid shadow-sm btn btn-secondary"
+                                    onClick={() => openChooseGames(sub.name)}
+                                >
+                                    Y/c cài sẵn GAME khi tạo máy
+                                </button>
+                                <span
+                                    className="mt-2 w-full mx-auto shadow-sm"
+                                >
+                                    Chọn server:
+                                </span>
+                            </div>
+                        ) : null}
+                        {
+
+                            sub.name == 'month1' ? (
+                                <div className='flex flex-col gap-2 mb-4'>
+                                    <label className='text-blue-500 flex gap-2 items-center' htmlFor="server1">
+                                        <input checked type="radio" name="server" id="server1" />
+                                        <span name='play' className='text-blue-500'>play</span>
+                                        <div className='flex gap-2 items-center text-xs'>30 available slots <GreenLight /> </div>
+                                    </label>
+
+                                    <label className='text-blue-500 flex gap-2 items-center' htmlFor="server2">
+                                        <input disabled type="radio" name="server" id="server2" />
+                                        play.0
+                                        <div className='flex gap-1 items-center text-xs'>0 available slots </div>
+
+                                    </label>
+
+                                </div>
+                            )
+
+                                : null
+                        }
+                        {gameChoose?.volumeId &&
+                            sub.name == gameChooseSubscription.planName ? (
+                            <div
+                                key={gameChoose.name}
+                                className="flex flex-col py-4 w-[80px] mx-auto my-5 h-[100px] rounded-lg bg-[#2d3146]"
+                            >
+                                <Image
+                                    w={40}
+                                    h={40}
+                                    ext
+                                    absolute
+                                    src={gameChoose.logo}
+                                />
+                                <div className="name mt-auto capitalize text-white  text-xs text-center font-semibold">
+                                    {gameChoose.name}
+                                </div>
+                            </div>
+                        ) : null}
                         <button
                             onClick={() =>
                                 onChooseSub(sub.name, gameChoose.volumeId)
                             }
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
-                                                            space-x-2 text-center font-regular ease-out duration-200 rounded-md 
+                                                            space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
                                                             outline-none transition-all outline-0 focus-visible:outline-4 
                                                             focus-visible:outline-offset-1 border bg-brand-button 
                                                             hover:bg-brand-button/80 
                                                             text-white border-brand 
                                                             focus-visible:outline-brand-600 
                                                             shadow-sm w-full flex items-center 
-                                                            justify-center text-sm 
+                                                            justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
-                                                            ${
-                                                                sub.name !=
-                                                                'month1'
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-[#328cff]'
-                                                            }  `}
+                                                            ${sub.name !=
+                                    'month1'
+                                    ? 'bg-red-500'
+                                    : 'bg-[#0067c0]'
+                                }  `}
                         >
-                            <span className="truncate font-medium text-xl">
-                                {sub.name != 'month1'
-                                    ? 'Đang đóng!'
-                                    : 'Mua Ngay'}
-                            </span>
+                            {sub.name != 'month1'
+                                ? 'Đang đóng!'
+                                : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
+            </div>
+        </div>
+    );
+};
+
+
+const GreenLight = () => {
+    return (
+        <div className="relative h-4 w-4">
+            {/* Outer glow effect */}
+            <div className="absolute -inset-1 rounded-full bg-green-500/30 blur-sm animate-pulse"></div>
+            {/* Inner bright dot */}
+            <div className="relative h-4 w-4 rounded-full bg-green-500 shadow-lg shadow-green-500/50">
+                {/* Highlight effect */}
+                {/*<div className="absolute top-0.5 left-0.5 h-1.5 w-1.5 rounded-full bg-green-200/60"></div>*/}
             </div>
         </div>
     );

@@ -55,14 +55,12 @@ const apps: AppData[] = [
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store',
-        size: 'mini'
     },
     {
         name: 'Máy tính cá nhân',
         id: 'connectPc',
         action: 'apps/app_toggle',
         payload: 'connectPc',
-        size: 'mini'
     },
     {
         name: 'Hướng dẫn',
