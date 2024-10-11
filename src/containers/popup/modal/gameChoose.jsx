@@ -1,3 +1,4 @@
+import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
     choose_game,
@@ -11,6 +12,13 @@ export function gameChoose({ data }) {
         (state) => state.globals.gamesInSubscription
     );
     const handleChooseGame = (gameId) => {
+        UserEvents({
+            type: 'payment/game_choose',
+            payload: {
+                planName: data.planName,
+                volumeId: gameId
+            }
+        });
         appDispatch(
             choose_game({
                 planName: data.planName,

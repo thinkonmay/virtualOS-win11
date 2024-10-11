@@ -12,6 +12,7 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 import './assets/store.scss';
+import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
@@ -67,8 +68,16 @@ export const PaymentApp = () => {
         state.apps.apps.find((x) => x.id == 'payment')
     );
 
-    const handleChooseSub = async (plan, template) =>
-        appDispatch(get_payment({ template, plan }));
+    const handleChooseSub = async (plan, template) => {
+        UserEvents({
+            type: 'payment/click_sub',
+            payload: {
+                template,
+                plan
+            }
+        })
+        await appDispatch(get_payment({ template, plan }));
+    }
 
     return (
         <div
