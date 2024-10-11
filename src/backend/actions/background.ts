@@ -18,6 +18,7 @@ import {
     loose_focus,
     ping_session,
     setting_theme,
+    show_paid_user_tutorial,
     show_tutorial,
     sidepane_panethem,
     store,
@@ -26,6 +27,7 @@ import {
     worker_refresh
 } from '../reducers';
 import { PaymentStatus } from '../reducers/user.ts';
+import { localStorageKey } from '../utils/constant';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -151,14 +153,22 @@ const fetchSubscription = async () => {
             app = 'store';
             appDispatch(desk_remove('connectPc'));
         }
+    }
+    if (
+        localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true' &&
+        (status == 'PAID' || status == 'IMPORTED')
+    ) {
+        appDispatch(show_paid_user_tutorial(true));
     } else if (
-        localStorage.getItem('shownTutorial') != 'true' &&
-        !window.location.host.includes('localhost')
+        localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
+        !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
+        (status != 'PAID')
+        //&&
+        //!window.location.host.includes('localhost')
     ) {
         appDispatch(show_tutorial(true));
-        localStorage.setItem('shownTutorial', 'true');
+        localStorage.setItem(localStorageKey.shownTutorial, 'true');
     }
-
     if (app != undefined) {
         appDispatch(app_toggle(app));
         appDispatch(app_maximize(app));

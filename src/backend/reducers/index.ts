@@ -55,8 +55,12 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const appDispatch = store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const { update_language, choose_game, show_tutorial } =
-    globalSlice.actions;
+export const {
+    update_language,
+    choose_game,
+    show_tutorial,
+    show_paid_user_tutorial
+} = globalSlice.actions;
 export const { user_delete, user_update, user_check_sub } = userSlice.actions;
 export const { wall_next, wall_set, wall_lock, wall_unlock } =
     wallSlice.actions;
@@ -99,6 +103,7 @@ export const {
     sidepane_bandtogg,
     sidepane_panetogg,
     sidepane_panehide,
+    sidepane_paneopen,
     sidepane_panethem,
     render_message,
     push_notification,

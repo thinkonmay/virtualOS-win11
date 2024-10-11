@@ -198,6 +198,7 @@ const initialState = {
 
     service_available: false,
     tutorial: false,
+    paidUserTutorial: false,
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     apps: [],
@@ -274,7 +275,11 @@ export const globalSlice = createSlice({
             state.gameChooseSubscription = action.payload;
         },
         show_tutorial: (state, action: PayloadAction<boolean>) => {
+            console.log(action.payload, 'payload');
             state.tutorial = action.payload;
+        },
+        show_paid_user_tutorial: (state, action: PayloadAction<boolean>) => {
+            state.paidUserTutorial = action.payload;
         }
     },
     extraReducers: (builder) => {

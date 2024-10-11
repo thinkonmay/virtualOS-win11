@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
+import { isMobile } from '../src-tauri/core';
 import { preload } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
@@ -25,7 +26,6 @@ import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
 import { Background, BootScreen, LockScreen } from './containers/background';
 import Popup from './containers/popup';
-import { isMobile } from '../src-tauri/core';
 import { Remote } from './containers/remote';
 import { Status } from './containers/status';
 import { ErrorFallback } from './error';
@@ -34,6 +34,9 @@ import './index.css';
 function App() {
     ReactModal.setAppElement('#root');
     const remote = useAppSelector((x) => x.remote);
+    const paidUserTutorial = useAppSelector(
+        (state) => state.globals.paidUserTutorial
+    );
     const user = useAppSelector((state) => state.user);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
@@ -123,9 +126,11 @@ function App() {
     };
 
     useEffect(() => {
-        if (remote.fullscreen) {
+        if (remote.fullscreen && !paidUserTutorial) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
+        } else if (paidUserTutorial) {
+            window.onclick = null;
         } else {
             window.oncontextmenu = ctxmenu;
             window.onclick = (e) => {
@@ -148,7 +153,7 @@ function App() {
 
         const UIStateLoop = setInterval(handleState, 100);
         return () => clearInterval(UIStateLoop);
-    }, [remote.fullscreen]);
+    }, [remote.fullscreen, paidUserTutorial]);
 
     const exitpointerlock = () => {
         document.exitPointerLock();
