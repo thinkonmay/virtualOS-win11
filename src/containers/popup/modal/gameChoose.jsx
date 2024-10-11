@@ -1,3 +1,4 @@
+import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
     choose_game,
@@ -11,6 +12,13 @@ export function gameChoose({ data }) {
         (state) => state.globals.gamesInSubscription
     );
     const handleChooseGame = (gameId) => {
+        UserEvents({
+            type: 'payment/game_choose',
+            payload: {
+                planName: data.planName,
+                volumeId: gameId
+            }
+        });
         appDispatch(
             choose_game({
                 planName: data.planName,
@@ -20,12 +28,12 @@ export function gameChoose({ data }) {
         appDispatch(popup_close());
     };
     return (
-        <div className="max-w-[780] w-full h-auto p-[30px] rounded-lg self-center bg-[#222638]]">
+        <div className="max-w-[780px] min-w-[320px] w-full h-auto p-[30px] rounded-lg self-center bg-[#222638]]">
             <h2 className="text-center">
                 Chọn 1 game bạn muốn cài sẵn khi có máy
             </h2>
 
-            <div className="flex flex-wrap mt-8 gap-5">
+            <div className="flex flex-wrap mt-8">
                 {gamesInSubscription.map((item) => (
                     <div
                         onClick={() => {

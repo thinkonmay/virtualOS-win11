@@ -6,6 +6,7 @@ import './wnapp.scss';
 export * from './apps/connect';
 export * from './apps/edge';
 export * from './apps/feedback';
+export * from './apps/guideline';
 export * from './apps/payment';
 export * from './apps/settings';
 export * from './apps/store';

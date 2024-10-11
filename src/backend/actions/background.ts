@@ -3,7 +3,6 @@ import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
-    app_maximize,
     app_toggle,
     change_bitrate,
     change_framerate,
@@ -171,7 +170,7 @@ const fetchSubscription = async () => {
     }
     if (app != undefined) {
         appDispatch(app_toggle(app));
-        appDispatch(app_maximize(app));
+        //appDispatch(app_maximize(app));
     }
 };
 
