@@ -120,7 +120,6 @@ export const {
     scancode,
     scancode_toggle,
     strict_timing,
-    strict_timing_toggle,
     close_remote,
     change_bitrate,
     change_framerate,

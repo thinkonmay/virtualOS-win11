@@ -132,32 +132,6 @@ export const setClipBoard = async (content: string) => {
 
     CLIENT?.SetClipboard(content);
 };
-
-export function openRemotePage(
-    url: string,
-    options?: {
-        app_name?: string;
-        demoSession?: boolean;
-    }
-) {
-    const Url = new URL(url);
-    Url.searchParams.set('no_stretch', 'true');
-    if (store.getState().remote.scancode)
-        Url.searchParams.set('scancode', `true`);
-    if (options?.demoSession) Url.searchParams.set('demo', `true`);
-    if (options?.app_name) Url.searchParams.set('page', options.app_name);
-
-    const open = Url.toString();
-    if (isMobile()) {
-        document.location.href = open;
-        return;
-    }
-
-    setTimeout(() => {
-        window.open(open, '_blank');
-    }, 0);
-}
-
 export const remoteAsync = {
     check_worker: async () => {
         if (!store.getState().remote.active) return;
@@ -356,12 +330,6 @@ export const remoteSlice = createSlice({
 
             CLIENT?.HardReset();
         },
-        strict_timing_toggle: (state) => {
-            state.no_strict_timing = !state.no_strict_timing;
-            if (CLIENT)
-                CLIENT.Metrics.video.idrcount.strict_timing =
-                    !state.no_strict_timing;
-        },
         strict_timing: (state, action: PayloadAction<boolean>) => {
             state.no_strict_timing = action.payload;
         },
@@ -450,8 +418,6 @@ export const remoteSlice = createSlice({
                     const { bitrate, framerate } = action.payload;
                     state.bitrate = bitrate;
                     state.framerate = framerate;
-
-                    if (isMobile()) return;
                 }
             },
             {
