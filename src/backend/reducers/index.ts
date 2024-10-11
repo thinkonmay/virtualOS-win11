@@ -114,7 +114,6 @@ export const {
     remote_connect,
     share_reference,
     toggle_remote,
-    hard_reset,
     loose_focus,
     have_focus,
     scancode,

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
-    hard_reset,
     popup_close,
     popup_open,
     remote_connect,
@@ -269,7 +268,7 @@ export const remoteAsync = {
                     data: { loading: true, title: 'Connect to PC' }
                 })
             );
-            appDispatch(hard_reset());
+            await CLIENT.HardReset();
             await ready();
             appDispatch(popup_close());
         }
@@ -330,11 +329,6 @@ export const remoteSlice = createSlice({
                 setTimeout(() => CLIENT?.Close(), 100);
             }
             state.active = !state.active;
-        },
-        hard_reset: () => {
-            if (CLIENT == null) return;
-
-            CLIENT?.HardReset();
         },
         strict_timing: (state, action: PayloadAction<boolean>) => {
             state.no_strict_timing = action.payload;
