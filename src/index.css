@@ -60,14 +60,14 @@ button {
   position: relative;
   overflow: hidden;
   width: 100vw;
-  height: 100dvh;
+  height: 100vh;
+
 }
 
 .appwrap {
   position: relative;
   z-index: 0;
-  height: 100%;
-  width: 100%;
+
 }
 
 .w-max {
