@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
 import {
     appDispatch,
     get_payment,
@@ -75,9 +75,9 @@ export const PaymentApp = () => {
                 template,
                 plan
             }
-        })
+        });
         await appDispatch(get_payment({ template, plan }));
-    }
+    };
 
     return (
         <div
@@ -115,9 +115,9 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
-
-    console.log(sub);
-    const [isShowDetail, setShowDetail] = useState(sub.name == "month1" ? true : false)
+    const [isShowDetail, setShowDetail] = useState(
+        sub.name == 'month1' ? true : false
+    );
     const gameChooseSubscription = useAppSelector(
         (state) => state.globals.gameChooseSubscription
     );
@@ -130,7 +130,6 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
         appDispatch(
             popup_open({ type: 'gameChoose', data: { planName: subName } })
         );
-
 
     return (
         <div className="sub relative">
@@ -184,12 +183,11 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                 </div>
                 <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-4 2xl:px-8 py-6 ">
                     <div
-
                         onClick={() => {
-                            setShowDetail(old => !old)
+                            setShowDetail((old) => !old);
                         }}
-                        className="flex items-center text-foreground-light text-[13px] mt-2 mb-2">
-
+                        className="flex items-center text-foreground-light text-[13px] mt-2 mb-2"
+                    >
                         {isShowDetail ? (
                             <MdArrowDropDown style={{ fontSize: '1.6rem' }} />
                         ) : (
@@ -198,81 +196,92 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                         Chi tiết:
                     </div>
 
-                    {isShowDetail && sub.bonus.map((x, i) => (
-                        <ul
-                            key={i}
-                            role="list"
-                            className="text-[13px] px-4 text-foreground-lighter"
-                        >
-                            <li className="flex items-center py-[8px] first:mt-0">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="18"
-                                    height="18"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="sbui-icon text-brand h-4 w-4"
-                                    aria-hidden="true"
-                                >
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
-                                    {x}
-                                </span>
-                            </li>
-                        </ul>
-                    ))}
-
-
+                    {isShowDetail &&
+                        sub.bonus.map((x, i) => (
+                            <ul
+                                key={i}
+                                role="list"
+                                className="text-[13px] px-4 text-foreground-lighter"
+                            >
+                                <li className="flex items-center py-[8px] first:mt-0">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="sbui-icon text-brand h-4 w-4"
+                                        aria-hidden="true"
+                                    >
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
+                                        {x}
+                                    </span>
+                                </li>
+                            </ul>
+                        ))}
 
                     <div className="flex flex-col gap-2 mt-auto prose">
                         <div className="space-y-2">
                             <p className="text-[13px] whitespace-pre-wrap"></p>
                         </div>
                         {sub.name == 'month1' ? (
-                            <div className='flex flex-col'>
-
+                            <div className="flex flex-col">
                                 <button
                                     className="mt-4 w-full mx-auto border-[#000] border-[1px] border-solid shadow-sm btn btn-secondary"
                                     onClick={() => openChooseGames(sub.name)}
                                 >
                                     Y/c cài sẵn GAME khi tạo máy
                                 </button>
-                                <span
-                                    className="mt-2 w-full mx-auto shadow-sm"
-                                >
+                                <span className="mt-2 w-full mx-auto shadow-sm">
                                     Chọn server:
                                 </span>
                             </div>
                         ) : null}
-                        {
+                        {sub.name == 'month1' ? (
+                            <div className="flex flex-col gap-2 mb-4">
+                                <label
+                                    className="text-blue-500 flex gap-2 items-center"
+                                    htmlFor="server1"
+                                >
+                                    <input
+                                        checked
+                                        type="radio"
+                                        name="server"
+                                        id="server1"
+                                    />
+                                    <span name="play" className="text-blue-500">
+                                        play
+                                    </span>
+                                    <div className="flex gap-2 items-center text-xs">
+                                        50 available slots <GreenLight />{' '}
+                                    </div>
+                                </label>
 
-                            sub.name == 'month1' ? (
-                                <div className='flex flex-col gap-2 mb-4'>
-                                    <label className='text-blue-500 flex gap-2 items-center' htmlFor="server1">
-                                        <input checked type="radio" name="server" id="server1" />
-                                        <span name='play' className='text-blue-500'>play</span>
-                                        <div className='flex gap-2 items-center text-xs'>50 available slots <GreenLight /> </div>
-                                    </label>
-
-                                    <label className='text-blue-500 flex gap-2 items-center' htmlFor="server2">
-                                        <input disabled type="radio" name="server" id="server2" />
-                                        play.0
-                                        <div className='flex gap-1 items-center text-xs'>0 available slots </div>
-
-                                    </label>
-
-                                </div>
-                            )
-
-                                : null
-                        }
+                                <label
+                                    className="text-blue-500 flex gap-2 items-center"
+                                    htmlFor="server2"
+                                >
+                                    <input
+                                        disabled
+                                        type="radio"
+                                        name="server"
+                                        id="server2"
+                                    />
+                                    play.0
+                                    <div className="flex gap-1 items-center text-xs">
+                                        0 available slots{' '}
+                                    </div>
+                                </label>
+                            </div>
+                        ) : null}
                         {gameChoose?.volumeId &&
-                            sub.name == gameChooseSubscription.planName ? (
+                        sub.name == gameChooseSubscription.planName ? (
                             <div
                                 key={gameChoose.name}
                                 className="flex flex-col py-4 w-[80px] mx-auto my-5 h-[100px] rounded-lg bg-[#2d3146]"
@@ -304,15 +313,14 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
-                                                            ${sub.name !=
-                                    'month1'
-                                    ? 'bg-red-500'
-                                    : 'bg-[#0067c0]'
-                                }  `}
+                                                            ${
+                                                                sub.name !=
+                                                                'month1'
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-[#0067c0]'
+                                                            }  `}
                         >
-                            {sub.name != 'month1'
-                                ? 'Đang đóng!'
-                                : 'Mua Ngay'}
+                            {sub.name != 'month1' ? 'Đang đóng!' : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
@@ -320,7 +328,6 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
         </div>
     );
 };
-
 
 const GreenLight = () => {
     return (

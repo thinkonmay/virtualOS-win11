@@ -1,4 +1,4 @@
-import { LOCAL, UserSession } from '../../../src-tauri/api';
+import { LOCAL, UserEvents, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -168,10 +168,7 @@ const fetchSubscription = async () => {
         appDispatch(show_tutorial(true));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');
     }
-    if (app != undefined) {
-        appDispatch(app_toggle(app));
-        //appDispatch(app_maximize(app));
-    }
+    if (app != undefined) appDispatch(app_toggle(app));
 };
 
 export const preload = async () => {
@@ -188,7 +185,10 @@ export const preload = async () => {
             fetchStore()
         ]);
     } catch (e) {
-        console.log(`error ${e} in preload function`);
+        UserEvents({
+            type: 'preload/rejected',
+            payload: e
+        });
     }
 
     setInterval(check_worker, 30 * 1000);

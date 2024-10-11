@@ -461,9 +461,7 @@ export const Settings = () => {
                                                         </div>
                                                     );
                                                 default:
-                                                    return console.log(
-                                                        `error - type ${e.type} not found`
-                                                    );
+                                                    return null;
                                             }
                                         })}
                                     </div>

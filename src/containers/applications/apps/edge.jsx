@@ -86,7 +86,6 @@ export const EdgeMenu = () => {
     const typing = (e) => {
         if (!isTyping) {
             setTyping(true);
-            console.log([url, url]);
             setHist([url, url]);
         }
         setUrl(e.target.value);

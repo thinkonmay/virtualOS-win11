@@ -225,8 +225,6 @@ const initialState = {
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        // const { data, error } = await supabaseGlobal.rpc('fetch_store');
-        // if (error) throw new Error(error.message);
         return [] as IGame[];
     }),
     fetch_under_maintenance: createAsyncThunk(
@@ -275,7 +273,6 @@ export const globalSlice = createSlice({
             state.gameChooseSubscription = action.payload;
         },
         show_tutorial: (state, action: PayloadAction<boolean>) => {
-            console.log(action.payload, 'payload');
             state.tutorial = action.payload;
         },
         show_paid_user_tutorial: (state, action: PayloadAction<boolean>) => {
