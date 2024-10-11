@@ -209,46 +209,42 @@ export const userAsync = {
                 user: { email }
             } = getState() as RootState;
 
-            const { data: sub1, error: errr } = await GLOBAL()
+            const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id')
                 .eq('user', email)
-                .gt('ended_at', new Date().toISOString())
+                .or(`ended_at.gt.${new Date().toISOString()}, ended_at.is.${null}`)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false })
                 .limit(1);
             if (errr) throw new Error(errr.message);
-            const { data: sub2, error: errr2 } = await GLOBAL()
-                .from('subscriptions')
-                .select('id,plan,cluster,local_metadata')
-                .eq('user', email)
-                .is('ended_at', null)
-                .is('cancelled_at', null)
-                .order('created_at', { ascending: false })
-                .limit(1);
-            if (errr2) throw new Error(errr2.message);
-
-            const sub = [...sub1, ...sub2];
-            if (sub.length > 0) {
-                const { data, error: err } = await GLOBAL()
+            if (existSub.length > 0) {
+                const { data: payPending, error: errr } = await GLOBAL()
                     .from('payment_request')
-                    .select('result->data->>checkoutUrl,status,id')
+                    .select('result->data->>checkoutUrl,status')
                     .gt('expire_at', new Date().toISOString())
-                    .eq('subscription', sub[0]?.id);
-                if (err) throw new Error(err.message);
+                    .eq('status', 'PENDING')
+                    .eq('subscription', existSub[0]?.id);
+                if (errr) throw new Error(errr.message);
 
-                const [{ checkoutUrl, status, id }] = data;
-                if (status == 'PENDING') return checkoutUrl;
-                else if (status == 'PAID' || status == 'IMPORTED'){                
+                if (payPending.length != 0)
+                    return payPending[0].checkoutUrl;
+                
+                const { data: paymentPaid, error: err} = await GLOBAL()
+                    .from('payment_request')
+                    .select('id')
+                    .or('status.eq.PAID,status.eq.IMPORTED')
+                    .eq('subscription', existSub[0]?.id);
+                if (err) throw new Error(errr.message);
+                if (paymentPaid.length != 0){
                     const {
                         data: [{ checkoutUrl }],
                         error: err
                     } = await GLOBAL()
                         .from('payment_request')
-                        .insert({ expire_at, subscription:id })
+                        .insert({ subscription: existSub[0]?.id, expire_at})
                         .select('result->data->>checkoutUrl');
-                    if (err) throw new Error(err.message);
-
+                if (err) throw new Error(err.message);
                     return checkoutUrl;
                 }
             }
