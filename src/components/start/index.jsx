@@ -31,7 +31,6 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
-import { sleep } from '../../backend/utils/sleep';
 import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
 import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
 import { OnboardingNewUser } from '../onboarding/newUser';
@@ -53,9 +52,8 @@ export const DesktopApp = () => {
         (state) => state.globals.paidUserTutorial
     );
     const handleTouchEnd = async (e) => {
-        //clearTimeout(timeoutRef.current);
-        await sleep(200);
-        clickDispatch(e);
+        await new Promise((r) => setTimeout(r, 200));
+        await clickDispatch(e);
     };
     const handleDouble = customClickDispatch((e) => e.stopPropagation());
 

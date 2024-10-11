@@ -16,7 +16,7 @@ export const appSlice = createSlice({
     initialState,
     reducers: {
         app_external: (state, action: PayloadAction<any>) => {
-            setTimeout(() => window.open(action.payload, '_blank'), 0);
+            window.open(action.payload, '_blank');
         },
         app_url: (state, action: PayloadAction<string | undefined>) => {
             const obj = state.apps.find((x) => x.id == 'edge');

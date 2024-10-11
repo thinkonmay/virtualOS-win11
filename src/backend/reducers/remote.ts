@@ -20,7 +20,6 @@ import {
     ready,
     SIZE
 } from '../../../src-tauri/singleton';
-import { sleep } from '../utils/sleep';
 import { BuilderHelper } from './helper';
 
 export type AuthSessionResp = {
@@ -243,16 +242,8 @@ export const remoteAsync = {
     }),
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
-        async (_: void, { getState }) => {
-            if (!store.getState().remote.active) {
-                appDispatch(toggle_remote());
-                await sleep(2000);
-                return;
-            }
-
+        async (_: void, {}) => {
             appDispatch(toggle_remote());
-
-            return;
         }
     ),
     hard_reset_async: createAsyncThunk(

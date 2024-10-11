@@ -191,6 +191,6 @@ export const preload = async () => {
 
     setInterval(check_worker, 30 * 1000);
     setInterval(sync, 2 * 1000);
-    setInterval(handleClipboard, 100);
+    setInterval(handleClipboard, 1000);
     setInterval(ping_session, 1000 * 30);
 };

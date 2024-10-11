@@ -143,8 +143,10 @@ function App() {
             appDispatch(set_fullscreen(fullscreen));
         };
 
-        const UIStateLoop = setInterval(handleState, 100);
-        return () => clearInterval(UIStateLoop);
+        const UIStateLoop = setInterval(handleState, 500);
+        return () => {
+            clearInterval(UIStateLoop);
+        };
     }, [remote.fullscreen, paidUserTutorial]);
 
     const exitpointerlock = () => {
@@ -167,7 +169,7 @@ function App() {
                 appDispatch(pointer_lock(havingPtrLock));
         };
 
-        const UIStateLoop = setInterval(handleState, 100);
+        const UIStateLoop = setInterval(handleState, 500);
         return () => {
             clearInterval(UIStateLoop);
         };
