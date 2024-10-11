@@ -136,8 +136,7 @@ export const remoteAsync = {
     check_worker: async () => {
         if (!store.getState().remote.active) return;
         else if (store.getState().remote.local) return;
-        else if (CLIENT == null) return;
-        else if (!CLIENT.ready()) return;
+        else if (CLIENT == null || !CLIENT?.ready()) return;
 
         // TODO
     },
@@ -174,8 +173,7 @@ export const remoteAsync = {
     },
     sync: async () => {
         if (!store.getState().remote.active) return;
-        else if (CLIENT == null) return;
-        else if (!CLIENT.ready()) return;
+        else if (CLIENT == null || !CLIENT?.ready()) return;
 
         appDispatch(
             remoteSlice.actions.metrics({

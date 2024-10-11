@@ -26,7 +26,6 @@ import {
     ParseRequest,
     ParseVMRequest,
     PingSession,
-    POCKETBASE,
     RenderNode,
     StartRequest,
     StartThinkmay,
@@ -34,7 +33,7 @@ import {
     StartVirtdaemon,
     UserEvents
 } from '../../../src-tauri/api';
-import { SetPinger } from '../../../src-tauri/singleton';
+import { ready, SetPinger } from '../../../src-tauri/singleton';
 import { sleep } from '../utils/sleep';
 import { BuilderHelper } from './helper';
 
@@ -283,6 +282,7 @@ export const workerAsync = {
             if (result instanceof Error) throw result;
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
+            await ready();
         }
     ),
     personal_worker_session_close: createAsyncThunk(
@@ -399,8 +399,8 @@ export const workerAsync = {
             });
 
             appDispatch(remote_connect(result));
-            await sleep(15 * 1000);
             await appDispatch(save_reference(result));
+            await ready();
         }
     ),
     vm_session_close: createAsyncThunk(
@@ -460,6 +460,7 @@ export const workerAsync = {
 
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
+            await ready();
         }
     ),
     peer_session_close: createAsyncThunk(
