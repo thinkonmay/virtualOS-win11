@@ -157,11 +157,10 @@ export const loginWithEmail = async (email: string, password: string) => {};
 
 export const signUpWithEmail = async (email: string, password: string) => {};
 export const login = async (provider: 'google' | 'facebook' | 'discord') => {
-    provider = 'google';
+    const w = window.open();
     await POCKETBASE.collection('users').authWithOAuth2({
         provider,
         urlCallback: (url) => {
-            const w = window.open();
             w.location.href = url;
         }
     });

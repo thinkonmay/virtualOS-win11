@@ -129,12 +129,12 @@ export const LockScreen = () => {
                                     Continue with
                                 </span>
                                 <div className="flex gap-[8px]">
-                                    <button
+                                    {/* <button
                                         className="base discord_button"
                                         onClick={() => proceed('discord')}
                                     >
                                         <Icon src="discord" width={64} />
-                                    </button>
+                                    </button> */}
                                     <button
                                         className="base gg_button"
                                         onClick={() => proceed('google')}
