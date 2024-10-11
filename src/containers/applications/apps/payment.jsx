@@ -247,7 +247,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                     <label className='text-blue-500 flex gap-2 items-center' htmlFor="server1">
                                         <input checked type="radio" name="server" id="server1" />
                                         <span name='play' className='text-blue-500'>play</span>
-                                        <div className='flex gap-2 items-center text-xs'>30 available slots <GreenLight /> </div>
+                                        <div className='flex gap-2 items-center text-xs'>50 available slots <GreenLight /> </div>
                                     </label>
 
                                     <label className='text-blue-500 flex gap-2 items-center' htmlFor="server2">
