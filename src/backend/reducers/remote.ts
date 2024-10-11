@@ -9,7 +9,7 @@ import {
     toggle_remote
 } from '.';
 import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
-import { EventCode, isMobile } from '../../../src-tauri/core';
+import { EventCode } from '../../../src-tauri/core';
 import {
     CLIENT,
     MAX_BITRATE,
@@ -17,6 +17,7 @@ import {
     MIN_BITRATE,
     MIN_FRAMERATE,
     PINGER,
+    ready,
     SIZE
 } from '../../../src-tauri/singleton';
 import { sleep } from '../utils/sleep';
@@ -263,7 +264,14 @@ export const remoteAsync = {
             if (CLIENT == null) return;
 
             appDispatch(hard_reset());
-            return;
+            appDispatch(
+                popup_open({
+                    type: 'notify',
+                    data: { loading: true, title: 'Connect to PC' }
+                })
+            );
+            await ready();
+            appDispatch(popup_close());
         }
     )
 };
