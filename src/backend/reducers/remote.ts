@@ -263,13 +263,13 @@ export const remoteAsync = {
         async (_: void, { getState }) => {
             if (CLIENT == null) return;
 
-            appDispatch(hard_reset());
             appDispatch(
                 popup_open({
                     type: 'notify',
                     data: { loading: true, title: 'Connect to PC' }
                 })
             );
+            appDispatch(hard_reset());
             await ready();
             appDispatch(popup_close());
         }
