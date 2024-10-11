@@ -1,39 +1,23 @@
 import { useEffect, useState } from 'react';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
-import { AddNotifier, ConnectionEvent } from '../../../src-tauri/core';
-import { useAppSelector } from '../../backend/reducers';
+import { CLIENT } from '../../../src-tauri/singleton';
 import './status.scss';
 
 export const Status = () => {
-    // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
     const [isOpenStats, setOpenStats] = useState(false);
-    const remote = useAppSelector((store) => store.remote);
 
     useEffect(() => {
-        if (!remote.active || remote.auth == undefined) return;
+        const interval = setInterval(() => {
+            setVideoConnectivity(CLIENT.Metrics.video.status);
+            setAudioConnectivity(CLIENT.Metrics.audio.status);
+        }, 1000);
 
-        AddNotifier(async (message, text, source) => {
-            if (message == ConnectionEvent.WebRTCConnectionClosed)
-                source == 'audio'
-                    ? setAudioConnectivity('closed')
-                    : setVideoConnectivity('closed');
-            if (message == ConnectionEvent.WebRTCConnectionDoneChecking)
-                source == 'audio'
-                    ? setAudioConnectivity('connected')
-                    : setVideoConnectivity('connected');
-            if (message == ConnectionEvent.WebRTCConnectionChecking)
-                source == 'audio'
-                    ? setAudioConnectivity('connecting')
-                    : setVideoConnectivity('connecting');
-
-            if (message == ConnectionEvent.ApplicationStarted) {
-                setAudioConnectivity('started');
-                setVideoConnectivity('started');
-            }
-        });
-    }, [remote.active]);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     return (
         <div className="relative">

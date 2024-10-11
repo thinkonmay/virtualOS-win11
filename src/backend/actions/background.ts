@@ -1,4 +1,4 @@
-import { UserSession } from '../../../src-tauri/api';
+import { LOCAL, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -26,6 +26,7 @@ import {
     wall_set,
     worker_refresh
 } from '../reducers';
+import { PaymentStatus } from '../reducers/user.ts';
 import { localStorageKey } from '../utils/constant';
 
 const loadSettings = async () => {
@@ -116,33 +117,43 @@ const startAnalytics = async () => {
 
 const fetchSubscription = async () => {
     const allowed_domains = 'thinkmay.net';
+    const origin = new URL(window.location.href).host;
     await appDispatch(fetch_subscription());
 
-    const { plan, status, cluster } = store.getState().user.subscription as any;
-    if (
-        cluster != undefined &&
-        !window.location.host.includes('localhost') &&
-        cluster != window.location.host &&
-        cluster.includes(allowed_domains)
-    )
-        window.open(`https://${cluster}`, '_self');
+    const subscription = store.getState().user.subscription as PaymentStatus;
+    const { status } = subscription;
+    if (status == 'PAID' || status == 'IMPORTED') {
+        const { cluster } = subscription;
+
+        if (origin != 'localhost' && origin != cluster) {
+            //window.open(`https://${cluster}`, '_self');
+        }
+    } else if (status == 'NO_ACTION') {
+        const { data, error } = await LOCAL()
+            .from('constant')
+            .select('value->>destination')
+            .eq('name', 'redirect');
+        if (error) throw error;
+        else if (data.length == 1) {
+            const [{ destination }] = data;
+            if (origin != 'localhost' && origin != destination) {
+                //window.open(destination, '_self');
+            }
+        }
+    }
 
     let app: string = undefined;
     if (status == 'PENDING') app = 'payment';
-    else if (
-        (status == 'PAID' || status == 'IMPORTED') &&
-        (plan as string).includes('month')
-    ) {
-        app = 'connectPc';
-        appDispatch(desk_remove('store'));
-    } else if (
-        (status == 'PAID' || status == 'IMPORTED') &&
-        (plan as string).includes('hour')
-    ) {
-        app = 'store';
-        appDispatch(desk_remove('connectPc'));
+    else if (status == 'PAID' || status == 'IMPORTED') {
+        const { plan } = subscription;
+        if (plan.includes('month')) {
+            app = 'connectPc';
+            appDispatch(desk_remove('store'));
+        } else if (plan.includes('hour')) {
+            app = 'store';
+            appDispatch(desk_remove('connectPc'));
+        }
     }
-
     if (
         localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true' &&
         (status == 'PAID' || status == 'IMPORTED')
@@ -151,7 +162,7 @@ const fetchSubscription = async () => {
     } else if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        (status != 'PAID' || status != 'IMPORTED')
+        (status != 'PAID')
         //&&
         //!window.location.host.includes('localhost')
     ) {

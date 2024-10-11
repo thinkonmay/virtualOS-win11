@@ -199,7 +199,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                             </li>
                         </ul>
                     ))}
-                    {sub.name.includes('month') ? (
+                    {sub.name == 'month1' ? (
                         <button
                             className="mt-4 w-80 mx-auto bg-red-500 btn btn-secondary"
                             onClick={() => openChooseGames(sub.name)}
@@ -247,15 +247,14 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                                             justify-center text-sm 
                                                             leading-4 px-3 py-2
                                                             ${
-                                                                sub.name.includes(
-                                                                    'hour'
-                                                                )
+                                                                sub.name !=
+                                                                'month1'
                                                                     ? 'bg-red-500'
                                                                     : 'bg-[#328cff]'
                                                             }  `}
                         >
                             <span className="truncate font-medium text-xl">
-                                {sub.name.includes('hour')
+                                {sub.name != 'month1'
                                     ? 'Đang đóng!'
                                     : 'Mua Ngay'}
                             </span>

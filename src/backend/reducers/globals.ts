@@ -233,14 +233,16 @@ export const globalAsync = {
         'fetch_under_maintenance',
         async () => {
             const {
-                data: [{ value: info }],
+                data: [_data],
                 error
             } = await LOCAL()
                 .from('constant')
                 .select('value')
                 .eq('name', 'mantainance');
             if (error) throw new Error(error.message);
+            else if (_data == undefined) return {};
 
+            const { value: info } = _data;
             return info != undefined &&
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)

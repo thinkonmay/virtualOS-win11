@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
 import {
     AudioWrapper,
-    isMobile,
     RemoteDesktopClient,
-    VideoWrapper
+    VideoWrapper,
+    isMobile
 } from '../../../src-tauri/core';
 import { Assign, CLIENT } from '../../../src-tauri/singleton';
-import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
     set_fullscreen,
@@ -21,7 +20,8 @@ export const Remote = () => {
     const gamepad = useAppSelector(
         (state) => !state.sidepane.mobileControl.gamePadHide
     );
-    const { active, auth, scancode } = useAppSelector((store) => store.remote);
+    const { active, auth, scancode, relative_mouse, fullscreen } =
+        useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
     useEffect(() => {
@@ -56,17 +56,23 @@ export const Remote = () => {
                 )
         );
 
-    const relative_mouse = useAppSelector((x) => x.remote.relative_mouse);
     const pointerlock = () => {
-        appDispatch(set_fullscreen(true));
-        remoteVideo.current.requestPointerLock();
+        if (!fullscreen) appDispatch(set_fullscreen(true));
+        if (
+            !(
+                document.pointerLockElement != null ||
+                document.mozPointerLockElement != null ||
+                document.webkitPointerLockElement != null
+            )
+        )
+            remoteVideo.current.requestPointerLock();
     };
     return (
         <div className="relative">
             <video
                 className="remote"
                 ref={remoteVideo}
-                onClick={relative_mouse ? pointerlock : (e) => afterMath(e)}
+                onClick={relative_mouse ? pointerlock : null}
                 autoPlay
                 muted
                 playsInline

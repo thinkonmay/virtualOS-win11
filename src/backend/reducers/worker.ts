@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 import {
     appDispatch,
     claim_volume,
@@ -25,7 +26,6 @@ import {
     ParseRequest,
     ParseVMRequest,
     PingSession,
-    POCKETBASE,
     RenderNode,
     StartRequest,
     StartThinkmay,
@@ -33,7 +33,7 @@ import {
     StartVirtdaemon,
     UserEvents
 } from '../../../src-tauri/api';
-import { SetPinger } from '../../../src-tauri/singleton';
+import { ready, SetPinger } from '../../../src-tauri/singleton';
 import { sleep } from '../utils/sleep';
 import { BuilderHelper } from './helper';
 
@@ -66,9 +66,9 @@ export const workerAsync = {
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
-            const email = (getState() as RootState).user.email;
-            const ram = (getState() as RootState).user.stat?.ram ?? '16';
-            const vcpu = (getState() as RootState).user.stat?.vcpu ?? '16';
+            const { email, local_metadata } = (getState() as RootState).user;
+            const ram = local_metadata?.ram ?? '16';
+            const vcpu = local_metadata?.vcpu ?? '16';
             await appDispatch(worker_refresh());
             appDispatch(
                 popup_open({
@@ -129,9 +129,11 @@ export const workerAsync = {
                     return;
                 }
 
+                const id = uuidv4();
                 UserEvents({
                     type: 'remote/requesting_vm',
                     payload: {
+                        id,
                         email
                     }
                 });
@@ -146,6 +148,7 @@ export const workerAsync = {
                     UserEvents({
                         type: 'remote/request_vm_failure',
                         payload: {
+                            id,
                             email,
                             error: resp.message
                         }
@@ -157,6 +160,7 @@ export const workerAsync = {
                 UserEvents({
                     type: 'remote/request_vm_success',
                     payload: {
+                        id,
                         email
                     }
                 });
@@ -219,19 +223,29 @@ export const workerAsync = {
             });
 
             if (found != undefined) {
-                const { data: job, error: err } = await LOCAL()
-                    .from('job')
-                    .select('result')
-                    .eq('arguments->>id', volume_id)
+                const { data, error: errr } = await LOCAL()
+                    .from('volume_map')
+                    .select('id')
+                    .eq('id', volume_id)
+                    .eq('status', 'IMPORTED')
                     .limit(1);
-                if (err) throw new Error(err.message);
-                else if (job.length > 0 && job[0].result == 'success')
-                    node.info.available = 'ready';
-                else node.info.available = 'not_ready';
-            }
+                if (errr) throw new Error(errr.message);
+                else if (data.length == 1) node.info.available = 'ready';
+                else {
+                    const { data, error: err } = await LOCAL()
+                        .from('job')
+                        .select('result')
+                        .eq('arguments->>id', volume_id)
+                        .limit(1);
+                    if (err) throw new Error(err.message);
+                    else if (data.length > 0 && data[0].result == 'success')
+                        node.info.available = 'ready';
+                    else node.info.available = 'not_ready';
+                }
 
-            if (found.type == 'vm_worker' && node.info.available == 'ready')
-                node.info.available = 'started';
+                if (found.type == 'vm_worker' && node.info.available == 'ready')
+                    node.info.available = 'started';
+            }
 
             return node.any();
         }
@@ -268,6 +282,7 @@ export const workerAsync = {
             if (result instanceof Error) throw result;
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
+            await ready();
         }
     ),
     personal_worker_session_close: createAsyncThunk(
@@ -384,8 +399,8 @@ export const workerAsync = {
             });
 
             appDispatch(remote_connect(result));
-            await sleep(15 * 1000);
             await appDispatch(save_reference(result));
+            await ready();
         }
     ),
     vm_session_close: createAsyncThunk(
@@ -445,6 +460,7 @@ export const workerAsync = {
 
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
+            await ready();
         }
     ),
     peer_session_close: createAsyncThunk(

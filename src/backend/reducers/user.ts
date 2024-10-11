@@ -4,11 +4,12 @@ import { RootState } from '.';
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 
-type PaymentStatus =
+export type PaymentStatus =
     | {
           status: 'PAID' | 'IMPORTED';
           plan: string;
           cluster: string;
+          node: string;
 
           total_usage: number;
           created_at: string;
@@ -145,9 +146,18 @@ export const userAsync = {
                 });
                 if (error) throw error;
 
+                const { data: map, error: errr } = await LOCAL()
+                    .from('volume_map')
+                    .select('node')
+                    .eq('id', volume_id)
+                    .limit(1);
+                if (errr) throw errr;
+                const node = map.at(0)?.node;
+
                 result = {
                     status,
                     cluster,
+                    node,
                     plan,
                     local_metadata,
                     limit_hour,
@@ -167,6 +177,27 @@ export const userAsync = {
             { plan: plan_name, template }: { plan: string; template?: string },
             { getState }
         ): Promise<string> => {
+            const {
+                data: [_plans],
+                error: errrr
+            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
+            if (errrr) throw new Error(errrr.message);
+            else if (_plans == undefined)
+                throw new Error('gói dịch vụ hiện đang tạm đóng');
+            const { id: plan } = _plans;
+
+            const {
+                data: [cluster_ele],
+                error: errrrr
+            } = await GLOBAL()
+                .from('clusters')
+                .select('id')
+                .eq('domain', getDomain());
+            if (errrrr) throw new Error(errrrr.message);
+            else if (cluster_ele == undefined)
+                throw new Error('dịch vụ hiện chưa triển khai trên domain');
+            const { id: cluster } = cluster_ele;
+
             const expire_at = new Date(
                 new Date().getTime() + 1000 * 60 * 15
             ).toISOString();
@@ -198,29 +229,16 @@ export const userAsync = {
                 const { data, error: err } = await GLOBAL()
                     .from('payment_request')
                     .select('result->data->>checkoutUrl,status')
-                    .eq('subscription', sub[0]?.id);
+                    .eq('subscription', sub[0]?.id)
+                    .gt('expire_at', new Date().toISOString());
                 if (err) throw new Error(err.message);
-
-                const [{ checkoutUrl, status }] = data;
-                if (status == 'PENDING') return checkoutUrl;
-                else if (status == 'PAID' || status == 'IMPORTED')
-                    throw new Error('you already paid for our service');
+                else if (data.length > 0) {
+                    const [{ checkoutUrl, status }] = data;
+                    if (status == 'PENDING') return checkoutUrl;
+                    else if (status == 'PAID' || status == 'IMPORTED')
+                        throw new Error('you already paid for our service');
+                }
             }
-
-            const {
-                data: [{ id: plan }],
-                error: errrr
-            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
-            if (errrr) throw new Error(errrr.message);
-
-            const {
-                data: [{ id: cluster }],
-                error: errrrr
-            } = await GLOBAL()
-                .from('clusters')
-                .select('id')
-                .eq('domain', getDomain());
-            if (errrrr) throw new Error(errrrr.message);
 
             const {
                 data: [{ id: subscription }],
