@@ -103,22 +103,18 @@ export function WindowD() {
 }
 
 export async function keyboardCallback(val, action: 'up' | 'down') {
-    if ('vibrate' in navigator && action == 'down') {
+    if ('vibrate' in navigator && action == 'down')
         navigator.vibrate([40, 30, 0]);
-    }
 
-    if (CLIENT == null) return;
-    CLIENT.VirtualKeyboard({
+    await CLIENT?.VirtualKeyboard({
         code: action == 'up' ? EventCode.KeyUp : EventCode.KeyDown,
         jsKey: val
     });
 }
 export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
-    if ('vibrate' in navigator && type == 'down') {
+    if ('vibrate' in navigator && type == 'down') 
         navigator.vibrate([40, 30, 0]);
-    }
-    if (CLIENT == null) return;
-    CLIENT.VirtualGamepadButton(type == 'down', index);
+    await CLIENT?.VirtualGamepadButton(type == 'down', index);
 }
 
 export async function gamepadAxisCallback(
@@ -126,14 +122,11 @@ export async function gamepadAxisCallback(
     y: number,
     type: 'left' | 'right'
 ) {
-    if (CLIENT == null) return;
-    CLIENT.VirtualGamepadAxis(x, y, type);
+    await CLIENT?.VirtualGamepadAxis(x, y, type);
 }
 
 export const setClipBoard = async (content: string) => {
-    if (CLIENT == null) return;
-
-    CLIENT?.SetClipboard(content);
+    await CLIENT?.SetClipboard(content);
 };
 export const remoteAsync = {
     check_worker: async () => {
