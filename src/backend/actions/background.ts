@@ -18,6 +18,7 @@ import {
     loose_focus,
     ping_session,
     setting_theme,
+    show_paid_user_tutorial,
     show_tutorial,
     sidepane_panethem,
     store,
@@ -25,6 +26,7 @@ import {
     wall_set,
     worker_refresh
 } from '../reducers';
+import { localStorageKey } from '../utils/constant';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -131,25 +133,31 @@ const fetchSubscription = async () => {
         (status == 'PAID' || status == 'IMPORTED') &&
         (plan as string).includes('month')
     ) {
-        app = 'connectPc'
-        appDispatch(desk_remove('store'))
-    }
-
-    else if (
+        app = 'connectPc';
+        appDispatch(desk_remove('store'));
+    } else if (
         (status == 'PAID' || status == 'IMPORTED') &&
         (plan as string).includes('hour')
     ) {
-        app = 'store'
-        appDispatch(desk_remove('connectPc'))
-    }
-    else if (
-        localStorage.getItem('shownTutorial') != 'true' &&
-        !window.location.host.includes('localhost')
-    ) {
-        appDispatch(show_tutorial(true));
-        localStorage.setItem('shownTutorial', 'true');
+        app = 'store';
+        appDispatch(desk_remove('connectPc'));
     }
 
+    if (
+        localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true' &&
+        (status == 'PAID' || status == 'IMPORTED')
+    ) {
+        appDispatch(show_paid_user_tutorial(true));
+    } else if (
+        localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
+        !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
+        (status != 'PAID' || status != 'IMPORTED')
+        //&&
+        //!window.location.host.includes('localhost')
+    ) {
+        appDispatch(show_tutorial(true));
+        localStorage.setItem(localStorageKey.shownTutorial, 'true');
+    }
     if (app != undefined) {
         appDispatch(app_toggle(app));
         appDispatch(app_maximize(app));

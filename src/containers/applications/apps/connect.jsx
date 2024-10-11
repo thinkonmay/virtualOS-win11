@@ -73,14 +73,17 @@ export const ConnectApp = () => {
                             {available == 'ready' || available == 'started' ? (
                                 <button
                                     onClick={connect}
-                                    className="instbtn connectBtn"
+                                    className="instbtn connectBtn12"
                                 >
                                     {available == 'ready'
                                         ? 'Khởi tạo'
                                         : 'Kết nối'}
                                 </button>
                             ) : available == 'not_ready' ? (
-                                <button disabled className="instbtn connectBtn">
+                                <button
+                                    disabled
+                                    className="instbtn connectBtn12"
+                                >
                                     Máy đang được khởi tạo
                                 </button>
                             ) : (

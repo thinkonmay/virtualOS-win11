@@ -37,7 +37,9 @@ export const localStorageKey = {
     app: 'APP',
     request: 'REQUESTCACHE',
     language: 'language',
-    PATH_NAME: 'FINISH_PAYMENT'
+    PATH_NAME: 'FINISH_PAYMENT',
+    shownTutorial: 'SHOWN_TUTORIAL',
+    shownPaidUserTutorial: 'SHOWN_PAID_USER_TUTORIAL'
 };
 
 export enum PlanName {

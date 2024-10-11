@@ -121,7 +121,7 @@ const Taskbar = () => {
                             </div>
                         </div>
                         <div
-                            className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
+                            className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                             onClick={customDispatch}
                             style={{ '--prefix': 'PANE' }}
                             data-action="sidepane_panetogg"
@@ -156,7 +156,7 @@ const Taskbar = () => {
                         <div className="tasksCont" data-side={tasks.align}>
                             <div className="tsbar" onMouseOut={hidePrev}>
                                 <Icon
-                                    className="tsIcon tsIconInvert"
+                                    className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={24}
                                     click="startmenu/startogg"
@@ -253,7 +253,7 @@ const Taskbar = () => {
                                 </div>
                             </div>
                             <div
-                                className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
+                                className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                                 onClick={clickDispatch}
                                 style={{ '--prefix': 'PANE' }}
                                 data-action="sidepane_panetogg"

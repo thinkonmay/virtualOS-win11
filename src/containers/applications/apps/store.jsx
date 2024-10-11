@@ -173,7 +173,7 @@ const stars = 5;
 const reviews = 5000;
 
 const DetailPage = ({ app }) => {
-    const t = (e) => { };
+    const t = (e) => {};
     const user = useAppSelector((state) => state.user);
     const isMaintaining = useAppSelector(
         (state) => state.globals.maintenance?.isMaintaining
@@ -379,7 +379,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => { };
+    const t = (e) => {};
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -500,20 +500,20 @@ const DownPage = ({ action }) => {
                 {games.length > 0
                     ? renderSearchResult()
                     : listDraftApp.map((i) => (
-                        <div
-                            key={i}
-                            className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
-                            data-action="page2"
-                        >
-                            <Image
-                                className="mx-4 mb-6 rounded bg-slate-200"
-                                w={100}
-                                h={100}
-                                ext
-                            />
-                            <div className="capitalize text-xs text-center font-semibold"></div>
-                        </div>
-                    ))}
+                          <div
+                              key={i}
+                              className="animate-pulse ribcont p-4 pt-8 ltShad prtclk"
+                              data-action="page2"
+                          >
+                              <Image
+                                  className="mx-4 mb-6 rounded bg-slate-200"
+                                  w={100}
+                                  h={100}
+                                  ext
+                              />
+                              <div className="capitalize text-xs text-center font-semibold"></div>
+                          </div>
+                      ))}
             </div>
         </div>
     );

@@ -110,6 +110,7 @@ const initialState: Data = {
         ? [
               {
                   ui: true,
+                  id: 'toggle_remote_async',
                   src: 'FiVideoOff',
                   name: [Contents.VIDEO_TOGGLE],
                   state: 'active',
@@ -117,6 +118,7 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'resetVideoBtn',
                   src: 'MdOutlineResetTv',
                   name: [Contents.RESET_VIDEO],
                   state: 'network.airplane',
@@ -124,6 +126,7 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'fullscrenBtn',
                   src: 'MdFullscreen',
                   name: [Contents.FULLSCREEN],
                   state: 'fullscreen',
@@ -131,6 +134,7 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'fixKeyboardBtn',
                   src: 'MdOutlineKeyboard',
                   name: [Contents.SCAN_CODE],
                   state: 'scancode',
@@ -138,6 +142,7 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'shareLinkBtn',
                   src: 'MdOutlineLink',
                   name: [Contents.EXTERNAL_TAB],
                   state: 'share_reference',
@@ -145,6 +150,8 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'gamingMouseBtn',
+
                   src: 'FaMousePointer',
                   name: [Contents.RELATIVE_MOUSE],
                   state: 'relative_mouse',
@@ -152,6 +159,7 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'shutdownBtn',
                   src: 'MdOutlinePowerSettingsNew',
                   name: [Contents.SHUT_DOWN],
                   state: 'shutdown',
@@ -160,6 +168,7 @@ const initialState: Data = {
               },
               {
                   ui: true,
+                  id: 'lowNetworkBtn',
                   src: 'MdNetworkWifi2Bar',
                   name: [Contents.STRICT_TIMING],
                   state: 'no_strict_timing',
@@ -225,6 +234,7 @@ const initialState: Data = {
         buttons: [
             {
                 ui: true,
+                id: 'resetVideoBtn',
                 src: 'MdOutlineResetTv',
                 name: [Contents.RESET_VIDEO],
                 state: 'network.airplane',
@@ -232,6 +242,7 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id: 'fullscrenBtn',
                 src: 'MdFullscreen',
                 name: [Contents.FULLSCREEN],
                 state: 'fullscreen',
@@ -239,6 +250,7 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id: 'virtKeyboardBtn',
                 src: 'MdOutlineKeyboard',
                 name: [Contents.OPEN_KEYBOARD],
                 state: 'keyboardOpen',
@@ -246,6 +258,7 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id: 'virtGamepadBtn',
                 src: 'MdOutlineSportsEsports',
                 name: [Contents.OPEN_GAMEPAD],
                 state: 'gamePadOpen',
@@ -261,6 +274,7 @@ const initialState: Data = {
             //},
             {
                 ui: true,
+                id: 'shareLinkBtn',
                 src: 'MdOutlineLink',
                 name: [Contents.EXTERNAL_TAB],
                 state: 'network.airplane',
@@ -268,6 +282,7 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id: 'lowNetworkBtn',
                 src: 'MdNetworkWifi2Bar',
                 name: [Contents.STRICT_TIMING],
                 state: 'no_strict_timing',
@@ -275,6 +290,7 @@ const initialState: Data = {
             },
             {
                 ui: true,
+                id: 'shutdownBtn',
                 src: 'MdOutlinePowerSettingsNew',
                 name: [Contents.SHUT_DOWN],
                 state: 'shutdown',
@@ -378,6 +394,9 @@ export const sidepaneSlice = createSlice({
         },
         sidepane_panetogg: (state) => {
             state.hide = !state.hide;
+        },
+        sidepane_paneopen: (state) => {
+            state.hide = false;
         },
         sidepane_panehide: (state) => {
             state.hide = true;

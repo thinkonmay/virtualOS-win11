@@ -13,7 +13,6 @@ import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
 
-
 function UserInfo() {
     const {
         email,
@@ -61,7 +60,9 @@ function UserInfo() {
                 ) : null}
                 <div className="w-full flex gap-4 justify-between mt-4 items-end">
                     <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>{(+total_usage / 60).toFixed(2)}h / {limit_hour}h</span>
+                    <span>
+                        {(+total_usage / 60).toFixed(2)}h / {limit_hour}h
+                    </span>
                 </div>
 
                 {template ? (
@@ -119,7 +120,7 @@ function UserInfo() {
                     <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] ">
                         <span>Shut down</span>
                         {shutdownable == 'ready' ||
-                            shutdownable == 'started' ? (
+                        shutdownable == 'started' ? (
                             shutdownable == 'ready' ? (
                                 <div
                                     className="strBtn handcr prtclk"

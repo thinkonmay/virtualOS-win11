@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
@@ -8,7 +8,6 @@ import { PiPauseBold } from 'react-icons/pi';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
 
-import { useDispatch } from 'react-redux';
 import { isMobile } from '../../../src-tauri/core';
 import {
     MAX_BITRATE,
@@ -21,8 +20,6 @@ import {
     change_bitrate,
     change_btnGp_size,
     change_framerate,
-    desk_remove,
-    menu_show,
     sidepane_panehide,
     toggle_default_gamepad_position,
     toggle_gamepad,
@@ -38,6 +35,7 @@ import { sleep } from '../../backend/utils/sleep';
 import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
 import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
 import { OnboardingNewUser } from '../onboarding/newUser';
+import { OnboardingPaidUser } from '../onboarding/paidUser';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';
@@ -51,6 +49,9 @@ export const DesktopApp = () => {
 
     const desk = useAppSelector((state) => state.desktop);
     const tutorial = useAppSelector((state) => state.globals.tutorial);
+    const paidUserTutorial = useAppSelector(
+        (state) => state.globals.paidUserTutorial
+    );
     const handleTouchEnd = async (e) => {
         //clearTimeout(timeoutRef.current);
         await sleep(200);
@@ -61,6 +62,7 @@ export const DesktopApp = () => {
     return (
         <div className="desktopCont">
             {tutorial ? <OnboardingNewUser /> : null}
+            {paidUserTutorial ? <OnboardingPaidUser /> : null}
             {!desk.hide &&
                 deskApps.map((app, i) => {
                     return (
@@ -194,7 +196,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                                1000
+                                            1000
                                         )}
                                     </span>
                                 </div>
@@ -220,8 +222,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                                remote.framerate +
-                                                MIN_FRAMERATE
+                                            remote.framerate +
+                                            MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -403,7 +405,7 @@ function MobileComponent({ pnstates }) {
                             style={{
                                 ...qk.style
                             }}
-                            className="qkbtn handcr prtclk"
+                            className={`qkbtn handcr prtclk ${qk.id}`}
                             onClick={clickDispatch}
                             data-action={qk.action}
                             data-payload={qk.payload || qk.state}
@@ -473,7 +475,7 @@ function DesktopComponent({ pnstates }) {
                             style={{
                                 ...qk.style
                             }}
-                            className="qkbtn handcr prtclk"
+                            className={`qkbtn handcr prtclk ${qk.id}`}
                             onClick={clickDispatch}
                             data-action={qk.action}
                             data-payload={qk.payload || qk.state}
