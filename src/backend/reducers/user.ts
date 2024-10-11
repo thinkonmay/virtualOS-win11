@@ -3,6 +3,7 @@ import { RecordModel } from 'pocketbase';
 import { RootState } from '.';
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
+import { addDays } from '../utils/dateHandler';
 
 export type PaymentStatus =
     | {
@@ -17,7 +18,10 @@ export type PaymentStatus =
           limit_hour?: number;
           ended_at?: string;
           template?: string;
-          local_metadata: {};
+          local_metadata?: {
+            ram?: string;
+            vcpu?: string;
+          };
       }
     | {
           status: 'NO_ACTION';
@@ -30,7 +34,7 @@ export type PaymentStatus =
       };
 
 type Data = RecordModel & {
-    subscription: PaymentStatus | {};
+    subscription: PaymentStatus | '';
     volume_id: string;
 };
 
@@ -43,7 +47,7 @@ const initialState: Data = {
     volume_id: '',
     created: '',
     updated: '',
-    subscription: {}
+    subscription: ''
 };
 
 export const userAsync = {
@@ -205,38 +209,43 @@ export const userAsync = {
                 user: { email }
             } = getState() as RootState;
 
-            const { data: sub1, error: errr } = await GLOBAL()
+            const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id')
                 .eq('user', email)
-                .gt('ended_at', new Date().toISOString())
+                .or(`ended_at.gt.${new Date().toISOString()}, ended_at.is.${null}`)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false })
                 .limit(1);
             if (errr) throw new Error(errr.message);
-            const { data: sub2, error: errr2 } = await GLOBAL()
-                .from('subscriptions')
-                .select('id,plan,cluster,local_metadata')
-                .eq('user', email)
-                .is('ended_at', null)
-                .is('cancelled_at', null)
-                .order('created_at', { ascending: false })
-                .limit(1);
-            if (errr2) throw new Error(errr2.message);
-
-            const sub = [...sub1, ...sub2];
-            if (sub.length > 0) {
-                const { data, error: err } = await GLOBAL()
+            if (existSub.length > 0) {
+                const { data: payPending, error: errr } = await GLOBAL()
                     .from('payment_request')
                     .select('result->data->>checkoutUrl,status')
-                    .eq('subscription', sub[0]?.id)
-                    .gt('expire_at', new Date().toISOString());
+                    .gt('expire_at', new Date().toISOString())
+                    .eq('status', 'PENDING')
+                    .eq('subscription', existSub[0]?.id);
+                if (errr) throw new Error(errr.message);
+
+                if (payPending.length != 0)
+                    return payPending[0].checkoutUrl;
+                
+                const { data: paymentPaid, error: err} = await GLOBAL()
+                    .from('payment_request')
+                    .select('id')
+                    .or('status.eq.PAID,status.eq.IMPORTED')
+                    .eq('subscription', existSub[0]?.id);
+                if (err) throw new Error(errr.message);
+                if (paymentPaid.length != 0){
+                    const {
+                        data: [{ checkoutUrl }],
+                        error: err
+                    } = await GLOBAL()
+                        .from('payment_request')
+                        .insert({ subscription: existSub[0]?.id, expire_at})
+                        .select('result->data->>checkoutUrl');
                 if (err) throw new Error(err.message);
-                else if (data.length > 0) {
-                    const [{ checkoutUrl, status }] = data;
-                    if (status == 'PENDING') return checkoutUrl;
-                    else if (status == 'PAID' || status == 'IMPORTED')
-                        throw new Error('you already paid for our service');
+                    return checkoutUrl;
                 }
             }
 
@@ -249,7 +258,8 @@ export const userAsync = {
                     user: email,
                     plan,
                     cluster,
-                    local_metadata: { template }
+                    local_metadata: { template },
+                    ended_at: addDays(new Date(), 30).toISOString()
                 })
                 .select('id');
             if (error) throw new Error(error.message);
