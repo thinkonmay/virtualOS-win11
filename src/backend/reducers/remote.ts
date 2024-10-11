@@ -4,6 +4,7 @@ import {
     popup_close,
     popup_open,
     remote_connect,
+    remote_ready,
     store,
     toggle_remote
 } from '.';
@@ -42,6 +43,7 @@ export type Metric = {
 type Data = {
     tracker_id?: string;
     active: boolean;
+    ready: boolean;
     fullscreen: boolean;
     pointer_lock: boolean;
     relative_mouse: boolean;
@@ -71,6 +73,7 @@ const initialState: Data = {
     local: false,
     focus: true,
     active: false,
+    ready: false,
     scancode: false,
     no_strict_timing: false,
     fullscreen: false,
@@ -217,6 +220,8 @@ export const remoteAsync = {
                     throw new Error('not found any query');
 
                 appDispatch(remote_connect({ ...(data.items[0] as any) }));
+                await ready();
+                appDispatch(remote_ready());
             } catch (e) {
                 throw new Error('Failed to query ' + e);
             }
@@ -301,6 +306,10 @@ export const remoteSlice = createSlice({
 
             state.active = true;
             state.fullscreen = true;
+            state.ready = false;
+        },
+        remote_ready: (state) => {
+            state.ready = true;
         },
         share_reference: (state) => {
             const token = state.ref;
@@ -319,14 +328,14 @@ export const remoteSlice = createSlice({
             state.active = false;
             state.auth = undefined;
             state.fullscreen = false;
-            setTimeout(() => CLIENT?.Close(), 100);
+            CLIENT?.Close();
         },
         toggle_remote: (state) => {
             if (!state.active) {
                 state.fullscreen = true;
             } else {
                 state.fullscreen = false;
-                setTimeout(() => CLIENT?.Close(), 100);
+                CLIENT?.Close();
             }
             state.active = !state.active;
         },

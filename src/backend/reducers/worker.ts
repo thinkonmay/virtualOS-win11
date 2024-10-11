@@ -7,6 +7,7 @@ import {
     popup_close,
     popup_open,
     remote_connect,
+    remote_ready,
     RootState,
     save_reference,
     vm_session_access,
@@ -262,6 +263,8 @@ export const workerAsync = {
             appDispatch(fetch_local_worker(computer.address));
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
+            await ready();
+            appDispatch(remote_ready());
         }
     ),
     worker_session_access: createAsyncThunk(
@@ -283,6 +286,7 @@ export const workerAsync = {
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
             await ready();
+            appDispatch(remote_ready());
         }
     ),
     personal_worker_session_close: createAsyncThunk(
@@ -371,10 +375,11 @@ export const workerAsync = {
 
             const result = await StartThinkmayOnVM(host.info, vm_session.id);
             if (result instanceof Error) throw result;
-            await sleep(15 * 1000);
+            appDispatch(fetch_local_worker(host.info.address));
             appDispatch(remote_connect(result));
-            await appDispatch(fetch_local_worker(host.info.address));
             await appDispatch(save_reference(result));
+            await ready();
+            appDispatch(remote_ready());
         }
     ),
     vm_session_access: createAsyncThunk(
@@ -401,6 +406,7 @@ export const workerAsync = {
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
             await ready();
+            appDispatch(remote_ready());
         }
     ),
     vm_session_close: createAsyncThunk(
@@ -436,10 +442,11 @@ export const workerAsync = {
             if (host == undefined) throw new Error('invalid tree');
 
             // const result = await StartThinkmayOnPeer(host.info, ip);
+            // appDispatch(fetch_local_worker(host.info.address));
             // appDispatch(remote_connect(result));
-
-            // await appDispatch(fetch_local_worker(host.info.address));
             // await appDispatch(save_reference(result));
+            // await ready()
+            // appDispatch(remote_ready())
         }
     ),
     peer_session_access: createAsyncThunk(
@@ -457,10 +464,10 @@ export const workerAsync = {
             if (target == undefined) throw new Error('invalid tree');
 
             const result = ParseVMRequest(computer, { ...session, target });
-
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
             await ready();
+            appDispatch(remote_ready());
         }
     ),
     peer_session_close: createAsyncThunk(
