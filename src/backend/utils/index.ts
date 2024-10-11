@@ -66,9 +66,12 @@ const apps: AppData[] = [
     },
     {
         name: 'Hướng dẫn',
-        id: 'hdsd',
-        action: 'apps/app_external',
-        payload: externalLink.GUIDE_VIDEO
+        id: 'guideline',
+        action: 'apps/app_toggle',
+        //payload: externalLink.GUIDE_VIDEO
+        payload: 'guideline',
+        size: 'full'
+
     },
     {
         name: 'Discord',
@@ -87,24 +90,24 @@ var { taskbar, desktop } = {
     taskbar: [''],
     desktop: window.location.href.includes('localhost')
         ? [
-              'Worker Profile',
-              'Local Connect',
-              'Discord',
-              'Hướng dẫn',
-              'Thinkmay Fanpage',
-              'Game cho gói giờ',
-              'Máy tính cá nhân',
-              'Thanh toán'
-          ]
+            'Worker Profile',
+            'Local Connect',
+            'Discord',
+            'Hướng dẫn',
+            'Thinkmay Fanpage',
+            'Game cho gói giờ',
+            'Máy tính cá nhân',
+            'Thanh toán'
+        ]
         : [
-              'Local Connect',
-              'Discord',
-              'Hướng dẫn',
-              'Thinkmay Fanpage',
-              'Game cho gói giờ',
-              'Máy tính cá nhân',
-              'Thanh toán'
-          ]
+            'Local Connect',
+            'Discord',
+            'Hướng dẫn',
+            'Thinkmay Fanpage',
+            'Game cho gói giờ',
+            'Máy tính cá nhân',
+            'Thanh toán'
+        ]
 };
 
 apps.map((x) => {
