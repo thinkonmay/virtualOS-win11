@@ -127,8 +127,11 @@ export const userAsync = {
                 if (err) throw new Error(err.message);
                 else if (data.length == 0) result = { status: 'NO_ACTION' };
                 else {
-                    const [{ status,expire_at }] = data;
-                    if (status == 'PENDING' &&  new Date(expire_at) > new Date()) {
+                    const [{ status, expire_at }] = data;
+                    if (
+                        status == 'PENDING' &&
+                        new Date(expire_at) > new Date()
+                    ) {
                         result = { status };
                     } else if (status == 'PAID' || status == 'IMPORTED') {
                         const {
