@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
+import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
     get_payment,
@@ -12,7 +13,6 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 import './assets/store.scss';
-import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
@@ -68,15 +68,16 @@ export const PaymentApp = () => {
         state.apps.apps.find((x) => x.id == 'payment')
     );
 
-    const handleChooseSub = async (plan, template) => {
+    const handleChooseSub = async (plan, template, domain) => {
         UserEvents({
             type: 'payment/click_sub',
             payload: {
                 template,
-                plan
+                plan,
+                domain
             }
         });
-        await appDispatch(get_payment({ template, plan }));
+        await appDispatch(get_payment({ template, plan, domain }));
     };
 
     return (
@@ -115,6 +116,12 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
+    const domains = useAppSelector((state) => state.user.subscription.domains);
+    const max =
+        domains?.findIndex(
+            (y) => y.free == Math.max(...domains.map((x) => x.free))
+        ) ?? 0;
+    const [domain, setDomain] = useState(domains?.[max].domain ?? 'unknown');
     const [isShowDetail, setShowDetail] = useState(
         sub.name == 'month1' ? true : false
     );
@@ -236,7 +243,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                     className="mt-4 w-full mx-auto border-[#000] border-[1px] border-solid shadow-sm btn btn-secondary"
                                     onClick={() => openChooseGames(sub.name)}
                                 >
-                                    Y/c cài sẵn GAME khi tạo máy
+                                    Game có sẵn trên máy
                                 </button>
                                 <span className="mt-2 w-full mx-auto shadow-sm">
                                     Chọn server:
@@ -245,39 +252,40 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                         ) : null}
                         {sub.name == 'month1' ? (
                             <div className="flex flex-col gap-2 mb-4">
-                                <label
-                                    className="text-blue-500 flex gap-2 items-center"
-                                    htmlFor="server1"
-                                >
-                                    <input
-                                        checked
-                                        type="radio"
-                                        name="server"
-                                        id="server1"
-                                    />
-                                    <span name="play" className="text-blue-500">
-                                        play
-                                    </span>
-                                    <div className="flex gap-2 items-center text-xs">
-                                        50 available slots <GreenLight />{' '}
-                                    </div>
-                                </label>
-
-                                <label
-                                    className="text-blue-500 flex gap-2 items-center"
-                                    htmlFor="server2"
-                                >
-                                    <input
-                                        disabled
-                                        type="radio"
-                                        name="server"
-                                        id="server2"
-                                    />
-                                    play.0
-                                    <div className="flex gap-1 items-center text-xs">
-                                        0 available slots{' '}
-                                    </div>
-                                </label>
+                                {domains?.map(({ domain, free }, index) =>
+                                    free > 0 ? (
+                                        <label
+                                            key={index}
+                                            className="text-blue-500 flex gap-2 items-center"
+                                            htmlFor="server1"
+                                        >
+                                            <input
+                                                defaultChecked={index == max}
+                                                onChange={(e) =>
+                                                    e.target.checked
+                                                        ? setDomain(domain)
+                                                        : null
+                                                }
+                                                data={domain}
+                                                type="radio"
+                                                name="server"
+                                                id="server1"
+                                            />
+                                            <span
+                                                name="play"
+                                                className="text-blue-500"
+                                            >
+                                                {domain}
+                                            </span>
+                                            <div className="flex gap-2 items-center text-xs">
+                                                {free} chỗ trống
+                                                {index == max ? (
+                                                    <GreenLight />
+                                                ) : null}
+                                            </div>
+                                        </label>
+                                    ) : null
+                                )}
                             </div>
                         ) : null}
                         {gameChoose?.volumeId &&
@@ -300,7 +308,11 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                         ) : null}
                         <button
                             onClick={() =>
-                                onChooseSub(sub.name, gameChoose.volumeId)
+                                onChooseSub(
+                                    sub.name,
+                                    gameChoose.volumeId,
+                                    domain
+                                )
                             }
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
