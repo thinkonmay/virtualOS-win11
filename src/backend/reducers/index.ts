@@ -176,11 +176,6 @@ export const dispatch_generic = async ({
     type: string;
     payload: any;
 }) => {
-    UserEvents({
-        type: type,
-        payload: 'interact/click'
-    })
-
     if (Object.keys(Actions).includes(type))
         (Actions as Record<string, any>)[type](payload);
     else if (Object.keys(actions).includes(type))
