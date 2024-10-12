@@ -237,7 +237,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                         <div className="space-y-2">
                             <p className="text-[13px] whitespace-pre-wrap"></p>
                         </div>
-                        {sub.name == 'month1' ? (
+                        {sub.name == 'month1' && domains != undefined ? (
                             <div className="flex flex-col">
                                 <button
                                     className="mt-4 w-full mx-auto border-[#000] border-[1px] border-solid shadow-sm btn btn-secondary"
