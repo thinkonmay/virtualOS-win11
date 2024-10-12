@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppData, allApps } from '../utils';
 import { BuilderHelper } from './helper';
+import { UserEvents } from '../../../src-tauri/api';
 
 type Data = {
     hz: number;
@@ -77,6 +78,10 @@ export const appSlice = createSlice({
             state.hz -= 1;
         },
         app_toggle: (state, action: PayloadAction<string>) => {
+            UserEvents({
+                type: `app_toggle/${action.payload}`,
+                payload: 'interact/click'
+            })
             const obj = state.apps.find((x) => action.payload == x.id);
             if (obj == undefined) return;
 
