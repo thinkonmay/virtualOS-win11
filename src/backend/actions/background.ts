@@ -1,9 +1,8 @@
-import { LOCAL, UserSession } from '../../../src-tauri/api';
+import { LOCAL, UserEvents, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
-    app_maximize,
     app_toggle,
     change_bitrate,
     change_framerate,
@@ -163,16 +162,11 @@ const fetchSubscription = async () => {
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
         status != 'PAID'
-        //&&
-        //!window.location.host.includes('localhost')
     ) {
         appDispatch(show_tutorial(true));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');
     }
-    if (app != undefined) {
-        appDispatch(app_toggle(app));
-        appDispatch(app_maximize(app));
-    }
+    if (app != undefined) appDispatch(app_toggle(app));
 };
 
 export const preload = async () => {
@@ -189,11 +183,14 @@ export const preload = async () => {
             fetchStore()
         ]);
     } catch (e) {
-        console.log(`error ${e} in preload function`);
+        UserEvents({
+            type: 'preload/rejected',
+            payload: e
+        });
     }
 
     setInterval(check_worker, 30 * 1000);
     setInterval(sync, 2 * 1000);
-    setInterval(handleClipboard, 100);
+    setInterval(handleClipboard, 1000);
     setInterval(ping_session, 1000 * 30);
 };

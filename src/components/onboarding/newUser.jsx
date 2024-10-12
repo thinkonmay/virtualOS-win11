@@ -71,7 +71,7 @@ export const OnboardingNewUser = () => {
             placement: 'top',
             spotlightPadding: 20,
 
-            target: '.hdsd',
+            target: '.guideline',
             title: 'Video hướng dẫn'
         },
         {

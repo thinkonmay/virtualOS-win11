@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
 import { LOCAL } from '../../../src-tauri/api';
+import { DevEnv } from '../../../src-tauri/api/database';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 
@@ -106,7 +107,7 @@ const listDesktopShortCut = [
 ];
 
 const initialState: Data = {
-    quicks: window.location.href.includes('localhost')
+    quicks: DevEnv
         ? [
               {
                   ui: true,

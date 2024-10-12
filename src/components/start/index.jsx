@@ -31,7 +31,6 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
-import { sleep } from '../../backend/utils/sleep';
 import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
 import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
 import { OnboardingNewUser } from '../onboarding/newUser';
@@ -53,9 +52,8 @@ export const DesktopApp = () => {
         (state) => state.globals.paidUserTutorial
     );
     const handleTouchEnd = async (e) => {
-        //clearTimeout(timeoutRef.current);
-        await sleep(200);
-        clickDispatch(e);
+        await new Promise((r) => setTimeout(r, 200));
+        await clickDispatch(e);
     };
     const handleDouble = customClickDispatch((e) => e.stopPropagation());
 
@@ -377,17 +375,6 @@ const GamePadSetting = () => {
                     </div>
                 </>
             ) : null}
-        </div>
-    );
-};
-
-export const LogMaintain = () => {
-    return (
-        <div class="bg-red-600 absolute flex gap-4 items-center right-[50%] translate-x-[50%] top-0 text-white font-bold py-2 px-4 rounded">
-            <md.MdOutlineSettingsSuggest
-                fontSize={'1.5rem'}
-            ></md.MdOutlineSettingsSuggest>
-            Server is offline
         </div>
     );
 };

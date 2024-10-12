@@ -9,6 +9,7 @@ import {
 import Dexie, { Table } from 'dexie';
 import { appDispatch, popup_close, popup_open } from '..';
 import { formatError } from '../../utils/formatErr';
+import { DevEnv } from '../../../../src-tauri/api/database';
 class TodoDB extends Dexie {
     data!: Table<{ timestamp: number; id: string; raw: any }, string>;
     constructor() {
@@ -64,7 +65,7 @@ export async function CacheRequest<T>(
     sec: number,
     req: () => Promise<T>
 ): Promise<T> {
-    sec = window.location.href.includes('localhost') ? 10 * 60 : sec;
+    sec = DevEnv ? 10 * 60 : sec;
     const store = async (raw: any, timestamp: number) => {
         if (db == null) {
             localStorage.setItem(

@@ -123,27 +123,21 @@ export const LockScreen = () => {
                             Enter
                         </div>
                     ) : (
-                        <>
-                            <div>
-                                <span className="text-base text-white font-medium">
-                                    Continue with
+                        <div className="flex flex-col items-start">
+                            <div
+                                className="instbtn px-[24px] py-[12px] rounded-full flex gap-2 items-center"
+                                onClick={() => proceed('google')}
+                            >
+                                <span className="text-lg text-white font-medium">
+                                    Tiếp tục với
                                 </span>
                                 <div className="flex gap-[8px]">
-                                    {/* <button
-                                        className="base discord_button"
-                                        onClick={() => proceed('discord')}
-                                    >
-                                        <Icon src="discord" width={64} />
-                                    </button> */}
-                                    <button
-                                        className="base gg_button"
-                                        onClick={() => proceed('google')}
-                                    >
-                                        <Icon src="google" width={64} />
+                                    <button className="base gg_button">
+                                        <Icon src="google" width={40} />
                                     </button>
                                 </div>
                             </div>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
@@ -163,7 +157,17 @@ export const LockScreen = () => {
                 {!lock ? (
                     <p className="italic mt-[80px]">Click to start</p>
                 ) : (
-                    ''
+                    <div className="mr-[2%]">
+                        <span className="text-sm text-white font-medium">
+                            Hoặc tìm hiểu thêm{' '}
+                            <a
+                                href="https://thinkmay.net/"
+                                className="underline"
+                            >
+                                tại đây
+                            </a>
+                        </span>
+                    </div>
                 )}
                 <div className="bottomInfoLeft flex">
                     <Icon className="mx-2" src="wifi" ui width={16} invert />

@@ -1,6 +1,5 @@
 import Swal from 'sweetalert2';
 import { dispatchOutSide } from '../actions';
-import { sleep } from './sleep';
 
 type LogData = {
     type?: any;
@@ -51,7 +50,7 @@ export const log = async ({
                 loadingPercent: 100,
                 showLoadingProcess
             });
-            await sleep(400);
+            await new Promise((r) => setTimeout(r, 400));
             Swal.fire({
                 title: title ?? 'Success!',
                 text: content ?? "You've succeed",
