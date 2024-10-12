@@ -9,18 +9,16 @@ import {
     desk_size,
     desk_sort,
     dispatch_generic,
-    fetch_user,
     menu_chng,
     menu_hide,
     personal_worker_session_close,
     setting_theme,
     sidepane_panethem,
     store,
-    user_update,
     wall_set
 } from '../reducers/index';
 import { keyboardCallback } from '../reducers/remote';
-import { fetchApp } from './background';
+import { fetchApp, preload } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -164,7 +162,7 @@ export const login = async (provider: 'google' | 'facebook' | 'discord') => {
             w.location.href = url;
         }
     });
-    await appDispatch(fetch_user());
+    await preload();
 };
 
 export const shutDownVm = async () => {

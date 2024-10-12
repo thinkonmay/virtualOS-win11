@@ -293,7 +293,6 @@ export const userAsync = {
                 throw new Error('dịch vụ hiện chưa triển khai trên domain');
             const { id: cluster } = cluster_ele;
 
-
             const {
                 data: [{ id: subscription }],
                 error

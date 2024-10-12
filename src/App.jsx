@@ -4,7 +4,7 @@ import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
 import { DevEnv } from '../src-tauri/api/database';
 import { isMobile } from '../src-tauri/core';
-import { preload } from './backend/actions/background';
+import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
     appDispatch,
@@ -82,7 +82,7 @@ function App() {
 
         const now = () => new Date().getTime();
         const start_fetch = now();
-        preload().finally(async () => {
+        PreloadBackground().finally(async () => {
             window.history.replaceState({}, document.title, '/' + '');
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;

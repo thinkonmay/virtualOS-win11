@@ -170,18 +170,22 @@ const fetchSubscription = async () => {
 };
 
 export const preload = async () => {
+    await fetchUser();
+    await Promise.allSettled([
+        startAnalytics(),
+        loadSettings(),
+        checkMaintain(),
+        fetchApp(),
+        fetchSubscription(),
+        fetchSetting(),
+        fetchMessage(),
+        fetchStore()
+    ]);
+};
+
+export const PreloadBackground = async () => {
     try {
-        await fetchUser();
-        await Promise.allSettled([
-            startAnalytics(),
-            loadSettings(),
-            checkMaintain(),
-            fetchApp(),
-            fetchSubscription(),
-            fetchSetting(),
-            fetchMessage(),
-            fetchStore()
-        ]);
+        await preload();
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',
