@@ -383,7 +383,18 @@ export const workerAsync = {
             if (host == undefined) throw new Error('invalid tree');
             else if (vm_session == undefined) throw new Error('invalid tree');
 
-            const result = await StartThinkmayOnVM(host.info, vm_session.id);
+            const result = await (async () => {
+                for (let index = 0; index < 5; index++) {
+                    const result = await StartThinkmayOnVM(
+                        host.info,
+                        vm_session.id
+                    );
+                    if (result instanceof Error) continue;
+                    else return result;
+                }
+
+                return new Error('failed to start vm session after 5 retries');
+            })();
             if (result instanceof Error) throw result;
             appDispatch(fetch_local_worker(host.info.address));
             appDispatch(remote_connect(result));
