@@ -114,21 +114,28 @@ export const workerAsync = {
                     throw new Error('invalid tree');
                 }
 
+                const keepalive = KeepaliveVolume(
+                    computer,
+                    volume_id,
+                    PingSession
+                );
                 if (result.type == 'vm_worker' && result.data.length > 0) {
-                    SetPinger(
-                        KeepaliveVolume(computer, volume_id, PingSession)
-                    );
+                    const interval = setInterval(keepalive, 30 * 1000);
                     await appDispatch(vm_session_access(result.data.at(0).id));
+                    clearInterval(interval);
+
+                    SetPinger(keepalive);
                     appDispatch(popup_close());
                     return;
                 } else if (
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
-                    SetPinger(
-                        KeepaliveVolume(computer, volume_id, PingSession)
-                    );
+                    const interval = setInterval(keepalive, 30 * 1000);
                     await appDispatch(vm_session_create(result.id));
+                    clearInterval(interval);
+
+                    SetPinger(keepalive);
                     appDispatch(popup_close());
                     return;
                 }
