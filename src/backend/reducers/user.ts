@@ -122,13 +122,13 @@ export const userAsync = {
                 ] = sub;
                 const { data, error: err } = await GLOBAL()
                     .from('payment_request')
-                    .select('status')
+                    .select('status,expire_at')
                     .eq('subscription', subscription_id);
                 if (err) throw new Error(err.message);
                 else if (data.length == 0) result = { status: 'NO_ACTION' };
                 else {
-                    const [{ status }] = data as { status: string }[];
-                    if (status == 'PENDING') {
+                    const [{ status,expire_at }] = data;
+                    if (status == 'PENDING' &&  new Date(expire_at) > new Date()) {
                         result = { status };
                     } else if (status == 'PAID' || status == 'IMPORTED') {
                         const {
