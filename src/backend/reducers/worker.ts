@@ -115,20 +115,20 @@ export const workerAsync = {
                 }
 
                 if (result.type == 'vm_worker' && result.data.length > 0) {
-                    await appDispatch(vm_session_access(result.data.at(0).id));
                     SetPinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
                     );
+                    await appDispatch(vm_session_access(result.data.at(0).id));
                     appDispatch(popup_close());
                     return;
                 } else if (
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
-                    await appDispatch(vm_session_create(result.id));
                     SetPinger(
                         KeepaliveVolume(computer, volume_id, PingSession)
                     );
+                    await appDispatch(vm_session_create(result.id));
                     appDispatch(popup_close());
                     return;
                 }
