@@ -10,7 +10,7 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
-import { RenderNode } from '../../../../src-tauri/api';
+import { RenderNode, UserEvents } from '../../../../src-tauri/api';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
@@ -31,7 +31,11 @@ export const ConnectApp = () => {
     const user = useAppSelector((state) => state.user);
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
     const connect = () => appDispatch(wait_and_claim_volume());
-    const pay = () => appDispatch(app_toggle('payment'));
+    const pay = () => {
+        UserEvents({type: 'payment/show', payload: 'interact/click'})
+        appDispatch(app_toggle('payment'));
+    } 
+        
     return (
         <div
             className="connectToPcApp floatTab dpShad"
