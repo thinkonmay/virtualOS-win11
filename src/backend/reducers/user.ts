@@ -224,27 +224,6 @@ export const userAsync = {
             }: { plan: string; template?: string; domain: string },
             { getState }
         ): Promise<string> => {
-            const {
-                data: [_plans],
-                error: errrr
-            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
-            if (errrr) throw new Error(errrr.message);
-            else if (_plans == undefined)
-                throw new Error('gói dịch vụ hiện đang tạm đóng');
-            const { id: plan } = _plans;
-
-            const {
-                data: [cluster_ele],
-                error: errrrr
-            } = await GLOBAL()
-                .from('clusters')
-                .select('id')
-                .eq('domain', domain);
-            if (errrrr) throw new Error(errrrr.message);
-            else if (cluster_ele == undefined)
-                throw new Error('dịch vụ hiện chưa triển khai trên domain');
-            const { id: cluster } = cluster_ele;
-
             const expire_at = new Date(
                 new Date().getTime() + 1000 * 60 * 15
             ).toISOString();
@@ -292,6 +271,28 @@ export const userAsync = {
                     return checkoutUrl;
                 }
             }
+
+            const {
+                data: [_plans],
+                error: errrr
+            } = await GLOBAL().from('plans').select('id').eq('name', plan_name);
+            if (errrr) throw new Error(errrr.message);
+            else if (_plans == undefined)
+                throw new Error('gói dịch vụ hiện đang tạm đóng');
+            const { id: plan } = _plans;
+
+            const {
+                data: [cluster_ele],
+                error: errrrr
+            } = await GLOBAL()
+                .from('clusters')
+                .select('id')
+                .eq('domain', domain);
+            if (errrrr) throw new Error(errrrr.message);
+            else if (cluster_ele == undefined)
+                throw new Error('dịch vụ hiện chưa triển khai trên domain');
+            const { id: cluster } = cluster_ele;
+
 
             const {
                 data: [{ id: subscription }],
