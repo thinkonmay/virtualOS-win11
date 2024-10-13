@@ -117,24 +117,23 @@ const startAnalytics = async () => {
 };
 
 const fetchSubscription = async () => {
-    const origin = new URL(window.location.href).host;
     await appDispatch(fetch_subscription());
 
     const subscription = store.getState().user.subscription as PaymentStatus;
     const { status } = subscription;
-    if (status == 'PAID' || status == 'IMPORTED') {
-        const { cluster } = subscription;
-        if (!origin.includes('localhost') && origin != cluster) {
-            appDispatch(
-                popup_open({
-                    type: 'redirectDomain',
-                    data: {
-                        domain: cluster,
-                        from: origin
-                    }
-                })
-            );
-        }
+    if (
+        (status == 'PAID' || status == 'IMPORTED') &&
+        !subscription.correct_domain
+    ) {
+        appDispatch(
+            popup_open({
+                type: 'redirectDomain',
+                data: {
+                    domain: subscription.cluster,
+                    from: origin
+                }
+            })
+        );
     }
 
     const rms = [];

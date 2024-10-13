@@ -19,7 +19,7 @@ function UserInfo() {
         (state) =>
             (state.user.subscription.status == 'IMPORTED' ||
                 state.user.subscription.status == 'PAID') &&
-            state.user.subscription.cluster == window.location.host
+            state.user.subscription.correct_domain
     );
     const {
         email,

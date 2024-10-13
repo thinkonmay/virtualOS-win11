@@ -10,6 +10,7 @@ export type PaymentStatus =
           status: 'PAID' | 'IMPORTED';
           plan: string;
           cluster: string;
+          correct_domain: boolean;
           node: string;
 
           total_usage: number;
@@ -141,9 +142,13 @@ export const userAsync = {
                             .eq('id', cluster_id);
                         if (errrrr) throw new Error(errrrr.message);
 
+                        const origin = new URL(window.location.href).host;
                         result = {
                             status,
                             cluster,
+                            correct_domain:
+                                origin.includes('localhost') ||
+                                origin == cluster,
                             plan,
                             local_metadata,
                             limit_hour,

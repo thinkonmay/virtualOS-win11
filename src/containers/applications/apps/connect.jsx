@@ -32,7 +32,7 @@ export const ConnectApp = () => {
         (state) =>
             (state.user.subscription.status == 'IMPORTED' ||
                 state.user.subscription.status == 'PAID') &&
-            state.user.subscription.cluster != window.location.host
+            !state.user.subscription.correct_domain
     );
     const cluster = useAppSelector((state) =>
         state.user.subscription.status == 'IMPORTED' ||

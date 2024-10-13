@@ -5,6 +5,7 @@ import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
 import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
 import { PiPauseBold } from 'react-icons/pi';
+import { RenderNode } from '../../../src-tauri/api';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
 
@@ -128,19 +129,10 @@ export const SidePane = () => {
     }
 
     useEffect(() => {
-        //sidepane.quicks.map((item, i) => {
-        //    if (item.src == 'nightlight') {
-        //        if (pnstates[i]) document.body.dataset.sepia = true;
-        //        else document.body.dataset.sepia = false;
-        //    }
-        //});
-    });
-
-    useEffect(() => {
         var tmp = [];
         var states = isMobile()
             ? sidepane.mobileControl.buttons
-            : sidepane.quicks;
+            : sidepane.desktopControl.buttons;
         const mobileState = {
             gamePadOpen: !sidepane.mobileControl.gamePadHide,
             keyboardOpen: !sidepane.mobileControl.keyboardHide
@@ -167,9 +159,7 @@ export const SidePane = () => {
                 <div className="mainContent">
                     <div className="quickSettings ">
                         {isMobile() ? (
-                            <MobileComponent
-                                pnstates={pnstates}
-                            ></MobileComponent>
+                            <MobileComponent pnstates={pnstates} />
                         ) : (
                             <DesktopComponent pnstates={pnstates} />
                         )}
@@ -382,11 +372,21 @@ const GamePadSetting = () => {
 function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
     const t = useAppSelector((state) => state.globals.translation);
+    const shutdownable = useAppSelector(
+        (state) => new RenderNode(state.worker.data).data[0]?.info?.available
+    );
+
+    const renderList =
+        shutdownable == 'started'
+            ? sidepane.mobileControl.buttons
+            : sidepane.mobileControl.buttons.filter(
+                  (x) => x.action != 'shutDownVm'
+              );
 
     return (
         <>
             <div className="listBtn">
-                {sidepane.mobileControl.buttons.map((qk, idx) => (
+                {renderList.map((qk, idx) => (
                     <div key={idx} className="qkGrp">
                         <div
                             style={{
@@ -452,11 +452,21 @@ function MobileComponent({ pnstates }) {
 function DesktopComponent({ pnstates }) {
     const t = useAppSelector((state) => state.globals.translation);
     const sidepane = useAppSelector((state) => state.sidepane);
+    const shutdownable = useAppSelector(
+        (state) => new RenderNode(state.worker.data).data[0]?.info?.available
+    );
+
+    const renderList =
+        shutdownable == 'started'
+            ? sidepane.desktopControl.buttons
+            : sidepane.desktopControl.buttons.filter(
+                  (x) => x.action != 'shutDownVm'
+              );
 
     return (
         <>
             <div className="listBtn">
-                {sidepane.quicks.map((qk, idx) => (
+                {renderList.map((qk, idx) => (
                     <div key={idx} className="qkGrp">
                         <div
                             style={{
@@ -500,7 +510,7 @@ function DesktopComponent({ pnstates }) {
             <div className="shortcuts">
                 <hr className="mb-4" />
                 <div className="listBtn">
-                    {sidepane.shortcuts.map((qk, idx) => (
+                    {sidepane.desktopControl.shortcuts.map((qk, idx) => (
                         <div key={idx} className="qkGrp t">
                             <div
                                 style={{
