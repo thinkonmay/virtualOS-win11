@@ -153,7 +153,7 @@ const fetchSubscription = async () => {
         const { ended_at } = subscription;
         if (
             ended_at != null &&
-            new Date(ended_at).getTime() - Date.now() > 7 * 24 * 3600 * 1000
+            new Date(ended_at).getTime() - Date.now() < 7 * 24 * 3600 * 1000
         ) {
             appDispatch(
                 popup_open({
