@@ -105,7 +105,7 @@ export const ConnectApp = () => {
                             ) : paid ? (
                                 wrongsite ? (
                                     <a
-                                        href={cluster}
+                                        href={`https://${cluster}`}
                                         target="_self"
                                         className="instbtn connectBtn"
                                     >
