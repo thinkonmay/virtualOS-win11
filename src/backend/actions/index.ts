@@ -11,10 +11,10 @@ import {
     dispatch_generic,
     menu_chng,
     menu_hide,
-    personal_worker_session_close,
     setting_theme,
     sidepane_panethem,
     store,
+    unclaim_volume,
     wall_set
 } from '../reducers/index';
 import { keyboardCallback } from '../reducers/remote';
@@ -166,7 +166,7 @@ export const login = async (provider: 'google' | 'facebook' | 'discord') => {
 };
 
 export const shutDownVm = async () => {
-    await appDispatch(personal_worker_session_close());
+    await appDispatch(unclaim_volume());
     appDispatch(close_remote());
 };
 export const clickShortCut = (keys = []) => {

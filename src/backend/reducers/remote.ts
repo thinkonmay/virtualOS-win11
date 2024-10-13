@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
+    close_remote,
     popup_close,
     popup_open,
     remote_connect,
@@ -212,8 +213,8 @@ export const remoteAsync = {
                     throw new Error('not found any query');
 
                 appDispatch(remote_connect({ ...(data.items[0] as any) }));
-                await ready();
-                appDispatch(remote_ready());
+                if (!(await ready())) appDispatch(close_remote());
+                else appDispatch(remote_ready());
             } catch (e) {
                 throw new Error('Failed to query ' + e);
             }

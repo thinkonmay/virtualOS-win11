@@ -136,7 +136,7 @@ export const {
 } = remoteSlice.actions;
 
 export const {
-    personal_worker_session_close,
+    unclaim_volume,
     fetch_local_worker,
     worker_session_access,
     worker_session_close,

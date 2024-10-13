@@ -3,7 +3,7 @@ import { RenderNode } from '../../../src-tauri/api';
 import { changeTheme } from '../../backend/actions';
 import {
     appDispatch,
-    personal_worker_session_close,
+    unclaim_volume,
     useAppSelector,
     user_delete,
     wait_and_claim_volume
@@ -134,9 +134,7 @@ function UserInfo() {
                                     <div
                                         className="strBtn handcr prtclk"
                                         onClick={() =>
-                                            appDispatch(
-                                                personal_worker_session_close()
-                                            )
+                                            appDispatch(unclaim_volume())
                                         }
                                     >
                                         <MdOutlinePowerSettingsNew
