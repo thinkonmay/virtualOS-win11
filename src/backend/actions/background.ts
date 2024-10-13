@@ -1,4 +1,4 @@
-import { LOCAL, UserEvents, UserSession } from '../../../src-tauri/api';
+import { UserEvents, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -16,6 +16,7 @@ import {
     have_focus,
     loose_focus,
     ping_session,
+    popup_open,
     setting_theme,
     show_paid_user_tutorial,
     show_tutorial,
@@ -27,6 +28,7 @@ import {
 } from '../reducers';
 import { PaymentStatus } from '../reducers/user.ts';
 import { localStorageKey } from '../utils/constant';
+import { formatDate } from '../utils/date.ts';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -115,7 +117,6 @@ const startAnalytics = async () => {
 };
 
 const fetchSubscription = async () => {
-    const allowed_domains = 'thinkmay.net';
     const origin = new URL(window.location.href).host;
     await appDispatch(fetch_subscription());
 
@@ -123,34 +124,45 @@ const fetchSubscription = async () => {
     const { status } = subscription;
     if (status == 'PAID' || status == 'IMPORTED') {
         const { cluster } = subscription;
-
-        if (origin != 'localhost' && origin != cluster) {
-            //window.open(`https://${cluster}`, '_self');
-        }
-    } else if (status == 'NO_ACTION') {
-        const { data, error } = await LOCAL()
-            .from('constant')
-            .select('value->>destination')
-            .eq('name', 'redirect');
-        if (error) throw error;
-        else if (data.length == 1) {
-            const [{ destination }] = data;
-            if (origin != 'localhost' && origin != destination) {
-                //window.open(destination, '_self');
-            }
+        if (!origin.includes('localhost') && origin != cluster) {
+            appDispatch(
+                popup_open({
+                    type: 'redirectDomain',
+                    data: {
+                        domain: cluster,
+                        from: origin
+                    }
+                })
+            );
         }
     }
 
-    let app: string = undefined;
-    if (status == 'PENDING') app = 'payment';
+    const rms = [];
+    const ops = [];
+    if (status == 'PENDING') ops.push('payment');
     else if (status == 'PAID' || status == 'IMPORTED') {
         const { plan } = subscription;
         if (plan.includes('month')) {
-            app = 'connectPc';
-            appDispatch(desk_remove('store'));
+            ops.push('connectPc');
+            rms.push('store');
         } else if (plan.includes('hour')) {
-            app = 'store';
-            appDispatch(desk_remove('connectPc'));
+            ops.push('store');
+            rms.push('connectPc');
+        }
+
+        const { ended_at } = subscription;
+        if (
+            ended_at != null &&
+            new Date(ended_at).getTime() - Date.now() > 7 * 24 * 3600 * 1000
+        ) {
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        to: formatDate(ended_at)
+                    }
+                })
+            );
         }
     }
     if (
@@ -166,7 +178,9 @@ const fetchSubscription = async () => {
         appDispatch(show_tutorial(true));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');
     }
-    if (app != undefined) appDispatch(app_toggle(app));
+
+    ops.forEach((x) => appDispatch(app_toggle(x)));
+    rms.forEach((x) => appDispatch(desk_remove(x)));
 };
 
 export const preload = async () => {

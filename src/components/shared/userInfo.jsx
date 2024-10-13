@@ -9,6 +9,7 @@ import {
     wait_and_claim_volume
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
+import { formatDate } from '../../backend/utils/date';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
@@ -34,14 +35,6 @@ function UserInfo() {
     const thm = useAppSelector((state) => state.setting.person.theme);
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
-
-    const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-GB', {
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    };
 
     const renderPlanName = {
         month1: (

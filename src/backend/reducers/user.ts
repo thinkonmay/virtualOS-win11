@@ -81,32 +81,21 @@ export const userAsync = {
             const { id, email, volume_id } = (getState() as RootState).user;
             if (id == 'unknown') return { status: 'NO_ACTION' };
 
-            const { data: sub1, error: errr1 } = await GLOBAL()
+            const { data: sub, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
                 .select(
                     'id,plan,cluster,local_metadata,created_at,ended_at,local_metadata->>template'
                 )
-                .eq('user', email)
-                .gt('ended_at', new Date().toISOString())
-                .is('cancelled_at', null)
-                .order('created_at', { ascending: false })
-                .limit(1);
-            const { data: sub2, error: errr2 } = await GLOBAL()
-                .from('subscriptions')
-                .select(
-                    'id,plan,cluster,local_metadata,created_at,ended_at,local_metadata->>template'
+                .or(
+                    `ended_at.gt.${new Date().toISOString()}, ended_at.is.${null}`
                 )
                 .eq('user', email)
-                .is('ended_at', null)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false })
                 .limit(1);
-
             if (errr1) throw new Error(errr1.message);
-            else if (errr2) throw new Error(errr2.message);
 
             let result = { status: 'NO_ACTION' } as PaymentStatus;
-            const sub = [...sub1, ...sub2];
             if (sub.length == 0) result = { status: 'NO_ACTION' };
             else {
                 const [
@@ -152,36 +141,45 @@ export const userAsync = {
                             .eq('id', cluster_id);
                         if (errrrr) throw new Error(errrrr.message);
 
-                        const { data, error } = await LOCAL().rpc(
-                            'get_volume_usage',
-                            {
-                                volume_id,
-                                _to: new Date().toISOString(),
-                                _from: created_at
-                            }
-                        );
-                        if (error) throw error;
-
-                        const { data: map, error: errr } = await LOCAL()
-                            .from('volume_map')
-                            .select('node')
-                            .eq('id', volume_id)
-                            .limit(1);
-                        if (errr) throw errr;
-                        const node = map.at(0)?.node;
-
                         result = {
                             status,
                             cluster,
-                            node,
                             plan,
                             local_metadata,
                             limit_hour,
                             created_at,
                             ended_at,
-                            template,
-                            total_usage: data
+                            template
                         } as PaymentStatus;
+
+                        const isUUID = (uuid) =>
+                            uuid.match(
+                                '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+                            ) != null;
+                        if (
+                            isUUID(volume_id) &&
+                            (result.status == 'PAID' ||
+                                result.status == 'IMPORTED')
+                        ) {
+                            const { data, error } = await LOCAL().rpc(
+                                'get_volume_usage',
+                                {
+                                    volume_id,
+                                    _to: new Date().toISOString(),
+                                    _from: created_at
+                                }
+                            );
+                            if (error) throw error;
+                            result.total_usage = data ?? 0;
+
+                            const { data: map, error: errr } = await LOCAL()
+                                .from('volume_map')
+                                .select('node')
+                                .eq('id', volume_id)
+                                .limit(1);
+                            if (errr) throw errr;
+                            result.node = map.at(0)?.node;
+                        }
                     }
                 }
             }
@@ -220,11 +218,9 @@ export const userAsync = {
     get_payment: createAsyncThunk(
         'get_payment',
         async (
-            {
-                plan: plan_name,
-                template,
-                domain
-            }: { plan: string; template?: string; domain: string },
+            input:
+                | { plan: string; template?: string; domain: string }
+                | undefined,
             { getState }
         ): Promise<string> => {
             const expire_at = new Date(
@@ -275,6 +271,9 @@ export const userAsync = {
                 }
             }
 
+            if (input == undefined) throw new Error('Bạn đã đăng kí dịch vụ');
+
+            const { plan: plan_name, template, domain } = input;
             const {
                 data: [_plans],
                 error: errrr

@@ -6,6 +6,24 @@ import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
+const gameDB: SubscriptionSelection[] = [
+    {
+        name: 'Window 10',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Windows_logo_-_2012.png',
+        template: undefined
+    },
+    {
+        name: 'Black Myth Wukong',
+        logo: 'https://professorvn.net/wp-content/uploads/2024/09/logo.png',
+        template: 'wukong'
+    },
+    {
+        name: 'FC Online',
+        logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPXVIF_Dk5lR8MrlpA8Pu8DuYW07dcF5sBpw&s',
+        template: 'fc_online'
+    }
+];
+
 export type TranslationResult = {
     [key in Contents]: string;
 };
@@ -23,10 +41,12 @@ interface Maintain {
     ended_at: string;
     isMaintaining?: boolean;
 }
-interface GameChooseInSubscription {
-    planName: PlanName;
-    volumeId: string;
-}
+type SubscriptionSelection = {
+    planName?: PlanName;
+    template?: string;
+    name: string;
+    logo: string;
+};
 const initialState = {
     lays: [
         [
@@ -203,24 +223,8 @@ const initialState = {
     maintenance: {} as Maintain,
     apps: [],
     games: [] as IGame[],
-    gameChooseSubscription: {} as GameChooseInSubscription,
-    gamesInSubscription: [
-        {
-            name: 'Máy trống',
-            logo: 'https://vmon.vn/images/vmon/icon-windows.svg',
-            volumeId: undefined
-        },
-        {
-            name: 'Black Myth Wukong',
-            logo: 'https://professorvn.net/wp-content/uploads/2024/09/logo.png',
-            volumeId: 'wukong'
-        },
-        {
-            name: 'FC Online',
-            logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPXVIF_Dk5lR8MrlpA8Pu8DuYW07dcF5sBpw&s',
-            volumeId: 'fc_online'
-        }
-    ]
+    gameChooseSubscription: gameDB[0],
+    gamesInSubscription: gameDB
 };
 
 export const globalAsync = {
@@ -269,7 +273,7 @@ export const globalSlice = createSlice({
         update_store_data: (state, payload: any) => {
             state.games = payload;
         },
-        choose_game: (state, action: any) => {
+        choose_game: (state, action: PayloadAction<SubscriptionSelection>) => {
             state.gameChooseSubscription = action.payload;
         },
         show_tutorial: (state, action: PayloadAction<boolean>) => {

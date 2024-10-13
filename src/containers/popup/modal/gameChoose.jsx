@@ -1,4 +1,3 @@
-import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
     choose_game,
@@ -7,22 +6,15 @@ import {
 } from '../../../backend/reducers';
 import { Image } from '../../../components/shared/general';
 
-export function gameChoose({ data }) {
+export function gameChoose({ data: { planName } }) {
     const gamesInSubscription = useAppSelector(
         (state) => state.globals.gamesInSubscription
     );
     const handleChooseGame = (gameId) => {
-        UserEvents({
-            type: 'payment/game_choose',
-            payload: {
-                planName: data.planName,
-                volumeId: gameId
-            }
-        });
         appDispatch(
             choose_game({
-                planName: data.planName,
-                volumeId: gameId
+                planName: planName,
+                template: gameId
             })
         );
         appDispatch(popup_close());
@@ -36,20 +28,11 @@ export function gameChoose({ data }) {
             <div className="flex flex-wrap mt-8">
                 {gamesInSubscription.map((item) => (
                     <div
-                        onClick={() => {
-                            handleChooseGame(item.volumeId);
-                        }}
+                        onClick={() => handleChooseGame(item.template)}
                         key={item.name}
                         className="ribcont ltShad prtclk rounded-lg bg-[#2d3146] flex-shrink-0 flex-1"
                     >
-                        <Image
-                            className="img"
-                            //w={'inherit'}
-                            //h={'inherit'}
-                            ext
-                            absolute
-                            src={item.logo}
-                        />
+                        <Image className="img" ext absolute src={item.logo} />
                         <div className="name capitalize text-white  text-xs text-center font-semibold">
                             {item.name}
                         </div>

@@ -191,9 +191,9 @@ function App() {
                             <Popup />
                         </>
                     )}
+                    {remote.active && !pointerLock ? <Status /> : null}
                     {remote.active ? (
                         <>
-                            <Status />
                             <Remote />
                         </>
                     ) : (

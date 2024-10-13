@@ -2,7 +2,8 @@ import {
     appDispatch,
     app_toggle,
     useAppSelector,
-    wait_and_claim_volume
+    wait_and_claim_volume,
+    worker_refresh
 } from '../../../backend/reducers';
 import {
     Icon,
@@ -22,8 +23,22 @@ export const ConnectApp = () => {
     const available = useAppSelector(
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
-    const isMaintain = useAppSelector(
-        (state) => !state.globals.maintenance?.isMaintaining
+    const paid = useAppSelector(
+        (state) =>
+            state.user.subscription.status == 'IMPORTED' ||
+            state.user.subscription.status == 'PAID'
+    );
+    const wrongsite = useAppSelector(
+        (state) =>
+            (state.user.subscription.status == 'IMPORTED' ||
+                state.user.subscription.status == 'PAID') &&
+            state.user.subscription.cluster != window.location.host
+    );
+    const cluster = useAppSelector((state) =>
+        state.user.subscription.status == 'IMPORTED' ||
+        state.user.subscription.status == 'PAID'
+            ? state.user.subscription.cluster
+            : null
     );
 
     const { browser } = detectBrowserAndOS();
@@ -32,6 +47,7 @@ export const ConnectApp = () => {
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
+    const refresh = () => appDispatch(worker_refresh());
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -86,12 +102,29 @@ export const ConnectApp = () => {
                                 >
                                     Máy đang được khởi tạo
                                 </button>
+                            ) : paid ? (
+                                wrongsite ? (
+                                    <a
+                                        href={cluster}
+                                        target="_self"
+                                        className="instbtn connectBtn"
+                                    >
+                                        {cluster}
+                                    </a>
+                                ) : (
+                                    <button
+                                        onClick={refresh}
+                                        className="instbtn connectBtn"
+                                    >
+                                        Reload
+                                    </button>
+                                )
                             ) : (
                                 <button
                                     onClick={pay}
                                     className="instbtn connectBtn"
                                 >
-                                    Pay Now
+                                    Thanh toán
                                 </button>
                             )}
                         </div>

@@ -1,3 +1,4 @@
+import { DevEnv } from '../../../src-tauri/api/database';
 import { MenuOption } from '../reducers/menu';
 import { externalLink } from './constant';
 
@@ -66,7 +67,6 @@ const apps: AppData[] = [
         name: 'Hướng dẫn',
         id: 'guideline',
         action: 'apps/app_toggle',
-        //payload: externalLink.GUIDE_VIDEO
         payload: 'guideline',
         size: 'full'
     },
@@ -92,7 +92,8 @@ var { taskbar, desktop } = {
         'Thinkmay Fanpage',
         'Game cho gói giờ',
         'Máy tính cá nhân',
-        'Thanh toán'
+        'Thanh toán',
+        ...(DevEnv ? ['Worker Profile'] : [])
     ]
 };
 

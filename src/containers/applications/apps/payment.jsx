@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
-import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
     get_payment,
@@ -68,18 +67,6 @@ export const PaymentApp = () => {
         state.apps.apps.find((x) => x.id == 'payment')
     );
 
-    const handleChooseSub = async (plan, template, domain) => {
-        UserEvents({
-            type: 'payment/click_sub',
-            payload: {
-                template,
-                plan,
-                domain
-            }
-        });
-        await appDispatch(get_payment({ template, plan, domain }));
-    };
-
     return (
         <div
             className="paymentApp floatTab dpShad"
@@ -105,7 +92,6 @@ export const PaymentApp = () => {
                             <SubscriptionCard
                                 key={index}
                                 subInfo={sub}
-                                onChooseSub={handleChooseSub}
                             ></SubscriptionCard>
                         ))}
                     </div>
@@ -115,13 +101,25 @@ export const PaymentApp = () => {
     );
 };
 
-const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
+const SubscriptionCard = ({ subInfo: sub }) => {
     const domains = useAppSelector((state) => state.user.subscription.domains);
     const max =
         domains?.findIndex(
             (y) => y.free == Math.max(...domains.map((x) => x.free))
         ) ?? 0;
+
     const [domain, setDomain] = useState(domains?.[max].domain ?? 'unknown');
+    const onChooseSub = () =>
+        domains != undefined
+            ? appDispatch(
+                  get_payment({
+                      template: gameChoose.template,
+                      plan: sub.name,
+                      domain
+                  })
+              )
+            : appDispatch(get_payment());
+
     const [isShowDetail, setShowDetail] = useState(
         sub.name == 'month1' ? true : false
     );
@@ -130,12 +128,17 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
     );
     const gameChoose = useAppSelector((state) =>
         state.globals.gamesInSubscription.find(
-            (item) => item.volumeId == gameChooseSubscription?.volumeId
+            (item) => item.template == gameChooseSubscription?.template
         )
     );
     const openChooseGames = (subName) =>
         appDispatch(
-            popup_open({ type: 'gameChoose', data: { planName: subName } })
+            popup_open({
+                type: 'gameChoose',
+                data: {
+                    planName: subName
+                }
+            })
         );
 
     return (
@@ -288,7 +291,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                 )}
                             </div>
                         ) : null}
-                        {gameChoose?.volumeId &&
+                        {gameChoose?.template &&
                         sub.name == gameChooseSubscription.planName ? (
                             <div
                                 key={gameChoose.name}
@@ -307,13 +310,7 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                             </div>
                         ) : null}
                         <button
-                            onClick={() =>
-                                onChooseSub(
-                                    sub.name,
-                                    gameChoose.volumeId,
-                                    domain
-                                )
-                            }
+                            onClick={onChooseSub}
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
                                                             space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
@@ -332,7 +329,11 @@ const SubscriptionCard = ({ subInfo: sub, onChooseSub }) => {
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
-                            {sub.name != 'month1' ? 'Đang đóng!' : 'Mua Ngay'}
+                            {sub.name != 'month1'
+                                ? 'Đang đóng!'
+                                : domains == undefined
+                                  ? 'Gia hạn'
+                                  : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
