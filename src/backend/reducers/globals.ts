@@ -47,6 +47,8 @@ type SubscriptionSelection = {
     name: string;
     logo: string;
 };
+
+type TutorialType = 'NewTutorial' | 'PaidTutorial' | 'close';
 const initialState = {
     lays: [
         [
@@ -217,8 +219,7 @@ const initialState = {
     ],
 
     service_available: false,
-    tutorial: false,
-    paidUserTutorial: false,
+    tutorial: 'close' as TutorialType,
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     apps: [],
@@ -276,11 +277,8 @@ export const globalSlice = createSlice({
         choose_game: (state, action: PayloadAction<SubscriptionSelection>) => {
             state.gameChooseSubscription = action.payload;
         },
-        show_tutorial: (state, action: PayloadAction<boolean>) => {
+        show_tutorial: (state, action: PayloadAction<TutorialType>) => {
             state.tutorial = action.payload;
-        },
-        show_paid_user_tutorial: (state, action: PayloadAction<boolean>) => {
-            state.paidUserTutorial = action.payload;
         }
     },
     extraReducers: (builder) => {

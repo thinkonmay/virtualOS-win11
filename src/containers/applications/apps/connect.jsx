@@ -12,6 +12,7 @@ import {
 } from '../../../components/shared/general';
 
 import { RenderNode } from '../../../../src-tauri/api';
+import { login } from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
@@ -43,11 +44,12 @@ export const ConnectApp = () => {
 
     const { browser } = detectBrowserAndOS();
 
-    const user = useAppSelector((state) => state.user);
-    const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
+    const { email, id } = useAppSelector((state) => state.user);
+    const emailSplit = email?.split('@')?.at(0) || 'Bạn chưa đăng nhập';
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     const refresh = () => appDispatch(worker_refresh());
+    const loginNow = () => login('google');
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -74,7 +76,7 @@ export const ConnectApp = () => {
                     <div className="content">
                         <div className="title">
                             <Icon src="monitor"></Icon>
-                            {emailSplit()}
+                            {emailSplit}
                         </div>
 
                         <div className="containerSpec">
@@ -86,7 +88,15 @@ export const ConnectApp = () => {
                                 </div>
                             ) : null}
 
-                            {available == 'ready' || available == 'started' ? (
+                            {id == 'unknown' ? (
+                                <button
+                                    onClick={loginNow}
+                                    className="instbtn connectBtn12 connectBtn"
+                                >
+                                    Đăng nhập
+                                </button>
+                            ) : available == 'ready' ||
+                              available == 'started' ? (
                                 <button
                                     onClick={connect}
                                     className="instbtn connectBtn12 connectBtn"

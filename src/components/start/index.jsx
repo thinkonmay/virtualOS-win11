@@ -34,8 +34,6 @@ import {
 } from '../../backend/utils/dispatch';
 import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
 import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
-import { OnboardingNewUser } from '../onboarding/newUser';
-import { OnboardingPaidUser } from '../onboarding/paidUser';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';
@@ -48,10 +46,6 @@ export const DesktopApp = () => {
     );
 
     const desk = useAppSelector((state) => state.desktop);
-    const tutorial = useAppSelector((state) => state.globals.tutorial);
-    const paidUserTutorial = useAppSelector(
-        (state) => state.globals.paidUserTutorial
-    );
     const handleTouchEnd = async (e) => {
         await new Promise((r) => setTimeout(r, 200));
         await clickDispatch(e);
@@ -60,8 +54,6 @@ export const DesktopApp = () => {
 
     return (
         <div className="desktopCont">
-            {tutorial ? <OnboardingNewUser /> : null}
-            {paidUserTutorial ? <OnboardingPaidUser /> : null}
             {!desk.hide &&
                 deskApps.map((app, i) => {
                     return (

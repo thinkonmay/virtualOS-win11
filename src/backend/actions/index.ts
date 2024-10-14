@@ -152,9 +152,11 @@ export const dispatchOutSide = (action: string, payload: any) => {
 };
 
 export const loginWithEmail = async (email: string, password: string) => {};
-
 export const signUpWithEmail = async (email: string, password: string) => {};
-export const login = async (provider: 'google' | 'facebook' | 'discord') => {
+export const login = async (
+    provider: 'google' | 'facebook' | 'discord',
+    update_ui?: boolean
+) => {
     const w = window.open();
     await POCKETBASE.collection('users').authWithOAuth2({
         provider,
@@ -162,7 +164,7 @@ export const login = async (provider: 'google' | 'facebook' | 'discord') => {
             w.location.href = url;
         }
     });
-    await preload();
+    await preload(update_ui);
 };
 
 export const shutDownVm = async () => {

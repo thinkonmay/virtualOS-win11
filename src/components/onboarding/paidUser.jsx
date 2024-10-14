@@ -3,7 +3,7 @@ import Joyride, { STATUS } from 'react-joyride';
 import { isMobile } from '../../../src-tauri/core';
 import {
     appDispatch,
-    show_paid_user_tutorial,
+    show_tutorial,
     sidepane_paneopen,
     useAppSelector
 } from '../../backend/reducers';
@@ -236,7 +236,7 @@ const desktopGuide = [
     }
 ];
 
-export const OnboardingPaidUser = () => {
+export const PaidTutorial = () => {
     const logged_in = useAppSelector((state) => state.user.id != 'unknown');
     const [run, setRun] = useState(false);
     useEffect(() => {
@@ -248,7 +248,7 @@ export const OnboardingPaidUser = () => {
         const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
         if (finishedStatuses.includes(status)) {
             setRun(false);
-            appDispatch(show_paid_user_tutorial(false));
+            appDispatch(show_tutorial('close'));
             localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
         }
         if (index == 2) {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
+import { login } from '../../../backend/actions';
 import {
     appDispatch,
     get_payment,
@@ -104,6 +105,7 @@ export const PaymentApp = () => {
 
 const SubscriptionCard = ({ subInfo: sub }) => {
     const domains = useAppSelector((state) => state.user.subscription.domains);
+    const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const max =
         domains?.findIndex(
             (y) => y.free == Math.max(...domains.map((x) => x.free))
@@ -111,15 +113,17 @@ const SubscriptionCard = ({ subInfo: sub }) => {
 
     const [domain, setDomain] = useState(domains?.[max].domain ?? 'unknown');
     const onChooseSub = () =>
-        domains != undefined
-            ? appDispatch(
-                  get_payment({
-                      template: gameChoose.template,
-                      plan: sub.name,
-                      domain
-                  })
-              )
-            : appDispatch(get_payment());
+        not_logged_in
+            ? login('google', false)
+            : domains != undefined
+              ? appDispatch(
+                    get_payment({
+                        template: gameChoose.template,
+                        plan: sub.name,
+                        domain
+                    })
+                )
+              : appDispatch(get_payment());
 
     const [isShowDetail, setShowDetail] = useState(
         sub.name == 'month1' ? true : false
@@ -339,7 +343,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             {sub.name != 'month1'
                                 ? 'Đang đóng!'
                                 : domains == undefined
-                                  ? 'Gia hạn'
+                                  ? not_logged_in
+                                      ? 'Mua ngay'
+                                      : 'Gia hạn'
                                   : 'Mua Ngay'}
                         </button>
                     </div>

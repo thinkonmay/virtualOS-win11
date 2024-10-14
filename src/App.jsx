@@ -6,8 +6,10 @@ import { DevEnv } from '../src-tauri/api/database';
 import { isMobile } from '../src-tauri/core';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
+
 import {
     appDispatch,
+    app_toggle,
     direct_access,
     menu_show,
     pointer_lock,
@@ -16,6 +18,7 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
+import * as Tutorials from './components/onboarding/index';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { WidPane } from './components/start/widget';
 import Taskbar from './components/taskbar';
@@ -29,13 +32,14 @@ import './index.css';
 
 function App() {
     ReactModal.setAppElement('#root');
+    const { id } = useAppSelector((state) => state.user);
     const remote = useAppSelector((x) => x.remote);
-    const paidUserTutorial = useAppSelector(
-        (state) => state.globals.paidUserTutorial
-    );
-    const user = useAppSelector((state) => state.user);
+    const tutorial = useAppSelector((state) => state.globals.tutorial);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
+    const [loadingText, setloadingText] = useState(Contents.BOOTING);
+    const [delayPayment, setDelayPayment] = useState(false);
+
     const ctxmenu = (e) => {
         afterMath(e);
         e.preventDefault();
@@ -52,8 +56,6 @@ function App() {
             appDispatch(menu_show(data));
         }
     };
-
-    const [loadingText, setloadingText] = useState(Contents.BOOTING);
 
     useEffect(() => {
         const url = new URL(window.location.href);
@@ -80,9 +82,16 @@ function App() {
             }
         };
 
+        let update_ui = true;
+        if (url.pathname == '/payment') {
+            appDispatch(app_toggle('payment'));
+            setDelayPayment(true);
+            update_ui = false;
+        }
+
         const now = () => new Date().getTime();
         const start_fetch = now();
-        PreloadBackground().finally(async () => {
+        PreloadBackground(update_ui).finally(async () => {
             window.history.replaceState({}, document.title, '/' + '');
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
@@ -91,6 +100,10 @@ function App() {
             setLockscreen(false);
         });
     }, []);
+
+    useEffect(() => {
+        if (id != 'unknown' && !booting) setDelayPayment(false);
+    }, [id, booting]);
 
     const fullscreen = async () => {
         const elem = document.documentElement;
@@ -118,16 +131,13 @@ function App() {
     };
 
     useEffect(() => {
-        if (remote.fullscreen && !paidUserTutorial) {
+        if (tutorial != 'close') window.onclick = null;
+        else if (remote.fullscreen) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
-        } else if (paidUserTutorial) {
-            window.onclick = null;
         } else {
             window.oncontextmenu = ctxmenu;
-            window.onclick = (e) => {
-                afterMath(e);
-            };
+            window.onclick = afterMath;
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
@@ -147,7 +157,7 @@ function App() {
         return () => {
             clearInterval(UIStateLoop);
         };
-    }, [remote.fullscreen, paidUserTutorial]);
+    }, [remote.fullscreen, tutorial]);
 
     const exitpointerlock = () => {
         document.exitPointerLock();
@@ -179,7 +189,9 @@ function App() {
         <div className="App">
             <ErrorBoundary FallbackComponent={ErrorFallback}>
                 {booting ? <BootScreen loadingText={loadingText} /> : null}
-                {user.id == 'unknown' && !remote.active ? <LockScreen /> : null}
+                {id == 'unknown' && !remote.active && !delayPayment ? (
+                    <LockScreen />
+                ) : null}
                 <div className="appwrap ">
                     {pointerLock ? null : (
                         <>
@@ -201,6 +213,12 @@ function App() {
                             <Background />
                             <div className="desktop" data-menu="desk">
                                 <DesktopApp />
+                                {Object.keys(Tutorials)
+                                    .filter((x) => x == tutorial)
+                                    .map((key, idx) => {
+                                        var WinApp = Tutorials[key];
+                                        return <WinApp key={idx} />;
+                                    })}
                                 {Object.keys(Applications).map((key, idx) => {
                                     var WinApp = Applications[key];
                                     return key != 'Worker' || DevEnv ? (

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Joyride, { STATUS } from 'react-joyride';
 import { useAppSelector } from '../../backend/reducers';
 
-export const OnboardingNewUser = () => {
+export const NewTutorial = () => {
     const test = [
         {
             content: (

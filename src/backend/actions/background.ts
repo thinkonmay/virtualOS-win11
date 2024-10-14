@@ -3,6 +3,7 @@ import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
+    app_close,
     app_toggle,
     change_bitrate,
     change_framerate,
@@ -18,7 +19,6 @@ import {
     ping_session,
     popup_open,
     setting_theme,
-    show_paid_user_tutorial,
     show_tutorial,
     sidepane_panethem,
     store,
@@ -118,6 +118,14 @@ const startAnalytics = async () => {
 
 const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
+};
+
+const updateUI = async () => {
+    store
+        .getState()
+        .apps.apps.filter((x) => !x.hide)
+        .forEach((x) => appDispatch(app_close(x.id)));
+    appDispatch(show_tutorial('close'));
 
     const subscription = store.getState().user.subscription as PaymentStatus;
     const { status } = subscription;
@@ -168,13 +176,14 @@ const fetchSubscription = async () => {
         localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true' &&
         (status == 'PAID' || status == 'IMPORTED')
     ) {
-        appDispatch(show_paid_user_tutorial(true));
+        appDispatch(show_tutorial('PaidTutorial'));
     } else if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        status != 'PAID'
+        status != 'PAID' &&
+        status != 'IMPORTED'
     ) {
-        appDispatch(show_tutorial(true));
+        appDispatch(show_tutorial('NewTutorial'));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');
     }
 
@@ -182,7 +191,7 @@ const fetchSubscription = async () => {
     rms.forEach((x) => appDispatch(desk_remove(x)));
 };
 
-export const preload = async () => {
+export const preload = async (update_ui?: boolean) => {
     await fetchUser();
     await Promise.allSettled([
         startAnalytics(),
@@ -194,11 +203,13 @@ export const preload = async () => {
         fetchMessage(),
         fetchStore()
     ]);
+
+    if (update_ui ?? true) await updateUI();
 };
 
-export const PreloadBackground = async () => {
+export const PreloadBackground = async (update_ui?: boolean) => {
     try {
-        await preload();
+        await preload(update_ui);
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',
