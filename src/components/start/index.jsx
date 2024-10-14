@@ -184,7 +184,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                                1000
+                                            1000
                                         )}
                                     </span>
                                 </div>
@@ -210,8 +210,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                                remote.framerate +
-                                                MIN_FRAMERATE
+                                            remote.framerate +
+                                            MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -276,9 +276,9 @@ const GamePadSetting = () => {
                     : 'gamepadSetting slide-in'
             }
         >
-            <div className="flex justify-between py-3 mx-[-12px]">
+            <div className="flex justify-between py-4 px-2 mb-[16px] mx-[-12px]">
                 <MdArrowBack
-                    fontSize={'1.2rem'}
+                    fontSize={'1.5rem'}
                     onClick={() => {
                         appDispatch(toggle_gamepad_setting());
                     }}
@@ -286,7 +286,7 @@ const GamePadSetting = () => {
 
                 <MdOutlineClose
                     onClick={handleClose}
-                    fontSize={'1.2rem'}
+                    fontSize={'1.5rem'}
                 ></MdOutlineClose>
             </div>
             <button
@@ -380,8 +380,8 @@ function MobileComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.mobileControl.buttons
             : sidepane.mobileControl.buttons.filter(
-                  (x) => x.action != 'shutDownVm'
-              );
+                (x) => x.action != 'shutDownVm'
+            );
 
     return (
         <>
@@ -460,8 +460,8 @@ function DesktopComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.desktopControl.buttons
             : sidepane.desktopControl.buttons.filter(
-                  (x) => x.action != 'shutDownVm'
-              );
+                (x) => x.action != 'shutDownVm'
+            );
 
     return (
         <>
