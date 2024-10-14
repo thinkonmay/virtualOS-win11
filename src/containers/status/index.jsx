@@ -8,10 +8,12 @@ export const Status = () => {
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
     const [isOpenStats, setOpenStats] = useState(false);
 
+
     useEffect(() => {
         const interval = setInterval(() => {
             setVideoConnectivity(CLIENT.Metrics.video.status);
             setAudioConnectivity(CLIENT.Metrics.audio.status);
+
         }, 1000);
 
         return () => {
@@ -19,12 +21,20 @@ export const Status = () => {
         };
     }, []);
 
+
+    useEffect(() => {
+        if (videoConnectivity == 'connecting' || videoConnectivity == 'closed') {
+            setOpenStats(true)
+        }
+        else {
+            setOpenStats(false)
+        }
+    }, [audioConnectivity, videoConnectivity])
     return (
         <div className="relative">
             <div
-                className={`${
-                    isOpenStats ? 'slide-in' : 'slide-out'
-                }  statusConnection`}
+                className={`${isOpenStats ? 'slide-in' : 'slide-out'
+                    }  statusConnection`}
             >
                 <p>
                     Video: <b>{videoConnectivity}</b>
