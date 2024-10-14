@@ -136,7 +136,7 @@ export const workerAsync = {
                                 loading: false,
                                 tips: false,
                                 title: 'Connecting video & audio',
-                                text: 'Reload và thử lại sau 10 phút nếu không connect được'
+                                text: 'Vui lòng giữ tab cho tới khi connect xong!'
                             }
                         })
                     );
@@ -162,7 +162,7 @@ export const workerAsync = {
                                 loading: false,
                                 tips: false,
                                 title: 'Connecting video & audio',
-                                text: 'Reload và thử lại sau 10 phút nếu không connect được'
+                                text: 'Vui lòng giữ tab cho tới khi connect xong!'
                             }
                         })
                     );

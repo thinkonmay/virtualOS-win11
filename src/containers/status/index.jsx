@@ -19,6 +19,11 @@ export const Status = () => {
         };
     }, []);
 
+    useEffect(() => {
+        setOpenStats(
+            videoConnectivity == 'connecting' || videoConnectivity == 'close'
+        );
+    }, [audioConnectivity, videoConnectivity]);
     return (
         <div className="relative">
             <div
