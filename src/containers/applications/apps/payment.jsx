@@ -12,6 +12,7 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 import './assets/store.scss';
+import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
@@ -141,6 +142,14 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             })
         );
 
+    const clickDetail = () => {
+        setShowDetail((old) => !old);
+        UserEvents({
+            type: 'payment/detail',
+            payload: isShowDetail
+        });
+    };
+
     return (
         <div className="sub relative">
             {sub.highlight ? (
@@ -193,9 +202,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                 </div>
                 <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-4 2xl:px-8 py-6 ">
                     <div
-                        onClick={() => {
-                            setShowDetail((old) => !old);
-                        }}
+                        onClick={clickDetail}
                         className="flex items-center text-foreground-light text-[13px] mt-2 mb-2"
                     >
                         {isShowDetail ? (
