@@ -170,7 +170,7 @@ const DetailPage = ({ app }) => {
 
         try {
             if (user.isExpired) {
-                appDispatch(popup_open({ type: 'warning', data: {} }));
+                // appDispatch(popup_open({ type: 'extendService', data: {} }));
                 return;
             }
             if (isMaintaining) {

@@ -23,12 +23,9 @@ type PopupData =
           };
       }
     | {
-          type: 'warning';
+          type: 'extendService';
           data: {
-              title?: string;
-              loading: boolean;
-              tips?: boolean;
-              text?: any;
+              to: string;
           };
       }
     | {
@@ -36,6 +33,13 @@ type PopupData =
           data: {
               start: string;
               end: string;
+          };
+      }
+    | {
+          type: 'redirectDomain';
+          data: {
+              domain: string;
+              from: string;
           };
       }
     | {
@@ -50,12 +54,7 @@ type Data = {
 };
 
 const initialState: Data = {
-    data_stack: [
-        //{
-        //    type: 'gameChoose',
-        //    data: {}
-        //}
-    ]
+    data_stack: []
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';

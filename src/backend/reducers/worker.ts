@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import {
     appDispatch,
-    claim_volume,
+    close_remote,
     fetch_local_worker,
     popup_close,
     popup_open,
@@ -10,11 +10,12 @@ import {
     remote_ready,
     RootState,
     save_reference,
+    unclaim_volume,
     vm_session_access,
     vm_session_create,
+    wait_and_claim_volume,
     worker_refresh,
-    worker_session_close,
-    worker_vm_create_from_volume
+    worker_session_close
 } from '.';
 import {
     CloseSession,
@@ -30,6 +31,7 @@ import {
     RenderNode,
     StartRequest,
     StartThinkmay,
+    StartThinkmayOnPeer,
     StartThinkmayOnVM,
     StartVirtdaemon,
     UserEvents
@@ -114,21 +116,34 @@ export const workerAsync = {
                     throw new Error('invalid tree');
                 }
 
+                const keepalive = KeepaliveVolume(
+                    computer,
+                    volume_id,
+                    PingSession
+                );
                 if (result.type == 'vm_worker' && result.data.length > 0) {
-                    await appDispatch(vm_session_access(result.data.at(0).id));
-                    SetPinger(
-                        KeepaliveVolume(computer, volume_id, PingSession)
+                    const [{ id }] = result.data;
+                    const interval = setInterval(keepalive, 30 * 1000);
+                    await appDispatch(
+                        vm_session_access({ id, retry_method: 'claim' })
                     );
+                    clearInterval(interval);
+
+                    SetPinger(keepalive);
                     appDispatch(popup_close());
                     return;
                 } else if (
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
-                    await appDispatch(vm_session_create(result.id));
-                    SetPinger(
-                        KeepaliveVolume(computer, volume_id, PingSession)
+                    const { id } = result;
+                    const interval = setInterval(keepalive, 30 * 1000);
+                    await appDispatch(
+                        vm_session_create({ id, retry_method: 'claim' })
                     );
+                    clearInterval(interval);
+
+                    SetPinger(keepalive);
                     appDispatch(popup_close());
                     return;
                 }
@@ -174,34 +189,6 @@ export const workerAsync = {
 
             appDispatch(popup_close());
             return;
-        }
-    ),
-    claim_volume: createAsyncThunk(
-        'claim_volume',
-        async (_: void, { getState }): Promise<Computer | Error> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-
-            const volume_id = (getState() as RootState).user.volume_id;
-            let result: RenderNode<Computer> | undefined = undefined;
-            node.iterate((x) => {
-                if (
-                    result == undefined &&
-                    (x.info as Computer)?.Volumes?.includes(volume_id)
-                )
-                    result = x;
-            });
-
-            if (result == undefined) throw new Error('worker not found');
-            else if (result.type == 'host_worker') {
-                await appDispatch(worker_vm_create_from_volume(volume_id));
-                await appDispatch(claim_volume());
-            } else if (result.type == 'vm_worker' && result.data.length > 0)
-                await appDispatch(vm_session_access(result.data.at(0).id));
-            else if (result.type == 'vm_worker' && result.data.length == 0)
-                await appDispatch(vm_session_create(result.id));
-
-            appDispatch(popup_close());
-            return result.info;
         }
     ),
     fetch_local_worker: createAsyncThunk(
@@ -266,8 +253,8 @@ export const workerAsync = {
             appDispatch(fetch_local_worker(computer.address));
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
-            await ready();
-            appDispatch(remote_ready());
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
     worker_session_access: createAsyncThunk(
@@ -288,12 +275,20 @@ export const workerAsync = {
             if (result instanceof Error) throw result;
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
-            await ready();
-            appDispatch(remote_ready());
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
-    personal_worker_session_close: createAsyncThunk(
-        'personal_worker_session_close',
+    retry_volume_claim: createAsyncThunk(
+        'retry_volume_claim',
+        async (_: void, {}): Promise<any> => {
+            appDispatch(close_remote());
+            await appDispatch(unclaim_volume());
+            await appDispatch(wait_and_claim_volume());
+        }
+    ),
+    unclaim_volume: createAsyncThunk(
+        'unclaim_volume',
         async (_: void, { getState }): Promise<any> => {
             const volume_id = (getState() as RootState).user.volume_id;
 
@@ -307,6 +302,9 @@ export const workerAsync = {
                 )
                     volumeFound = x;
             });
+
+            if (volumeFound == undefined)
+                throw new Error('user do not have available volume');
 
             const host_session = node.findParent(
                 volumeFound.id,
@@ -362,38 +360,64 @@ export const workerAsync = {
     ),
     vm_session_create: createAsyncThunk(
         'vm_session_create',
-        async (ip: string, { getState }): Promise<any> => {
+        async (
+            {
+                id: id,
+                retry_method
+            }: { id: string; retry_method: 'claim' | 'ignore' },
+            { getState }
+        ): Promise<any> => {
             await appDispatch(worker_refresh());
 
             const node = new RenderNode((getState() as RootState).worker.data);
 
-            const host = node.findParent<Computer>(ip, 'host_worker');
+            const host = node.findParent<Computer>(id, 'host_worker');
             const vm_session = node.findParent<StartRequest>(
-                ip,
+                id,
                 'host_session'
             );
 
             if (host == undefined) throw new Error('invalid tree');
             else if (vm_session == undefined) throw new Error('invalid tree');
 
-            const result = await StartThinkmayOnVM(host.info, vm_session.id);
+            const result = await (async () => {
+                for (let index = 0; index < 5; index++) {
+                    const result = await StartThinkmayOnVM(
+                        host.info,
+                        vm_session.id
+                    );
+                    if (result instanceof Error) continue;
+                    else return result;
+                }
+
+                return new Error('failed to start vm session after 5 retries');
+            })();
             if (result instanceof Error) throw result;
             appDispatch(fetch_local_worker(host.info.address));
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
-            await ready();
-            appDispatch(remote_ready());
+            const success = await ready();
+            if (!success && retry_method == 'claim')
+                appDispatch(workerAsync.retry_volume_claim());
+            else if (!success && retry_method == 'ignore')
+                appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
     vm_session_access: createAsyncThunk(
         'vm_session_access',
-        async (input: string, { getState }): Promise<any> => {
+        async (
+            {
+                id,
+                retry_method
+            }: { id: string; retry_method: 'claim' | 'ignore' },
+            { getState }
+        ): Promise<any> => {
             const node = new RenderNode((getState() as RootState).worker.data);
-            const computer = node.findParent<Computer>(input, 'host_worker')
-                ?.info;
-            const session = node.find<StartRequest>(input)?.info;
+            const computer = node.findParent<Computer>(id, 'host_worker')?.info;
+            const session = node.find<StartRequest>(id)?.info;
             const vm_session_id = node.findParent<StartRequest>(
-                input,
+                id,
                 'host_session'
             )?.info.id;
 
@@ -408,8 +432,12 @@ export const workerAsync = {
 
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
-            await ready();
-            appDispatch(remote_ready());
+            const success = await ready();
+            if (!success && retry_method == 'claim')
+                appDispatch(workerAsync.retry_volume_claim());
+            else if (!success && retry_method == 'ignore')
+                appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
     vm_session_close: createAsyncThunk(
@@ -444,12 +472,14 @@ export const workerAsync = {
             const host = node.findParent<Computer>(ip, 'host_worker');
             if (host == undefined) throw new Error('invalid tree');
 
-            // const result = await StartThinkmayOnPeer(host.info, ip);
-            // appDispatch(fetch_local_worker(host.info.address));
-            // appDispatch(remote_connect(result));
-            // await appDispatch(save_reference(result));
-            // await ready()
-            // appDispatch(remote_ready())
+            const result = await StartThinkmayOnPeer(host.info, ip);
+            if (result instanceof Error) throw result;
+
+            appDispatch(fetch_local_worker(host.info.address));
+            appDispatch(remote_connect(result));
+            await appDispatch(save_reference(result));
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
     peer_session_access: createAsyncThunk(
@@ -469,8 +499,8 @@ export const workerAsync = {
             const result = ParseVMRequest(computer, { ...session, target });
             appDispatch(remote_connect(result));
             await appDispatch(save_reference(result));
-            await ready();
-            appDispatch(remote_ready());
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
     peer_session_close: createAsyncThunk(
@@ -572,7 +602,7 @@ export const workerSlice = createSlice({
                 }
             },
             {
-                fetch: workerAsync.personal_worker_session_close,
+                fetch: workerAsync.unclaim_volume,
                 hander: (state, action) => {}
             },
             {
