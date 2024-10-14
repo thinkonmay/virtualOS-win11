@@ -636,7 +636,7 @@ export function language() {
 
     en.set(
         Contents.HEADER_2,
-        "Once connected, you'll get the latest features and security updates."
+        "Once connected, you'll get the latest features and security updates"
     );
     vn.set(
         Contents.HEADER_2,
@@ -783,7 +783,7 @@ export function language() {
     );
     vn.set(
         Contents.PRO_TIP_DEMO_0,
-        'Click fix bàn phím nếu không di chuyển được khi chơi game"'
+        'Click "Fix bàn phím" nếu không di chuyển được khi chơi game'
     );
 
     en.set(Contents.PRO_TIP_DEMO_1, 'Open settings in the lower right corner');

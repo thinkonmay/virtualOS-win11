@@ -268,9 +268,9 @@ const GamePadSetting = () => {
                     : 'gamepadSetting slide-in'
             }
         >
-            <div className="flex justify-between py-3 mx-[-12px]">
+            <div className="flex justify-between py-4 px-2 mb-[16px] mx-[-12px]">
                 <MdArrowBack
-                    fontSize={'1.2rem'}
+                    fontSize={'1.5rem'}
                     onClick={() => {
                         appDispatch(toggle_gamepad_setting());
                     }}
@@ -278,7 +278,7 @@ const GamePadSetting = () => {
 
                 <MdOutlineClose
                     onClick={handleClose}
-                    fontSize={'1.2rem'}
+                    fontSize={'1.5rem'}
                 ></MdOutlineClose>
             </div>
             <button

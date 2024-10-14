@@ -65,6 +65,12 @@ export const workerAsync = {
             await appDispatch(fetch_local_worker(getDomain()));
         }
     ),
+    worker_reload: createAsyncThunk(
+        'worker_reload',
+        async (): Promise<void> => {
+            await appDispatch(worker_refresh());
+        }
+    ),
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
@@ -122,6 +128,18 @@ export const workerAsync = {
                     PingSession
                 );
                 if (result.type == 'vm_worker' && result.data.length > 0) {
+                    appDispatch(popup_close());
+                    appDispatch(
+                        popup_open({
+                            type: 'notify',
+                            data: {
+                                loading: false,
+                                tips: false,
+                                title: 'Connecting video & audio',
+                                text: 'Reload và thử lại sau 10 phút nếu không connect được'
+                            }
+                        })
+                    );
                     const [{ id }] = result.data;
                     const interval = setInterval(keepalive, 30 * 1000);
                     await appDispatch(
@@ -136,6 +154,18 @@ export const workerAsync = {
                     result.type == 'vm_worker' &&
                     result.data.length == 0
                 ) {
+                    appDispatch(popup_close());
+                    appDispatch(
+                        popup_open({
+                            type: 'notify',
+                            data: {
+                                loading: false,
+                                tips: false,
+                                title: 'Connecting video & audio',
+                                text: 'Reload và thử lại sau 10 phút nếu không connect được'
+                            }
+                        })
+                    );
                     const { id } = result;
                     const interval = setInterval(keepalive, 30 * 1000);
                     await appDispatch(
@@ -610,9 +640,13 @@ export const workerSlice = createSlice({
                 hander: (state, action) => {}
             },
             {
-                fetch: workerAsync.wait_and_claim_volume,
+                fetch: workerAsync.worker_reload,
                 hander: (state, action) => {}
             }
+            //{
+            //    fetch: workerAsync.wait_and_claim_volume,
+            //    hander: (state, action) => { }
+            //}
         );
     }
 });
