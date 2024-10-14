@@ -101,11 +101,10 @@ const Protip = () => {
     ];
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            const randomNumber = Math.floor(Math.random() * QUANTITY_TIP);
-
-            setCurrentTip(randomNumber);
-        }, 5 * 1000);
+        const interval = setInterval(
+            () => setCurrentTip(Math.floor(Math.random() * QUANTITY_TIP)),
+            5 * 1000
+        );
 
         return () => {
             clearInterval(interval);

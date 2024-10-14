@@ -5,21 +5,6 @@ export const isDevEnv = () => {
     );
 };
 
-export const isAdmin = (email) => {
-    const listAdmin = [
-        'sieunhankiet@gmail.com',
-        'datdovan1502@gmail.com',
-        'thienvanlea1@gmail.com',
-        'huyhoangdo0205@gmail.com',
-        'huyhoangdo@contact.thinkmay.net',
-        'sevenfrese@gmail.com'
-    ];
-
-    // TODO: after release
-
-    return listAdmin.includes(email) ?? false;
-};
-
 export const isRunOutOfGpu = (respText: string): boolean => {
     let check = true;
 

@@ -34,25 +34,6 @@ export const MicroStore = () => {
     const [opapp, setOpapp] = useState({});
     const [isConnecting, setConnecting] = useState(false);
 
-    const totab = (e) => {
-        var x = e.target && e.target.dataset.action;
-        if (x) {
-            setPage(0);
-            setTimeout(() => {
-                var target = document.getElementById(x);
-                if (target) {
-                    var tsof = target.parentNode.parentNode.scrollTop,
-                        trof = target.offsetTop;
-
-                    if (Math.abs(tsof - trof) > window.innerHeight * 0.1) {
-                        target.parentNode.parentNode.scrollTop =
-                            target.offsetTop;
-                    }
-                }
-            }, 200);
-        }
-    };
-
     const frontScroll = (e) => {
         if (page == 0) {
             var tabs = ['sthome', 'gamerib'],
@@ -189,7 +170,7 @@ const DetailPage = ({ app }) => {
 
         try {
             if (user.isExpired) {
-                appDispatch(popup_open({ type: 'warning', data: {} }));
+                // appDispatch(popup_open({ type: 'extendService', data: {} }));
                 return;
             }
             if (isMaintaining) {

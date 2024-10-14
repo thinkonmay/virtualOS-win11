@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { appDispatch, render_message, store } from '.';
 import { LOCAL } from '../../../src-tauri/api';
+import { DevEnv } from '../../../src-tauri/api/database';
 import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 
@@ -24,6 +25,10 @@ type IGamePadSetting = {
     draggable: 'static' | 'draggable';
     isDefaultPos: boolean;
 };
+type DesktopControl = {
+    buttons: any[];
+    shortcuts: any[];
+};
 type MobileControl = {
     hide: boolean;
     buttons: any[];
@@ -37,8 +42,7 @@ type Data = {
     notifications: Notification[];
     message: Message[];
 
-    quicks: any[];
-    shortcuts: any[];
+    desktopControl: DesktopControl;
     mobileControl: MobileControl;
     hide: boolean;
     banhide: boolean;
@@ -98,16 +102,123 @@ const listMobileShortCut = [
         val: ['Backspace']
     }
 ];
+const listMobileSettings = [
+    {
+        ui: true,
+        id: 'resetVideoBtn',
+        src: 'MdOutlineResetTv',
+        name: [Contents.RESET_VIDEO],
+        state: 'network.airplane',
+        action: 'hard_reset_async'
+    },
+    {
+        ui: true,
+        id: 'fullscrenBtn',
+        src: 'MdFullscreen',
+        name: [Contents.FULLSCREEN],
+        state: 'fullscreen',
+        action: 'remote/toggle_fullscreen'
+    },
+    {
+        ui: true,
+        id: 'virtKeyboardBtn',
+        src: 'MdOutlineKeyboard',
+        name: [Contents.OPEN_KEYBOARD],
+        state: 'keyboardOpen',
+        action: 'sidepane/toggle_keyboard'
+    },
+    {
+        ui: true,
+        id: 'virtGamepadBtn',
+        src: 'MdOutlineSportsEsports',
+        name: [Contents.OPEN_GAMEPAD],
+        state: 'gamePadOpen',
+        //action: 'sidepane/toggle_gamepad'
+        action: 'sidepane/toggle_gamepad_setting'
+    },
+    {
+        ui: true,
+        id: 'shareLinkBtn',
+        src: 'MdOutlineLink',
+        name: [Contents.EXTERNAL_TAB],
+        state: 'network.airplane',
+        action: 'remote/share_reference'
+    },
+    {
+        ui: true,
+        id: 'shutdownBtn',
+
+        src: 'MdOutlinePowerSettingsNew',
+        name: [Contents.SHUT_DOWN],
+        state: 'shutdown',
+        action: 'shutDownVm',
+        style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+    }
+];
 const listDesktopShortCut = [
     {
         name: 'Win+D',
         val: ['lwin', 'd']
     }
 ];
+const listDesktopSettings = [
+    {
+        ui: true,
+        id: 'resetVideoBtn',
 
-const initialState: Data = {
-    quicks: window.location.href.includes('localhost')
-        ? [
+        src: 'MdOutlineResetTv',
+        name: [Contents.RESET_VIDEO],
+        state: 'network.airplane',
+        action: 'hard_reset_async'
+    },
+    {
+        ui: true,
+        id: 'fullscrenBtn',
+        src: 'MdFullscreen',
+        name: [Contents.FULLSCREEN],
+        state: 'fullscreen',
+        action: 'remote/toggle_fullscreen'
+    },
+    {
+        ui: true,
+        id: 'fixKeyboardBtn',
+
+        src: 'MdOutlineKeyboard',
+        name: [Contents.SCAN_CODE],
+        state: 'scancode',
+        action: 'remote/scancode_toggle'
+    },
+    {
+        ui: true,
+        id: 'shareLinkBtn',
+
+        src: 'MdOutlineLink',
+        name: [Contents.EXTERNAL_TAB],
+        state: 'share_reference',
+        action: 'remote/share_reference'
+    },
+    {
+        ui: true,
+        id: 'gamingMouseBtn',
+
+        src: 'FaMousePointer',
+        name: [Contents.RELATIVE_MOUSE],
+        state: 'relative_mouse',
+        action: 'remote/relative_mouse'
+    },
+    {
+        ui: true,
+        id: 'shutdownBtn',
+
+        src: 'MdOutlinePowerSettingsNew',
+        name: [Contents.SHUT_DOWN],
+        state: 'shutdown',
+        action: 'shutDownVm',
+        style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+    },
+    ...(!DevEnv
+        ? []
+        : [
             {
                 ui: true,
                 id: 'toggle_remote_async',
@@ -115,178 +226,18 @@ const initialState: Data = {
                 name: [Contents.VIDEO_TOGGLE],
                 state: 'active',
                 action: 'toggle_remote_async'
-            },
-            {
-                ui: true,
-                id: 'resetVideoBtn',
-                src: 'MdOutlineResetTv',
-                name: [Contents.RESET_VIDEO],
-                state: 'network.airplane',
-                action: 'hard_reset_async'
-            },
-            {
-                ui: true,
-                id: 'fullscrenBtn',
-                src: 'MdFullscreen',
-                name: [Contents.FULLSCREEN],
-                state: 'fullscreen',
-                action: 'remote/toggle_fullscreen'
-            },
-            {
-                ui: true,
-                id: 'fixKeyboardBtn',
-                src: 'MdOutlineKeyboard',
-                name: [Contents.SCAN_CODE],
-                state: 'scancode',
-                action: 'remote/scancode_toggle'
-            },
-            {
-                ui: true,
-                id: 'shareLinkBtn',
-                src: 'MdOutlineLink',
-                name: [Contents.EXTERNAL_TAB],
-                state: 'share_reference',
-                action: 'remote/share_reference'
-            },
-            {
-                ui: true,
-                id: 'gamingMouseBtn',
-
-                src: 'FaMousePointer',
-                name: [Contents.RELATIVE_MOUSE],
-                state: 'relative_mouse',
-                action: 'remote/relative_mouse'
-            },
-            {
-                ui: true,
-                id: 'shutdownBtn',
-                src: 'MdOutlinePowerSettingsNew',
-                name: [Contents.SHUT_DOWN],
-                state: 'shutdown',
-                action: 'shutDownVm',
-                style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
             }
-        ]
-        : [
-            //  {
-            //      ui: true,
-            //      id: 'resetVideoBtn',
+        ])
+];
 
-            //      src: 'MdOutlineResetTv',
-            //      name: [Contents.RESET_VIDEO],
-            //      state: 'network.airplane',
-            //      action: 'hard_reset_async'
-            //  },
-            {
-                ui: true,
-                id: 'fullscrenBtn',
-                src: 'MdFullscreen',
-                name: [Contents.FULLSCREEN],
-                state: 'fullscreen',
-                action: 'remote/toggle_fullscreen'
-            },
-            {
-                ui: true,
-                id: 'fixKeyboardBtn',
-
-                src: 'MdOutlineKeyboard',
-                name: [Contents.SCAN_CODE],
-                state: 'scancode',
-                action: 'remote/scancode_toggle'
-            },
-            {
-                ui: true,
-                id: 'shareLinkBtn',
-
-                src: 'MdOutlineLink',
-                name: [Contents.EXTERNAL_TAB],
-                state: 'share_reference',
-                action: 'remote/share_reference'
-            },
-            {
-                ui: true,
-                id: 'gamingMouseBtn',
-
-                src: 'FaMousePointer',
-                name: [Contents.RELATIVE_MOUSE],
-                state: 'relative_mouse',
-                action: 'remote/relative_mouse'
-            },
-            {
-                ui: true,
-                id: 'shutdownBtn',
-
-                src: 'MdOutlinePowerSettingsNew',
-                name: [Contents.SHUT_DOWN],
-                state: 'shutdown',
-                action: 'shutDownVm',
-                style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-            }
-        ],
-    shortcuts: listDesktopShortCut,
-
+const initialState: Data = {
+    desktopControl: {
+        buttons: listDesktopSettings,
+        shortcuts: listDesktopShortCut
+    },
     mobileControl: {
         hide: true,
-        buttons: [
-            //{
-            //    ui: true,
-            //    id: 'resetVideoBtn',
-            //    src: 'MdOutlineResetTv',
-            //    name: [Contents.RESET_VIDEO],
-            //    state: 'network.airplane',
-            //    action: 'hard_reset_async'
-            //},
-            {
-                ui: true,
-                id: 'fullscrenBtn',
-                src: 'MdFullscreen',
-                name: [Contents.FULLSCREEN],
-                state: 'fullscreen',
-                action: 'remote/toggle_fullscreen'
-            },
-            {
-                ui: true,
-                id: 'virtKeyboardBtn',
-                src: 'MdOutlineKeyboard',
-                name: [Contents.OPEN_KEYBOARD],
-                state: 'keyboardOpen',
-                action: 'sidepane/toggle_keyboard'
-            },
-            {
-                ui: true,
-                id: 'virtGamepadBtn',
-                src: 'MdOutlineSportsEsports',
-                name: [Contents.OPEN_GAMEPAD],
-                state: 'gamePadOpen',
-                //action: 'sidepane/toggle_gamepad'
-                action: 'sidepane/toggle_gamepad_setting'
-            },
-            //{
-            //    ui: true,
-            //    src: 'MdOutlineSettingsInputComponent',
-            //    name: [Contents.ADJUST_GAMEPAD],
-            //    state: 'network.airplane',
-            //    action: 'sidepane/toggle_gamepad_setting'
-            //},
-            {
-                ui: true,
-                id: 'shareLinkBtn',
-                src: 'MdOutlineLink',
-                name: [Contents.EXTERNAL_TAB],
-                state: 'network.airplane',
-                action: 'remote/share_reference'
-            },
-            {
-                ui: true,
-                id: 'shutdownBtn',
-
-                src: 'MdOutlinePowerSettingsNew',
-                name: [Contents.SHUT_DOWN],
-                state: 'shutdown',
-                action: 'shutDownVm',
-                style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-            }
-        ],
+        buttons: listMobileSettings,
         shortcuts: listMobileShortCut,
         setting: initialSetting,
         gamePadHide: true,

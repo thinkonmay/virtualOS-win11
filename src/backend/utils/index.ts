@@ -1,3 +1,4 @@
+import { DevEnv } from '../../../src-tauri/api/database';
 import { MenuOption } from '../reducers/menu';
 import { externalLink } from './constant';
 
@@ -54,22 +55,20 @@ const apps: AppData[] = [
         name: 'Game cho gói giờ',
         id: 'store',
         action: 'apps/app_toggle',
-        payload: 'store',
+        payload: 'store'
     },
     {
         name: 'Máy tính cá nhân',
         id: 'connectPc',
         action: 'apps/app_toggle',
-        payload: 'connectPc',
+        payload: 'connectPc'
     },
     {
         name: 'Hướng dẫn',
         id: 'guideline',
         action: 'apps/app_toggle',
-        //payload: externalLink.GUIDE_VIDEO
         payload: 'guideline',
         size: 'full'
-
     },
     {
         name: 'Discord',
@@ -85,27 +84,17 @@ const apps: AppData[] = [
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: [''],
-    desktop: window.location.href.includes('localhost')
-        ? [
-            'Worker Profile',
-            'Local Connect',
-            'Discord',
-            'Hướng dẫn',
-            'Thinkmay Fanpage',
-            'Game cho gói giờ',
-            'Máy tính cá nhân',
-            'Thanh toán'
-        ]
-        : [
-            'Local Connect',
-            'Discord',
-            'Hướng dẫn',
-            'Thinkmay Fanpage',
-            'Game cho gói giờ',
-            'Máy tính cá nhân',
-            'Thanh toán'
-        ]
+    taskbar: [],
+    desktop: [
+        'Local Connect',
+        'Discord',
+        'Hướng dẫn',
+        'Thinkmay Fanpage',
+        'Game cho gói giờ',
+        'Máy tính cá nhân',
+        'Thanh toán',
+        ...(DevEnv ? ['Worker Profile'] : [])
+    ]
 };
 
 apps.map((x) => {

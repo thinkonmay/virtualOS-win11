@@ -3,21 +3,27 @@ import { RenderNode } from '../../../src-tauri/api';
 import { changeTheme } from '../../backend/actions';
 import {
     appDispatch,
-    personal_worker_session_close,
+    unclaim_volume,
     useAppSelector,
     user_delete,
     wait_and_claim_volume
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
+import { formatDate } from '../../backend/utils/date';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
 
 function UserInfo() {
+    const correctsite = useAppSelector(
+        (state) =>
+            (state.user.subscription.status == 'IMPORTED' ||
+                state.user.subscription.status == 'PAID') &&
+            state.user.subscription.correct_domain
+    );
     const {
         email,
         subscription: {
-            status,
             node,
             cluster,
             plan,
@@ -35,21 +41,9 @@ function UserInfo() {
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
-    const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-GB', {
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    };
-
     const renderPlanName = {
         month1: (
             <div className="restWindow w-full  flex flex-col ">
-                {/*<div className="w-full flex gap-4 justify-between mt-3 items-end">
-                    <span className="text-left">Payment Status</span>
-                    <span>{status}</span>
-                </div>*/}
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">{t[Contents.STARTAT]}</span>
                     <span>{formatDate(created_at)}</span>
@@ -60,14 +54,15 @@ function UserInfo() {
                         <span>{formatDate(ended_at)}</span>
                     </div>
                 ) : null}
-                <div className="w-full flex gap-4 justify-between mt-4 items-end">
-                    <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>
-                        {(+total_usage / 60).toFixed(2)}h / {limit_hour}h
-                    </span>
-                </div>
-
-                {template ? (
+                {correctsite ? (
+                    <div className="w-full flex gap-4 justify-between mt-4 items-end">
+                        <span className="text-left">{t[Contents.TIME]}</span>
+                        <span>
+                            {(+total_usage / 60).toFixed(2)}h / {limit_hour}h
+                        </span>
+                    </div>
+                ) : null}
+                {template && correctsite ? (
                     <div className="w-full flex gap-4 justify-between mt-1 items-end">
                         <span className="text-left">Template</span>
                         <span>{template}</span>
@@ -79,7 +74,7 @@ function UserInfo() {
                         <span>{cluster}</span>
                     </div>
                 ) : null}
-                {node ? (
+                {node && correctsite ? (
                     <div className="w-full flex gap-4 justify-between mt-1 items-end">
                         <span className="text-left">Node</span>
                         <span>{node}</span>
@@ -132,35 +127,39 @@ function UserInfo() {
                         </div>
                     </div>
                     <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] ">
-                        <span>Shut down</span>
-                        {shutdownable == 'ready' ||
-                        shutdownable == 'started' ? (
-                            shutdownable == 'ready' ? (
-                                <div
-                                    className="strBtn handcr prtclk"
-                                    onClick={() =>
-                                        appDispatch(
-                                            personal_worker_session_close()
-                                        )
-                                    }
-                                >
-                                    <MdOutlinePowerSettingsNew size={'1rem'} />
-                                </div>
-                            ) : (
-                                <div
-                                    className="strBtn handcr prtclk"
-                                    onClick={() =>
-                                        appDispatch(wait_and_claim_volume())
-                                    }
-                                >
-                                    <Icon
-                                        className="quickIcon"
-                                        ui={true}
-                                        src={'power'}
-                                        width={14}
-                                    />
-                                </div>
-                            )
+                        {correctsite ? (
+                            shutdownable == 'started' ? (
+                                <>
+                                    <span>Shut down</span>
+                                    <div
+                                        className="strBtn handcr prtclk"
+                                        onClick={() =>
+                                            appDispatch(unclaim_volume())
+                                        }
+                                    >
+                                        <MdOutlinePowerSettingsNew
+                                            size={'1rem'}
+                                        />
+                                    </div>
+                                </>
+                            ) : shutdownable == 'ready' ? (
+                                <>
+                                    <span>Connect</span>
+                                    <div
+                                        className="strBtn handcr prtclk"
+                                        onClick={() =>
+                                            appDispatch(wait_and_claim_volume())
+                                        }
+                                    >
+                                        <Icon
+                                            className="quickIcon"
+                                            ui={true}
+                                            src={'power'}
+                                            width={14}
+                                        />
+                                    </div>
+                                </>
+                            ) : null
                         ) : null}
                     </div>
 

@@ -17,11 +17,11 @@ import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { UserEvents } from '../../../src-tauri/api';
+import { DevEnv } from '../../../src-tauri/api/database';
 
 const blacklist = ['framerate', 'bitrate', 'internal_sync', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
-    if (window.location.href.includes('localhost'))
-        console.log({ ...(action as any) });
+    if (DevEnv) console.log({ ...(action as any) });
     else if (
         blacklist.filter((x) => (action as any).type.includes(x)).length == 0
     )
@@ -136,7 +136,7 @@ export const {
 } = remoteSlice.actions;
 
 export const {
-    personal_worker_session_close,
+    unclaim_volume,
     fetch_local_worker,
     worker_session_access,
     worker_session_close,
@@ -145,7 +145,6 @@ export const {
     worker_vm_create_from_volume,
     worker_refresh,
     wait_and_claim_volume,
-    claim_volume,
     vm_session_create,
     vm_session_access,
     vm_session_close,

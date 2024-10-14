@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
+import { DevEnv } from '../src-tauri/api/database';
 import { isMobile } from '../src-tauri/core';
-import { preload } from './backend/actions/background';
+import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import {
     appDispatch,
@@ -15,12 +16,7 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
-import {
-    DesktopApp,
-    LogMaintain,
-    SidePane,
-    StartMenu
-} from './components/start';
+import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { WidPane } from './components/start/widget';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
@@ -40,10 +36,6 @@ function App() {
     const user = useAppSelector((state) => state.user);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
-    const isMaintaining = useAppSelector(
-        (state) => state.globals.maintenance?.isMaintaining
-    );
-
     const ctxmenu = (e) => {
         afterMath(e);
         e.preventDefault();
@@ -90,7 +82,7 @@ function App() {
 
         const now = () => new Date().getTime();
         const start_fetch = now();
-        preload().finally(async () => {
+        PreloadBackground().finally(async () => {
             window.history.replaceState({}, document.title, '/' + '');
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
@@ -151,8 +143,10 @@ function App() {
             appDispatch(set_fullscreen(fullscreen));
         };
 
-        const UIStateLoop = setInterval(handleState, 100);
-        return () => clearInterval(UIStateLoop);
+        const UIStateLoop = setInterval(handleState, 500);
+        return () => {
+            clearInterval(UIStateLoop);
+        };
     }, [remote.fullscreen, paidUserTutorial]);
 
     const exitpointerlock = () => {
@@ -175,7 +169,7 @@ function App() {
                 appDispatch(pointer_lock(havingPtrLock));
         };
 
-        const UIStateLoop = setInterval(handleState, 100);
+        const UIStateLoop = setInterval(handleState, 500);
         return () => {
             clearInterval(UIStateLoop);
         };
@@ -197,26 +191,26 @@ function App() {
                             <Popup />
                         </>
                     )}
-
+                    {remote.active && !pointerLock ? <Status /> : null}
                     {remote.active ? (
                         <>
-                            <Status />
                             <Remote />
                         </>
                     ) : (
-                        <Background />
+                        <>
+                            <Background />
+                            <div className="desktop" data-menu="desk">
+                                <DesktopApp />
+                                {Object.keys(Applications).map((key, idx) => {
+                                    var WinApp = Applications[key];
+                                    return key != 'Worker' || DevEnv ? (
+                                        <WinApp key={idx} />
+                                    ) : null;
+                                })}
+                            </div>
+                        </>
                     )}
-                    {!remote.active ? (
-                        <div className="desktop" data-menu="desk">
-                            <DesktopApp />
-                            {Object.keys(Applications).map((key, idx) => {
-                                var WinApp = Applications[key];
-                                return <WinApp key={idx} />;
-                            })}
-                        </div>
-                    ) : null}
                 </div>
-                {isMaintaining ? <LogMaintain /> : null}
             </ErrorBoundary>
         </div>
     );

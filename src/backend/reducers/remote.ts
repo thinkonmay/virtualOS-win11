@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
+    close_remote,
     popup_close,
     popup_open,
     remote_connect,
@@ -20,7 +21,6 @@ import {
     ready,
     SIZE
 } from '../../../src-tauri/singleton';
-import { sleep } from '../utils/sleep';
 import { BuilderHelper } from './helper';
 
 export type AuthSessionResp = {
@@ -103,22 +103,18 @@ export function WindowD() {
 }
 
 export async function keyboardCallback(val, action: 'up' | 'down') {
-    if ('vibrate' in navigator && action == 'down') {
+    if ('vibrate' in navigator && action == 'down')
         navigator.vibrate([40, 30, 0]);
-    }
 
-    if (CLIENT == null) return;
-    CLIENT.VirtualKeyboard({
+    await CLIENT?.VirtualKeyboard({
         code: action == 'up' ? EventCode.KeyUp : EventCode.KeyDown,
         jsKey: val
     });
 }
 export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
-    if ('vibrate' in navigator && type == 'down') {
+    if ('vibrate' in navigator && type == 'down')
         navigator.vibrate([40, 30, 0]);
-    }
-    if (CLIENT == null) return;
-    CLIENT.VirtualGamepadButton(type == 'down', index);
+    await CLIENT?.VirtualGamepadButton(type == 'down', index);
 }
 
 export async function gamepadAxisCallback(
@@ -126,14 +122,11 @@ export async function gamepadAxisCallback(
     y: number,
     type: 'left' | 'right'
 ) {
-    if (CLIENT == null) return;
-    CLIENT.VirtualGamepadAxis(x, y, type);
+    await CLIENT?.VirtualGamepadAxis(x, y, type);
 }
 
 export const setClipBoard = async (content: string) => {
-    if (CLIENT == null) return;
-
-    CLIENT?.SetClipboard(content);
+    await CLIENT?.SetClipboard(content);
 };
 export const remoteAsync = {
     check_worker: async () => {
@@ -220,8 +213,8 @@ export const remoteAsync = {
                     throw new Error('not found any query');
 
                 appDispatch(remote_connect({ ...(data.items[0] as any) }));
-                await ready();
-                appDispatch(remote_ready());
+                if (!(await ready())) appDispatch(close_remote());
+                else appDispatch(remote_ready());
             } catch (e) {
                 throw new Error('Failed to query ' + e);
             }
@@ -250,16 +243,8 @@ export const remoteAsync = {
     }),
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
-        async (_: void, { getState }) => {
-            if (!store.getState().remote.active) {
-                appDispatch(toggle_remote());
-                await sleep(2000);
-                return;
-            }
-
+        async (_: void, {}) => {
             appDispatch(toggle_remote());
-
-            return;
         }
     ),
     hard_reset_async: createAsyncThunk(
