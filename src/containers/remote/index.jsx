@@ -5,6 +5,7 @@ import {
     VideoWrapper,
     isMobile
 } from '../../../src-tauri/core';
+import { isIOS } from '../../../src-tauri/core/utils/platform';
 import { Assign, CLIENT } from '../../../src-tauri/singleton';
 import {
     appDispatch,
@@ -31,13 +32,13 @@ export const Remote = () => {
 
     useEffect(() => {
         if (CLIENT == null) return;
-        else if (isMobile()) CLIENT?.PointerVisible(true);
+        else if (isMobile() || isIOS()) CLIENT?.PointerVisible(true);
 
         if (keyboard || gamepad) CLIENT.hid.disable = true;
         else CLIENT.hid.disable = false;
 
         CLIENT.touch.mode =
-            isMobile() && !keyboard
+            (isMobile() || isIOS()) && !keyboard
                 ? gamepad
                     ? 'gamepad'
                     : 'trackpad'

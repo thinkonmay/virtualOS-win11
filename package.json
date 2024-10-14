@@ -7,7 +7,7 @@
   "scripts": {
     "tauri": "tauri",
     "start": "vite --port 3000",
-    "dev": "vite --port 3000",
+    "dev": "vite --port 3000 --host",
     "format": "prettier --write \"./src-tauri/**/*.{jsx,ts,js,tsx}\" && prettier --write \"./src/**/*.{jsx,ts,js,tsx}\" && tsc",
     "build": "prettier --write \"./src/**/*.{jsx,ts,js,tsx}\" && tsc && vite build"
   },
