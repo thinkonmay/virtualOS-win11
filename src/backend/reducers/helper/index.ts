@@ -8,8 +8,8 @@ import {
 
 import Dexie, { Table } from 'dexie';
 import { appDispatch, popup_close, popup_open } from '..';
-import { formatError } from '../../utils/formatErr';
 import { DevEnv } from '../../../../src-tauri/api/database';
+import { formatError } from '../../utils/formatErr';
 class TodoDB extends Dexie {
     data!: Table<{ timestamp: number; id: string; raw: any }, string>;
     constructor() {
@@ -123,7 +123,8 @@ const filterActions = [
     'fetch_store',
     'fetch_under_maintenance',
     'fetch_message',
-    'fetch_subscription'
+    'fetch_subscription',
+    'save_reference'
 ];
 
 const isFilterAction = (acctionType: string) => {
@@ -245,7 +246,7 @@ export async function BuilderHelper<T, U, V>(
                             type: 'complete',
                             data: {
                                 success: true,
-                                content: 'request completed'
+                                content: 'Request completed!'
                             }
                         })
                     );

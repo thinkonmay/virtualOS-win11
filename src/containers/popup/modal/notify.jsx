@@ -12,6 +12,7 @@ export function notify({
     const [textTrans, setTextTrans] = useState('');
     const [isLaterThan15s, setIsLaterThan15s] = useState(false);
 
+    const [isShowTip, setShowTip] = useState(tips);
     useEffect(() => {
         let interval;
         if (title == 'Connect to PC') {
@@ -25,6 +26,7 @@ export function notify({
                 if (currentTime > laterTime) {
                     setIsLaterThan15s(true);
                     setTextTrans(t[Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]);
+                    setShowTip(false);
                     clearInterval(interval);
                 }
             }, 6000);
@@ -50,7 +52,7 @@ export function notify({
             {loading && !isLaterThan15s ? (
                 <LoadingProgressBar timeProcessing={timeProcessing} />
             ) : null}
-            {tips ? <Protip /> : null}
+            {isShowTip ? <Protip /> : null}
         </div>
     );
 }

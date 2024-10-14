@@ -3,7 +3,7 @@ import {
     app_toggle,
     useAppSelector,
     wait_and_claim_volume,
-    worker_refresh
+    worker_reload
 } from '../../../backend/reducers';
 import {
     Icon,
@@ -47,7 +47,7 @@ export const ConnectApp = () => {
     const emailSplit = () => user?.email?.split('@')?.at(0) || 'Your';
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
-    const refresh = () => appDispatch(worker_refresh());
+    const reload = () => appDispatch(worker_reload());
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -113,7 +113,7 @@ export const ConnectApp = () => {
                                     </a>
                                 ) : (
                                     <button
-                                        onClick={refresh}
+                                        onClick={reload}
                                         className="instbtn connectBtn"
                                     >
                                         Reload
