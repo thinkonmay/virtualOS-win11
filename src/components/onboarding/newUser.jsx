@@ -7,10 +7,9 @@ export const NewTutorial = () => {
         {
             content: (
                 <div>
-                    <h2>Welcome to Thinkmay CloudPC!</h2>
+                    <h2>Thinkmay CloudPC</h2>
                     <p className="mt-2">
-                        Thoả sức chơi game PC cấu hình cao ngay trên chiếc điện
-                        thoai, laptop của bạn
+                        Chào mừng bạn đến với tiệm nét Thinkmay
                     </p>
                 </div>
             ),
@@ -20,7 +19,7 @@ export const NewTutorial = () => {
         },
         {
             content:
-                'Để sử dụng CloudPC, bạn cần chọn gói dịch vụ và hoàn tất thanh toán.',
+                'Đăng kí, chọn game và thanh toán dịch vụ tại đây',
             floaterProps: {
                 disableAnimation: true
             },
@@ -32,7 +31,7 @@ export const NewTutorial = () => {
             title: 'Thanh toán'
         },
         {
-            content: 'Với gói tháng, bạn vô đây để truy cập tới PC của mình',
+            content: 'Với gói tháng, dữ liệu cá nhân của bạn sẽ được lưu lại',
             placement: 'bottom',
             locale: {
                 next: 'Next' // Continue with "Next"
@@ -66,7 +65,7 @@ export const NewTutorial = () => {
         },
         {
             content: (
-                <div>Bạn có thể vô đây để xem chi tiết hướng dẫn sử dụng</div>
+                <div>Hướng dẫn tối ưu trải nghiệm âm thanh và hình ảnh.</div>
             ),
             placement: 'top',
             spotlightPadding: 20,
@@ -75,7 +74,7 @@ export const NewTutorial = () => {
             title: 'Video hướng dẫn'
         },
         {
-            content: <h2>Bạn vô đây để được support khi gặp sự cố</h2>,
+            content: <h2>Nhắn tin với chúng mình để được hỗ trợ</h2>,
             placement: 'top',
             target: '.supportNow'
         }

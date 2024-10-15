@@ -8,32 +8,25 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import { localStorageKey } from '../../backend/utils/constant';
-const mobileGuide = [
+
+
+const general = [
     {
-        content: (
-            <div>
-                <h2>Cảm ơn bạn đã tin dùng Thinkmay!</h2>
-                <p className="mt-2">
-                    Sau đây là cách để bạn connect tới chiếc PC trên cloud của
-                    mình
-                </p>
-            </div>
-        ),
+        content: <div>
+            <h2>Bạn đã đăng kí thành công Thinkmay trên thiết bị</h2>
+            <p className="mt-2">
+                Sau đây là các bước để kết nối với CloudPC
+            </p>
+        </div>,
+
         locale: { next: "Let's go" },
         placement: 'center',
         target: 'body'
     },
     {
-        content: (
-            <p>
-                Bạn chỉ cần bấm để kết nối tới máy
-                <br />
-                <p>
-                    <b>LƯU Ý:</b> Bắt buộc phải mở trên <b>CHROME</b> hoặc{' '}
-                    <b>APP</b>{' '}
-                </p>
-            </p>
-        ),
+        title: 'Kết nối',
+        content: <p> Click vào đây để kết nối tới CloudPC </p>,
+
         floaterProps: {
             disableAnimation: true
         },
@@ -42,11 +35,27 @@ const mobileGuide = [
             next: 'Next' // Continue with "Next",
         },
         target: '.connectBtn12',
-        title: 'Kết nối',
         placement: 'right'
     },
     {
+        title: 'Thông tin tài khoản',
+        content: <p>Xem thông tin về tài khoản của bạn, bao gồm thời gian chơi</p>,
+
+        placement: 'top',
+        target: '.infoBtn',
+        spotlightPadding: 1
+    },
+    {
+        title: 'Hỗ trợ',
+        content: <p> Khi bị <b>giật/lag</b> hãy <b>nhắn ngay</b> để được hỗ trợ </p> ,
+
+        placement: 'top',
+        target: '.supportNow',
+    },
+    {
+        title: 'Tinh chỉnh',
         content: 'Bấm vô đây để tinh chỉnh kết nối sao cho mượt mà nhất',
+
         placement: 'bottom',
         locale: {
             next: 'Next' // Continue with "Next"
@@ -58,23 +67,27 @@ const mobileGuide = [
             }
         },
         target: '.settingBtn',
-        title: 'Tinh chỉnh'
+        sidepane_paneopen: true
     },
     {
-        placement: 'top',
-        target: '.shutdownBtn',
-        title: 'Tắt máy đúng cách',
-        spotlightPadding: 1,
-        content: 'Để trách gặp lỗi không đáng có!'
-    },
+        title: 'Chia sẻ link',
+        content: 'Chia sẻ kết nối tới CloudPC với bạn bè, nhiều người có thể sử dụng chung',
 
-    {
         placement: 'top',
         target: '.shareLinkBtn',
-        title: 'Chia sẻ link',
-        content: '2,3 người có thể điều khiển chung 1 máy',
         spotlightPadding: 1
     },
+    {
+        title: 'Reset kết nối',
+        content: 'Bấm khi bị lỗi đường truyền',
+
+        placement: 'top',
+        target: '.resetVideoBtn',
+        spotlightPadding: 1
+    },
+]
+
+const mobileGuide = [
     {
         placement: 'top',
         target: '.virtGamepadBtn',
@@ -93,195 +106,71 @@ const mobileGuide = [
         placement: 'top',
         target: '.fullscrenBtn',
         title: 'Bật toàn màn hình',
-        content: 'Nên bật khi chơi',
+        content: 'Tối ưu điều khiển và hình ảnh khi chơi game',
         spotlightPadding: 1
     },
-    {
-        placement: 'top',
-        target: '.resetVideoBtn',
-        title: 'Reset lại kết nối khi gặp lỗi',
-        content: 'Bấm khi bị lỗi đường truyền',
-        spotlightPadding: 1
-    },
-    {
-        content: <p>Ngày đăng kí, giờ sử dụng còn lại</p>,
-        placement: 'top',
-        target: '.infoBtn',
-        title: 'Xem thông tin của bạn ',
-        spotlightPadding: 1
-    },
-    {
-        content: (
-            <p>
-                Khi bị <b>giật/lag</b> hãy <b>nhắn</b> ngay với kĩ thuật để được
-                hỗ trợ tinh chỉnh kịp thời
-            </p>
-        ),
-        placement: 'top',
-        target: '.supportNow',
-        title: 'Cần hỗ trợ'
-    }
 ];
 const desktopGuide = [
     {
-        content: (
-            <div>
-                <h2>Cảm ơn bạn đã tin dùng Thinkmay!</h2>
-                <p className="mt-2">
-                    Sau đây là cách để bạn connect tới chiếc PC trên cloud của
-                    mình
-                </p>
-            </div>
-        ),
-        locale: { next: "Let's go" },
-        placement: 'center',
-        target: 'body'
-    },
-    {
-        content: (
-            <p>
-                Bạn chỉ cần bấm để kết nối tới máy
-                <br />
-                <p>
-                    <b>LƯU Ý:</b> Bắt buộc phải mở trên <b>CHROME</b> hoặc{' '}
-                    <b>APP</b>{' '}
-                </p>
-            </p>
-        ),
-        floaterProps: {
-            disableAnimation: true
-        },
-        spotlightPadding: 10,
-        locale: {
-            next: 'Next' // Continue with "Next",
-        },
-        target: '.connectBtn12',
-        title: 'Kết nối',
-        placement: 'right'
-    },
-    {
-        content: 'Bấm vô đây để tinh chỉnh kết nối sao cho mượt mà nhất',
-        placement: 'bottom',
-        locale: {
-            next: 'Next' // Continue with "Next"
-        },
-        spotlightPadding: 10,
-        styles: {
-            options: {
-                width: 300
-            }
-        },
-        target: '.settingBtn',
-        title: 'Tinh chỉnh'
-    },
-    {
-        placement: 'top',
-        target: '.shutdownBtn',
-        title: 'Tắt máy đúng cách',
-        spotlightPadding: 1,
-        content: 'Để trách gặp lỗi không đáng có!'
-    },
-    {
         placement: 'top',
         target: '.gamingMouseBtn',
-        title: 'Bật khi chơi game để khoá chuột',
+        title: 'Chế độ Gaming',
         spotlightPadding: 1,
-        content: 'Tránh trường hợp xuất hiện 2 con chuột cùng 1 lúc'
-    },
-    {
-        placement: 'top',
-        target: '.shareLinkBtn',
-        title: 'Chia sẻ link',
-        content: 'Hỗ trợ nhiều người có thể điều khiển chung 1 máy',
-        spotlightPadding: 1
+        content: 'Tối ưu điều khiển và hình ảnh khi chơi game'
     },
     {
         placement: 'top',
         target: '.fixKeyboardBtn',
         title: 'Fix lỗi phím',
-        content: 'Một số game sẽ không nhận phím, bật để fix',
+        content: 'Một số game yêu cầu bật chế độ này để sử dụng bàn phím',
         spotlightPadding: 1
     },
-    {
-        placement: 'top',
-        target: '.fullscrenBtn',
-        title: 'Bật toàn màn hình',
-        content: 'Nên bật khi chơi',
-        spotlightPadding: 1
-    },
-    {
-        placement: 'top',
-        target: '.resetVideoBtn',
-        title: 'Reset lại kết nối khi gặp lỗi',
-        content: 'Bấm khi bị lỗi đường truyền',
-        spotlightPadding: 1
-    },
-    {
-        content: <p>Ngày đăng kí, giờ sử dụng còn lại</p>,
-        placement: 'top',
-        target: '.infoBtn',
-        title: 'Xem thông tin của bạn ',
-        spotlightPadding: 1
-    },
-    {
-        content: (
-            <p>
-                Khi bị <b>giật/lag</b> hãy <b>nhắn</b> ngay với kĩ thuật để được
-                hỗ trợ tinh chỉnh kịp thời
-            </p>
-        ),
-        placement: 'top',
-        target: '.supportNow',
-        title: 'Cần hỗ trợ'
-    }
 ];
 
 export const PaidTutorial = () => {
     const logged_in = useAppSelector((state) => state.user.id != 'unknown');
     const [run, setRun] = useState(false);
+
+    const allSteps = [...general, ...isMobile() ? mobileGuide : desktopGuide]
+
     useEffect(() => {
         if (logged_in) setRun(true);
     }, [logged_in]);
 
-    const handleJoyrideCallback = (data) => {
-        const { status, index } = data;
-        const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
-        if (finishedStatuses.includes(status)) {
+    const handleJoyrideCallback = ({ status, index }) => {
+        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
             setRun(false);
             appDispatch(show_tutorial('close'));
             localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
         }
-        if (index == 2) {
+        if (allSteps[index].sidepane_paneopen)
             appDispatch(sidepane_paneopen());
-        }
-    };
+    }
 
-    return (
-        <Joyride
-            callback={handleJoyrideCallback}
-            scrollToFirstStep
-            continuous
-            showProgress
-            disableOverlayClose
-            steps={isMobile() ? mobileGuide : desktopGuide}
-            run={run}
-            styles={{
-                options: {
-                    zIndex: 10000,
-                    overlayColor: 'rgba(0, 0, 0, 0.5)'
-                },
-                buttonNext: {
-                    backgroundColor: '#007bff', // Custom background color for the Next button
-                    borderRadius: '4px', // Rounded corners for the button
-                    color: '#fff', // Text color
-                    fontSize: '16px', // Custom font size
-                    padding: '8px 16px', // Padding inside the button
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' // Add a shadow effect
-                },
-                buttonClose: {
-                    display: 'none' // This will hide the close button
-                }
-            }}
-        />
-    );
+    return <Joyride
+        callback={handleJoyrideCallback}
+        scrollToFirstStep
+        continuous
+        showProgress
+        disableOverlayClose
+        steps={allSteps}
+        run={run}
+        styles={{
+            options: {
+                zIndex: 10000,
+                overlayColor: 'rgba(0, 0, 0, 0.5)'
+            },
+            buttonNext: {
+                backgroundColor: '#007bff', // Custom background color for the Next button
+                borderRadius: '4px', // Rounded corners for the button
+                color: '#fff', // Text color
+                fontSize: '16px', // Custom font size
+                padding: '8px 16px', // Padding inside the button
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' // Add a shadow effect
+            },
+            buttonClose: {
+                display: 'none' // This will hide the close button
+            }
+        }}
+    />
 };

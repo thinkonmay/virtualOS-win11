@@ -117,14 +117,14 @@ export const ConnectApp = () => {
                                     <a
                                         href={`https://${cluster}`}
                                         target="_self"
-                                        className="instbtn connectBtn"
+                                        className="instbtn connectBtn12 connectBtn"
                                     >
                                         {cluster}
                                     </a>
                                 ) : (
                                     <button
                                         onClick={reload}
-                                        className="instbtn connectBtn"
+                                        className="instbtn connectBtn12 connectBtn"
                                     >
                                         Reload
                                     </button>
@@ -132,7 +132,7 @@ export const ConnectApp = () => {
                             ) : (
                                 <button
                                     onClick={pay}
-                                    className="instbtn connectBtn"
+                                    className="instbtn connectBtn12 connectBtn"
                                 >
                                     Thanh toán
                                 </button>
