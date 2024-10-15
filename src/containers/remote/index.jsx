@@ -36,9 +36,6 @@ export const Remote = () => {
 
     useEffect(() => {
         if (CLIENT == null) return;
-        else if (keyboard || gamepad) CLIENT.hid.disable = true;
-        else CLIENT.hid.disable = false;
-
         CLIENT.touch.mode = keyboard || gamepad ? 'none' : 'trackpad';
     }, [gamepad, keyboard]);
 
