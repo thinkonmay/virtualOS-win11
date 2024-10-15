@@ -5,7 +5,8 @@ import ringSound from '/audio/ring2.mp3';
 import {
     MdArrowBackIos,
     MdArrowForwardIos,
-    MdOutlineVideoSettings
+    MdOutlineVideoSettings,
+    MdSupportAgent
 } from 'react-icons/md';
 
 import { afterMath } from '../../backend/actions';
@@ -110,12 +111,7 @@ const Taskbar = () => {
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
                     >
-                        <div
-                            className="text-xm font-semibold"
-                            style={{ color: '#0167c0' }}
-                        >
-                            {t[Contents.SUPPORT]}
-                        </div>
+                        <MdSupportAgent fontSize={'2rem'} />
                     </div>
                     <div
                         className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
@@ -143,7 +139,7 @@ const Taskbar = () => {
                             <Icon
                                 className="tsIcon tsIconInvert"
                                 src="home"
-                                width={24}
+                                width={40}
                                 click="startmenu/startogg"
                                 style={{ '--prefix': 'START' }}
                             />
@@ -211,12 +207,7 @@ const Taskbar = () => {
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
-                            <div
-                                className="text-xm font-semibold"
-                                style={{ color: '#0167c0' }}
-                            >
-                                {t[Contents.SUPPORT]}
-                            </div>
+                            <MdSupportAgent fontSize={'2rem'} />
                         </div>
                         <div
                             className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"

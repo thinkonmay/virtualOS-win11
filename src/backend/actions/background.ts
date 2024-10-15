@@ -23,7 +23,6 @@ import {
     sidepane_panethem,
     store,
     sync,
-    wall_set,
     worker_refresh
 } from '../reducers';
 import { PaymentStatus } from '../reducers/user.ts';
@@ -45,7 +44,6 @@ const loadSettings = async () => {
     document.body.dataset.theme = thm;
     appDispatch(setting_theme(thm));
     appDispatch(sidepane_panethem(icon));
-    appDispatch(wall_set(thm == 'light' ? 0 : 1));
 };
 
 export const fetchUser = async () => {
@@ -104,8 +102,7 @@ const handleClipboard = async () => {
 };
 
 const fetchMessage = async () => {
-    const email = store.getState().user.email;
-    await appDispatch(fetch_message(email));
+    await appDispatch(fetch_message(store.getState().user.email));
 };
 
 const fetchStore = async () => {
@@ -144,16 +141,16 @@ const updateUI = async () => {
         );
     }
 
-    const rms = [];
+    const rms = ['store'];
     const ops = [];
     if (status == 'PENDING') ops.push('payment');
     else if (status == 'PAID' || status == 'IMPORTED') {
         const { plan } = subscription;
         if (plan.includes('month')) {
             ops.push('connectPc');
-            rms.push('store');
         } else if (plan.includes('hour')) {
             ops.push('store');
+            rms.pop();
             rms.push('connectPc');
         }
 

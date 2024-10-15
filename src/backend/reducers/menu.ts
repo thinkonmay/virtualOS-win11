@@ -70,28 +70,17 @@ function menu_conversion(menu: MenuOption): MenuOpt {
                         name: 'Display settings',
                         icon: 'display',
                         type: 'svg',
-                        action: 'SETTINGS',
-                        payload: 'full'
-                    },
-                    {
-                        name: 'Personalize',
-                        icon: 'personalize',
-                        type: 'svg',
-                        action: 'SETTINGS',
+                        action: 'sidepane_panetogg',
                         payload: 'full'
                     },
                     {
                         type: 'hr'
                     },
                     {
-                        name: 'Next desktop background',
-                        action: 'WALLNEXT'
-                    },
-                    {
                         name: 'Guideline',
-                        icon: 'about',
-                        action: 'apps/app_url',
-                        payload: 'https://thinkmay.net'
+                        icon: 'info',
+                        type: 'svg',
+                        action: 'open_guideline'
                     }
                 ]
             };

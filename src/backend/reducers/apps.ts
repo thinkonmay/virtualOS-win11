@@ -18,22 +18,6 @@ export const appSlice = createSlice({
         app_external: (state, action: PayloadAction<any>) => {
             window.open(action.payload, '_blank');
         },
-        app_url: (state, action: PayloadAction<string | undefined>) => {
-            const obj = state.apps.find((x) => x.id == 'edge');
-            if (obj == undefined) return;
-
-            if (action.payload && action.payload.startsWith('http'))
-                obj.url = action.payload;
-            else if (action.payload && action.payload.length != 0)
-                obj.url = 'https://www.bing.com/search?q=' + action.payload;
-            else obj.url = null;
-
-            obj.size = 'full';
-            obj.hide = false;
-            obj.max = true;
-            state.hz += 1;
-            obj.z = state.hz;
-        },
         app_showdesk: (state, action: PayloadAction<any>) => {
             state.apps.forEach((obj) => {
                 if (obj.hide) return;

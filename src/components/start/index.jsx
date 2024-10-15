@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { AiOutlineCloudDownload } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
 import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
-import { PiPauseBold } from 'react-icons/pi';
 import { RenderNode } from '../../../src-tauri/api';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
@@ -41,52 +39,50 @@ import './startmenu.scss';
 export * from './start';
 
 export const DesktopApp = () => {
+    const desk = useAppSelector((state) => state.desktop);
     const deskApps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.desktop.apps.includes(x.id))
     );
 
-    const desk = useAppSelector((state) => state.desktop);
-    const handleTouchEnd = async (e) => {
-        await new Promise((r) => setTimeout(r, 200));
-        await clickDispatch(e);
-    };
+    const handleTouchEnd = (e) => setTimeout(clickDispatch(e), 200);
     const handleDouble = customClickDispatch((e) => e.stopPropagation());
 
     return (
         <div className="desktopCont">
             {!desk.hide &&
-                deskApps.map((app, i) => {
-                    return (
-                        <div
-                            key={i}
-                            className="dskApp prtclk relative"
-                            tabIndex={0}
-                            data-action={app.action}
-                            data-menu={app.menu}
-                            data-payload={app.payload || 'full'}
-                            data-id={app.id ?? 'null'}
-                            data-name={app.name}
-                            onDoubleClick={handleDouble}
-                            onTouchEnd={handleTouchEnd}
-                        >
+                deskApps.map((app, i) => (
+                    <div
+                        key={i}
+                        className="dskApp prtclk relative"
+                        tabIndex={0}
+                        data-action={app.action}
+                        data-menu={app.menu}
+                        data-payload={app.payload || 'full'}
+                        data-id={app.id ?? 'null'}
+                        data-name={app.name}
+                        onDoubleClick={handleDouble}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        {app.icon == undefined ? (
                             <Icon
                                 className={`dskIcon ${app.id}`}
                                 click={'null'}
-                                src={app.id}
-                                // mono={!(app.ready ?? true)}
+                                width={Math.round(desk.size * 36)}
+                                src={app.image ?? app.id}
+                                mono={app.mono ?? false}
                                 pr
+                            />
+                        ) : (
+                            <Icon
+                                icon={app.icon}
+                                className={`dskIcon ${app.id}`}
+                                click={'null'}
                                 width={Math.round(desk.size * 36)}
                             />
-                            <div className="appName">{app.name}</div>
-                            {!app.installing ? null : (
-                                <AiOutlineCloudDownload className="text-[1.2rem] text-white absolute top-[-3px] right-[-3px]" />
-                            )}
-                            {app.ready ?? true ? null : (
-                                <PiPauseBold className="text-[1.2rem] text-white absolute top-[-3px] right-[-3px]" />
-                            )}
-                        </div>
-                    );
-                })}
+                        )}
+                        <div className="appName">{app.name}</div>
+                    </div>
+                ))}
         </div>
     );
 };

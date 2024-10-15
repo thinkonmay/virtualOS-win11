@@ -10,33 +10,24 @@ export type AppData = {
 
     menu?: MenuOption;
     size?: string;
-    ready?: boolean;
-    installing?: boolean;
     hide?: boolean;
     max?: boolean | null;
     z?: number;
     dim?: any;
     url?: string | null;
+
+    mono?: boolean;
+    icon?: string;
+    image?: string;
 };
 
 const apps: AppData[] = [
     {
-        name: 'Settings',
-        id: 'settings',
-        action: 'apps/app_toggle',
-        payload: 'settings'
-    },
-    {
         name: 'Worker Profile',
         id: 'worker',
         action: 'apps/app_toggle',
+        image: 'connectPc',
         payload: 'worker'
-    },
-    {
-        name: 'Browser',
-        id: 'edge',
-        action: 'apps/app_toggle',
-        payload: 'edge'
     },
     {
         name: 'Thanh toán',
@@ -44,13 +35,6 @@ const apps: AppData[] = [
         action: 'apps/app_toggle',
         payload: 'payment'
     },
-    {
-        name: 'Feedback',
-        id: 'feedback',
-        action: 'apps/app_toggle',
-        payload: 'feedback'
-    },
-
     {
         name: 'Game cho gói giờ',
         id: 'store',
@@ -61,6 +45,7 @@ const apps: AppData[] = [
         name: 'Máy tính cá nhân',
         id: 'connectPc',
         action: 'apps/app_toggle',
+        image: 'worker',
         payload: 'connectPc'
     },
     {
@@ -68,19 +53,22 @@ const apps: AppData[] = [
         id: 'guideline',
         action: 'apps/app_toggle',
         payload: 'guideline',
+        icon: 'info',
         size: 'full'
     },
     {
         name: 'Discord',
         id: 'discord',
         action: 'apps/app_external',
-        payload: externalLink.DISCORD_LINK
+        payload: externalLink.DISCORD_LINK,
+        mono: true
     },
     {
         name: 'Thinkmay Fanpage',
         id: 'facebook',
         action: 'apps/app_external',
-        payload: externalLink.FACEBOOK_LINK
+        payload: externalLink.FACEBOOK_LINK,
+        mono: true
     }
 ];
 var { taskbar, desktop } = {

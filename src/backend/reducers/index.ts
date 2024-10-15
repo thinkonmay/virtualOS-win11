@@ -58,8 +58,6 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const { update_language, choose_game, show_tutorial } =
     globalSlice.actions;
 export const { user_delete, user_update, user_check_sub } = userSlice.actions;
-export const { wall_next, wall_set, wall_lock, wall_unlock } =
-    wallSlice.actions;
 export const { task_audo, task_hide, task_show, task_toggle } =
     taskSlice.actions;
 export const {
@@ -86,8 +84,7 @@ export const {
     app_external,
     app_showdesk,
     app_maximize,
-    app_minimize,
-    app_url
+    app_minimize
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =

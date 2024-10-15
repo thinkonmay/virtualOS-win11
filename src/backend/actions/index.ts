@@ -2,6 +2,7 @@ import 'sweetalert2/src/sweetalert2.scss';
 import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
 import '../reducers/index';
 import {
+    app_toggle,
     appDispatch,
     close_remote,
     desk_hide,
@@ -14,8 +15,7 @@ import {
     setting_theme,
     sidepane_panethem,
     store,
-    unclaim_volume,
-    wall_set
+    unclaim_volume
 } from '../reducers/index';
 import { keyboardCallback } from '../reducers/remote';
 import { fetchApp, preload } from './background';
@@ -24,6 +24,10 @@ export const refresh = async () => {
     appDispatch(desk_hide());
     await fetchApp();
     setTimeout(() => appDispatch(desk_show()), 200);
+};
+
+export const open_guideline = () => {
+    appDispatch(app_toggle('guideline'));
 };
 
 export const afterMath = (event: any) => {
@@ -129,7 +133,6 @@ export const changeTheme = () => {
     document.body.dataset.theme = thm;
     appDispatch(setting_theme(thm));
     appDispatch(sidepane_panethem(icon));
-    appDispatch(wall_set(thm == 'light' ? 0 : 1));
 };
 
 export const menuDispatch = async (event: Event) => {
