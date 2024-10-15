@@ -10,7 +10,7 @@ import {
     toggle_remote
 } from '.';
 import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
-import { EventCode } from '../../../src-tauri/core';
+import { EventCode, isMobile } from '../../../src-tauri/core';
 import {
     CLIENT,
     MAX_BITRATE,
@@ -188,6 +188,9 @@ export const remoteAsync = {
             store.getState().remote.prev_framerate != SIZE()
         )
             appDispatch(remoteSlice.actions.internal_sync());
+
+        if (isMobile())
+            await CLIENT.PointerVisible(true)
     },
     direct_access: createAsyncThunk(
         'direct_access',
