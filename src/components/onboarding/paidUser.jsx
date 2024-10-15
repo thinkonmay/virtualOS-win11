@@ -9,15 +9,16 @@ import {
 } from '../../backend/reducers';
 import { localStorageKey } from '../../backend/utils/constant';
 
-
 const general = [
     {
-        content: <div>
-            <h2>Bạn đã đăng kí thành công Thinkmay trên thiết bị</h2>
-            <p className="mt-2">
-                Sau đây là các bước để kết nối với CloudPC
-            </p>
-        </div>,
+        content: (
+            <div>
+                <h2>Bạn đã đăng kí thành công Thinkmay trên thiết bị</h2>
+                <p className="mt-2">
+                    Sau đây là các bước để kết nối với CloudPC
+                </p>
+            </div>
+        ),
 
         locale: { next: "Let's go" },
         placement: 'center',
@@ -39,7 +40,9 @@ const general = [
     },
     {
         title: 'Thông tin tài khoản',
-        content: <p>Xem thông tin về tài khoản của bạn, bao gồm thời gian chơi</p>,
+        content: (
+            <p>Xem thông tin về tài khoản của bạn, bao gồm thời gian chơi</p>
+        ),
 
         placement: 'top',
         target: '.infoBtn',
@@ -47,10 +50,14 @@ const general = [
     },
     {
         title: 'Hỗ trợ',
-        content: <p> Khi bị <b>giật/lag</b> hãy <b>nhắn ngay</b> để được hỗ trợ </p> ,
+        content: (
+            <p>
+                Khi bị <b>giật/lag</b> hãy <b>nhắn ngay</b> để được hỗ trợ{' '}
+            </p>
+        ),
 
         placement: 'top',
-        target: '.supportNow',
+        target: '.supportNow'
     },
     {
         title: 'Tinh chỉnh',
@@ -71,7 +78,8 @@ const general = [
     },
     {
         title: 'Chia sẻ link',
-        content: 'Chia sẻ kết nối tới CloudPC với bạn bè, nhiều người có thể sử dụng chung',
+        content:
+            'Chia sẻ kết nối tới CloudPC với bạn bè, nhiều người có thể sử dụng chung',
 
         placement: 'top',
         target: '.shareLinkBtn',
@@ -84,8 +92,8 @@ const general = [
         placement: 'top',
         target: '.resetVideoBtn',
         spotlightPadding: 1
-    },
-]
+    }
+];
 
 const mobileGuide = [
     {
@@ -108,7 +116,7 @@ const mobileGuide = [
         title: 'Bật toàn màn hình',
         content: 'Tối ưu điều khiển và hình ảnh khi chơi game',
         spotlightPadding: 1
-    },
+    }
 ];
 const desktopGuide = [
     {
@@ -124,53 +132,56 @@ const desktopGuide = [
         title: 'Fix lỗi phím',
         content: 'Một số game yêu cầu bật chế độ này để sử dụng bàn phím',
         spotlightPadding: 1
-    },
+    }
 ];
 
 export const PaidTutorial = () => {
     const logged_in = useAppSelector((state) => state.user.id != 'unknown');
     const [run, setRun] = useState(false);
+    const stop = () => {
+        setRun(false);
+        appDispatch(show_tutorial('close'));
+        localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
+    };
 
-    const allSteps = [...general, ...isMobile() ? mobileGuide : desktopGuide]
+    const allSteps = [...general, ...(isMobile() ? mobileGuide : desktopGuide)];
 
     useEffect(() => {
         if (logged_in) setRun(true);
     }, [logged_in]);
 
     const handleJoyrideCallback = ({ status, index }) => {
-        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-            setRun(false);
-            appDispatch(show_tutorial('close'));
-            localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
-        }
-        if (allSteps[index].sidepane_paneopen)
+        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) stop();
+        else if (allSteps[index].sidepane_paneopen)
             appDispatch(sidepane_paneopen());
-    }
+    };
 
-    return <Joyride
-        callback={handleJoyrideCallback}
-        scrollToFirstStep
-        continuous
-        showProgress
-        disableOverlayClose
-        steps={allSteps}
-        run={run}
-        styles={{
-            options: {
-                zIndex: 10000,
-                overlayColor: 'rgba(0, 0, 0, 0.5)'
-            },
-            buttonNext: {
-                backgroundColor: '#007bff', // Custom background color for the Next button
-                borderRadius: '4px', // Rounded corners for the button
-                color: '#fff', // Text color
-                fontSize: '16px', // Custom font size
-                padding: '8px 16px', // Padding inside the button
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' // Add a shadow effect
-            },
-            buttonClose: {
-                display: 'none' // This will hide the close button
-            }
-        }}
-    />
+    return (
+        <Joyride
+            callback={handleJoyrideCallback}
+            scrollToFirstStep
+            continuous
+            showProgress
+            disableOverlayClose
+            steps={allSteps}
+            run={run}
+            styles={{
+                options: {
+                    zIndex: 10000,
+                    overlayColor: 'rgba(0, 0, 0, 0.5)'
+                },
+                buttonNext: {
+                    backgroundColor: '#007bff', // Custom background color for the Next button
+                    borderRadius: '4px', // Rounded corners for the button
+                    color: '#fff', // Text color
+                    fontSize: '16px', // Custom font size
+                    padding: '8px 16px', // Padding inside the button
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' // Add a shadow effect
+                },
+                buttonClose: {
+                    display: 'none' // This will hide the close button
+                }
+            }}
+        />
+    );
 };

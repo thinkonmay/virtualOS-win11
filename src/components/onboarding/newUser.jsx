@@ -18,8 +18,7 @@ export const NewTutorial = () => {
             target: 'body'
         },
         {
-            content:
-                'Đăng kí, chọn game và thanh toán dịch vụ tại đây',
+            content: 'Đăng kí, chọn game và thanh toán dịch vụ tại đây',
             floaterProps: {
                 disableAnimation: true
             },
