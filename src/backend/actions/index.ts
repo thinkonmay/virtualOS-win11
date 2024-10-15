@@ -176,10 +176,10 @@ export const shutDownVm = async () => {
 };
 export const clickShortCut = (keys = []) => {
     keys.forEach((k, i) => {
-        keyboard(k, 'down');
+        keyboard({ val: k, action: 'down' });
     });
     keys.forEach((k, i) => {
-        keyboard(k, 'up');
+        keyboard({ val: k, action: 'up' });
     });
 };
 

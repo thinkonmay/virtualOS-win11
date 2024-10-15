@@ -8,22 +8,27 @@ import './index.scss';
 
 export const VirtKeyboard = () => {
     const [layoutName, setLayoutName] = useState('default');
-    const handleKeyPress = (button) => {
-        if (button === 'Shift') {
-            setLayoutName(layoutName === 'default' ? 'shift' : 'default');
-            return;
-        }
-        const shift = useShift(button);
-        if (shift) keyboard('Shift', 'down');
 
-        keyboard(button, 'down');
-        keyboard(button, 'up');
+    const handleKeyPress = async (button) => {
+        await keyboard(
+            ...(useShift(button)
+                ? [
+                      { val: 'Shift', action: 'down' },
+                      { val: button, action: 'down' },
+                      { val: button, action: 'up' },
+                      { val: 'Shift', action: 'up' }
+                  ]
+                : [
+                      { val: button, action: 'down' },
+                      { val: button, action: 'up' }
+                  ])
+        );
 
-        if (shift) keyboard('Shift', 'up');
-
-        if (button === 'Enter' || button == 'Close') {
+        if ('vibrate' in navigator) navigator.vibrate([40, 30, 0]);
+        if (button === 'Enter' || button == 'Close')
             appDispatch(toggle_keyboard());
-        }
+        if (button === 'Shift')
+            setLayoutName(layoutName === 'default' ? 'shift' : 'default');
     };
 
     const handleKeyReleased = (button) => {};
