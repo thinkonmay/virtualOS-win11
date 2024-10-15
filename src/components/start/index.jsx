@@ -30,8 +30,6 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
-import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
-import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';
@@ -220,19 +218,7 @@ export const SidePane = () => {
                     </div>
                     <GamePadSetting></GamePadSetting>
                 </div>
-
-                {/*<div className="p-1 bottomBar">
-                    <div className="px-3 battery-sidepane">
-                        <Battery pct />
-                    </div>
-                </div>*/}
             </div>
-            {isMobile() ? (
-                <>
-                    <VirtKeyboard></VirtKeyboard>
-                    <VirtualGamepad></VirtualGamepad>
-                </>
-            ) : null}
         </>
     );
 };
@@ -278,9 +264,7 @@ const GamePadSetting = () => {
                 ></MdOutlineClose>
             </div>
             <button
-                onClick={() => {
-                    appDispatch(toggle_gamepad());
-                }}
+                onClick={() => appDispatch(toggle_gamepad())}
                 className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
             >
                 Đóng/mở gamepad ảo
@@ -327,7 +311,7 @@ const GamePadSetting = () => {
                 Đổi vị trí các nút
             </button>
 
-            {gamepadDraggable == 'draggable' ? (
+            {gamepadDraggable ? (
                 <>
                     <p className="text-[0.75rem] mt-1">
                         *kéo các nút để chỉnh vị trí

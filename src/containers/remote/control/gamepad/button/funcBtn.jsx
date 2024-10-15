@@ -1,5 +1,5 @@
-import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
-import GamepadButton from '../defaultBtn';
+import { gamepadButton } from '../../../../../../src-tauri/singleton';
+import GamepadButton from './defaultBtn';
 import './index.scss';
 
 export function RightFuncButton(props) {
@@ -10,7 +10,7 @@ export function RightFuncButton(props) {
         height: size
     };
     const onTouch = (index, type) => {
-        gamePadBtnCallback(index, type);
+        gamepadButton(index, type);
     };
     return (
         <div className={`rightFuncBtn ${className}`} {...rest}>
@@ -38,24 +38,21 @@ export function LeftFuncButton(props) {
         width: size,
         height: size
     };
-    const onTouch = (index, type) => {
-        gamePadBtnCallback(index, type);
-    };
     return (
         <div {...rest} className={`leftFuncBtn ${className}`}>
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => onTouch(6, 'down')}
-                onTouchEnd={(e) => onTouch(6, 'up')}
+                onTouchStart={() => gamepadButton(6, 'down')}
+                onTouchEnd={() => gamepadButton(6, 'up')}
             >
                 LT
             </div>
             <div
                 className="defaultButton"
                 style={{ ...buttonSize }}
-                onTouchStart={(e) => onTouch(4, 'down')}
-                onTouchEnd={(e) => onTouch(4, 'up')}
+                onTouchStart={() => gamepadButton(4, 'down')}
+                onTouchEnd={() => gamepadButton(4, 'up')}
             >
                 LB
             </div>

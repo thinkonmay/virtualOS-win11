@@ -1,91 +1,10 @@
-//export const CustomJoyStick = ({
-//    draggable,
-//    className,
-//    size = 100,
-//    moveCallback = () => {},
-//    ...rest
-//}) => {
-//    const move = (event) => {
-//        if (draggable === 'draggable') return;
-
 import { forwardRef, useCallback, useId, useState } from 'react';
-
-//        if (event.type == 'move') {
-//            //if (!enableJT) {
-//            //    moveCallback(0, 0);
-//            //    return;
-//            //}
-//            moveCallback(event.x, -event.y);
-//        } else if (event.type == 'stop') {
-//            //setenableJT(false);
-//            moveCallback(0, 0);
-//        } else if (event.type == 'start') {
-//            //setenableJT(true);
-//            moveCallback(0, 0);
-//        }
-//    };
-//    return (
-//        <div className={className}>
-//<Joystick
-//                start={move}
-//                stop={move}
-//                move={move}
-//                size={size}
-//                baseColor="rgba(0, 0, 0, 0.2)"
-//                stickColor="rgba(255, 255, 255,0.5"
-//                disabled={draggable === 'draggable'}
-//                {...rest}
-//            />
-//        </div>
-//    );
-//};
-
-//export const CustomJoyStick = ({
-//    draggable,
-//    className,
-//    size = 100,
-//    moveCallback = () => { },
-//    ...rest
-//}) => {
-//    const move = (event) => {
-//        if (draggable === 'draggable') return;
-
-//        if (event.type == 'move') {
-//            //if (!enableJT) {
-//            //    moveCallback(0, 0);
-//            //    return;
-//            //}
-//            moveCallback(event.x, -event.y);
-//        } else if (event.type == 'stop') {
-//            //setenableJT(false);
-//            moveCallback(0, 0);
-//        } else if (event.type == 'start') {
-//            //setenableJT(true);
-//            moveCallback(0, 0);
-//        }
-//    };
-//    return (
-//        <div className={className}>
-//            <Joystick
-//                start={move}
-//                stop={move}
-//                move={move}
-//                size={size}
-//                baseColor="rgba(0, 0, 0, 0.2)"
-//                stickColor="rgba(255, 255, 255,0.5"
-//                disabled={draggable === 'draggable'}
-//                {...rest}
-//            />
-//        </div>
-//    );
-//};
 
 export const CustomJoyStick = forwardRef((props, ref) => {
     const { size = 100, moveCallback = () => {} } = props;
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [touching, setTouching] = useState(false);
-    //const ref = useRef(null);
     const knobRadius = size * 0.2;
 
     const id = useId();
@@ -145,7 +64,6 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                 width: `${size}px`,
                 height: `${size}px`,
                 borderRadius: '50%',
-                //backgroundColor: '#f0f0f0',
                 backgroundColor: 'rgba(0, 0, 0, 0.2)',
                 display: 'flex',
                 justifyContent: 'center',
@@ -159,7 +77,6 @@ export const CustomJoyStick = forwardRef((props, ref) => {
             onPointerCancel={handlePointerUp}
         >
             <div
-                //className="joystick-knob"
                 id={knobId}
                 style={{
                     width: `${knobRadius * 2}px`,

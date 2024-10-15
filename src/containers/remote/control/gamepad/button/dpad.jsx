@@ -5,15 +5,12 @@ import {
     MdKeyboardArrowUp
 } from 'react-icons/md';
 
-import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
-import GamepadButton from '../defaultBtn';
+import { gamepadButton } from '../../../../../../src-tauri/singleton';
+import GamepadButton from './defaultBtn';
 import './index.scss';
 
 const DPad = (props) => {
     const { size, ...rest } = props;
-    const onTouch = (e, type, index) => {
-        gamePadBtnCallback(index, type);
-    };
     return (
         <div
             className="dpad"
@@ -22,29 +19,29 @@ const DPad = (props) => {
         >
             <GamepadButton
                 className="top"
-                onTouchStart={(e) => onTouch(e, 'down', 12)}
-                onTouchEnd={(e) => onTouch(e, 'up', 12)}
+                onTouchStart={() => gamepadButton(12, 'down')}
+                onTouchEnd={() => gamepadButton(12, 'up')}
             >
                 <MdKeyboardArrowUp sx={{ color: '#C3B5B5' }} />
             </GamepadButton>
             <GamepadButton
                 className="bottom"
-                onTouchStart={(e) => onTouch(e, 'down', 13)}
-                onTouchEnd={(e) => onTouch(e, 'up', 13)}
+                onTouchStart={() => gamepadButton(13, 'down')}
+                onTouchEnd={() => gamepadButton(13, 'up')}
             >
                 <MdKeyboardArrowDown sx={{ color: '#C3B5B5' }} />
             </GamepadButton>
             <GamepadButton
                 className="right"
-                onTouchStart={(e) => onTouch(e, 'down', 15)}
-                onTouchEnd={(e) => onTouch(e, 'up', 15)}
+                onTouchStart={() => gamepadButton(15, 'down')}
+                onTouchEnd={() => gamepadButton(15, 'up')}
             >
                 <MdKeyboardArrowRight sx={{ color: '#C3B5B5' }} />
             </GamepadButton>
             <GamepadButton
                 className="left"
-                onTouchStart={(e) => onTouch(e, 'down', 14)}
-                onTouchEnd={(e) => onTouch(e, 'up', 14)}
+                onTouchStart={() => gamepadButton(14, 'down')}
+                onTouchEnd={() => gamepadButton(14, 'up')}
             >
                 <MdKeyboardArrowLeft sx={{ color: '#C3B5B5' }} />
             </GamepadButton>

@@ -22,7 +22,7 @@ export type Message = {
 type IGamePadSetting = {
     open: boolean;
     btnSize: 1 | 2 | 3;
-    draggable: 'static' | 'draggable';
+    draggable: boolean;
     isDefaultPos: boolean;
 };
 type DesktopControl = {
@@ -133,7 +133,6 @@ const listMobileSettings = [
         src: 'MdOutlineSportsEsports',
         name: [Contents.OPEN_GAMEPAD],
         state: 'gamePadOpen',
-        //action: 'sidepane/toggle_gamepad'
         action: 'sidepane/toggle_gamepad_setting'
     },
     {
@@ -244,7 +243,7 @@ const initialState: Data = {
         keyboardHide: true,
         gamepadSetting: {
             btnSize: 1,
-            draggable: 'static',
+            draggable: false,
             open: false,
             isDefaultPos: false
         }
@@ -354,7 +353,8 @@ export const sidepaneSlice = createSlice({
         },
         toggle_gamepad: (state) => {
             state.mobileControl.gamePadHide = !state.mobileControl.gamePadHide;
-            state.mobileControl.keyboardHide = true;
+            state.hide = true;
+            state.banhide = true;
         },
         toggle_gamepad_setting: (state) => {
             state.mobileControl.gamepadSetting.open =
@@ -365,23 +365,18 @@ export const sidepaneSlice = createSlice({
         },
         toggle_gamepad_draggable: (state, action) => {
             state.mobileControl.gamePadHide = false;
-            const prev = state.mobileControl.gamepadSetting.draggable;
-            if (prev == 'static') {
-                state.mobileControl.gamepadSetting.draggable = 'draggable';
-            } else if (prev == 'draggable') {
-                state.mobileControl.gamepadSetting.draggable = 'static';
-            }
+            state.mobileControl.gamepadSetting.draggable =
+                !state.mobileControl.gamepadSetting.draggable;
         },
         toggle_default_gamepad_position: (state) => {
             state.mobileControl.gamepadSetting.isDefaultPos =
                 !state.mobileControl.gamepadSetting.isDefaultPos;
         },
         toggle_keyboard: (state) => {
-            let oldState = state.mobileControl.keyboardHide;
-            state.mobileControl.keyboardHide = !oldState;
+            state.mobileControl.keyboardHide =
+                !state.mobileControl.keyboardHide;
             state.hide = true;
             state.banhide = true;
-            state.mobileControl.gamePadHide = true;
         }
     },
     extraReducers: (builder) => {

@@ -5,13 +5,14 @@ import {
     VideoWrapper,
     isMobile
 } from '../../../src-tauri/core';
-import { isIOS } from '../../../src-tauri/core/utils/platform';
 import { Assign, CLIENT } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     set_fullscreen,
     useAppSelector
 } from '../../backend/reducers';
+import { VirtualGamepad } from './control/gamepad';
+import { VirtKeyboard } from './control/keyboard';
 import './remote.scss';
 
 export const Remote = () => {
@@ -20,6 +21,9 @@ export const Remote = () => {
     );
     const gamepad = useAppSelector(
         (state) => !state.sidepane.mobileControl.gamePadHide
+    );
+    const draggable = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamepadSetting.draggable
     );
     const { active, auth, scancode, relative_mouse, fullscreen } =
         useAppSelector((store) => store.remote);
@@ -32,17 +36,10 @@ export const Remote = () => {
 
     useEffect(() => {
         if (CLIENT == null) return;
-        else if (isMobile() || isIOS()) CLIENT?.PointerVisible(true);
-
-        if (keyboard || gamepad) CLIENT.hid.disable = true;
+        else if (keyboard || gamepad) CLIENT.hid.disable = true;
         else CLIENT.hid.disable = false;
 
-        CLIENT.touch.mode =
-            (isMobile() || isIOS()) && !keyboard
-                ? gamepad
-                    ? 'gamepad'
-                    : 'trackpad'
-                : 'none';
+        CLIENT.touch.mode = keyboard || gamepad ? 'none' : 'trackpad';
     }, [gamepad, keyboard]);
 
     const setupWebRTC = () =>
@@ -70,6 +67,13 @@ export const Remote = () => {
     };
     return (
         <div className="relative">
+            {isMobile() ? (
+                keyboard ? (
+                    <VirtKeyboard />
+                ) : gamepad || draggable ? (
+                    <VirtualGamepad />
+                ) : null
+            ) : null}
             <video
                 className="remote"
                 ref={remoteVideo}

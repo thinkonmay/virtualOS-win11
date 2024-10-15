@@ -1,5 +1,6 @@
 import 'sweetalert2/src/sweetalert2.scss';
 import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
+import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
     app_toggle,
@@ -17,7 +18,6 @@ import {
     store,
     unclaim_volume
 } from '../reducers/index';
-import { keyboardCallback } from '../reducers/remote';
 import { fetchApp, preload } from './background';
 
 export const refresh = async () => {
@@ -176,10 +176,10 @@ export const shutDownVm = async () => {
 };
 export const clickShortCut = (keys = []) => {
     keys.forEach((k, i) => {
-        keyboardCallback(k, 'down');
+        keyboard(k, 'down');
     });
     keys.forEach((k, i) => {
-        keyboardCallback(k, 'up');
+        keyboard(k, 'up');
     });
 };
 

@@ -1,13 +1,9 @@
-import { gamePadBtnCallback } from '../../../../backend/reducers/remote';
-import GamepadButton from '../defaultBtn';
+import { gamepadButton } from '../../../../../../src-tauri/singleton';
+import GamepadButton from './defaultBtn';
 import './index.scss';
 
 export default function YBXA(props) {
     const { size, className, ...rest } = props;
-
-    const onTouch = (e, type, index) => {
-        gamePadBtnCallback(index, type);
-    };
 
     return (
         <div className={`ybxa ${className}`} {...rest}>
@@ -17,29 +13,29 @@ export default function YBXA(props) {
             >
                 <GamepadButton
                     className="button-y"
-                    onTouchStart={(e) => onTouch(e, 'down', 3)}
-                    onTouchEnd={(e) => onTouch(e, 'up', 3)}
+                    onTouchStart={() => gamepadButton(3, 'down')}
+                    onTouchEnd={() => gamepadButton(3, 'up')}
                 >
                     Y
                 </GamepadButton>
                 <GamepadButton
                     className="button-b"
-                    onTouchStart={(e) => onTouch(e, 'down', 0)}
-                    onTouchEnd={(e) => onTouch(e, 'up', 0)}
+                    onTouchStart={() => gamepadButton(0, 'down')}
+                    onTouchEnd={() => gamepadButton(0, 'up')}
                 >
                     A
                 </GamepadButton>
                 <GamepadButton
                     className="button-x"
-                    onTouchStart={(e) => onTouch(e, 'down', 1)}
-                    onTouchEnd={(e) => onTouch(e, 'up', 1)}
+                    onTouchStart={() => gamepadButton(1, 'down')}
+                    onTouchEnd={() => gamepadButton(1, 'up')}
                 >
                     B
                 </GamepadButton>
                 <GamepadButton
                     className="button-a"
-                    onTouchStart={(e) => onTouch(e, 'down', 2)}
-                    onTouchEnd={(e) => onTouch(e, 'up', 2)}
+                    onTouchStart={() => gamepadButton(2, 'down')}
+                    onTouchEnd={() => gamepadButton(2, 'up')}
                 >
                     X
                 </GamepadButton>
