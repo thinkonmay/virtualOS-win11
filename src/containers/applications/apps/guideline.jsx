@@ -30,7 +30,7 @@ export const GuidelineApp = () => {
                 <LazyComponent show={!wnapp.hide}>
                     <iframe
                         className="w-full h-full"
-                        src={externalLink.GUIDELINE_LINK}
+                        src={externalLink.GUIDELINE_DESKTOP_LINK}
                         title="Hướng dẫn sử dụng Thinkmay"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

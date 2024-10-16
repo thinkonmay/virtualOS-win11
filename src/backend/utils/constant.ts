@@ -1,6 +1,5 @@
 export const externalLink = {
-    GUIDELINE_LINK:
-        'https://www.youtube.com/embed/OeYx8N0xofI?si=XiTFkhuH8Pt37CDX',
+    GUIDELINE_DESKTOP_LINK: 'https://youtu.be/asrq0ArmCY4?si=KMUvnWdjDGXOrt2n',
     DISCORD_LINK: 'https://discord.gg/96BesGqXQk',
     FACEBOOK_LINK: 'https://www.facebook.com/thinkonmay'
 };
