@@ -34,11 +34,6 @@ export const Remote = () => {
         setupWebRTC();
     }, [active]);
 
-    useEffect(() => {
-        if (CLIENT == null) return;
-        CLIENT.touch.mode = keyboard || gamepad ? 'none' : 'trackpad';
-    }, [gamepad, keyboard]);
-
     const setupWebRTC = () =>
         Assign(
             () =>

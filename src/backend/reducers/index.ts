@@ -19,7 +19,7 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { UserEvents } from '../../../src-tauri/api';
 import { DevEnv } from '../../../src-tauri/api/database';
 
-const blacklist = ['framerate', 'bitrate', 'internal_sync', 'metrics'];
+const blacklist = ['framerate', 'bitrate', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (DevEnv) console.log({ ...(action as any) });
     else if (

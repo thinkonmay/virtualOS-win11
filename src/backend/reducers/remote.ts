@@ -144,9 +144,26 @@ export const remoteAsync = {
 
         PINGER();
     },
-    sync: async () => {
-        if (!store.getState().remote.active) return;
+    sync: () => {
+        const {
+            active,
+            bitrate,
+            framerate,
+            prev_bitrate,
+            prev_framerate,
+            prev_size
+        } = store.getState().remote;
+        if (!active) return;
         else if (CLIENT == null || !CLIENT?.ready()) return;
+
+        const {
+            gamePadHide,
+            keyboardHide,
+            gamepadSetting: { draggable }
+        } = store.getState().sidepane.mobileControl;
+        CLIENT.touch.mode =
+            gamePadHide && keyboardHide && !draggable ? 'trackpad' : 'none';
+        if (isMobile()) CLIENT.PointerVisible(true);
 
         appDispatch(
             remoteSlice.actions.metrics({
@@ -158,45 +175,33 @@ export const remoteAsync = {
         );
 
         if (
-            store.getState().remote.prev_bitrate !=
-                store.getState().remote.bitrate ||
-            store.getState().remote.prev_framerate !=
-                store.getState().remote.framerate ||
-            store.getState().remote.prev_framerate != SIZE()
+            prev_bitrate != bitrate ||
+            prev_framerate != framerate ||
+            prev_size != SIZE()
         )
             appDispatch(remoteSlice.actions.internal_sync());
-
-        if (isMobile()) await CLIENT.PointerVisible(true);
     },
     direct_access: createAsyncThunk(
         'direct_access',
         async ({ ref }: { ref: string }) => {
-            try {
-                const resp = await fetch(
-                    window.location.origin +
-                        '/api/collections/reference/records?page=1&perPage=1&filter=token=' +
-                        `"${ref}"` +
-                        '&skipTotal=1',
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: POCKETBASE.authStore.token,
-                            'Content-type': 'application/json'
-                        }
+            const resp = await fetch(
+                `${window.location.origin}/api/collections/reference/records?page=1&perPage=1&filter=token="${ref}"&skipTotal=1`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Authorization: POCKETBASE.authStore.token,
+                        'Content-type': 'application/json'
                     }
-                );
+                }
+            );
 
-                const data = await resp.json();
+            const data = await resp.json();
 
-                if (data.items.length == 0)
-                    throw new Error('not found any query');
+            if (data.items.length == 0) throw new Error('not found any query');
 
-                appDispatch(remote_connect({ ...(data.items[0] as any) }));
-                if (!(await ready())) appDispatch(close_remote());
-                else appDispatch(remote_ready());
-            } catch (e) {
-                throw new Error('Failed to query ' + e);
-            }
+            appDispatch(remote_connect({ ...(data.items[0] as any) }));
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
     save_reference: createAsyncThunk(

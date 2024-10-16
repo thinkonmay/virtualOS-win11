@@ -51,16 +51,6 @@ export const fetchUser = async () => {
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());
-    // const info = store.getState().globals.maintenance;
-    //     appDispatch(
-    //         popup_open({
-    //             type: 'maintain',
-    //             data: {
-    //                 start: startText,
-    //                 end: endText
-    //             }
-    //         })
-    //     );
 };
 export const fetchApp = async () => {
     await appDispatch(worker_refresh());
