@@ -28,6 +28,7 @@ import {
 import { PaymentStatus } from '../reducers/user.ts';
 import { localStorageKey } from '../utils/constant';
 import { formatDate } from '../utils/date.ts';
+import { formatError } from '../utils/formatErr.ts';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -179,31 +180,40 @@ const updateUI = async () => {
 };
 
 export const preload = async (update_ui?: boolean) => {
-    await fetchUser();
-    await Promise.allSettled([
-        startAnalytics(),
-        loadSettings(),
-        checkMaintain(),
-        fetchApp(),
-        fetchSubscription(),
-        fetchSetting(),
-        fetchMessage(),
-        fetchStore()
-    ]);
-
-    if (update_ui ?? true) await updateUI();
-};
-
-export const PreloadBackground = async (update_ui?: boolean) => {
     try {
-        await preload(update_ui);
+        await fetchUser();
+        await Promise.all([
+            startAnalytics(),
+            loadSettings(),
+            checkMaintain(),
+            fetchApp(),
+            fetchSubscription(),
+            fetchSetting(),
+            fetchMessage(),
+            fetchStore()
+        ]);
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',
             payload: e
         });
+
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    content: formatError(e),
+                    success: false
+                }
+            })
+        );
     }
 
+    if (update_ui ?? true) await updateUI();
+};
+
+export const PreloadBackground = async (update_ui?: boolean) => {
+    await preload(update_ui);
     setInterval(check_worker, 30 * 1000);
     setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 1000);
