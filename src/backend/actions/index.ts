@@ -1,5 +1,6 @@
 import 'sweetalert2/src/sweetalert2.scss';
 import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
+import { RPOCKETBASE } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
@@ -168,6 +169,21 @@ export const login = async (
         }
     });
     await preload(update_ui);
+};
+export const remotelogin = async (
+    domain: string,
+    provider: 'google' | 'facebook' | 'discord'
+) => {
+    console.log(domain);
+    const w = window.open();
+    await RPOCKETBASE(domain)
+        .collection('users')
+        .authWithOAuth2({
+            provider,
+            urlCallback: (url) => {
+                w.location.href = url;
+            }
+        });
 };
 
 export const shutDownVm = async () => {

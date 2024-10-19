@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { RootState } from '.';
-import { GLOBAL, LOCAL, POCKETBASE, UserEvents } from '../../../src-tauri/api';
+import {
+    getDomain,
+    GLOBAL,
+    LOCAL,
+    POCKETBASE,
+    UserEvents
+} from '../../../src-tauri/api';
+import { remotelogin } from '../actions';
 import { addDays } from '../utils/dateHandler';
 import { BuilderHelper } from './helper';
 
@@ -299,6 +306,8 @@ export const userAsync = {
             else if (cluster_ele == undefined)
                 throw new Error('dịch vụ hiện chưa triển khai trên domain');
             const { id: cluster } = cluster_ele;
+
+            if (domain != getDomain()) await remotelogin(domain, 'google');
 
             const {
                 data: [{ id: subscription }],
