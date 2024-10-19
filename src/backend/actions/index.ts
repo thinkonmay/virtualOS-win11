@@ -174,7 +174,6 @@ export const remotelogin = async (
     domain: string,
     provider: 'google' | 'facebook' | 'discord'
 ) => {
-    console.log(domain);
     const w = window.open();
     await RPOCKETBASE(domain)
         .collection('users')
