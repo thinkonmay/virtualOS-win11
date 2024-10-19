@@ -229,7 +229,7 @@ export const userAsync = {
             { getState }
         ): Promise<string> => {
             const expire_at = new Date(
-                new Date().getTime() + 1000 * 60 * 15
+                new Date().getTime() + 1000 * 60 * 60 * 3
             ).toISOString();
             const {
                 user: { email }
