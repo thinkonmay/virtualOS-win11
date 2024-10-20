@@ -642,11 +642,11 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.worker_reload,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.wait_and_claim_volume,
+                hander: (state, action) => {}
             }
-            //{
-            //    fetch: workerAsync.wait_and_claim_volume,
-            //    hander: (state, action) => { }
-            //}
         );
     }
 });
