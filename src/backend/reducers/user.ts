@@ -14,41 +14,41 @@ import { BuilderHelper } from './helper';
 
 export type PaymentStatus =
     | {
-        status: 'PAID' | 'IMPORTED';
-        plan: string;
-        cluster: string;
-        correct_domain: boolean;
-        node: string;
+          status: 'PAID' | 'IMPORTED';
+          plan: string;
+          cluster: string;
+          correct_domain: boolean;
+          node: string;
 
-        total_usage: number;
-        created_at: string;
+          total_usage: number;
+          created_at: string;
 
-        limit_hour?: number;
-        ended_at?: string;
-        template: {
-            image: string | null;
-            code: string;
-            name: string;
-        };
-        local_metadata?: {
-            ram?: string;
-            vcpu?: string;
-        };
-    }
+          limit_hour?: number;
+          ended_at?: string;
+          template: {
+              image: string | null;
+              code: string;
+              name: string;
+          };
+          local_metadata?: {
+              ram?: string;
+              vcpu?: string;
+          };
+      }
     | {
-        status: 'NO_ACTION';
+          status: 'NO_ACTION';
 
-        domains?: {
-            domain: string;
-            free: number;
-        }[];
-    }
+          domains?: {
+              domain: string;
+              free: number;
+          }[];
+      }
     | {
-        status: 'PENDING';
-    }
+          status: 'PENDING';
+      }
     | {
-        status: 'CANCEL';
-    };
+          status: 'CANCEL';
+      };
 
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -208,7 +208,7 @@ export const userAsync = {
                                     screnshoots[
                                         Math.round(
                                             Math.random() *
-                                            (screnshoots.length - 1)
+                                                (screnshoots.length - 1)
                                         )
                                     ]?.path_full ?? null;
                                 result.template = {
@@ -374,23 +374,22 @@ export const userAsync = {
             { template }: { template: string } | undefined,
             { getState }
         ): Promise<void> => {
-            const { volume_id, subscription } = (getState() as RootState).user
-            if (isUUID(volume_id) &&
+            const { volume_id, subscription } = (getState() as RootState).user;
+            if (
+                isUUID(volume_id) &&
                 (subscription.status == 'PAID' ||
-                    subscription.status == 'IMPORTED')) {
+                    subscription.status == 'IMPORTED')
+            ) {
                 const { error } = await LOCAL()
                     .from('volume_map')
                     .update({ size: template })
-                    .eq('id', volume_id)
-                if (error)
-                    throw new Error(error.message)
+                    .eq('id', volume_id);
+                if (error) throw new Error(error.message);
 
-                setTimeout(() => appDispatch(worker_refresh()),10000)
-            } else
-                throw new Error('no volume available')
+                setTimeout(() => appDispatch(worker_refresh()), 10000);
+            } else throw new Error('no volume available');
         }
-    ),
-
+    )
 };
 
 export const userSlice = createSlice({
@@ -452,7 +451,7 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.change_template,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }

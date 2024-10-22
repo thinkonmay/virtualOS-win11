@@ -7,7 +7,6 @@ import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
-
 export type TranslationResult = {
     [key in Contents]: string;
 };
@@ -58,9 +57,9 @@ type IGame = {
         capsule_imagev5: string;
         short_description: string;
     };
-}
+};
 
-const example_game : IGame = {
+const example_game: IGame = {
     name: 'windows',
     code_name: '150',
     node: 'follobuntu',
@@ -86,7 +85,7 @@ const example_game : IGame = {
         capsule_imagev5: '',
         short_description: ''
     }
-}
+};
 interface Maintain {
     created_at: string;
     ended_at: string;
@@ -267,24 +266,26 @@ const initialState = {
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     apps: [],
-    games: [] as IGame[],
+    games: [] as IGame[]
 };
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        const sub = store.getState().user.subscription
+        const sub = store.getState().user.subscription;
 
-        const { data, error } = await LOCAL()
-            .rpc('get_store_availability')
+        const { data, error } = await LOCAL().rpc('get_store_availability');
         if (error) throw new Error(error.message);
         if (sub.status == 'PAID' || sub.status == 'IMPORTED')
-            return (data as IGame[]).filter(x => x.node == sub.node);
+            return (data as IGame[]).filter((x) => x.node == sub.node);
         else {
             const res: IGame[] = [];
-            (data as IGame[]).forEach(x => res.push(...res.find(y => y.code_name == x.code_name) ? [] : [x]))
-            return res
+            (data as IGame[]).forEach((x) =>
+                res.push(
+                    ...(res.find((y) => y.code_name == x.code_name) ? [] : [x])
+                )
+            );
+            return res;
         }
-
     }),
     fetch_under_maintenance: createAsyncThunk(
         'fetch_under_maintenance',
@@ -304,9 +305,9 @@ export const globalAsync = {
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
                 ? {
-                    ...info,
-                    isMaintaining: true
-                }
+                      ...info,
+                      isMaintaining: true
+                  }
                 : {};
         }
     )

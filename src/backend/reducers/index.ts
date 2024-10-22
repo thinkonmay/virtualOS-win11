@@ -55,8 +55,7 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const appDispatch = store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const { update_language, show_tutorial } =
-    globalSlice.actions;
+export const { update_language, show_tutorial } = globalSlice.actions;
 export const { user_delete, user_update, user_check_sub } = userSlice.actions;
 export const { task_audo, task_hide, task_show, task_toggle } =
     taskSlice.actions;
@@ -146,7 +145,8 @@ export const {
     peer_session_access,
     peer_session_close
 } = workerAsync;
-export const { fetch_user, fetch_subscription, get_payment, change_template } = userAsync;
+export const { fetch_user, fetch_subscription, get_payment, change_template } =
+    userAsync;
 export const {
     ping_session,
     sync,
