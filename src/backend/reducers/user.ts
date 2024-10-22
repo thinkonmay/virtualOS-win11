@@ -210,7 +210,7 @@ export const userAsync = {
                                             Math.random() *
                                             (screnshoots.length - 1)
                                         )
-                                    ].path_full;
+                                    ]?.path_full ?? null;
                                 result.template = {
                                     image,
                                     code: size,
