@@ -175,7 +175,9 @@ export const SidePane = () => {
                                     </span>
                                 </div>
                                 <div className=" sliderWrapper">
-                                    <span>1mbs</span>
+                                    <span>
+                                        {Math.round(MIN_BITRATE() / 1000)}mbps
+                                    </span>
                                     <input
                                         className="sliders bitrateSlider"
                                         onChange={setBitrate}
@@ -184,7 +186,9 @@ export const SidePane = () => {
                                         max="100"
                                         value={remote.bitrate}
                                     />
-                                    <span>15mbs</span>
+                                    <span>
+                                        {Math.round(MAX_BITRATE() / 1000)}mbps
+                                    </span>
                                 </div>
                             </div>
 
