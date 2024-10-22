@@ -41,12 +41,6 @@ type PopupData =
               domain: string;
               from: string;
           };
-      }
-    | {
-          type: 'gameChoose';
-          data: {
-              planName: string;
-          };
       };
 
 type Data = {

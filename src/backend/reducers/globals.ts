@@ -1,4 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { store } from '.';
 import { LOCAL } from '../../../src-tauri/api';
 import { PlanName } from '../utils/constant';
 import { BuilderHelper } from './helper';
@@ -6,47 +7,90 @@ import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
-const gameDB: SubscriptionSelection[] = [
-    {
-        name: 'Window 10',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Windows_logo_-_2012.png',
-        template: undefined
-    },
-    {
-        name: 'Black Myth Wukong',
-        logo: 'https://professorvn.net/wp-content/uploads/2024/09/logo.png',
-        template: 'wukong'
-    },
-    {
-        name: 'FC Online',
-        logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPXVIF_Dk5lR8MrlpA8Pu8DuYW07dcF5sBpw&s',
-        template: 'fc_online'
-    }
-];
 
 export type TranslationResult = {
     [key in Contents]: string;
 };
-interface IGame {
+
+type IGame = {
     name: string;
-    logo: string;
-    publisher: string;
-    created_at: string;
+    code_name: string;
+    node: string;
     metadata: {
-        hide: boolean;
+        name: string;
+        type: string;
+        genres: {
+            id: string;
+            description: string;
+        }[];
+        movies: {
+            id: number;
+            webm: {
+                max: string;
+            };
+            mp4: {
+                max: string;
+            };
+            name: string;
+            thumbnail: string;
+        }[];
+        website: string;
+        background: string;
+        categories: {
+            id: number;
+            description: string;
+        }[];
+        developers: string[];
+        drm_notice: string;
+        publishers: string[];
+        screenshots: {
+            id: number;
+            path_full: string;
+            path_thumbnail: string;
+        }[];
+        header_image: string;
+        release_date: {
+            date: string;
+        };
+        capsule_image: string;
+        about_the_game: string;
+        background_raw: string;
+        capsule_imagev5: string;
+        short_description: string;
     };
+}
+
+const example_game : IGame = {
+    name: 'windows',
+    code_name: '150',
+    node: 'follobuntu',
+    metadata: {
+        name: 'Windows',
+        type: 'windows',
+        genres: [],
+        screenshots: [],
+        movies: [],
+        website: '',
+        background: '',
+        categories: [],
+        developers: [],
+        drm_notice: 'false',
+        publishers: [],
+        header_image: '',
+        release_date: {
+            date: new Date().toUTCString()
+        },
+        capsule_image: '',
+        about_the_game: '',
+        background_raw: '',
+        capsule_imagev5: '',
+        short_description: ''
+    }
 }
 interface Maintain {
     created_at: string;
     ended_at: string;
-    isMaintaining?: boolean;
 }
-type SubscriptionSelection = {
-    planName?: PlanName;
-    template?: string;
-    name: string;
-    logo: string;
-};
 
 type TutorialType = 'NewTutorial' | 'PaidTutorial' | 'close';
 const initialState = {
@@ -224,13 +268,23 @@ const initialState = {
     maintenance: {} as Maintain,
     apps: [],
     games: [] as IGame[],
-    gameChooseSubscription: gameDB[0],
-    gamesInSubscription: gameDB
 };
 
 export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async () => {
-        return [] as IGame[];
+        const sub = store.getState().user.subscription
+
+        const { data, error } = await LOCAL()
+            .rpc('get_store_availability')
+        if (error) throw new Error(error.message);
+        if (sub.status == 'PAID' || sub.status == 'IMPORTED')
+            return (data as IGame[]).filter(x => x.node == sub.node);
+        else {
+            const res: IGame[] = [];
+            (data as IGame[]).forEach(x => res.push(...res.find(y => y.code_name == x.code_name) ? [] : [x]))
+            return res
+        }
+
     }),
     fetch_under_maintenance: createAsyncThunk(
         'fetch_under_maintenance',
@@ -250,9 +304,9 @@ export const globalAsync = {
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
                 ? {
-                      ...info,
-                      isMaintaining: true
-                  }
+                    ...info,
+                    isMaintaining: true
+                }
                 : {};
         }
     )
@@ -274,9 +328,6 @@ export const globalSlice = createSlice({
         update_store_data: (state, payload: any) => {
             state.games = payload;
         },
-        choose_game: (state, action: PayloadAction<SubscriptionSelection>) => {
-            state.gameChooseSubscription = action.payload;
-        },
         show_tutorial: (state, action: PayloadAction<TutorialType>) => {
             state.tutorial = action.payload;
         }
@@ -287,9 +338,7 @@ export const globalSlice = createSlice({
             {
                 fetch: globalAsync.fetch_store,
                 hander: (state, action: PayloadAction<IGame[]>) => {
-                    state.games = action.payload.filter(
-                        (g) => g.metadata?.hide != true
-                    );
+                    state.games = action.payload;
                 }
             },
             {

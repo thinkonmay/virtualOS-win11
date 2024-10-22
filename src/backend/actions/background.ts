@@ -139,10 +139,7 @@ const updateUI = async () => {
         const { plan } = subscription;
         if (plan.includes('month')) {
             ops.push('connectPc');
-        } else if (plan.includes('hour')) {
-            ops.push('store');
             rms.pop();
-            rms.push('connectPc');
         }
 
         const { ended_at } = subscription;

@@ -65,7 +65,7 @@ function UserInfo() {
                 {template && correctsite ? (
                     <div className="w-full flex gap-4 justify-between mt-1 items-end">
                         <span className="text-left">Template</span>
-                        <span>{template}</span>
+                        <span>{template.code}</span>
                     </div>
                 ) : null}
                 {cluster ? (
@@ -112,7 +112,7 @@ function UserInfo() {
                         <span>Language</span>
                         <LangSwitch />
                     </div>
-                    <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px]">
+                    <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] mt-[1rem]">
                         <span>Theme</span>
                         <div
                             className="strBtn handcr prtclk"
@@ -130,7 +130,7 @@ function UserInfo() {
                         {correctsite ? (
                             shutdownable == 'started' ? (
                                 <>
-                                    <span>Shut down</span>
+                                    <span>Shutdown</span>
                                     <div
                                         className="strBtn handcr prtclk"
                                         onClick={() =>
@@ -139,23 +139,22 @@ function UserInfo() {
                                     >
                                         <MdOutlinePowerSettingsNew
                                             size={'1rem'}
+                                            color="red"
                                         />
                                     </div>
                                 </>
                             ) : shutdownable == 'ready' ? (
                                 <>
-                                    <span>Connect</span>
+                                    <span>Bootup</span>
                                     <div
                                         className="strBtn handcr prtclk"
                                         onClick={() =>
                                             appDispatch(wait_and_claim_volume())
                                         }
                                     >
-                                        <Icon
-                                            className="quickIcon"
-                                            ui={true}
-                                            src={'power'}
-                                            width={14}
+                                        <MdOutlinePowerSettingsNew
+                                            size={'1rem'}
+                                            color="white"
                                         />
                                     </div>
                                 </>

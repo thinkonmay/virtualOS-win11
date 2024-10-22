@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { RootState } from '.';
+import { appDispatch, RootState, worker_refresh } from '.';
 import {
     getDomain,
     GLOBAL,
@@ -14,43 +14,51 @@ import { BuilderHelper } from './helper';
 
 export type PaymentStatus =
     | {
-          status: 'PAID' | 'IMPORTED';
-          plan: string;
-          cluster: string;
-          correct_domain: boolean;
-          node: string;
+        status: 'PAID' | 'IMPORTED';
+        plan: string;
+        cluster: string;
+        correct_domain: boolean;
+        node: string;
 
-          total_usage: number;
-          created_at: string;
+        total_usage: number;
+        created_at: string;
 
-          limit_hour?: number;
-          ended_at?: string;
-          template?: string;
-          local_metadata?: {
-              ram?: string;
-              vcpu?: string;
-          };
-      }
+        limit_hour?: number;
+        ended_at?: string;
+        template: {
+            image: string | null;
+            code: string;
+            name: string;
+        };
+        local_metadata?: {
+            ram?: string;
+            vcpu?: string;
+        };
+    }
     | {
-          status: 'NO_ACTION';
+        status: 'NO_ACTION';
 
-          domains?: {
-              domain: string;
-              free: number;
-          }[];
-      }
+        domains?: {
+            domain: string;
+            free: number;
+        }[];
+    }
     | {
-          status: 'PENDING';
-      }
+        status: 'PENDING';
+    }
     | {
-          status: 'CANCEL';
-      };
+        status: 'CANCEL';
+    };
 
 type Data = RecordModel & {
     subscription: PaymentStatus;
     volume_id: string;
 };
 
+const isUUID = (uuid) =>
+    uuid.match(
+        '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    ) != null;
 const initialState: Data = {
     collectionId: '',
     collectionName: '',
@@ -113,7 +121,6 @@ export const userAsync = {
                         cluster: cluster_id,
                         created_at,
                         ended_at,
-                        template,
                         local_metadata
                     }
                 ] = sub;
@@ -160,14 +167,9 @@ export const userAsync = {
                             local_metadata,
                             limit_hour,
                             created_at,
-                            ended_at,
-                            template
+                            ended_at
                         } as PaymentStatus;
 
-                        const isUUID = (uuid) =>
-                            uuid.match(
-                                '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-                            ) != null;
                         if (
                             isUUID(volume_id) &&
                             (result.status == 'PAID' ||
@@ -186,11 +188,43 @@ export const userAsync = {
 
                             const { data: map, error: errr } = await LOCAL()
                                 .from('volume_map')
-                                .select('node')
+                                .select('node,size')
                                 .eq('id', volume_id)
                                 .limit(1);
                             if (errr) throw errr;
-                            result.node = map.at(0)?.node;
+                            else if (map.length == 0) return result;
+                            const [{ node, size }] = map;
+
+                            const { data: stores, error: err } = await LOCAL()
+                                .from('stores')
+                                .select('metadata->screenshots,name')
+                                .eq('code_name', size)
+                                .limit(1);
+                            if (err) throw err;
+                            else if (stores.length > 0) {
+                                const screnshoots = stores.at(0)
+                                    .screenshots as any[];
+                                const image =
+                                    screnshoots[
+                                        Math.round(
+                                            Math.random() *
+                                            (screnshoots.length - 1)
+                                        )
+                                    ].path_full;
+                                result.template = {
+                                    image,
+                                    code: size,
+                                    name: stores.at(0)?.name
+                                };
+                            } else {
+                                result.template = {
+                                    image: null,
+                                    code: size,
+                                    name: `${size}G`
+                                };
+                            }
+
+                            result.node = node;
                         }
                     }
                 }
@@ -230,9 +264,7 @@ export const userAsync = {
     get_payment: createAsyncThunk(
         'get_payment',
         async (
-            input:
-                | { plan: string; template?: string; domain: string }
-                | undefined,
+            input: { plan: string; domain: string } | undefined,
             { getState }
         ): Promise<string> => {
             const expire_at = new Date(
@@ -285,7 +317,7 @@ export const userAsync = {
 
             if (input == undefined) throw new Error('Bạn đã đăng kí dịch vụ');
 
-            const { plan: plan_name, template, domain } = input;
+            const { plan: plan_name, domain } = input;
             const {
                 data: [_plans],
                 error: errrr
@@ -318,7 +350,7 @@ export const userAsync = {
                     user: email,
                     plan,
                     cluster,
-                    local_metadata: { template },
+                    local_metadata: {},
                     ended_at: addDays(new Date(), 30).toISOString()
                 })
                 .select('id');
@@ -335,7 +367,30 @@ export const userAsync = {
 
             return checkoutUrl;
         }
-    )
+    ),
+    change_template: createAsyncThunk(
+        'change_template',
+        async (
+            { template }: { template: string } | undefined,
+            { getState }
+        ): Promise<void> => {
+            const { volume_id, subscription } = (getState() as RootState).user
+            if (isUUID(volume_id) &&
+                (subscription.status == 'PAID' ||
+                    subscription.status == 'IMPORTED')) {
+                const { error } = await LOCAL()
+                    .from('volume_map')
+                    .update({ size: template })
+                    .eq('id', volume_id)
+                if (error)
+                    throw new Error(error.message)
+
+                setTimeout(() => appDispatch(worker_refresh()),10000)
+            } else
+                throw new Error('no volume available')
+        }
+    ),
+
 };
 
 export const userSlice = createSlice({
@@ -394,6 +449,10 @@ export const userSlice = createSlice({
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
                 }
+            },
+            {
+                fetch: userAsync.change_template,
+                hander: (state, action) => { }
             }
         );
     }

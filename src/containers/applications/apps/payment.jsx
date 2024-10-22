@@ -1,19 +1,14 @@
 import { useState } from 'react';
 import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
+import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
 import {
     appDispatch,
     get_payment,
-    popup_open,
     useAppSelector
 } from '../../../backend/reducers';
-import {
-    Image,
-    LazyComponent,
-    ToolBar
-} from '../../../components/shared/general';
+import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
-import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
@@ -119,7 +114,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             : domains != undefined
               ? appDispatch(
                     get_payment({
-                        template: gameChoose.template,
                         plan: sub.name,
                         domain
                     })
@@ -129,23 +123,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     const [isShowDetail, setShowDetail] = useState(
         sub.name == 'month1' ? true : false
     );
-    const gameChooseSubscription = useAppSelector(
-        (state) => state.globals.gameChooseSubscription
-    );
-    const gameChoose = useAppSelector((state) =>
-        state.globals.gamesInSubscription.find(
-            (item) => item.template == gameChooseSubscription?.template
-        )
-    );
-    const openChooseGames = (subName) =>
-        appDispatch(
-            popup_open({
-                type: 'gameChoose',
-                data: {
-                    planName: subName
-                }
-            })
-        );
 
     const clickDetail = () => {
         setShowDetail((old) => !old);
@@ -254,12 +231,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         </div>
                         {sub.name == 'month1' && domains != undefined ? (
                             <div className="flex flex-col">
-                                <button
-                                    className="mt-4 w-full mx-auto border-[#000] border-[1px] border-solid shadow-sm btn btn-secondary"
-                                    onClick={() => openChooseGames(sub.name)}
-                                >
-                                    Game có sẵn trên máy
-                                </button>
                                 <span className="mt-2 w-full mx-auto shadow-sm">
                                     Chọn server:
                                 </span>
@@ -301,24 +272,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         </label>
                                     ) : null
                                 )}
-                            </div>
-                        ) : null}
-                        {gameChoose?.template &&
-                        sub.name == gameChooseSubscription.planName ? (
-                            <div
-                                key={gameChoose.name}
-                                className="flex flex-col py-4 w-[80px] mx-auto my-5 h-[100px] rounded-lg bg-[#2d3146]"
-                            >
-                                <Image
-                                    w={40}
-                                    h={40}
-                                    ext
-                                    absolute
-                                    src={gameChoose.logo}
-                                />
-                                <div className="name mt-auto capitalize text-white  text-xs text-center font-semibold">
-                                    {gameChoose.name}
-                                </div>
                             </div>
                         ) : null}
                         <button
