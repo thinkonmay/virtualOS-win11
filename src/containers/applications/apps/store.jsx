@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { appDispatch, change_template, useAppSelector } from '../../../backend/reducers';
+import {
+    appDispatch,
+    change_template,
+    useAppSelector
+} from '../../../backend/reducers';
 import {
     Icon,
     Image,
@@ -70,9 +74,12 @@ const DetailPage = ({ app }) => {
         }
     } = app;
 
-    const download = () => appDispatch(change_template({
-        template: code_name
-    }))
+    const download = () =>
+        appDispatch(
+            change_template({
+                template: code_name
+            })
+        );
 
     return (
         <div className="detailpage w-full absolute top-0 flex">
@@ -132,7 +139,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => { };
+    const t = (e) => {};
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };

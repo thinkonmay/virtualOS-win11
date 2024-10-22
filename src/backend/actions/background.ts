@@ -132,15 +132,13 @@ const updateUI = async () => {
         );
     }
 
-    const rms = ['store'];
+    const rms = [];
     const ops = [];
     if (status == 'PENDING') ops.push('payment');
     else if (status == 'PAID' || status == 'IMPORTED') {
         const { plan } = subscription;
-        if (plan.includes('month')) {
+        if (plan.includes('month')) 
             ops.push('connectPc');
-            rms.pop();
-        }
 
         const { ended_at } = subscription;
         if (
@@ -186,9 +184,10 @@ export const preload = async (update_ui?: boolean) => {
             fetchApp(),
             fetchSubscription(),
             fetchSetting(),
-            fetchMessage(),
-            fetchStore()
+            fetchMessage()
         ]);
+
+        await fetchStore();
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',
