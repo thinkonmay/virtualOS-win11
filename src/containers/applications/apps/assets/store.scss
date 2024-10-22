@@ -118,6 +118,7 @@ body[data-theme="dark"] {
   overflow-y: scroll;
 
   .pagecont {
+    justify-content: center;
     border-radius: 6px;
     background: var(--page-bg);
     border: 1px solid var(--page-bd-col);
@@ -166,12 +167,9 @@ body[data-theme="dark"] {
   align-items: center;
   background: var(--rib-bg);
   margin: 0 6px;
-  height: auto;
-  max-width: 160px;
+  height: 16rem;
   padding: 1rem;
   padding-top: 1.5rem;
-
-  //min-height: 230px;
   transform-origin: center;
   transition: all ease-in-out 200ms;
   color: var(--dark-txt);

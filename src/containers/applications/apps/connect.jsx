@@ -41,11 +41,16 @@ export const ConnectApp = () => {
             ? state.user.subscription.cluster
             : null
     );
+    const { image, name } = useAppSelector((state) =>
+        state.user.subscription.status == 'IMPORTED' ||
+        state.user.subscription.status == 'PAID'
+            ? state.user.subscription.template ?? { image: null, name: null }
+            : { image: null, name: null }
+    );
 
     const { browser } = detectBrowserAndOS();
 
-    const { email, id } = useAppSelector((state) => state.user);
-    const emailSplit = email?.split('@')?.at(0) || 'Bạn chưa đăng nhập';
+    const id = useAppSelector((state) => state.user.id);
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
@@ -71,12 +76,23 @@ export const ConnectApp = () => {
             <div
                 className="windowScreen connectAppContent flex flex-col p-[12px] pt-0"
                 data-dock="true"
+                style={
+                    image != null
+                        ? {
+                              backgroundImage: `url(${image})`,
+                              backgroundSize: 'cover'
+                          }
+                        : {
+                              background:
+                                  'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
+                          }
+                }
             >
                 <LazyComponent show={!wnapp.hide}>
                     <div className="content">
                         <div className="title">
                             <Icon src="monitor"></Icon>
-                            {emailSplit}
+                            {name}
                         </div>
 
                         <div className="containerSpec">

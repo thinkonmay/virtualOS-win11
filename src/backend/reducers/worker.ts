@@ -257,6 +257,7 @@ export const workerAsync = {
                         .from('job')
                         .select('result')
                         .eq('arguments->>id', volume_id)
+                        .order('created_at',{ascending:false})
                         .limit(1);
                     if (err) throw new Error(err.message);
                     else if (data.length > 0 && data[0].result == 'success')

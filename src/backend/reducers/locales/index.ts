@@ -503,7 +503,7 @@ export function language() {
     vn.set(Contents.ENDAT, 'Ngày hết hạn');
 
     en.set(Contents.TIME, 'Total usage');
-    vn.set(Contents.TIME, 'Tổng thời gian sử dụng');
+    vn.set(Contents.TIME, 'Số giờ chơi');
 
     en.set(Contents.INACTIVEUSER, 'Account is inactive!');
     vn.set(

@@ -36,7 +36,7 @@ const apps: AppData[] = [
         payload: 'payment'
     },
     {
-        name: 'Game cho gói giờ',
+        name: 'Store',
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store'
@@ -78,7 +78,7 @@ var { taskbar, desktop } = {
         'Discord',
         'Hướng dẫn',
         'Thinkmay Fanpage',
-        'Game cho gói giờ',
+        'Store',
         'Máy tính cá nhân',
         'Thanh toán',
         ...(DevEnv ? ['Worker Profile'] : [])
