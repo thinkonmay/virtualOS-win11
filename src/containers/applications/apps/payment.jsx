@@ -12,7 +12,8 @@ import './assets/store.scss';
 
 const listSubs = [
     {
-        highlight: true,
+        active: true,
+        highlight: false,
         title: 'Gói tuần',
         price_in_vnd: '99',
         under_price: 'Giới hạn 25h sử dụng trong 7 ngày',
@@ -27,8 +28,9 @@ const listSubs = [
         ]
     },
     {
-        highlight: false,
-        title: 'Tiết kiệm',
+        active: true,
+        highlight: true,
+        title: 'Gói tháng',
         price_in_vnd: '299',
         total_time: '150',
         under_price: 'Giới hạn 150h sử dụng trong tháng',
@@ -44,8 +46,9 @@ const listSubs = [
         storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
     },
     {
+        active: false,
         highlight: false,
-        title: 'Unlimited',
+        title: 'Gói cao cấp',
         price_in_vnd: '1699',
         period: 'tháng',
         total_time: 'Không giới hạn',
@@ -120,9 +123,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                 )
               : appDispatch(get_payment());
 
-    const [isShowDetail, setShowDetail] = useState(
-        sub.name == 'month1' ? true : false
-    );
+    const [isShowDetail, setShowDetail] = useState(sub.highlight);
 
     const clickDetail = () => {
         setShowDetail((old) => !old);
@@ -137,7 +138,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             {sub.highlight ? (
                 <div className="absolute rounded-[36px] bg-green-600 inset-0 z-[0] w-[102%] h-[10%] top-[-27px] bottom-[-6px] left-[-1%]">
                     <p className="text-[16px] leading-4 text-center py-2 mt-[4px] text-background">
-                        Gói mới
+                        Gói phổ biến
                     </p>
                 </div>
             ) : null}
@@ -229,50 +230,52 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         <div className="space-y-2">
                             <p className="text-[13px] whitespace-pre-wrap"></p>
                         </div>
-                        {sub.name == 'month1' && domains != undefined ? (
-                            <div className="flex flex-col">
-                                <span className="mt-2 w-full mx-auto shadow-sm">
-                                    Chọn server:
-                                </span>
-                            </div>
-                        ) : null}
-                        {sub.name == 'month1' ? (
-                            <div className="flex flex-col gap-2 mb-4">
-                                {domains?.map(({ domain, free }, index) =>
-                                    free > 0 ? (
-                                        <label
-                                            key={index}
-                                            className="text-blue-500 flex gap-2 items-center"
-                                            htmlFor="server1"
-                                        >
-                                            <input
-                                                defaultChecked={index == max}
-                                                onChange={(e) =>
-                                                    e.target.checked
-                                                        ? setDomain(domain)
-                                                        : null
-                                                }
-                                                data={domain}
-                                                type="radio"
-                                                name="server"
-                                                id="server1"
-                                            />
-                                            <span
-                                                name="play"
-                                                className="text-blue-500"
+                        {sub.active ? (
+                            <>
+                                <div className="flex flex-col">
+                                    <span className="mt-2 w-full mx-auto shadow-sm">
+                                        Chọn server:
+                                    </span>
+                                </div>
+                                <div className="flex flex-col gap-2 mb-4">
+                                    {domains?.map(({ domain, free }, index) =>
+                                        free > 0 ? (
+                                            <label
+                                                key={index}
+                                                className="text-blue-500 flex gap-2 items-center"
+                                                htmlFor="server1"
                                             >
-                                                {domain}
-                                            </span>
-                                            <div className="flex gap-2 items-center text-xs">
-                                                {free} chỗ trống
-                                                {index == max ? (
-                                                    <GreenLight />
-                                                ) : null}
-                                            </div>
-                                        </label>
-                                    ) : null
-                                )}
-                            </div>
+                                                <input
+                                                    defaultChecked={
+                                                        index == max
+                                                    }
+                                                    onChange={(e) =>
+                                                        e.target.checked
+                                                            ? setDomain(domain)
+                                                            : null
+                                                    }
+                                                    data={domain}
+                                                    type="radio"
+                                                    name="server"
+                                                    id="server1"
+                                                />
+                                                <span
+                                                    name="play"
+                                                    className="text-blue-500"
+                                                >
+                                                    {domain}
+                                                </span>
+                                                <div className="flex gap-2 items-center text-xs">
+                                                    {free} chỗ trống
+                                                    {index == max ? (
+                                                        <GreenLight />
+                                                    ) : null}
+                                                </div>
+                                            </label>
+                                        ) : null
+                                    )}
+                                </div>
+                            </>
                         ) : null}
                         <button
                             onClick={onChooseSub}
@@ -288,15 +291,12 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             ${
-                                                                sub.name !=
-                                                                    'month1' &&
-                                                                sub.name !=
-                                                                    'week1'
+                                                                !sub.active
                                                                     ? 'bg-red-500'
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
-                            {sub.name != 'month1' && sub.name != 'week1'
+                            {!sub.active
                                 ? 'Đang đóng!'
                                 : domains == undefined
                                   ? not_logged_in

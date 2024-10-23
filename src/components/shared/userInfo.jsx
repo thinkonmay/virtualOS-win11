@@ -41,48 +41,50 @@ function UserInfo() {
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
-    const renderPlanName = {
-        month1: (
-            <div className="restWindow w-full  flex flex-col ">
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">{t[Contents.STARTAT]}</span>
-                    <span>{formatDate(created_at)}</span>
-                </div>
-                {ended_at ? (
-                    <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                        <span className="text-left">{t[Contents.ENDAT]}</span>
-                        <span>{formatDate(ended_at)}</span>
-                    </div>
-                ) : null}
-                {correctsite ? (
-                    <div className="w-full flex gap-4 justify-between mt-4 items-end">
-                        <span className="text-left">{t[Contents.TIME]}</span>
-                        <span>
-                            {(+total_usage / 60).toFixed(2)}h / {limit_hour}h
-                        </span>
-                    </div>
-                ) : null}
-                {template && correctsite ? (
-                    <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                        <span className="text-left">Template</span>
-                        <span>{template.code}</span>
-                    </div>
-                ) : null}
-                {cluster ? (
-                    <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                        <span className="text-left">Domain</span>
-                        <span>{cluster}</span>
-                    </div>
-                ) : null}
-                {node && correctsite ? (
-                    <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                        <span className="text-left">Node</span>
-                        <span>{node}</span>
-                    </div>
-                ) : null}
+    const Paid = () => (
+        <div className="restWindow w-full  flex flex-col ">
+            <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                <span className="text-left">{t[Contents.STARTAT]}</span>
+                <span>{formatDate(created_at)}</span>
             </div>
-        ),
-        hour1: <div className="restWindow w-full  flex flex-col "></div>,
+            {ended_at ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">{t[Contents.ENDAT]}</span>
+                    <span>{formatDate(ended_at)}</span>
+                </div>
+            ) : null}
+            {correctsite ? (
+                <div className="w-full flex gap-4 justify-between mt-4 items-end">
+                    <span className="text-left">{t[Contents.TIME]}</span>
+                    <span>
+                        {(+total_usage / 60).toFixed(2)}h / {limit_hour}h
+                    </span>
+                </div>
+            ) : null}
+            {template && correctsite ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">Template</span>
+                    <span>{template.code}</span>
+                </div>
+            ) : null}
+            {cluster ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">Domain</span>
+                    <span>{cluster}</span>
+                </div>
+            ) : null}
+            {node && correctsite ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">Node</span>
+                    <span>{node}</span>
+                </div>
+            ) : null}
+        </div>
+    );
+
+    const renderPlanName = {
+        week1: <Paid />,
+        month1: <Paid />,
         undefined: (
             <div className="restWindow w-full  flex flex-col ">
                 <div className="w-full flex gap-4 justify-between mt-2 items-end">

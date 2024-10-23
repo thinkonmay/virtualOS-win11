@@ -29,7 +29,7 @@ export const localStorageKey = {
     shownPaidUserTutorial: 'SHOWN_PAID_USER_TUTORIAL'
 };
 
-export type PlanName = 'month1';
+export type PlanName = 'month1' | 'week1';
 
 export const pathNames = {
     VERIFY_PAYMENT: 'success'

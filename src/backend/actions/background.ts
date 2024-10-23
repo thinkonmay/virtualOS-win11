@@ -136,8 +136,7 @@ const updateUI = async () => {
     const ops = [];
     if (status == 'PENDING') ops.push('payment');
     else if (status == 'PAID' || status == 'IMPORTED') {
-        const { plan } = subscription;
-        if (plan.includes('month')) ops.push('connectPc');
+        ops.push('connectPc');
 
         const { ended_at } = subscription;
         if (
