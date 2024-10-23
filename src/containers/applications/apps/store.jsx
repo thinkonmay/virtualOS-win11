@@ -81,6 +81,12 @@ const DetailPage = ({ app }) => {
             })
         );
 
+    const valid = useAppSelector(
+        (state) =>
+            state.user.subscription.status == 'IMPORTED' ||
+            state.user.subscription.status == 'PAID'
+    );
+
     return (
         <div className="detailpage w-full absolute top-0 flex">
             <div className="detailcont">
@@ -96,16 +102,25 @@ const DetailPage = ({ app }) => {
                     <div className="text-2xl font-semibold mt-6">{name}</div>
                     <div className="text-l font-bold mt-6">{publisher}</div>
                     <div className="text-l font-thin mt-6">Release {date}</div>
-                    <button
-                        onClick={download}
-                        className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
-                    >
-                        Cài đặt
-                    </button>
-                    <div className="text-l font-thin mt-6">
-                        Cài đặt sẽ xóa dữ liệu <br /> hiện có trên Thinkmay
-                        <br /> Cân nhắc trước khi click
-                    </div>
+                    {valid ? (
+                        <>
+                            <button
+                                onClick={download}
+                                className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
+                            >
+                                Cài đặt
+                            </button>
+                            <div className="text-l font-thin mt-6">
+                                Cài đặt sẽ xóa dữ liệu <br /> hiện có trên
+                                Thinkmay
+                                <br /> Cân nhắc trước khi click
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-l font-thin mt-6">
+                            Bạn cần đăng kí dịch vụ <br /> trước khi cài đặt
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="growcont flex flex-col">
