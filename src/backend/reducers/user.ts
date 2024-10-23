@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_toggle, appDispatch, fetch_subscription, RootState, worker_refresh } from '.';
+import {
+    app_toggle,
+    appDispatch,
+    fetch_subscription,
+    RootState,
+    worker_refresh
+} from '.';
 import {
     getDomain,
     GLOBAL,
@@ -395,7 +401,7 @@ export const userAsync = {
 
                 await appDispatch(worker_refresh());
                 await appDispatch(fetch_subscription());
-                appDispatch(app_toggle('connectPc'))
+                appDispatch(app_toggle('connectPc'));
             } else throw new Error('no volume available');
         }
     )

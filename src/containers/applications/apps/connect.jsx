@@ -123,7 +123,7 @@ export const ConnectApp = () => {
                                 </button>
                             ) : available == 'not_ready' ? (
                                 <button
-                                    disabled
+                                    onClick={reload}
                                     className="instbtn connectBtn12 connectBtn"
                                 >
                                     Máy đang được khởi tạo
