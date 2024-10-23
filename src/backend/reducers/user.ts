@@ -334,7 +334,10 @@ export const userAsync = {
             const {
                 data: [_plans],
                 error: errrr
-            } = await GLOBAL().from('plans').select('id, policy->>total_days').eq('name', plan_name);
+            } = await GLOBAL()
+                .from('plans')
+                .select('id, policy->>total_days')
+                .eq('name', plan_name);
             if (errrr) throw new Error(errrr.message);
             else if (_plans == undefined)
                 throw new Error('gói dịch vụ hiện đang tạm đóng');
@@ -364,7 +367,10 @@ export const userAsync = {
                     plan,
                     cluster,
                     local_metadata: {},
-                    ended_at: addDays(new Date(), Number.parseInt(total_days)).toISOString()
+                    ended_at: addDays(
+                        new Date(),
+                        Number.parseInt(total_days)
+                    ).toISOString()
                 })
                 .select('id');
             if (error) throw new Error(error.message);
