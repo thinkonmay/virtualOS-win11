@@ -17,18 +17,19 @@ import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
-        highlight: false,
-        title: 'Gói giờ',
-        price_in_vnd: '8',
-        under_price: 'Mua tối thiểu 5 giờ mỗi lần',
-
-        name: 'hour2',
-        period: 'h',
+        highlight: true,
+        title: 'Gói tuần',
+        price_in_vnd: '99',
+        under_price: 'Giới hạn 25h sử dụng trong 7 ngày',
+        name: 'week1',
+        period: 'tuần',
         bonus: [
-            'Chơi sẵn các game trong store games',
-            'Không lưu dữ liệu sau khi tắt máy'
+            'RTX 3060TI',
+            '16GB ram',
+            '150GB dung lượng riêng, Cloud-save',
+            'Không giới hạn thời gian mỗi session',
+            'Có hàng chờ'
         ],
-        hoursChoose: 5
     },
     {
         highlight: true,
@@ -335,12 +336,12 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             leading-4 px-3 py-2
                                                             ${
                                                                 sub.name !=
-                                                                'month1'
+                                                                'month1' && sub.name != 'week1'
                                                                     ? 'bg-red-500'
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
-                            {sub.name != 'month1'
+                            {sub.name != 'month1' &&  sub.name != 'week1'
                                 ? 'Đang đóng!'
                                 : domains == undefined
                                   ? not_logged_in
