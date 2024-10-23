@@ -8,14 +8,13 @@ import './index.scss';
 import * as modals from './modal';
 
 const Popup = () => {
-    const popup = useAppSelector((state) =>
-        state.popup.data_stack.find(
-            (x) => x.type == 'complete' && !x.data.success
-        ) ??
-        state.popup.data_stack.find((x) => x.type == 'notify') ??
-        state.popup.data_stack.at
-            ? state.popup.data_stack.at(-1)
-            : undefined
+    const popup = useAppSelector(
+        (state) =>
+            state.popup.data_stack.find(
+                (x) => x.type == 'complete' && !x.data.success
+            ) ??
+            state.popup.data_stack.find((x) => x.type == 'notify') ??
+            state.popup.data_stack[-1]
     );
 
     const closeModal = () => {
