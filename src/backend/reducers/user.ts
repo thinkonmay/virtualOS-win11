@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { appDispatch, RootState, worker_refresh } from '.';
+import { app_toggle, appDispatch, fetch_subscription, RootState, worker_refresh } from '.';
 import {
     getDomain,
     GLOBAL,
@@ -202,20 +202,27 @@ export const userAsync = {
                                 .limit(1);
                             if (err) throw err;
                             else if (stores.length > 0) {
-                                const screnshoots = stores.at(0)
-                                    .screenshots as any[];
-                                const image =
-                                    screnshoots[
-                                        Math.round(
-                                            Math.random() *
-                                                (screnshoots.length - 1)
-                                        )
-                                    ]?.path_full ?? null;
-                                result.template = {
-                                    image,
-                                    code: size,
-                                    name: stores.at(0)?.name
-                                };
+                                const [{ screenshots, name }] = stores;
+                                if (screenshots == null)
+                                    result.template = {
+                                        image: null,
+                                        code: size,
+                                        name: name
+                                    };
+                                else
+                                    result.template = {
+                                        image:
+                                            screenshots[
+                                                Math.round(
+                                                    Math.random() *
+                                                        ((screenshots as any[])
+                                                            .length -
+                                                            1)
+                                                )
+                                            ]?.path_full ?? null,
+                                        code: size,
+                                        name: name
+                                    };
                             } else {
                                 result.template = {
                                     image: null,
@@ -386,7 +393,9 @@ export const userAsync = {
                     .eq('id', volume_id);
                 if (error) throw new Error(error.message);
 
-                setTimeout(() => appDispatch(worker_refresh()), 10000);
+                await appDispatch(worker_refresh());
+                await appDispatch(fetch_subscription());
+                appDispatch(app_toggle('connectPc'))
             } else throw new Error('no volume available');
         }
     )
