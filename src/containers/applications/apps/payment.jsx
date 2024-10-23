@@ -17,21 +17,22 @@ import { UserEvents } from '../../../../src-tauri/api';
 
 const listSubs = [
     {
-        highlight: false,
-        title: 'Gói giờ',
-        price_in_vnd: '8',
-        under_price: 'Mua tối thiểu 5 giờ mỗi lần',
-
-        name: 'hour2',
-        period: 'h',
+        highlight: true,
+        title: 'Gói tuần',
+        price_in_vnd: '99',
+        under_price: 'Giới hạn 25h sử dụng trong 7 ngày',
+        name: 'week1',
+        period: 'tuần',
         bonus: [
-            'Chơi sẵn các game trong store games',
-            'Không lưu dữ liệu sau khi tắt máy'
+            'RTX 3060TI',
+            '16GB ram',
+            '150GB dung lượng riêng, Cloud-save',
+            'Không giới hạn thời gian mỗi session',
+            'Có hàng chờ'
         ],
-        hoursChoose: 5
     },
     {
-        highlight: true,
+        highlight: false,
         title: 'Tiết kiệm',
         price_in_vnd: '299',
         total_time: '150',
@@ -157,9 +158,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     return (
         <div className="sub relative">
             {sub.highlight ? (
-                <div className="absolute rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
+                <div className="absolute rounded-[36px] bg-green-600 inset-0 z-[0] w-[102%] h-[10%] top-[-27px] bottom-[-6px] left-[-1%]">
                     <p className="text-[16px] leading-4 text-center py-2 mt-[4px] text-background">
-                        Gói phổ biến nhất
+                        Gói mới
                     </p>
                 </div>
             ) : null}
@@ -335,12 +336,12 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             leading-4 px-3 py-2
                                                             ${
                                                                 sub.name !=
-                                                                'month1'
+                                                                'month1' && sub.name != 'week1'
                                                                     ? 'bg-red-500'
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
-                            {sub.name != 'month1'
+                            {sub.name != 'month1' &&  sub.name != 'week1'
                                 ? 'Đang đóng!'
                                 : domains == undefined
                                   ? not_logged_in
