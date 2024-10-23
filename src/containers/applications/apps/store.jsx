@@ -102,6 +102,7 @@ const DetailPage = ({ app }) => {
                     >
                         Cài đặt
                     </button>
+                    <div className="text-l font-thin mt-6">Cài đặt sẽ xóa dữ liệu <br/> hiện có trên Thinkmay<br/> Cân nhắc trước khi click</div>
                 </div>
             </div>
             <div className="growcont flex flex-col">
