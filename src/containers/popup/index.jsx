@@ -14,7 +14,7 @@ const Popup = () => {
                 (x) => x.type == 'complete' && !x.data.success
             ) ??
             state.popup.data_stack.find((x) => x.type == 'notify') ??
-            state.popup.data_stack[-1]
+            state.popup.data_stack.findLast(() => true)
     );
 
     const closeModal = () => {
