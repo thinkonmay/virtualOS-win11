@@ -29,7 +29,7 @@ const listSubs = [
             '150GB dung lượng riêng, Cloud-save',
             'Không giới hạn thời gian mỗi session',
             'Có hàng chờ'
-        ],
+        ]
     },
     {
         highlight: false,
@@ -336,12 +336,14 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             leading-4 px-3 py-2
                                                             ${
                                                                 sub.name !=
-                                                                'month1' && sub.name != 'week1'
+                                                                    'month1' &&
+                                                                sub.name !=
+                                                                    'week1'
                                                                     ? 'bg-red-500'
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
-                            {sub.name != 'month1' &&  sub.name != 'week1'
+                            {sub.name != 'month1' && sub.name != 'week1'
                                 ? 'Đang đóng!'
                                 : domains == undefined
                                   ? not_logged_in
