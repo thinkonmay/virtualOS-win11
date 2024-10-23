@@ -32,7 +32,7 @@ const listSubs = [
         ],
     },
     {
-        highlight: true,
+        highlight: false,
         title: 'Tiết kiệm',
         price_in_vnd: '299',
         total_time: '150',
@@ -158,9 +158,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     return (
         <div className="sub relative">
             {sub.highlight ? (
-                <div className="absolute rounded-[36px] bg-amber-600 absolute inset-0 z-[-1] w-[102%]  top-[-37px] bottom-[-6px] left-[-1%]">
+                <div className="absolute rounded-[36px] bg-green-600 inset-0 z-[0] w-[102%] h-[10%] top-[-27px] bottom-[-6px] left-[-1%]">
                     <p className="text-[16px] leading-4 text-center py-2 mt-[4px] text-background">
-                        Gói phổ biến nhất
+                        Gói mới
                     </p>
                 </div>
             ) : null}
