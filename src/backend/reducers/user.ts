@@ -352,7 +352,7 @@ export const userAsync = {
                 throw new Error('dịch vụ hiện chưa triển khai trên domain');
             const { id: cluster } = cluster_ele;
 
-            if (domain != getDomain()) await remotelogin(domain, 'google');
+            if (domain != getDomain()) await remotelogin(domain, email);
 
             const {
                 data: [{ id: subscription }],

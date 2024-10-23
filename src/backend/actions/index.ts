@@ -1,6 +1,6 @@
 import 'sweetalert2/src/sweetalert2.scss';
 import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
-import { RPOCKETBASE } from '../../../src-tauri/api/database';
+import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
@@ -170,19 +170,15 @@ export const login = async (
     });
     await preload(update_ui);
 };
-export const remotelogin = async (
-    domain: string,
-    provider: 'google' | 'facebook' | 'discord'
-) => {
-    const w = window.open();
-    await RPOCKETBASE(domain)
-        .collection('users')
-        .authWithOAuth2({
-            provider,
-            urlCallback: (url) => {
-                w.location.href = url;
-            }
-        });
+export const remotelogin = async (domain: string, email: string) => {
+    const { data, error } = await GLOBAL().rpc('generate_account', {
+        email,
+        domain
+    });
+
+    if (error) throw new Error('Failed to generate account');
+
+    if (data == null) return 'Existed Account';
 };
 
 export const shutDownVm = async () => {
