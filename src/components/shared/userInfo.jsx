@@ -1,12 +1,9 @@
-import { MdOutlinePowerSettingsNew } from 'react-icons/md';
 import { RenderNode } from '../../../src-tauri/api';
 import { changeTheme } from '../../backend/actions';
 import {
     appDispatch,
-    unclaim_volume,
     useAppSelector,
-    user_delete,
-    wait_and_claim_volume
+    user_delete
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
 import { formatDate } from '../../backend/utils/date';
@@ -128,7 +125,7 @@ function UserInfo() {
                             />
                         </div>
                     </div>
-                    <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] ">
+                    {/*<div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] ">
                         {correctsite ? (
                             shutdownable == 'started' ? (
                                 <>
@@ -162,7 +159,7 @@ function UserInfo() {
                                 </>
                             ) : null
                         ) : null}
-                    </div>
+                    </div>*/}
 
                     {renderPlanName[plan]}
                 </div>

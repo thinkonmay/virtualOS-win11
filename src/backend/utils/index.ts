@@ -46,7 +46,8 @@ const apps: AppData[] = [
         id: 'connectPc',
         action: 'apps/app_toggle',
         image: 'worker',
-        payload: 'connectPc'
+        payload: 'connectPc',
+        size: 'mini'
     },
     {
         name: 'Hướng dẫn',
