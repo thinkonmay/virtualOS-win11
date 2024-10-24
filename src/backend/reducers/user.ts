@@ -103,22 +103,15 @@ export const userAsync = {
             const { id, email, volume_id } = (getState() as RootState).user;
             if (id == 'unknown') return { status: 'NO_ACTION' };
 
-            const { data: sub, error: errr1 } = await GLOBAL()
-                .from('subscriptions')
-                .select(
-                    'id,plan,cluster,local_metadata,created_at,ended_at,local_metadata->>template'
-                )
-                .or(
-                    `ended_at.gt.${new Date().toISOString()}, ended_at.is.${null}`
-                )
-                .eq('user', email)
-                .is('cancelled_at', null)
-                .order('created_at', { ascending: false })
-                .limit(1);
-            if (errr1) throw new Error(errr1.message);
+            const {data : my_sub, error} = await GLOBAL().rpc('get_my_subscription', {
+                email
+            })
 
+            if (error != null)
+                throw new Error("Failed to query my subscription") 
+            
             let result = { status: 'NO_ACTION' } as PaymentStatus;
-            if (sub.length == 0) result = { status: 'NO_ACTION' };
+            if (my_sub == null) result = { status: 'NO_ACTION' };
             else {
                 const [
                     {
@@ -129,7 +122,8 @@ export const userAsync = {
                         ended_at,
                         local_metadata
                     }
-                ] = sub;
+                ] = my_sub;
+
                 const { data, error: err } = await GLOBAL()
                     .from('payment_request')
                     .select('status,expire_at')
