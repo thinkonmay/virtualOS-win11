@@ -244,26 +244,17 @@ export const workerAsync = {
             });
 
             if (found != undefined) {
-                const { data, error: errr } = await LOCAL()
-                    .from('volume_map')
-                    .select('id')
-                    .eq('id', volume_id)
-                    .eq('status', 'IMPORTED')
+                const { data, error: err } = await LOCAL()
+                    .from('job')
+                    .select('result')
+                    .eq('arguments->>id', volume_id)
+                    .order('created_at', { ascending: false })
                     .limit(1);
-                if (errr) throw new Error(errr.message);
-                else if (data.length == 1) node.info.available = 'ready';
-                else {
-                    const { data, error: err } = await LOCAL()
-                        .from('job')
-                        .select('result')
-                        .eq('arguments->>id', volume_id)
-                        .order('created_at', { ascending: false })
-                        .limit(1);
-                    if (err) throw new Error(err.message);
-                    else if (data.length > 0 && data[0].result == 'success')
-                        node.info.available = 'ready';
-                    else node.info.available = 'not_ready';
-                }
+                if (err) throw new Error(err.message);
+                else if (data.length == 0) node.info.available = 'ready';
+                else if (data[0].result == 'success')
+                    node.info.available = 'ready';
+                else node.info.available = 'not_ready';
 
                 if (found.type == 'vm_worker' && node.info.available == 'ready')
                     node.info.available = 'started';

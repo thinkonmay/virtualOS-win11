@@ -148,11 +148,11 @@ export const {
 export const { fetch_user, fetch_subscription, get_payment, change_template } =
     userAsync;
 export const {
+    check_worker,
     ping_session,
     sync,
     direct_access,
     save_reference,
-    check_worker,
     load_setting,
     cache_setting,
     toggle_remote_async,

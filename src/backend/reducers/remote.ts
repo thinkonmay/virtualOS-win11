@@ -7,11 +7,18 @@ import {
     remote_connect,
     remote_ready,
     store,
-    toggle_remote
+    toggle_remote,
+    worker_refresh
 } from '.';
-import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
+import {
+    Computer,
+    getDomainURL,
+    POCKETBASE,
+    RenderNode
+} from '../../../src-tauri/api';
 import { EventCode, isMobile } from '../../../src-tauri/core';
 import {
+    Assign,
     CLIENT,
     MAX_BITRATE,
     MAX_FRAMERATE,
@@ -109,21 +116,33 @@ export const remoteAsync = {
     check_worker: async () => {
         if (!store.getState().remote.active) return;
         else if (store.getState().remote.local) return;
-        else if (CLIENT == null || !CLIENT?.ready()) return;
+        else if (CLIENT == null) return;
+        else if (
+            CLIENT.Metrics.audio.status == 'connected' ||
+            CLIENT.Metrics.video.status == 'connected'
+        )
+            return;
 
-        // TODO
+        await appDispatch(worker_refresh());
+        if (
+            (
+                new RenderNode(store.getState().worker.data).data[0]
+                    ?.info as Computer
+            )?.available != 'started'
+        )
+            appDispatch(close_remote());
     },
     ping_session: async () => {
-        const state = store.getState();
-        const { remote, popup } = state;
+        const active = store.getState().remote.active;
+        const data_stack = store.getState().popup.data_stack;
 
-        if (!remote.active || CLIENT == null) return;
+        if (!active || CLIENT == null) return;
 
         const lastactive = () =>
             Math.min(CLIENT?.hid?.last_active(), CLIENT?.touch?.last_active());
 
         if (lastactive() > 5 * 60) {
-            if (popup.data_stack.length > 0) return;
+            if (data_stack.length > 0) return;
 
             appDispatch(
                 popup_open({
@@ -263,7 +282,6 @@ export const remoteSlice = createSlice({
                 rtc_config: RTCConfiguration;
             }>
         ) => {
-            state.local = true;
             state.auth = {
                 id: undefined,
                 webrtc: rtc_config,
@@ -298,6 +316,7 @@ export const remoteSlice = createSlice({
             state.auth = undefined;
             state.fullscreen = false;
             CLIENT?.Close();
+            Assign(null);
         },
         toggle_remote: (state) => {
             if (!state.active) {
