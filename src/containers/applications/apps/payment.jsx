@@ -111,13 +111,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         ) ?? 0;
 
     const [domain, setDomain] = useState(domains?.[max].domain ?? 'unknown');
-    const onChooseSub = () =>
+    const onChooseSub = (plan_name) =>
         not_logged_in
             ? login('google', false)
             : domains != undefined
               ? appDispatch(
                     get_payment({
-                        plan: sub.name,
+                        plan: plan_name,
                         domain
                     })
                 )
@@ -278,7 +278,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             </>
                         ) : null}
                         <button
-                            onClick={onChooseSub}
+                            onClick={() => onChooseSub(sub.name)}
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
                                                             space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
