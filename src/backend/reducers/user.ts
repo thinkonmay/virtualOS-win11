@@ -186,7 +186,7 @@ export const userAsync = {
             } of subs) {
                 const { data, error: err } = await GLOBAL()
                     .from('payment_request')
-                    .select('status')
+                    .select('id')
                     .or('status.eq.PAID,status.eq.IMPORTED')
                     .eq('subscription', subscription_id);
                 if (err) continue;
@@ -225,7 +225,7 @@ export const userAsync = {
 
                 const { data: pendingsubs, error: errr } = await GLOBAL()
                     .from('payment_request')
-                    .select('result->data->>checkoutUrl,status')
+                    .select('id')
                     .gt('expire_at', new Date().toISOString())
                     .eq('status', 'PENDING')
                     .eq('subscription', subscription_id);
@@ -279,7 +279,7 @@ export const userAsync = {
                 for (const { id } of existSub) {
                     const { data, error: errr } = await GLOBAL()
                         .from('payment_request')
-                        .select('result->data->>checkoutUrl,status')
+                        .select('result->data->>checkoutUrl')
                         .gt('expire_at', new Date().toISOString())
                         .eq('status', 'PENDING')
                         .eq('subscription', id);
