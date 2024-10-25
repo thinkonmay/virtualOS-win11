@@ -139,7 +139,7 @@ const Taskbar = () => {
                             <Icon
                                 className="infoBtn tsIcon tsIconInvert"
                                 src="home"
-                                width={40}
+                                width={32}
                                 click="startmenu/startogg"
                                 style={{ '--prefix': 'START' }}
                             />
@@ -160,7 +160,7 @@ const Taskbar = () => {
                                     >
                                         <Icon
                                             className="tsIcon"
-                                            width={24}
+                                            width={18}
                                             open={isHidden ? null : true}
                                             click="apps/app_toggle"
                                             active={isActive}
