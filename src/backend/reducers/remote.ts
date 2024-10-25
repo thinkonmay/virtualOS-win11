@@ -174,6 +174,7 @@ export const remoteAsync = {
         } = store.getState().remote;
         if (!active) return;
         else if (CLIENT == null || !CLIENT?.ready()) return;
+        if (isMobile()) CLIENT.PointerVisible(true);
 
         const {
             gamePadHide,
@@ -182,7 +183,6 @@ export const remoteAsync = {
         } = store.getState().sidepane.mobileControl;
         CLIENT.touch.mode =
             gamePadHide && keyboardHide && !draggable ? 'trackpad' : 'none';
-        if (isMobile()) CLIENT.PointerVisible(true);
 
         appDispatch(
             remoteSlice.actions.metrics({
