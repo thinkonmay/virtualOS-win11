@@ -20,7 +20,7 @@ const Popup = () => {
 
         return (
             state.popup.data_stack.find(
-                (x) => x.type == 'notify' && x.data.title == preferred_title 
+                (x) => x.type == 'notify' && x.data.title == preferred_title
             ) ?? state.popup.data_stack.findLast(() => true)
         );
     });

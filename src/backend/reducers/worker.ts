@@ -59,6 +59,25 @@ const initialState: WorkerType = {
 };
 
 export const workerAsync = {
+    showPosition: async (pos: number) => {
+        appDispatch(popup_close());
+        appDispatch(
+            popup_open({
+                type: 'notify',
+                data: {
+                    loading: false,
+                    tips: true,
+                    title: 'Connect to PC',
+                    text:
+                        pos == 0
+                            ? `Bạn đang ở vị trí đầu tiên trong hàng chờ, vui lòng giữ tab!`
+                            : `Bạn đang ở vị trí thứ ${
+                                  pos + 1
+                              } trong hàng chờ, vui lòng giữ tab!`
+                }
+            })
+        );
+    },
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
@@ -191,7 +210,8 @@ export const workerAsync = {
                     computer,
                     volume_id,
                     `${ram ?? 16}`,
-                    `${vcpu ?? 16}`
+                    `${vcpu ?? 16}`,
+                    workerAsync.showPosition
                 );
                 if (resp instanceof Error) {
                     UserEvents({
