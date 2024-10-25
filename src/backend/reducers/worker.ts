@@ -57,6 +57,25 @@ const initialState: WorkerType = {
     hist: [],
     hid: 0
 };
+const getMyPosition = async (postion: number) => {
+    let text = `<p> Bạn đang ở vị trí thứ <b>${postion}</b> trong hàng chờ, vui lòng giữ tab! </p>`;
+
+    if (postion == 0) {
+        text = `<p>Bạn đang ở vị trí <b>đầu tiên</b> trong hàng chờ, vui lòng giữ tab! </p>`;
+    }
+    appDispatch(popup_close());
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: {
+                loading: true,
+                tips: true,
+                title: 'Connect to PC',
+                text: text
+            }
+        })
+    );
+};
 
 export const workerAsync = {
     worker_refresh: createAsyncThunk(
@@ -191,7 +210,8 @@ export const workerAsync = {
                     computer,
                     volume_id,
                     `${ram ?? 16}`,
-                    `${vcpu ?? 16}`
+                    `${vcpu ?? 16}`,
+                    getMyPosition
                 );
                 if (resp instanceof Error) {
                     UserEvents({

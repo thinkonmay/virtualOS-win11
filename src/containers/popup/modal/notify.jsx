@@ -4,7 +4,7 @@ import { TbLoader3 } from 'react-icons/tb';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
-const TIME_RUN_OUT_OF_GPU = 150 * 1000; //sec
+const TIME_RUN_OUT_OF_GPU = 1 * 1000; //sec
 export function notify({
     data: { title, tips = true, loading = true, text, timeProcessing = 3.5 }
 }) {
@@ -13,27 +13,27 @@ export function notify({
     const [isLaterThan15s, setIsLaterThan15s] = useState(false);
 
     const [isShowTip, setShowTip] = useState(tips);
-    useEffect(() => {
-        let interval;
-        if (title == 'Connect to PC') {
-            const referenceTime = new Date();
-            const laterTime = new Date(
-                referenceTime.getTime() + TIME_RUN_OUT_OF_GPU
-            );
+    // useEffect(() => {
+    //     let interval;
+    //     if (title == 'Connect to PC') {
+    //         const referenceTime = new Date();
+    //         const laterTime = new Date(
+    //             referenceTime.getTime() + TIME_RUN_OUT_OF_GPU
+    //         );
 
-            interval = setInterval(() => {
-                const currentTime = new Date();
-                if (currentTime > laterTime) {
-                    setIsLaterThan15s(true);
-                    setTextTrans(t[Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]);
-                    setShowTip(false);
-                    clearInterval(interval);
-                }
-            }, 6000);
-        }
+    //         interval = setInterval(() => {
+    //             const currentTime = new Date();
+    //             if (currentTime > laterTime) {
+    //                 setIsLaterThan15s(true);
+    //                 setTextTrans(t[Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]);
+    //                 setShowTip(false);
+    //                 clearInterval(interval);
+    //             }
+    //         }, 6000);
+    //     }
 
-        return () => clearInterval(interval);
-    }, [title]);
+    //     return () => clearInterval(interval);
+    // }, [title]);
     useEffect(() => {
         if (t[text]) setTextTrans(t[text]);
 

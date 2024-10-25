@@ -103,13 +103,16 @@ export const userAsync = {
             const { id, email, volume_id } = (getState() as RootState).user;
             if (id == 'unknown') return { status: 'NO_ACTION' };
 
-            const {data : my_sub, error} = await GLOBAL().rpc('get_my_subscription', {
-                email
-            })
+            const { data: my_sub, error } = await GLOBAL().rpc(
+                'get_my_subscription',
+                {
+                    email
+                }
+            );
 
             if (error != null)
-                throw new Error("Failed to query my subscription") 
-            
+                throw new Error('Failed to query my subscription');
+
             let result = { status: 'NO_ACTION' } as PaymentStatus;
             if (my_sub == null) result = { status: 'NO_ACTION' };
             else {
