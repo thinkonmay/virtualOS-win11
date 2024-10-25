@@ -61,7 +61,18 @@ export const modalSlice = createSlice({
             state.data_stack = [...state.data_stack, action.payload];
         },
         popup_close: (state) => {
-            state.data_stack.pop();
+            const preferred = ['extendService', 'redirectDomain', 'maintain'];
+            const preferred_title = 'Connect to PC';
+
+            const rm = state.data_stack.findIndex(
+                (x) =>
+                    !preferred.includes(x.type) &&
+                    !(x.type == 'notify' && x.data.title == preferred_title)
+            );
+
+            state.data_stack = state.data_stack.filter(
+                (val, index) => index != (rm != -1 ? rm : 0)
+            );
         }
     }
 });
