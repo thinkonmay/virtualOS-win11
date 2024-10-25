@@ -8,7 +8,7 @@ import './index.scss';
 import * as modals from './modal';
 
 const preferred = ['extendService', 'redirectDomain', 'maintain'];
-const preferred_title = ['Connect to PC'];
+const preferred_title = 'Connect to PC';
 const Popup = () => {
     const popup = useAppSelector((state) => {
         for (const element of preferred) {
@@ -20,8 +20,7 @@ const Popup = () => {
 
         return (
             state.popup.data_stack.find(
-                (x) =>
-                    x.type == 'notify' && preferred_title.includes(x.data.title)
+                (x) => x.type == 'notify' && x.data.title == preferred_title 
             ) ?? state.popup.data_stack.findLast(() => true)
         );
     });
