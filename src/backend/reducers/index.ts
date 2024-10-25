@@ -145,8 +145,13 @@ export const {
     peer_session_access,
     peer_session_close
 } = workerAsync;
-export const { fetch_user, fetch_subscription, get_payment, change_template } =
-    userAsync;
+export const {
+    fetch_user,
+    fetch_subscription,
+    fetch_usage,
+    get_payment,
+    change_template
+} = userAsync;
 export const {
     check_worker,
     ping_session,
@@ -159,7 +164,8 @@ export const {
     hard_reset_async
 } = remoteAsync;
 
-export const { fetch_store, fetch_under_maintenance } = globalAsync;
+export const { fetch_store, fetch_under_maintenance, fetch_domain } =
+    globalAsync;
 export const { push_message, fetch_message } = sidepaneAsync;
 
 export const dispatch_generic = async ({

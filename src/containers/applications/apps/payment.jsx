@@ -103,18 +103,23 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub }) => {
-    const domains = useAppSelector((state) => state.user.subscription.domains);
+    const status = useAppSelector((state) => state.user.subscription.status);
+    const domains = useAppSelector((state) => state.globals.domains);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
-    const max =
-        domains?.findIndex(
-            (y) => y.free == Math.max(...domains.map((x) => x.free))
-        ) ?? 0;
+    const max = useAppSelector(
+        (state) =>
+            state.globals.domains?.findIndex(
+                (y) =>
+                    y.free ==
+                    Math.max(...state.globals.domains.map((x) => x.free))
+            ) ?? -1
+    );
 
-    const [domain, setDomain] = useState(domains?.[max].domain ?? 'unknown');
+    const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
     const onChooseSub = (plan_name) =>
         not_logged_in
             ? login('google', false)
-            : domains != undefined
+            : status != 'PAID'
               ? appDispatch(
                     get_payment({
                         plan: plan_name,
@@ -124,7 +129,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
               : appDispatch(get_payment());
 
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
-
     const clickDetail = () => {
         setShowDetail((old) => !old);
         UserEvents({
@@ -230,7 +234,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         <div className="space-y-2">
                             <p className="text-[13px] whitespace-pre-wrap"></p>
                         </div>
-                        {sub.active ? (
+                        {sub.active && status == 'NO_ACTION' ? (
                             <>
                                 <div className="flex flex-col">
                                     <span className="mt-2 w-full mx-auto shadow-sm">
@@ -298,10 +302,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         >
                             {!sub.active
                                 ? 'Đang đóng!'
-                                : domains == undefined
-                                  ? not_logged_in
-                                      ? 'Mua ngay'
-                                      : 'Gia hạn'
+                                : status != 'NO_ACTION'
+                                  ? 'Gia hạn'
                                   : 'Mua Ngay'}
                         </button>
                     </div>

@@ -1,7 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { store } from '.';
-import { LOCAL } from '../../../src-tauri/api';
-import { PlanName } from '../utils/constant';
+import { GLOBAL, LOCAL, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -90,6 +89,11 @@ interface Maintain {
     created_at: string;
     ended_at: string;
 }
+
+type Domain = {
+    domain: string;
+    free: number;
+};
 
 type TutorialType = 'NewTutorial' | 'PaidTutorial' | 'close';
 const initialState = {
@@ -265,18 +269,49 @@ const initialState = {
     tutorial: 'close' as TutorialType,
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
-    apps: [],
-    games: [] as IGame[]
+    games: [] as IGame[],
+    domains: [] as Domain[]
 };
 
 export const globalAsync = {
+    fetch_domain: createAsyncThunk(
+        'fetch_domain',
+        async (): Promise<{ domain: string; free: string }[]> => {
+            const { data: domains, error } = await GLOBAL().rpc(
+                'get_domains_availability'
+            );
+            if (error) throw error;
+
+            return (
+                await Promise.all(
+                    domains.map(
+                        async (dom: { domain: string; free: string }) => {
+                            try {
+                                const { ok } = await fetch(
+                                    `https://${dom.domain}`
+                                );
+                                if (!ok) throw new Error('not ok');
+                            } catch (err) {
+                                UserEvents({
+                                    type: 'domain/test_fail',
+                                    payload: { ...dom, error: err }
+                                });
+                                return null;
+                            }
+                            return dom;
+                        }
+                    )
+                )
+            ).filter((dom) => dom != null);
+        }
+    ),
     fetch_store: createAsyncThunk('fetch_store', async () => {
         const sub = store.getState().user.subscription;
 
         const { data, error } = await LOCAL().rpc('get_store_availability');
         if (error) throw new Error(error.message);
-        if (sub.status == 'PAID' || sub.status == 'IMPORTED')
-            return (data as IGame[]).filter((x) => x.node == sub.node);
+        if (sub.status == 'PAID' && sub.usage?.node != undefined)
+            return (data as IGame[]).filter((x) => x.node == sub.usage.node);
         else {
             const res: IGame[] = [];
             (data as IGame[]).forEach((x) =>
@@ -340,6 +375,12 @@ export const globalSlice = createSlice({
                 fetch: globalAsync.fetch_store,
                 hander: (state, action: PayloadAction<IGame[]>) => {
                     state.games = action.payload;
+                }
+            },
+            {
+                fetch: globalAsync.fetch_domain,
+                hander: (state, action: PayloadAction<Domain[]>) => {
+                    state.domains = action.payload;
                 }
             },
             {

@@ -25,26 +25,24 @@ export const ConnectApp = () => {
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
     const paid = useAppSelector(
-        (state) =>
-            state.user.subscription.status == 'IMPORTED' ||
-            state.user.subscription.status == 'PAID'
+        (state) => state.user.subscription.status == 'PAID'
     );
     const wrongsite = useAppSelector(
         (state) =>
-            (state.user.subscription.status == 'IMPORTED' ||
-                state.user.subscription.status == 'PAID') &&
+            state.user.subscription.status == 'PAID' &&
             !state.user.subscription.correct_domain
     );
     const cluster = useAppSelector((state) =>
-        state.user.subscription.status == 'IMPORTED' ||
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.cluster
             : null
     );
     const { image, name } = useAppSelector((state) =>
-        state.user.subscription.status == 'IMPORTED' ||
         state.user.subscription.status == 'PAID'
-            ? state.user.subscription.template ?? { image: null, name: null }
+            ? state.user.subscription.usage?.template ?? {
+                  image: null,
+                  name: null
+              }
             : { image: null, name: null }
     );
 

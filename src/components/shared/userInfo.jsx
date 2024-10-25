@@ -14,26 +14,15 @@ import './index.scss';
 function UserInfo() {
     const correctsite = useAppSelector(
         (state) =>
-            (state.user.subscription.status == 'IMPORTED' ||
-                state.user.subscription.status == 'PAID') &&
+            state.user.subscription.status == 'PAID' &&
             state.user.subscription.correct_domain
     );
     const {
         email,
-        subscription: {
-            node,
-            cluster,
-            plan,
-            total_usage,
-            limit_hour,
-            created_at,
-            ended_at,
-            template
-        }
+        subscription: { cluster, plan, limit_hour, created_at, ended_at, usage }
     } = useAppSelector((state) => state.user);
-    const shutdownable = useAppSelector(
-        (state) => new RenderNode(state.worker.data).data[0]?.info?.available
-    );
+    const { node, total_usage, template } = usage ?? {};
+
     const thm = useAppSelector((state) => state.setting.person.theme);
     var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
@@ -125,42 +114,6 @@ function UserInfo() {
                             />
                         </div>
                     </div>
-                    {/*<div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] ">
-                        {correctsite ? (
-                            shutdownable == 'started' ? (
-                                <>
-                                    <span>Shutdown</span>
-                                    <div
-                                        className="strBtn handcr prtclk"
-                                        onClick={() =>
-                                            appDispatch(unclaim_volume())
-                                        }
-                                    >
-                                        <MdOutlinePowerSettingsNew
-                                            size={'1rem'}
-                                            color="red"
-                                        />
-                                    </div>
-                                </>
-                            ) : shutdownable == 'ready' ? (
-                                <>
-                                    <span>Bootup</span>
-                                    <div
-                                        className="strBtn handcr prtclk"
-                                        onClick={() =>
-                                            appDispatch(wait_and_claim_volume())
-                                        }
-                                    >
-                                        <MdOutlinePowerSettingsNew
-                                            size={'1rem'}
-                                            color="white"
-                                        />
-                                    </div>
-                                </>
-                            ) : null
-                        ) : null}
-                    </div>*/}
-
                     {renderPlanName[plan]}
                 </div>
             </div>

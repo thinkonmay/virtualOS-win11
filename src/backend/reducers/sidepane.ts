@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { appDispatch, render_message, store } from '.';
+import { RootState, appDispatch, render_message, store } from '.';
 import { LOCAL } from '../../../src-tauri/api';
 import { DevEnv } from '../../../src-tauri/api/database';
 import { BuilderHelper, CacheRequest } from './helper';
@@ -285,7 +285,8 @@ export const sidepaneAsync = {
     },
     fetch_message: createAsyncThunk(
         'fetch_message',
-        async (email: string, { getState }): Promise<Message[]> => {
+        async (_, { getState }): Promise<Message[]> => {
+            const email = (getState() as RootState).user.email;
             LOCAL()
                 .channel('schema-message-changes')
                 .on(

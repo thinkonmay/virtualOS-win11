@@ -9,10 +9,12 @@ import {
     change_framerate,
     check_worker,
     desk_remove,
+    fetch_domain,
     fetch_message,
     fetch_store,
     fetch_subscription,
     fetch_under_maintenance,
+    fetch_usage,
     fetch_user,
     have_focus,
     loose_focus,
@@ -47,15 +49,6 @@ const loadSettings = async () => {
     appDispatch(sidepane_panethem(icon));
 };
 
-export const fetchUser = async () => {
-    await appDispatch(fetch_user());
-};
-const checkMaintain = async () => {
-    await appDispatch(fetch_under_maintenance());
-};
-export const fetchApp = async () => {
-    await appDispatch(worker_refresh());
-};
 const fetchSetting = async () => {
     let bitrateLocal: number = +localStorage.getItem('bitrate');
     let framerateLocal: number = +localStorage.getItem('framerate');
@@ -93,19 +86,31 @@ const handleClipboard = async () => {
 };
 
 const fetchMessage = async () => {
-    await appDispatch(fetch_message(store.getState().user.email));
+    await appDispatch(fetch_message());
 };
-
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
-
 const startAnalytics = async () => {
     await UserSession(store.getState().user.email);
 };
-
 const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
+};
+const fetchUsage = async () => {
+    await appDispatch(fetch_usage());
+};
+const fetchDomains = async () => {
+    await appDispatch(fetch_domain());
+};
+const fetchUser = async () => {
+    await appDispatch(fetch_user());
+};
+const checkMaintain = async () => {
+    await appDispatch(fetch_under_maintenance());
+};
+const fetchApp = async () => {
+    await appDispatch(worker_refresh());
 };
 
 const updateUI = async () => {
@@ -117,10 +122,7 @@ const updateUI = async () => {
 
     const subscription = store.getState().user.subscription as PaymentStatus;
     const { status } = subscription;
-    if (
-        (status == 'PAID' || status == 'IMPORTED') &&
-        !subscription.correct_domain
-    ) {
+    if (status == 'PAID' && !subscription.correct_domain) {
         appDispatch(
             popup_open({
                 type: 'redirectDomain',
@@ -135,7 +137,7 @@ const updateUI = async () => {
     const rms = [];
     const ops = [];
     if (status == 'PENDING') ops.push('payment');
-    else if (status == 'PAID' || status == 'IMPORTED') {
+    else if (status == 'PAID') {
         ops.push('connectPc');
 
         const { ended_at } = subscription;
@@ -155,14 +157,13 @@ const updateUI = async () => {
     }
     if (
         localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true' &&
-        (status == 'PAID' || status == 'IMPORTED')
+        status == 'PAID'
     ) {
         appDispatch(show_tutorial('PaidTutorial'));
     } else if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        status != 'PAID' &&
-        status != 'IMPORTED'
+        status != 'PAID'
     ) {
         appDispatch(show_tutorial('NewTutorial'));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');
@@ -182,9 +183,10 @@ export const preload = async (update_ui?: boolean) => {
             fetchApp(),
             fetchSubscription(),
             fetchSetting(),
+            fetchDomains(),
             fetchMessage()
         ]);
-
+        await fetchUsage();
         await fetchStore();
     } catch (e) {
         UserEvents({

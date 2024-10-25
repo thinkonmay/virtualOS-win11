@@ -82,9 +82,7 @@ const DetailPage = ({ app }) => {
         );
 
     const valid = useAppSelector(
-        (state) =>
-            state.user.subscription.status == 'IMPORTED' ||
-            state.user.subscription.status == 'PAID'
+        (state) => state.user.subscription.status == 'PAID'
     );
 
     return (

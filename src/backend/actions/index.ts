@@ -17,14 +17,15 @@ import {
     setting_theme,
     sidepane_panethem,
     store,
-    unclaim_volume
+    unclaim_volume,
+    worker_refresh
 } from '../reducers/index';
-import { fetchApp, preload } from './background';
+import { preload } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
-    await fetchApp();
-    setTimeout(() => appDispatch(desk_show()), 200);
+    await appDispatch(worker_refresh());
+    appDispatch(desk_show());
 };
 
 export const open_guideline = () => {
@@ -175,9 +176,7 @@ export const remotelogin = async (domain: string, email: string) => {
         email,
         domain
     });
-
     if (error) throw new Error('Failed to generate account');
-
     if (data == null) return 'Existed Account';
 };
 

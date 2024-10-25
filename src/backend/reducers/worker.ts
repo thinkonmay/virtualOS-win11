@@ -77,7 +77,7 @@ export const workerAsync = {
             const { email, subscription } = (getState() as RootState).user;
             const { status } = subscription;
             const { vcpu, ram } =
-                status == 'PAID' || status == 'IMPORTED'
+                status == 'PAID'
                     ? subscription.local_metadata
                     : { vcpu: '16', ram: '16' };
 
