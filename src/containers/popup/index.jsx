@@ -7,16 +7,24 @@ import {
 import './index.scss';
 import * as modals from './modal';
 
+const preferred = ['extendService', 'redirectDomain', 'maintain'];
+const preferred_title = ['Connect to PC'];
 const Popup = () => {
-    const popup = useAppSelector(
-        (state) =>
+    const popup = useAppSelector((state) => {
+        for (const element of preferred) {
+            const result = state.popup.data_stack.find(
+                (x) => element == x.type
+            );
+            if (result != undefined) return result;
+        }
+
+        return (
             state.popup.data_stack.find(
-                (x) => x.type == 'complete' && !x.data.success
-            ) ??
-            (state.popup.data_stack.length > 0
-                ? state.popup.data_stack[state.popup.data_stack.length - 1]
-                : undefined)
-    );
+                (x) =>
+                    x.type == 'notify' && preferred_title.includes(x.data.title)
+            ) ?? state.popup.data_stack.findLast(() => true)
+        );
+    });
 
     const closeModal = () => {
         popup.type == 'complete' || popup.type == 'maintain'
