@@ -57,18 +57,20 @@ const initialState: WorkerType = {
     hist: [],
     hid: 0
 };
-const getMyPosition = async (postion: number) => {
-    let text = `<p> Bạn đang ở vị trí thứ <b>${postion}</b> trong hàng chờ, vui lòng giữ tab! </p>`;
+const showMyPosition = async (pos: number) => {
+    let text = `Bạn đang ở vị trí thứ ${
+        +pos + 1
+    } trong hàng chờ, vui lòng giữ tab!`;
 
-    if (postion == 0) {
-        text = `<p>Bạn đang ở vị trí <b>đầu tiên</b> trong hàng chờ, vui lòng giữ tab! </p>`;
+    if (pos == 0) {
+        text = `Bạn đang ở vị trí đầu tiên trong hàng chờ, vui lòng giữ tab!`;
     }
     appDispatch(popup_close());
     appDispatch(
         popup_open({
             type: 'notify',
             data: {
-                loading: true,
+                loading: false,
                 tips: true,
                 title: 'Connect to PC',
                 text: text
@@ -211,7 +213,7 @@ export const workerAsync = {
                     volume_id,
                     `${ram ?? 16}`,
                     `${vcpu ?? 16}`,
-                    getMyPosition
+                    showMyPosition
                 );
                 if (resp instanceof Error) {
                     UserEvents({
