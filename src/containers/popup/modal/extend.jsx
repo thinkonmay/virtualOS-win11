@@ -1,10 +1,10 @@
 import { MdInfoOutline } from 'react-icons/md';
+import { UserEvents } from '../../../../src-tauri/api';
 import {
     appDispatch,
-    get_payment,
+    app_toggle,
     popup_close
 } from '../../../backend/reducers';
-import { UserEvents } from '../../../../src-tauri/api';
 
 export function extendService({ data: { to } }) {
     const deny = () => {
@@ -41,7 +41,7 @@ export function extendService({ data: { to } }) {
                 </button>
                 <button
                     style={{ padding: '6px 14px' }}
-                    onClick={() => appDispatch(get_payment())}
+                    onClick={() => appDispatch(app_toggle('payment'))}
                     className="cursor-pointer justify-center  text-base font-medium instbtn rounded-md"
                 >
                     Có, gia hạn ngay

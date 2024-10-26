@@ -9,7 +9,6 @@ import {
 } from '.';
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
-import { addDays } from '../utils/dateHandler';
 import { BuilderHelper } from './helper';
 
 type Usage = {
@@ -239,9 +238,22 @@ export const userAsync = {
     get_payment: createAsyncThunk(
         'get_payment',
         async (
-            input: { plan: string; domain: string } | undefined,
+            input: { plan_name: string; domain?: string },
             { getState }
         ): Promise<string> => {
+            const {
+                data: [_plans],
+                error: errrr
+            } = await GLOBAL()
+                .from('plans')
+                .select('id')
+                .eq('name', input.plan_name)
+                .limit(1);
+            if (errrr) throw new Error(errrr.message);
+            else if (_plans == undefined)
+                throw new Error('gói dịch vụ hiện đang tạm đóng');
+            const { id: plan } = _plans;
+
             const expire_at = new Date(
                 new Date().getTime() + 1000 * 60 * 60 * 3
             ).toISOString();
@@ -269,7 +281,7 @@ export const userAsync = {
                             error: err
                         } = await GLOBAL()
                             .from('payment_request')
-                            .insert({ subscription: id, expire_at })
+                            .insert({ subscription: id, expire_at, plan })
                             .select('result->data->>checkoutUrl');
                         if (err) continue;
                         else return checkoutUrl;
@@ -295,28 +307,12 @@ export const userAsync = {
                     error: err
                 } = await GLOBAL()
                     .from('payment_request')
-                    .insert({ subscription, expire_at })
+                    .insert({ subscription, expire_at, plan })
                     .select('result->data->>checkoutUrl');
                 if (err) throw new Error(err.message);
                 return checkoutUrl;
-            } else if (input != undefined) {
-                const { plan: plan_name, domain } = input;
-                const {
-                    data: [_plans],
-                    error: errrr
-                } = await GLOBAL()
-                    .from('plans')
-                    .select('id, policy->>total_days')
-                    .eq('name', plan_name)
-                    .limit(1);
-                if (errrr) throw new Error(errrr.message);
-                else if (_plans == undefined)
-                    throw new Error('gói dịch vụ hiện đang tạm đóng');
-                const { id: plan, total_days } = _plans;
-                const ended_at = addDays(
-                    new Date(),
-                    Number.parseInt(total_days)
-                ).toISOString();
+            } else if (input.domain != undefined) {
+                const { domain } = input;
 
                 const {
                     data: [cluster_ele],
@@ -336,13 +332,7 @@ export const userAsync = {
                     error
                 } = await GLOBAL()
                     .from('subscriptions')
-                    .insert({
-                        user: email,
-                        plan,
-                        cluster,
-                        ended_at,
-                        local_metadata: {}
-                    })
+                    .insert({ user: email, cluster })
                     .select('id');
                 if (error) throw new Error(error.message);
 
@@ -351,7 +341,7 @@ export const userAsync = {
                     error: err
                 } = await GLOBAL()
                     .from('payment_request')
-                    .insert({ expire_at, subscription })
+                    .insert({ expire_at, subscription, plan })
                     .select('result->data->>checkoutUrl');
                 if (err) throw new Error(err.message);
 

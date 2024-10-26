@@ -126,7 +126,11 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         domain
                     })
                 )
-              : appDispatch(get_payment());
+              : appDispatch(
+                    get_payment({
+                        plan: plan_name
+                    })
+                );
 
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
     const clickDetail = () => {
