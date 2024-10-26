@@ -122,13 +122,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             : status != 'PAID'
               ? appDispatch(
                     get_payment({
-                        plan: plan_name,
+                        plan_name,
                         domain
                     })
                 )
               : appDispatch(
                     get_payment({
-                        plan: plan_name
+                        plan_name
                     })
                 );
 
