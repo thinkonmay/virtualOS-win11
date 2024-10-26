@@ -246,7 +246,7 @@ export const remoteAsync = {
     }),
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
-        async (_: void, {}) => {
+        async (_: void, { }) => {
             appDispatch(toggle_remote());
         }
     ),
@@ -258,7 +258,7 @@ export const remoteAsync = {
             appDispatch(
                 popup_open({
                     type: 'notify',
-                    data: { loading: true, title: 'Connect to PC' }
+                    data: { loading: true, title: 'Reset video & audio' }
                 })
             );
             await CLIENT.HardReset();
@@ -380,8 +380,8 @@ export const remoteSlice = createSlice({
                 CLIENT?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
-                            state.bitrate +
-                            MIN_BITRATE()
+                        state.bitrate +
+                        MIN_BITRATE()
                     )
                 );
                 state.prev_bitrate = state.bitrate;
@@ -392,8 +392,8 @@ export const remoteSlice = createSlice({
                 CLIENT?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
-                            state.framerate +
-                            MIN_FRAMERATE
+                        state.framerate +
+                        MIN_FRAMERATE
                     )
                 );
                 state.prev_framerate = state.framerate;
@@ -419,7 +419,7 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.cache_setting,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             },
             {
                 fetch: remoteAsync.save_reference,
@@ -429,11 +429,11 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.toggle_remote_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             },
             {
                 fetch: remoteAsync.hard_reset_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                hander: (state, action: PayloadAction<void>) => { }
             }
         );
     }

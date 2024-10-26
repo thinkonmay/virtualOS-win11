@@ -120,11 +120,15 @@ export async function CacheRequest<T>(
 const filterActions = [
     'fetch_local_worker',
     'fetch_user',
+    'fetch_usage',
+    'fetch_subscription',
+    'change_template',
     'fetch_store',
     'fetch_under_maintenance',
     'fetch_message',
     'fetch_subscription',
-    'save_reference'
+    'save_reference',
+    'fetch_domain'
 ];
 
 const isFilterAction = (acctionType: string) => {
@@ -229,7 +233,7 @@ export async function BuilderHelper<T, U, V>(
                         })
                     );
 
-                    await new Promise((r) => setTimeout(r, 5000));
+                    await new Promise((r) => setTimeout(r, 10000));
                     appDispatch(popup_close());
                     appDispatch(popup_close());
                 };
