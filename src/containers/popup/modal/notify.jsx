@@ -16,7 +16,9 @@ export function notify({
             <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
                 {title ?? 'Please wait...'}
             </p>
-            {text ? <p className="mb-3 md:text-xl text-center"> {text} </p> : null}
+            {text ? (
+                <p className="mb-3 md:text-xl text-center"> {text} </p>
+            ) : null}
             {loading ? (
                 <LoadingProgressBar timeProcessing={timeProcessing} />
             ) : null}
