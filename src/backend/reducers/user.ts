@@ -387,7 +387,7 @@ export const userAsync = {
             if (isUUID(volume_id) && subscription.status == 'PAID') {
                 const { error } = await LOCAL()
                     .from('volume_map')
-                    .update({ template, size: '250' })
+                    .update({ template, size: '300' })
                     .eq('id', volume_id);
                 if (error) throw new Error(error.message);
 
