@@ -109,16 +109,16 @@ export const userAsync = {
 
             const { data: map, error: errr } = await LOCAL()
                 .from('volume_map')
-                .select('node,size')
+                .select('node,template')
                 .eq('id', volume_id)
                 .limit(1);
             if (errr) throw errr;
             else if (map.length == 0) return null;
-            const [{ node, size }] = map;
+            const [{ node, template: tpl }] = map;
             const { data: stores, error: err } = await LOCAL()
                 .from('stores')
                 .select('metadata->screenshots,name')
-                .eq('code_name', size)
+                .eq('code_name', tpl)
                 .limit(1);
 
             let template = null;
@@ -129,7 +129,7 @@ export const userAsync = {
                     screenshots == null
                         ? {
                               image: null,
-                              code: size,
+                              code: tpl,
                               name
                           }
                         : {
@@ -141,14 +141,14 @@ export const userAsync = {
                                                   1)
                                       )
                                   ]?.path_full ?? null,
-                              code: size,
+                              code: tpl,
                               name
                           };
             } else {
                 template = {
                     image: null,
-                    code: size,
-                    name: size
+                    code: tpl,
+                    name: tpl
                 };
             }
 
@@ -360,17 +360,34 @@ export const userAsync = {
             } else throw new Error('Bạn đã đăng kí dịch vụ');
         }
     ),
+    change_size: createAsyncThunk(
+        'change_size',
+        async ({ size }: { size: string }, { getState }): Promise<void> => {
+            const { volume_id, subscription } = (getState() as RootState).user;
+            if (isUUID(volume_id) && subscription.status == 'PAID') {
+                const { error } = await LOCAL()
+                    .from('volume_map')
+                    .update({ size })
+                    .eq('id', volume_id);
+                if (error) throw new Error(error.message);
+
+                await appDispatch(worker_refresh());
+                await appDispatch(fetch_subscription());
+                appDispatch(app_toggle('connectPc'));
+            } else throw new Error('no volume available');
+        }
+    ),
     change_template: createAsyncThunk(
         'change_template',
         async (
-            { template }: { template: string } | undefined,
+            { template }: { template: string },
             { getState }
         ): Promise<void> => {
             const { volume_id, subscription } = (getState() as RootState).user;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
                 const { error } = await LOCAL()
                     .from('volume_map')
-                    .update({ size: template })
+                    .update({ template, size: '250' })
                     .eq('id', volume_id);
                 if (error) throw new Error(error.message);
 
