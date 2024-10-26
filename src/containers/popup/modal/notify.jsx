@@ -9,14 +9,14 @@ export function notify({
 }) {
     const t = useAppSelector((state) => state.globals.translation);
     return (
-        <div className="w-[330px] h-auto p-[14px] pb-6">
+        <div className="w-[330px] md:w-[440px] h-auto p-[14px] md:p-[24px] pb-6 md:pb-8">
             <div className="notify-icon">
                 <TbLoader3 className="animate-spin" />
             </div>
-            <p className="text-center text-[1.2rem] mb-[16px]">
+            <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
                 {title ?? 'Please wait...'}
             </p>
-            {text ? <p className="mb-3"> {text} </p> : null}
+            {text ? <p className="mb-3 md:text-xl text-center"> {text} </p> : null}
             {loading ? (
                 <LoadingProgressBar timeProcessing={timeProcessing} />
             ) : null}
@@ -82,7 +82,7 @@ const Protip = () => {
     }, []);
     return (
         <div className="mt-[24px]">
-            <strong>Pro tip:</strong>
+            <strong className="md:text-xl">Pro tip:</strong>
             <p className="mt-[8px]">{listDemoTip[currentTip]}</p>
         </div>
     );

@@ -2,8 +2,7 @@ import {
     appDispatch,
     app_toggle,
     useAppSelector,
-    wait_and_claim_volume,
-    worker_reload
+    wait_and_claim_volume
 } from '../../../backend/reducers';
 import {
     Icon,
@@ -52,7 +51,9 @@ export const ConnectApp = () => {
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
-    const reload = () => appDispatch(worker_reload());
+    const reload = () => {
+        location.reload();
+    };
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -140,7 +141,7 @@ export const ConnectApp = () => {
                                         onClick={reload}
                                         className="instbtn connectBtn12 connectBtn"
                                     >
-                                        Reload
+                                        Reload và thử lại sau 5'
                                     </button>
                                 )
                             ) : (
