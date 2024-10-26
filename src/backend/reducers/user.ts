@@ -24,11 +24,9 @@ type Usage = {
 export type PaymentStatus =
     | {
           status: 'PAID';
-          plan: string;
           cluster: string;
           correct_domain: boolean;
           created_at: string;
-          limit_hour?: number;
           ended_at?: string;
           local_metadata: {
               ram?: string;
@@ -166,7 +164,7 @@ export const userAsync = {
 
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
-                .select('id,plan,cluster,local_metadata,created_at,ended_at')
+                .select('id,cluster,local_metadata,created_at,ended_at')
                 .or(notexpired())
                 .eq('user', email)
                 .is('cancelled_at', null)
@@ -177,7 +175,6 @@ export const userAsync = {
             let has_pending = false;
             for (const {
                 id: subscription_id,
-                plan: plan_id,
                 cluster: cluster_id,
                 created_at,
                 ended_at,
@@ -190,15 +187,6 @@ export const userAsync = {
                     .eq('subscription', subscription_id);
                 if (err) continue;
                 else if (data.length > 0) {
-                    const {
-                        data: [{ name: plan, limit_hour }],
-                        error: errrr
-                    } = await GLOBAL()
-                        .from('plans')
-                        .select('name,policy->limit_hour')
-                        .eq('id', plan_id);
-                    if (errrr) continue;
-
                     const {
                         data: [{ domain: cluster }],
                         error: errrrr
@@ -214,9 +202,7 @@ export const userAsync = {
                         cluster,
                         correct_domain:
                             origin.includes('localhost') || origin == cluster,
-                        plan,
                         local_metadata,
-                        limit_hour: limit_hour as number,
                         created_at,
                         ended_at
                     };

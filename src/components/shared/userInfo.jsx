@@ -1,4 +1,3 @@
-import { RenderNode } from '../../../src-tauri/api';
 import { changeTheme } from '../../backend/actions';
 import {
     appDispatch,
@@ -19,7 +18,7 @@ function UserInfo() {
     );
     const {
         email,
-        subscription: { cluster, plan, limit_hour, created_at, ended_at, usage }
+        subscription: { status, cluster, created_at, ended_at, usage }
     } = useAppSelector((state) => state.user);
     const { node, total_usage, template } = usage ?? {};
 
@@ -42,9 +41,7 @@ function UserInfo() {
             {correctsite ? (
                 <div className="w-full flex gap-4 justify-between mt-4 items-end">
                     <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>
-                        {(+total_usage / 60).toFixed(2)}h / {limit_hour}h
-                    </span>
+                    <span>{(+total_usage / 60).toFixed(2)}h</span>
                 </div>
             ) : null}
             {template && correctsite ? (
@@ -69,8 +66,7 @@ function UserInfo() {
     );
 
     const renderPlanName = {
-        week1: <Paid />,
-        month1: <Paid />,
+        PAID: <Paid />,
         undefined: (
             <div className="restWindow w-full  flex flex-col ">
                 <div className="w-full flex gap-4 justify-between mt-2 items-end">
@@ -114,7 +110,7 @@ function UserInfo() {
                             />
                         </div>
                     </div>
-                    {renderPlanName[plan]}
+                    {renderPlanName[status]}
                 </div>
             </div>
 
