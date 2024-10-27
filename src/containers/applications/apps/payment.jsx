@@ -144,8 +144,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     return (
         <div className="sub relative">
             {sub.highlight ? (
-                <div className="absolute rounded-[36px] bg-green-600 inset-0 z-[0] w-[102%] h-[10%] top-[-27px] bottom-[-6px] left-[-1%]">
-                    <p className="text-[16px] leading-4 text-center py-2 mt-[4px] text-background">
+                <div className="absolute flex justify-center items-center rounded-[36px] bg-green-600 inset-0 z-[0] w-[102%] h-[10%] top-[-27px] bottom-[-6px] left-[-1%]">
+                    <p className="text-[16px] font-bold leading-4 text-center py-2 text-background">
                         Gói phổ biến
                     </p>
                 </div>
