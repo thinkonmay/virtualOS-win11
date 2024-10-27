@@ -137,6 +137,15 @@ const listMobileSettings = [
     },
     {
         ui: true,
+        id: 'gamingMouseBtn',
+
+        src: 'FaMousePointer',
+        name: [Contents.RELATIVE_MOUSE],
+        state: 'relative_mouse',
+        action: 'remote/relative_mouse'
+    },
+    {
+        ui: true,
         id: 'shareLinkBtn',
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
