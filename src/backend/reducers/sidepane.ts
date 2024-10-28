@@ -96,10 +96,6 @@ const listMobileShortCut = [
     {
         name: 'Ctrl V',
         val: ['control', 'v']
-    },
-    {
-        name: 'Back',
-        val: ['Backspace']
     }
 ];
 const listMobileSettings = [
@@ -150,7 +146,7 @@ const listMobileSettings = [
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
         state: 'network.airplane',
-        action: 'remote/share_reference'
+        action: 'showLinkShare'
     },
     {
         ui: true,
@@ -203,7 +199,7 @@ const listDesktopSettings = [
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
         state: 'share_reference',
-        action: 'remote/share_reference'
+        action: 'showLinkShare'
     },
     {
         ui: true,

@@ -41,6 +41,12 @@ type PopupData =
               domain: string;
               from: string;
           };
+      }
+    | {
+          type: 'shareLink';
+          data: {
+              link: string;
+          };
       };
 
 type Data = {

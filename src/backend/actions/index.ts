@@ -14,6 +14,7 @@ import {
     dispatch_generic,
     menu_chng,
     menu_hide,
+    popup_open,
     setting_theme,
     sidepane_panethem,
     store,
@@ -193,6 +194,22 @@ export const clickShortCut = (keys = []) => {
     });
 };
 
+export const showLinkShare = () => {
+    let token = store.getState().remote?.ref;
+
+    let link = `${getDomainURL()}/?ref=${token}`;
+    if (token == undefined) {
+        link = getDomainURL();
+    }
+    appDispatch(
+        popup_open({
+            type: 'shareLink',
+            data: {
+                link: link
+            }
+        })
+    );
+};
 export const bindStoreId = async (email: string, store_id: number) => {
     try {
         const data = await fetch(`${getDomainURL()}/access_store_volume`, {
