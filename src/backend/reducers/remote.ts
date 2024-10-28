@@ -129,8 +129,18 @@ export const remoteAsync = {
                 new RenderNode(store.getState().worker.data).data[0]
                     ?.info as Computer
             )?.available != 'started'
-        )
+        ) {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        success: false,
+                        content: 'Your PC was shutdown!'
+                    }
+                })
+            );
             appDispatch(close_remote());
+        }
     },
     ping_session: async () => {
         const active = store.getState().remote.active;
