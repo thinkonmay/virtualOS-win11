@@ -101,14 +101,6 @@ const listMobileShortCut = [
 const listMobileSettings = [
     {
         ui: true,
-        id: 'resetVideoBtn',
-        src: 'MdOutlineResetTv',
-        name: [Contents.RESET_VIDEO],
-        state: 'network.airplane',
-        action: 'hard_reset_async'
-    },
-    {
-        ui: true,
         id: 'fullscrenBtn',
         src: 'MdFullscreen',
         name: [Contents.FULLSCREEN],
@@ -166,15 +158,6 @@ const listDesktopShortCut = [
     }
 ];
 const listDesktopSettings = [
-    {
-        ui: true,
-        id: 'resetVideoBtn',
-
-        src: 'MdOutlineResetTv',
-        name: [Contents.RESET_VIDEO],
-        state: 'network.airplane',
-        action: 'hard_reset_async'
-    },
     {
         ui: true,
         id: 'fullscrenBtn',
