@@ -241,7 +241,7 @@ export const userAsync = {
             const { id: plan } = _plans;
 
             const expire_at = new Date(
-                new Date().getTime() + 1000 * 60 * 15 * 1
+                new Date().getTime() + 1000 * 60 * 10 * 1
             ).toISOString();
             const { email, volume_id } = (getState() as RootState).user;
 
