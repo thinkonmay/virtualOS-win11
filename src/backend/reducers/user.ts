@@ -4,6 +4,8 @@ import {
     app_toggle,
     appDispatch,
     fetch_subscription,
+    popup_close,
+    popup_open,
     RootState,
     worker_refresh
 } from '.';
@@ -361,6 +363,37 @@ export const userAsync = {
         ): Promise<void> => {
             const { volume_id, subscription } = (getState() as RootState).user;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
+                const { data: isAnotherJobRunning, error: failed } =
+                    await LOCAL()
+                        .from('job')
+                        .select('command, created_at, arguments->base')
+                        .eq('arguments->>id', volume_id)
+                        .is('success', null)
+                        .order('created_at', { ascending: false });
+
+                if (failed) throw new Error(failed.message);
+
+                if (isAnotherJobRunning.length > 0) {
+                    appDispatch(
+                        popup_open({
+                            type: 'complete',
+                            data: {
+                                success: false,
+                                content: `Job ${isAnotherJobRunning[0].command} ${
+                            isAnotherJobRunning[0].base
+                        } is running at ${new Date(
+                            isAnotherJobRunning[0].created_at
+                        ).toLocaleString()}
+                        Vui lòng chờ trong ít phút!`
+                            }
+                        })
+                    );
+
+                    await new Promise((r) => setTimeout(r, 10000));
+                    appDispatch(popup_close());
+                    return;
+                }
+
                 const { error } = await LOCAL()
                     .from('volume_map')
                     .update({ template, size: '300' })
