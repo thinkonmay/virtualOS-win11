@@ -379,11 +379,13 @@ export const userAsync = {
                             type: 'complete',
                             data: {
                                 success: false,
-                                content: `Job ${isAnotherJobRunning[0].command} ${
-                            isAnotherJobRunning[0].base
-                        } is running at ${new Date(
-                            isAnotherJobRunning[0].created_at
-                        ).toLocaleString()}
+                                content: `Job ${
+                                    isAnotherJobRunning[0].command
+                                } ${
+                                    isAnotherJobRunning[0].base
+                                } is running at ${new Date(
+                                    isAnotherJobRunning[0].created_at
+                                ).toLocaleString()}
                         Vui lòng chờ trong ít phút!`
                             }
                         })
