@@ -371,7 +371,7 @@ export const userAsync = {
                         .order('created_at', { ascending: false })
                         .limit(1);
                 if (failed) throw new Error(failed.message);
-                else if (data.length > 0 && data[0].result != 'success') 
+                else if (data.length > 0 && data[0].result != 'success') {
                     appDispatch(
                         popup_open({
                             type: 'complete',
