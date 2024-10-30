@@ -363,30 +363,28 @@ export const userAsync = {
         ): Promise<void> => {
             const { volume_id, subscription } = (getState() as RootState).user;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
-                const { data: isAnotherJobRunning, error: failed } =
+                const { data, error: failed } =
                     await LOCAL()
                         .from('job')
-                        .select('command, created_at, arguments->base')
+                        .select('result,command,created_at,arguments->base')
                         .eq('arguments->>id', volume_id)
-                        .is('success', null)
-                        .order('created_at', { ascending: false });
-
+                        .order('created_at', { ascending: false })
+                        .limit(1);
                 if (failed) throw new Error(failed.message);
-
-                if (isAnotherJobRunning.length > 0) {
+                else if (data.length > 0 && data[0].result != 'success') 
                     appDispatch(
                         popup_open({
                             type: 'complete',
                             data: {
                                 success: false,
                                 content: `Job ${
-                                    isAnotherJobRunning[0].command
+                                    data[0].command
                                 } ${
-                                    isAnotherJobRunning[0].base
+                                    data[0].base
                                 } is running at ${new Date(
-                                    isAnotherJobRunning[0].created_at
+                                    data[0].created_at
                                 ).toLocaleString()}
-                        Vui lòng chờ trong ít phút!`
+                                Vui lòng chờ trong ít phút!`
                             }
                         })
                     );
