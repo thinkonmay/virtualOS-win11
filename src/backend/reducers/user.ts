@@ -363,13 +363,12 @@ export const userAsync = {
         ): Promise<void> => {
             const { volume_id, subscription } = (getState() as RootState).user;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
-                const { data, error: failed } =
-                    await LOCAL()
-                        .from('job')
-                        .select('result,command,created_at,arguments->base')
-                        .eq('arguments->>id', volume_id)
-                        .order('created_at', { ascending: false })
-                        .limit(1);
+                const { data, error: failed } = await LOCAL()
+                    .from('job')
+                    .select('result,command,created_at,arguments->base')
+                    .eq('arguments->>id', volume_id)
+                    .order('created_at', { ascending: false })
+                    .limit(1);
                 if (failed) throw new Error(failed.message);
                 else if (data.length > 0 && data[0].result != 'success') {
                     appDispatch(
@@ -377,9 +376,7 @@ export const userAsync = {
                             type: 'complete',
                             data: {
                                 success: false,
-                                content: `Job ${
-                                    data[0].command
-                                } ${
+                                content: `Job ${data[0].command} ${
                                     data[0].base
                                 } is running at ${new Date(
                                     data[0].created_at

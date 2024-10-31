@@ -171,7 +171,21 @@ export const remoteAsync = {
             appDispatch(popup_close());
         }
 
-        PINGER();
+        if ((await PINGER()) > 5) {
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        success: false,
+                        content:
+                            'Máy bạn đang ping lỗi! Liên hệ Admin ở Hỗ trợ ngay!'
+                    }
+                })
+            );
+
+            await new Promise((r) => setTimeout(r, 5000));
+            appDispatch(popup_close());
+        }
     },
     sync: () => {
         const {
