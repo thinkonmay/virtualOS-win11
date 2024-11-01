@@ -105,6 +105,7 @@ export const PaymentApp = () => {
 const SubscriptionCard = ({ subInfo: sub }) => {
     const status = useAppSelector((state) => state.user.subscription.status);
     const domains = useAppSelector((state) => state.globals.domains);
+    console.log(domains);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const max = useAppSelector(
         (state) =>

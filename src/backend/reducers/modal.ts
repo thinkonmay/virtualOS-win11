@@ -47,6 +47,13 @@ type PopupData =
           data: {
               link: string;
           };
+      }
+    | {
+          type: 'info';
+          data: {
+              title: string;
+              text: any;
+          };
       };
 
 type Data = {
