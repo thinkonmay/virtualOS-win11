@@ -136,7 +136,7 @@ export const ConnectApp = () => {
                                     className="instbtn connectBtn12 connectBtn"
                                 >
                                     {available == 'ready'
-                                        ? 'Khởi tạo'
+                                        ? 'Bật máy'
                                         : 'Kết nối'}
                                 </button>
                             ) : available == 'not_ready' ? (

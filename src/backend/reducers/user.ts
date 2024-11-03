@@ -373,15 +373,12 @@ export const userAsync = {
                 else if (data.length > 0 && data[0].result != 'success') {
                     appDispatch(
                         popup_open({
-                            type: 'complete',
+                            type: 'notify',
                             data: {
-                                success: false,
-                                content: `Job ${data[0].command} ${
-                                    data[0].base
-                                } is running at ${new Date(
-                                    data[0].created_at
-                                ).toLocaleString()}
-                                Vui lòng chờ trong ít phút!`
+                                loading: false,
+                                tips: false,
+                                title: `Đang cài đặt game ${data[0].base} vào lúc ${new Date(data[0].created_at).toLocaleTimeString()}`,
+                                text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
                             }
                         })
                     );
@@ -396,6 +393,47 @@ export const userAsync = {
                     .update({ template, size: '300' })
                     .eq('id', volume_id);
                 if (error) throw new Error(error.message);
+
+                appDispatch(
+                    popup_open({
+                        type: 'notify',
+                        data: {
+                            loading: false,
+                            tips: false,
+                            title: `Đang cài đặt game ${template} vào lúc ${new Date().toLocaleTimeString()}`,
+                            text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
+                        }
+                    })
+                )
+
+                while(true){
+                    const { data, error: failed } = await LOCAL()
+                        .from('job')
+                        .select('result,command,created_at,arguments->base')
+                        .eq('arguments->>id', volume_id)
+                        .is('result', null)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                    if (failed) throw new Error(failed.message);
+                    
+                    if (data.length == 0) {
+                        appDispatch(popup_close());
+                        break;
+                    }
+                    await new Promise((r) => setTimeout(r, 20000));
+                }
+
+                appDispatch(
+                    popup_open({
+                        type: 'complete',
+                        data: {
+                            content: `Cài đặt hoàn tất, máy của bạn đã có sẵn ${template}!`,
+                            success: true
+                        }
+                    })
+                );
+                await new Promise((r) => setTimeout(r, 10000));
+                appDispatch(popup_close());
 
                 await appDispatch(worker_refresh());
                 await appDispatch(fetch_subscription());
