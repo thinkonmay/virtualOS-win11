@@ -377,7 +377,11 @@ export const userAsync = {
                             data: {
                                 loading: false,
                                 tips: false,
-                                title: `Đang cài đặt game ${data[0].base} vào lúc ${new Date(data[0].created_at).toLocaleTimeString()}`,
+                                title: `Đang cài đặt game ${
+                                    data[0].base
+                                } vào lúc ${new Date(
+                                    data[0].created_at
+                                ).toLocaleTimeString()}`,
                                 text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
                             }
                         })
@@ -404,9 +408,9 @@ export const userAsync = {
                             text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
                         }
                     })
-                )
+                );
 
-                while(true){
+                while (true) {
                     const { data, error: failed } = await LOCAL()
                         .from('job')
                         .select('result,command,created_at,arguments->base')
@@ -415,7 +419,7 @@ export const userAsync = {
                         .order('created_at', { ascending: false })
                         .limit(1);
                     if (failed) throw new Error(failed.message);
-                    
+
                     if (data.length == 0) {
                         appDispatch(popup_close());
                         break;
