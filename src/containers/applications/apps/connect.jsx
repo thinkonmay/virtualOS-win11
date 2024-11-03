@@ -41,9 +41,9 @@ export const ConnectApp = () => {
     const { image, name } = useAppSelector((state) =>
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.usage?.template ?? {
-                image: null,
-                name: null
-            }
+                  image: null,
+                  name: null
+              }
             : { image: null, name: null }
     );
 
@@ -60,16 +60,18 @@ export const ConnectApp = () => {
     useEffect(() => {
         if (!id) return;
 
-        const domain = window.location.hostname
+        const domain = window.location.hostname;
         if (domain.includes('play.2.thinkmay.net'))
-            appDispatch(popup_open({
-                type: "info",
-                data: {
-                    text: `Server ${domain} chưa ổn định, bạn vui lòng liên hệ fanpage nếu muốn đổi server`,
-                    success: false,
-                    title: 'Lưu ý'
-                }
-            }))
+            appDispatch(
+                popup_open({
+                    type: 'info',
+                    data: {
+                        text: `Server ${domain} chưa ổn định, bạn vui lòng liên hệ fanpage nếu muốn đổi server`,
+                        success: false,
+                        title: 'Lưu ý'
+                    }
+                })
+            );
     }, [id]);
     return (
         <div
@@ -95,13 +97,13 @@ export const ConnectApp = () => {
                 style={
                     image != null
                         ? {
-                            backgroundImage: `url(${image})`,
-                            backgroundSize: 'cover'
-                        }
+                              backgroundImage: `url(${image})`,
+                              backgroundSize: 'cover'
+                          }
                         : {
-                            background:
-                                'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
-                        }
+                              background:
+                                  'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
+                          }
                 }
             >
                 <LazyComponent show={!wnapp.hide}>
@@ -128,7 +130,7 @@ export const ConnectApp = () => {
                                     Đăng nhập
                                 </button>
                             ) : available == 'ready' ||
-                                available == 'started' ? (
+                              available == 'started' ? (
                                 <button
                                     onClick={connect}
                                     className="instbtn connectBtn12 connectBtn"
