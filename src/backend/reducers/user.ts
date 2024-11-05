@@ -375,7 +375,7 @@ export const userAsync = {
                         popup_open({
                             type: 'notify',
                             data: {
-                                loading: false,
+                                loading: true,
                                 tips: false,
                                 title: `Đang cài đặt game ${
                                     data[0].base
@@ -402,7 +402,7 @@ export const userAsync = {
                     popup_open({
                         type: 'notify',
                         data: {
-                            loading: false,
+                            loading: true,
                             tips: false,
                             title: `Đang cài đặt game ${template} vào lúc ${new Date().toLocaleTimeString()}`,
                             text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
