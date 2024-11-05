@@ -182,13 +182,15 @@ export const userAsync = {
                 ended_at,
                 local_metadata
             } of subs) {
-                const { data, error: err } = await GLOBAL()
+                const { data: allPaymentRequest, error: err } = await GLOBAL()
                     .from('payment_request')
-                    .select('id')
+                    .select('id, created_at')
                     .or('status.eq.PAID,status.eq.IMPORTED')
-                    .eq('subscription', subscription_id);
+                    .eq('subscription', subscription_id)
+                    .order('created_at', { ascending: false });
+
                 if (err) continue;
-                else if (data.length > 0) {
+                else if (allPaymentRequest.length > 0) {
                     const {
                         data: [{ domain: cluster }],
                         error: errrrr
@@ -205,7 +207,7 @@ export const userAsync = {
                         correct_domain:
                             origin.includes('localhost') || origin == cluster,
                         local_metadata,
-                        created_at,
+                        created_at: allPaymentRequest[0].created_at,
                         ended_at
                     };
                 }
@@ -376,6 +378,7 @@ export const userAsync = {
                             type: 'notify',
                             data: {
                                 loading: true,
+                                timeProcessing: 2,
                                 tips: false,
                                 title: `Đang cài đặt game ${
                                     data[0].base
@@ -387,8 +390,12 @@ export const userAsync = {
                         })
                     );
 
-                    await new Promise((r) => setTimeout(r, 10000));
+                    await new Promise((r) => setTimeout(r, 5000));
                     appDispatch(popup_close());
+
+                    await appDispatch(worker_refresh());
+                    await appDispatch(fetch_subscription());
+                    appDispatch(app_toggle('connectPc'));
                     return;
                 }
 
@@ -404,6 +411,7 @@ export const userAsync = {
                         data: {
                             loading: true,
                             tips: false,
+                            timeProcessing: 2,
                             title: `Đang cài đặt game ${template} vào lúc ${new Date().toLocaleTimeString()}`,
                             text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
                         }
@@ -436,7 +444,7 @@ export const userAsync = {
                         }
                     })
                 );
-                await new Promise((r) => setTimeout(r, 10000));
+                await new Promise((r) => setTimeout(r, 5000));
                 appDispatch(popup_close());
 
                 await appDispatch(worker_refresh());
