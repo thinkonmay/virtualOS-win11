@@ -1,7 +1,6 @@
 import {
     appDispatch,
     app_toggle,
-    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -57,22 +56,6 @@ export const ConnectApp = () => {
         location.reload();
     };
 
-    useEffect(() => {
-        if (!id) return;
-
-        const domain = window.location.hostname;
-        if (domain.includes('play.2.thinkmay.net'))
-            appDispatch(
-                popup_open({
-                    type: 'info',
-                    data: {
-                        text: `Server ${domain} chưa ổn định, bạn vui lòng liên hệ fanpage nếu muốn đổi server`,
-                        success: false,
-                        title: 'Lưu ý'
-                    }
-                })
-            );
-    }, [id]);
     return (
         <div
             className="connectToPcApp floatTab dpShad"
