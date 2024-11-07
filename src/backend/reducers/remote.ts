@@ -12,7 +12,9 @@ import {
 } from '.';
 import {
     Computer,
+    getDomain,
     getDomainURL,
+    KeepaliveVolume,
     POCKETBASE,
     RenderNode
 } from '../../../src-tauri/api';
@@ -26,6 +28,7 @@ import {
     MIN_FRAMERATE,
     PINGER,
     ready,
+    SetPinger,
     SIZE
 } from '../../../src-tauri/singleton';
 import { BuilderHelper } from './helper';
@@ -228,7 +231,7 @@ export const remoteAsync = {
         'direct_access',
         async ({ ref }: { ref: string }) => {
             const resp = await fetch(
-                `${window.location.origin}/api/collections/reference/records?page=1&perPage=1&filter=token="${ref}"&skipTotal=1`,
+                `${getDomainURL()}/api/collections/reference/records?page=1&perPage=1&filter=token="${ref}"&skipTotal=1`,
                 {
                     method: 'GET',
                     headers: {
@@ -241,6 +244,13 @@ export const remoteAsync = {
             const data = await resp.json();
 
             if (data.items.length == 0) throw new Error('not found any query');
+            else if (data.items[0].volume_id != null)
+                SetPinger(
+                    KeepaliveVolume(
+                        { address: getDomain() } as Computer,
+                        data.items[0].volume_id
+                    )
+                );
 
             appDispatch(remote_connect({ ...(data.items[0] as any) }));
             if (!(await ready())) appDispatch(close_remote());
@@ -253,6 +263,7 @@ export const remoteAsync = {
             audioUrl: string;
             videoUrl: string;
             rtc_config: RTCConfiguration;
+            volume_id?: string;
         }): Promise<string> => {
             const token = crypto.randomUUID();
             await POCKETBASE.collection('reference').create({ ...info, token });

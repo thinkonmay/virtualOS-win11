@@ -402,25 +402,23 @@ function MobileComponent({ pnstates }) {
                         <div className="qktext">{t[qk.name]}</div>
                     </div>
                 ))}
+                {sidepane.mobileControl.shortcuts.map((qk, idx) => (
+                    <div key={idx} className="qkGrp t">
+                        <div
+                            style={{
+                                fontSize: '0.6rem'
+                            }}
+                            className="qkbtn handcr prtclk"
+                            onClick={() => Actions.clickShortCut(qk.val)}
+                        >
+                            {qk.name}
+                        </div>
+                        {/*<div className="qktext">{t[qk.name]}</div>*/}
+                    </div>
+                ))}
             </div>
             <div className="shortcuts">
                 <hr className="mb-4" />
-                <div className="listBtn">
-                    {sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                        <div key={idx} className="qkGrp t">
-                            <div
-                                style={{
-                                    fontSize: '0.6rem'
-                                }}
-                                className="qkbtn handcr prtclk"
-                                onClick={() => Actions.clickShortCut(qk.val)}
-                            >
-                                {qk.name}
-                            </div>
-                            {/*<div className="qktext">{t[qk.name]}</div>*/}
-                        </div>
-                    ))}
-                </div>
             </div>
         </>
     );
@@ -482,26 +480,21 @@ function DesktopComponent({ pnstates }) {
                         <div className="qktext">{t[qk.name]}</div>
                     </div>
                 ))}
-            </div>
-            <div className="shortcuts">
-                <hr className="mb-4" />
-                <div className="listBtn">
-                    {sidepane.desktopControl.shortcuts.map((qk, idx) => (
-                        <div key={idx} className="qkGrp t">
-                            <div
-                                style={{
-                                    fontSize: '0.8rem'
-                                }}
-                                className="qkbtn handcr prtclk"
-                                onClick={() => Actions.clickShortCut(qk.val)}
-                            >
-                                {qk.name}
-                            </div>
-                            {/*<div className="qktext">{t[qk.name]}</div>*/}
+                {sidepane.desktopControl.shortcuts.map((qk, idx) => (
+                    <div key={idx} className="qkGrp t">
+                        <div
+                            style={{
+                                fontSize: '0.8rem'
+                            }}
+                            className="qkbtn handcr prtclk"
+                            onClick={() => Actions.clickShortCut(qk.val)}
+                        >
+                            {qk.name}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
+            <hr className="mb-4" />
         </>
     );
 }

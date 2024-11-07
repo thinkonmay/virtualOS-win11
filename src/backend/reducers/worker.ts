@@ -162,7 +162,11 @@ export const workerAsync = {
                     const [{ id }] = result.data;
                     const interval = setInterval(keepalive, 30 * 1000);
                     await appDispatch(
-                        vm_session_access({ id, retry_method: 'claim' })
+                        vm_session_access({
+                            id,
+                            volume_id,
+                            retry_method: 'claim'
+                        })
                     );
                     clearInterval(interval);
 
@@ -188,7 +192,11 @@ export const workerAsync = {
                     const { id } = result;
                     const interval = setInterval(keepalive, 30 * 1000);
                     await appDispatch(
-                        vm_session_create({ id, retry_method: 'claim' })
+                        vm_session_create({
+                            id,
+                            volume_id,
+                            retry_method: 'claim'
+                        })
                     );
                     clearInterval(interval);
 
@@ -404,9 +412,14 @@ export const workerAsync = {
         'vm_session_create',
         async (
             {
-                id: id,
+                id,
+                volume_id,
                 retry_method
-            }: { id: string; retry_method: 'claim' | 'ignore' },
+            }: {
+                id: string;
+                volume_id?: string;
+                retry_method: 'claim' | 'ignore';
+            },
             { getState }
         ): Promise<any> => {
             await appDispatch(worker_refresh());
@@ -437,7 +450,7 @@ export const workerAsync = {
             if (result instanceof Error) throw result;
             appDispatch(fetch_local_worker(host.info.address));
             appDispatch(remote_connect(result));
-            await appDispatch(save_reference(result));
+            await appDispatch(save_reference({ ...result, volume_id }));
             const success = await ready();
             if (!success && retry_method == 'claim')
                 appDispatch(workerAsync.retry_volume_claim());
@@ -451,8 +464,13 @@ export const workerAsync = {
         async (
             {
                 id,
+                volume_id,
                 retry_method
-            }: { id: string; retry_method: 'claim' | 'ignore' },
+            }: {
+                id: string;
+                volume_id?: string;
+                retry_method: 'claim' | 'ignore';
+            },
             { getState }
         ): Promise<any> => {
             const node = new RenderNode((getState() as RootState).worker.data);
@@ -473,7 +491,7 @@ export const workerAsync = {
             });
 
             appDispatch(remote_connect(result));
-            await appDispatch(save_reference(result));
+            await appDispatch(save_reference({ ...result, volume_id }));
             const success = await ready();
             if (!success && retry_method == 'claim')
                 appDispatch(workerAsync.retry_volume_claim());

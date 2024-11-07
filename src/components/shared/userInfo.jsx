@@ -1,6 +1,8 @@
+import { MdOutlineLink } from 'react-icons/md';
 import { changeTheme } from '../../backend/actions';
 import {
     appDispatch,
+    popup_open,
     useAppSelector,
     user_delete
 } from '../../backend/reducers';
@@ -18,9 +20,22 @@ function UserInfo() {
     );
     const {
         email,
+        volume_id,
         subscription: { status, cluster, created_at, ended_at, usage }
     } = useAppSelector((state) => state.user);
     const { node, total_usage, template } = usage ?? {};
+
+    const copyClipboard = () => {
+        navigator.clipboard.writeText(volume_id);
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: true
+                }
+            })
+        );
+    };
 
     const thm = useAppSelector((state) => state.setting.person.theme);
     var icon = thm == 'light' ? 'sun' : 'moon';
@@ -39,15 +54,9 @@ function UserInfo() {
                 </div>
             ) : null}
             {correctsite ? (
-                <div className="w-full flex gap-4 justify-between mt-4 items-end">
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">{t[Contents.TIME]}</span>
                     <span>{(+total_usage / 60).toFixed(2)}h</span>
-                </div>
-            ) : null}
-            {template && correctsite ? (
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">Template</span>
-                    <span>{template.code}</span>
                 </div>
             ) : null}
             {cluster ? (
@@ -96,7 +105,16 @@ function UserInfo() {
                         <span>Language</span>
                         <LangSwitch />
                     </div>
-                    <div className="w-full flex gap-4 justify-between mb-[12px] md:mb-[24px] mt-[1rem]">
+                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
+                        <span>Volume ID</span>
+                        <div
+                            className="strBtn handcr prtclk"
+                            onClick={copyClipboard}
+                        >
+                            <MdOutlineLink width={14} />
+                        </div>
+                    </div>
+                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
                         <span>Theme</span>
                         <div
                             className="strBtn handcr prtclk"
