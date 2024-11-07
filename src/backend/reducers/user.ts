@@ -391,11 +391,11 @@ export const userAsync = {
                     );
 
                     await new Promise((r) => setTimeout(r, 5000));
-                    appDispatch(popup_close());
+                    await appDispatch(popup_close());
 
                     await appDispatch(worker_refresh());
                     await appDispatch(fetch_subscription());
-                    appDispatch(app_toggle('connectPc'));
+                    await appDispatch(app_toggle('connectPc'));
                     return;
                 }
 
@@ -445,11 +445,11 @@ export const userAsync = {
                     })
                 );
                 await new Promise((r) => setTimeout(r, 5000));
-                appDispatch(popup_close());
+                await appDispatch(popup_close());
 
                 await appDispatch(worker_refresh());
                 await appDispatch(fetch_subscription());
-                appDispatch(app_toggle('connectPc'));
+                await appDispatch(app_toggle('connectPc'));
             } else throw new Error('no volume available');
         }
     )
