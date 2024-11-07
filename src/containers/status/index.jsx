@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { CLIENT } from '../../../src-tauri/singleton';
+import { useAppSelector } from '../../backend/reducers';
 import './status.scss';
 
 export const Status = () => {
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
     const [isOpenStats, setOpenStats] = useState(false);
+    const pinging = useAppSelector((state) => state.remote.ping_status);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -21,9 +23,11 @@ export const Status = () => {
 
     useEffect(() => {
         setOpenStats(
-            videoConnectivity == 'connecting' || videoConnectivity == 'close'
+            videoConnectivity == 'connecting' ||
+                videoConnectivity == 'close' ||
+                !pinging
         );
-    }, [audioConnectivity, videoConnectivity]);
+    }, [audioConnectivity, videoConnectivity, pinging]);
     return (
         <div className="relative">
             <div
@@ -35,6 +39,8 @@ export const Status = () => {
                     Video: <b>{videoConnectivity}</b>
                     <br />
                     Audio: <b>{audioConnectivity}</b>
+                    <br />
+                    Ping: <b>{pinging ? 'TRUE' : 'FALSE'}</b>
                 </p>
                 <button
                     className="btn-show"

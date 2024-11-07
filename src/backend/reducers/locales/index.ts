@@ -179,7 +179,9 @@ export enum Contents {
     OPEN_KEYBOARD,
     ADJUST_GAMEPAD,
     SUGGEST_BITRATE_FPS,
-    SUGGEST_BROWSER
+    SUGGEST_BROWSER,
+
+    DEBUGGER
 }
 
 export function language() {
@@ -896,6 +898,9 @@ export function language() {
     vn.set(Contents.SUGGEST_BITRATE_FPS, 'BITRATE & FPS khuyến nghị');
     en.set(Contents.SUGGEST_BROWSER, 'HAVE TO: connect through Chrome or App');
     vn.set(Contents.SUGGEST_BROWSER, 'BẮT BUỘC: phải mở trên Chrome hoặc App');
+
+    en.set(Contents.DEBUGGER, 'Debugger');
+    vn.set(Contents.DEBUGGER, 'Debugger');
 
     return t;
 }

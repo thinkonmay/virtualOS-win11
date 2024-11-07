@@ -6,6 +6,7 @@ import {
     popup_open,
     remote_connect,
     remote_ready,
+    RootState,
     store,
     toggle_remote,
     worker_refresh
@@ -52,6 +53,9 @@ export type Metric = {
 
 type Data = {
     tracker_id?: string;
+    log_url?: string;
+    ping_status: boolean;
+
     active: boolean;
     ready: boolean;
     fullscreen: boolean;
@@ -80,6 +84,7 @@ type Data = {
 };
 
 const initialState: Data = {
+    ping_status: true,
     local: false,
     focus: true,
     active: false,
@@ -146,9 +151,8 @@ export const remoteAsync = {
         }
     },
     ping_session: async () => {
-        const active = store.getState().remote.active;
+        const { active, ping_status } = store.getState().remote;
         const data_stack = store.getState().popup.data_stack;
-
         if (!active || CLIENT == null) return;
 
         const lastactive = () =>
@@ -174,21 +178,10 @@ export const remoteAsync = {
             appDispatch(popup_close());
         }
 
-        if ((await PINGER()) > 5) {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content:
-                            'Máy bạn đang ping lỗi! Liên hệ Admin ở Hỗ trợ ngay!'
-                    }
-                })
-            );
-
-            await new Promise((r) => setTimeout(r, 5000));
-            appDispatch(popup_close());
-        }
+        if ((await PINGER()) > 5 && ping_status)
+            appDispatch(remoteSlice.actions.ping_status(false));
+        else if (!ping_status)
+            appDispatch(remoteSlice.actions.ping_status(true));
     },
     sync: () => {
         const {
@@ -283,6 +276,14 @@ export const remoteAsync = {
     load_setting: createAsyncThunk('load_setting', async (_: void) => {
         // TODO
     }),
+    copy_log: createAsyncThunk('copy_log', async (_: void, { getState }) => {
+        const url = (getState() as RootState).remote.log_url;
+        if (url == undefined) throw new Error('log url is not defined');
+
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(await resp.text());
+        else navigator.clipboard.writeText(await resp.text());
+    }),
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
         async (_: void, {}) => {
@@ -314,10 +315,11 @@ export const remoteSlice = createSlice({
         remote_connect: (
             state,
             {
-                payload: { audioUrl, videoUrl, rtc_config }
+                payload: { audioUrl, videoUrl, logUrl, rtc_config }
             }: PayloadAction<{
                 audioUrl: string;
                 videoUrl: string;
+                logUrl?: string;
                 rtc_config: RTCConfiguration;
             }>
         ) => {
@@ -330,6 +332,7 @@ export const remoteSlice = createSlice({
                 }
             };
 
+            state.log_url = logUrl;
             state.active = true;
             state.fullscreen = true;
             state.ready = false;
@@ -349,6 +352,9 @@ export const remoteSlice = createSlice({
         },
         have_focus: (state) => {
             state.focus = true;
+        },
+        ping_status: (state, action: PayloadAction<boolean>) => {
+            state.ping_status = action.payload;
         },
         close_remote: (state) => {
             state.active = false;

@@ -140,6 +140,14 @@ const listMobileSettings = [
         state: 'shutdown',
         action: 'shutDownVm',
         style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+    },
+    {
+        ui: true,
+        id: 'loggerBtn',
+        src: 'MdTextSnippet',
+        name: [Contents.DEBUGGER],
+        state: 'copy_log',
+        action: 'copy_log'
     }
 ];
 const listDesktopShortCut = [
@@ -193,6 +201,14 @@ const listDesktopSettings = [
         state: 'shutdown',
         action: 'shutDownVm',
         style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+    },
+    {
+        ui: true,
+        id: 'loggerBtn',
+        src: 'MdTextSnippet',
+        name: [Contents.DEBUGGER],
+        state: 'copy_log',
+        action: 'copy_log'
     },
     ...(!DevEnv
         ? []
