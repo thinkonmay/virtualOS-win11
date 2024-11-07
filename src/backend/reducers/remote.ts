@@ -243,8 +243,12 @@ export const remoteAsync = {
 
             const data = await resp.json();
 
+            const isUUID = (uuid?: string) =>
+                uuid?.match(
+                    '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+                ) != null;
             if (data.items.length == 0) throw new Error('not found any query');
-            else if (data.items[0].volume_id != null)
+            else if (isUUID(data.items[0].volume_id))
                 SetPinger(
                     KeepaliveVolume(
                         { address: getDomain() } as Computer,
