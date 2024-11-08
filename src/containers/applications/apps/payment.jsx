@@ -12,7 +12,7 @@ import './assets/store.scss';
 
 const listSubs = [
     {
-        active: true,
+        active: false,
         highlight: false,
         title: 'Gói tuần',
         price_in_vnd: '99',

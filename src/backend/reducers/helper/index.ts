@@ -122,7 +122,6 @@ const filterActions = [
     'fetch_user',
     'fetch_usage',
     'fetch_subscription',
-    'change_template',
     'fetch_store',
     'fetch_under_maintenance',
     'fetch_message',
