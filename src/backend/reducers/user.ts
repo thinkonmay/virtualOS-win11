@@ -450,7 +450,10 @@ export const userAsync = {
                 await appDispatch(worker_refresh());
                 await appDispatch(fetch_subscription());
                 await appDispatch(app_toggle('connectPc'));
-            } else throw new Error('no volume available');
+            } else
+                throw new Error(
+                    'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
+                );
         }
     )
 };
