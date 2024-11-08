@@ -286,7 +286,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             </>
                         ) : null}
                         <button
-                            onClick={() => sub.active ? onChooseSub(sub.name): ""}
+                            onClick={() =>
+                                sub.active ? onChooseSub(sub.name) : ''
+                            }
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
                                                             space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
