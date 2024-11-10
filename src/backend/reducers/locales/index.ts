@@ -181,6 +181,7 @@ export enum Contents {
     SUGGEST_BITRATE_FPS,
     SUGGEST_BROWSER,
 
+    MAXIMUM_QUALITY,
     DEBUGGER
 }
 
@@ -901,6 +902,9 @@ export function language() {
 
     en.set(Contents.DEBUGGER, 'Debugger');
     vn.set(Contents.DEBUGGER, 'Debugger');
+
+    en.set(Contents.MAXIMUM_QUALITY, 'Maximum quality');
+    vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng tối đa');
 
     return t;
 }

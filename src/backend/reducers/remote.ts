@@ -29,6 +29,7 @@ import {
     MIN_FRAMERATE,
     PINGER,
     ready,
+    set_hq,
     SetPinger,
     SIZE
 } from '../../../src-tauri/singleton';
@@ -62,6 +63,7 @@ type Data = {
     pointer_lock: boolean;
     relative_mouse: boolean;
     focus: boolean;
+    hq: boolean;
     local: boolean;
 
     scancode: boolean;
@@ -85,6 +87,7 @@ type Data = {
 
 const initialState: Data = {
     ping_status: true,
+    hq: false,
     local: false,
     focus: true,
     active: false,
@@ -339,6 +342,10 @@ export const remoteSlice = createSlice({
         },
         remote_ready: (state) => {
             state.ready = true;
+        },
+        toggle_hq: (state) => {
+            set_hq(!state.hq);
+            state.hq = !state.hq;
         },
         share_reference: (state) => {
             const token = state.ref;

@@ -123,6 +123,7 @@ export const {
     toggle_fullscreen,
     set_fullscreen,
     pointer_lock,
+    toggle_hq,
     homescreen,
     relative_mouse
 } = remoteSlice.actions;

@@ -28,7 +28,7 @@ const listSubs = [
         ]
     },
     {
-        active: true,
+        active: false,
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: '299',
@@ -286,7 +286,11 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             </>
                         ) : null}
                         <button
-                            onClick={() => onChooseSub(sub.name)}
+                            onClick={() => {
+                                if (status == 'NO_ACTION' && !sub.active)
+                                    return;
+                                onChooseSub(sub.name);
+                            }}
                             type="button"
                             className={`border-none h-[48px] relative cursor-pointer 
                                                             space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
@@ -304,7 +308,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
-                            {!sub.active
+                            {status == 'NO_ACTION' && !sub.active
                                 ? 'Đang đóng!'
                                 : status != 'NO_ACTION'
                                   ? 'Gia hạn'

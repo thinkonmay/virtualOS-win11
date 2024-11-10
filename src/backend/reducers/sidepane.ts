@@ -148,6 +148,14 @@ const listMobileSettings = [
         name: [Contents.DEBUGGER],
         state: 'copy_log',
         action: 'copy_log'
+    },
+    {
+        ui: true,
+        id: 'loggerBtn',
+        src: 'MdHighQuality',
+        name: [Contents.MAXIMUM_QUALITY],
+        state: 'hq',
+        action: 'toggle_hq'
     }
 ];
 const listDesktopShortCut = [
@@ -209,6 +217,14 @@ const listDesktopSettings = [
         name: [Contents.DEBUGGER],
         state: 'copy_log',
         action: 'copy_log'
+    },
+    {
+        ui: true,
+        id: 'loggerBtn',
+        src: 'MdHighQuality',
+        name: [Contents.MAXIMUM_QUALITY],
+        state: 'hq',
+        action: 'toggle_hq'
     },
     ...(!DevEnv
         ? []
