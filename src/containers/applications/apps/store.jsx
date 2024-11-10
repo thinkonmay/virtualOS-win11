@@ -109,9 +109,10 @@ const DetailPage = ({ app }) => {
                                 Cài đặt
                             </button>
                             <div className="text-l mt-6">
-                                Cài đặt sẽ <b>xóa</b> dữ liệu <br /> hiện có trên
-                                Thinkmay
-                                <br /> <b className='mt-2'>Cân nhắc trước khi click</b>
+                                Cài đặt sẽ <b>xóa</b> dữ liệu <br /> hiện có
+                                trên Thinkmay
+                                <br />{' '}
+                                <b className="mt-2">Cân nhắc trước khi click</b>
                             </div>
                         </>
                     ) : (
@@ -156,7 +157,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => { };
+    const t = (e) => {};
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -192,9 +193,7 @@ const DownPage = ({ action }) => {
                             src={game.metadata.capsule_image}
                             ext
                         />
-                        <div className="name capitalize">
-                            {game.name}
-                        </div>
+                        <div className="name capitalize">{game.name}</div>
                     </div>
                 ))}
             </div>
