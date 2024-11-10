@@ -108,10 +108,10 @@ const DetailPage = ({ app }) => {
                             >
                                 Cài đặt
                             </button>
-                            <div className="text-l font-thin mt-6">
-                                Cài đặt sẽ xóa dữ liệu <br /> hiện có trên
+                            <div className="text-l mt-6">
+                                Cài đặt sẽ <b>xóa</b> dữ liệu <br /> hiện có trên
                                 Thinkmay
-                                <br /> Cân nhắc trước khi click
+                                <br /> <b className='mt-2'>Cân nhắc trước khi click</b>
                             </div>
                         </>
                     ) : (
@@ -156,7 +156,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => {};
+    const t = (e) => { };
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -164,7 +164,7 @@ const DownPage = ({ action }) => {
     return (
         <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
             <div className="storeHeading mt-4">
-                <b className="font-bold">Game store</b>
+                <b className="font-bold">Tạo máy đã tải sẵn game</b>
             </div>
             {/* <div className="flex flex-wrap gap-5 w-[10rem] ">
                 <div className="relative srchbar right-0 text-sm ">
@@ -188,11 +188,11 @@ const DownPage = ({ action }) => {
                     >
                         <Image
                             className="mx-4 mb-6 rounded"
-                            w={300}
+                            w={150}
                             src={game.metadata.capsule_image}
                             ext
                         />
-                        <div className="capitalize text-xs text-center font-semibold">
+                        <div className="name capitalize">
                             {game.name}
                         </div>
                     </div>

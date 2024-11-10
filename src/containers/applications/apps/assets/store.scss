@@ -167,12 +167,13 @@ body[data-theme="dark"] {
   align-items: center;
   background: var(--rib-bg);
   margin: 0 6px;
-  height: 16rem;
+  height: 12rem;
   padding: 1rem;
   padding-top: 1.5rem;
   transform-origin: center;
   transition: all ease-in-out 200ms;
   color: var(--dark-txt);
+  max-width: 200px;
 
   &:hover {
     transform: scale(1.06);
@@ -189,8 +190,8 @@ body[data-theme="dark"] {
   }
 
   .img {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     margin: 0 0.5rem 1rem 0.5rem;
     border-radius: 0.5rem;
     overflow: hidden;
@@ -203,19 +204,26 @@ body[data-theme="dark"] {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+    //font-style: ;
+    //apitalize text-xs text-center font-semibold
+    margin-top: auto;
+    margin-bottom: 16px;
   }
 }
 
 @media (1px < width < 1024px) {
   .ribcont {
-    max-width: 80px;
+    max-width: 180px;
     padding: 0.5rem;
     padding-top: 1rem;
 
     .img {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
       margin: 0 0.5rem 0.75rem 0.5rem;
 
     }
