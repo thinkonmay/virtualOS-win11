@@ -30,13 +30,21 @@ const apps: AppData[] = [
         payload: 'worker'
     },
     {
+        name: 'Hướng dẫn',
+        id: 'guideline',
+        action: 'apps/app_toggle',
+        payload: 'guideline',
+        icon: 'info',
+        size: 'full'
+    },
+    {
         name: 'Thanh toán',
         id: 'payment',
         action: 'apps/app_toggle',
         payload: 'payment'
     },
     {
-        name: 'Store',
+        name: 'Template',
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store'
@@ -49,14 +57,7 @@ const apps: AppData[] = [
         payload: 'connectPc',
         size: 'mini'
     },
-    {
-        name: 'Hướng dẫn',
-        id: 'guideline',
-        action: 'apps/app_toggle',
-        payload: 'guideline',
-        icon: 'info',
-        size: 'full'
-    },
+
     {
         name: 'Discord',
         id: 'discord',
@@ -79,7 +80,7 @@ var { taskbar, desktop } = {
         'Discord',
         'Hướng dẫn',
         'Thinkmay Fanpage',
-        'Store',
+        'Template',
         'Máy tính cá nhân',
         'Thanh toán',
         ...(DevEnv ? ['Worker Profile'] : [])
