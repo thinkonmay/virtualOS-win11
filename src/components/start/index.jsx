@@ -90,7 +90,7 @@ export const SidePane = () => {
     const setting = useAppSelector((state) => state.setting);
     const remote = useAppSelector((state) => state.remote);
     const t = useAppSelector((state) => state.globals.translation);
-    const [pnstates, setPnstate] = useState([]);
+    const [pnstates, setPnstate] = useState({});
     const dispatch = appDispatch;
     useEffect(() => {
         const framerateSlider = document.querySelector('.framerateSlider');
@@ -115,21 +115,22 @@ export const SidePane = () => {
     }
 
     useEffect(() => {
-        var tmp = [];
-        var states = isMobile()
+        let states = isMobile()
             ? sidepane.mobileControl.buttons
             : sidepane.desktopControl.buttons;
         const mobileState = {
             gamePadOpen: !sidepane.mobileControl.gamePadHide,
             keyboardOpen: !sidepane.mobileControl.keyboardHide
         };
-        for (var i = 0; i < states.length; i++) {
-            var val = getTreeValue(
+
+        const tmp = {};
+        for (const { state, name } of states) {
+            let val = getTreeValue(
                 { ...setting, ...remote, ...mobileState },
-                states[i].state
+                state
             );
-            if (states[i].name == 'Theme') val = val == 'dark';
-            tmp.push(val);
+            if (name == 'Theme') val = val == 'dark';
+            tmp[state] = val;
         }
 
         setPnstate(tmp);
@@ -162,7 +163,6 @@ export const SidePane = () => {
                                 </p>
 
                                 <div className="sliderName">
-                                    {/*{t[Contents.QUALITY]}*/}
                                     Bitrate:
                                     <span>
                                         {Math.round(
@@ -194,7 +194,6 @@ export const SidePane = () => {
 
                             <div className="containerSlider">
                                 <div className="sliderName">
-                                    {/*{t[Contents.FRAMERATE]}*/}
                                     Fps:
                                     <span>
                                         {Math.round(
@@ -372,7 +371,7 @@ function MobileComponent({ pnstates }) {
                             onClick={clickDispatch}
                             data-action={qk.action}
                             data-payload={qk.payload || qk.state}
-                            data-state={pnstates[idx]}
+                            data-state={pnstates[qk.state]}
                         >
                             {Object.keys(md).includes(qk.src) ? (
                                 (() => {
@@ -395,7 +394,7 @@ function MobileComponent({ pnstates }) {
                                     ui={qk.ui}
                                     src={qk.src}
                                     width={14}
-                                    invert={pnstates[idx] ? true : null}
+                                    invert={pnstates[qk.state] ? true : null}
                                 />
                             )}
                         </div>
@@ -450,7 +449,7 @@ function DesktopComponent({ pnstates }) {
                             onClick={clickDispatch}
                             data-action={qk.action}
                             data-payload={qk.payload || qk.state}
-                            data-state={pnstates[idx]}
+                            data-state={pnstates[qk.state]}
                         >
                             {Object.keys(md).includes(qk.src) ? (
                                 (() => {
@@ -473,7 +472,7 @@ function DesktopComponent({ pnstates }) {
                                     ui={qk.ui}
                                     src={qk.src}
                                     width={14}
-                                    invert={pnstates[idx] ? true : null}
+                                    invert={pnstates[qk.state] ? true : null}
                                 />
                             )}
                         </div>
