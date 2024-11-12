@@ -156,6 +156,13 @@ const listMobileSettings = [
         name: [Contents.MAXIMUM_QUALITY],
         state: 'hq',
         action: 'toggle_hq'
+    },
+    {
+        id: 'fixKeyboardBtnMobile',
+        src: 'MdAutoFixHigh',
+        name: [Contents.SCAN_CODE],
+        state: 'scancode',
+        action: 'remote/scancode_toggle'
     }
 ];
 const listDesktopShortCut = [
