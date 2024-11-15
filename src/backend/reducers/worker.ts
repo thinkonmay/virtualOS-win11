@@ -155,7 +155,7 @@ export const workerAsync = {
                                 loading: false,
                                 tips: false,
                                 title: 'Connecting video & audio',
-                                text: 'Vui lòng giữ tab cho tới khi connect xong!'
+                                text: 'Nếu đợi quá 4 phút, hãy reload & kết nối lại'
                             }
                         })
                     );
@@ -185,7 +185,7 @@ export const workerAsync = {
                                 loading: false,
                                 tips: false,
                                 title: 'Connecting video & audio',
-                                text: 'Vui lòng giữ tab cho tới khi connect xong!'
+                                text: 'Nếu đợi quá 4 phút, hãy reload & kết nối lại'
                             }
                         })
                     );
