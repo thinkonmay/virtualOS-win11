@@ -13,9 +13,7 @@ import {
 } from '.';
 import {
     Computer,
-    getDomain,
     getDomainURL,
-    KeepaliveVolume,
     POCKETBASE,
     RenderNode
 } from '../../../src-tauri/api';
@@ -30,7 +28,6 @@ import {
     PINGER,
     ready,
     set_hq,
-    SetPinger,
     SIZE
 } from '../../../src-tauri/singleton';
 import { BuilderHelper } from './helper';
@@ -64,7 +61,7 @@ type Data = {
     relative_mouse: boolean;
     focus: boolean;
     hq: boolean;
-    local: boolean;
+    direct_access: boolean;
 
     scancode: boolean;
     no_strict_timing: boolean;
@@ -88,7 +85,7 @@ type Data = {
 const initialState: Data = {
     ping_status: true,
     hq: false,
-    local: false,
+    direct_access: false,
     focus: true,
     active: false,
     ready: false,
@@ -126,7 +123,7 @@ export const setClipBoard = async (content: string) => {
 export const remoteAsync = {
     check_worker: async () => {
         if (!store.getState().remote.active) return;
-        else if (store.getState().remote.local) return;
+        else if (store.getState().remote.direct_access) return;
         else if (CLIENT == null) return;
         else if (
             CLIENT.Metrics.audio.status == 'connected' ||
@@ -239,18 +236,19 @@ export const remoteAsync = {
 
             const data = await resp.json();
 
-            const isUUID = (uuid?: string) =>
-                uuid?.match(
-                    '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-                ) != null;
-            if (data.items.length == 0) throw new Error('not found any query');
-            else if (isUUID(data.items[0].volume_id))
-                SetPinger(
-                    KeepaliveVolume(
-                        { address: getDomain() } as Computer,
-                        data.items[0].volume_id
-                    )
-                );
+            // TODO
+            // const isUUID = (uuid?: string) =>
+            //     uuid?.match(
+            //         '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+            //     ) != null;
+            // if (data.items.length == 0) throw new Error('not found any query');
+            // else if (isUUID(data.items[0].volume_id))
+            //     SetPinger(
+            //         KeepaliveVolume(
+            //             { address: getDomain() } as Computer,
+            //             data.items[0].volume_id
+            //         )
+            //     );
 
             appDispatch(remote_connect({ ...(data.items[0] as any) }));
             if (!(await ready())) appDispatch(close_remote());
@@ -486,6 +484,12 @@ export const remoteSlice = createSlice({
             {
                 fetch: remoteAsync.hard_reset_async,
                 hander: (state, action: PayloadAction<void>) => {}
+            },
+            {
+                fetch: remoteAsync.direct_access,
+                hander: (state, action: PayloadAction<void>) => {
+                    state.direct_access = true;
+                }
             }
         );
     }
