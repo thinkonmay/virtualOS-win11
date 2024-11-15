@@ -204,13 +204,7 @@ const Taskbar = () => {
                     >
                         <div
                             className="supportNow p-2 prtclk handcr hvlight flex rounded "
-                            // onClick={clickDispatch}
-                            onClick={() => {
-                                window.open(
-                                    externalLink.MESSAGE_LINK,
-                                    '_blank'
-                                );
-                            }}
+                            onClick={clickDispatch}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
