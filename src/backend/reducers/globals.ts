@@ -286,9 +286,17 @@ export const globalAsync = {
                 await Promise.all(
                     domains.map(
                         async (dom: { domain: string; free: string }) => {
+                            let signal: AbortSignal = undefined
+                            try {
+                                const controller = new AbortController();
+                                setTimeout(controller.abort, 2000)
+                                signal = controller.signal;
+                            } catch { }
+
                             try {
                                 const { ok } = await fetch(
-                                    `https://${dom.domain}`
+                                    `https://${dom.domain}`,
+                                    { signal }
                                 );
                                 if (!ok) throw new Error('not ok');
                             } catch (err) {
@@ -340,9 +348,9 @@ export const globalAsync = {
                 new Date() > new Date(info.created_at) &&
                 new Date() < new Date(info.ended_at)
                 ? {
-                      ...info,
-                      isMaintaining: true
-                  }
+                    ...info,
+                    isMaintaining: true
+                }
                 : {};
         }
     )
