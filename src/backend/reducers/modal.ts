@@ -25,7 +25,9 @@ type PopupData =
     | {
           type: 'extendService';
           data: {
+              type: 'date_limit' | 'hour_limit';
               to: string;
+              available_time?: number;
           };
       }
     | {

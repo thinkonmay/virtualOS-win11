@@ -12,6 +12,7 @@ import {
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { BuilderHelper } from './helper';
+import { formatDate } from '../utils/date';
 
 type Usage = {
     node: string;
@@ -30,6 +31,11 @@ export type PaymentStatus =
           correct_domain: boolean;
           created_at: string;
           ended_at?: string;
+          policy?: {
+              size: string;
+              limit_hour: number;
+              total_days: number;
+          };
           local_metadata: {
               ram?: string;
               vcpu?: string;
@@ -91,10 +97,10 @@ export const userAsync = {
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
             const { volume_id, subscription } = (getState() as RootState).user;
-            if (subscription.status != 'PAID') return;
-
-            const { created_at } = subscription;
             if (!isUUID(volume_id)) return null;
+            else if (subscription.status != 'PAID') return;
+            const { created_at, ended_at, policy } = subscription;
+            const { limit_hour } = policy ?? { limit_hour: Infinity };
 
             const { data: total_usage, error } = await LOCAL().rpc(
                 'get_volume_usage',
@@ -151,10 +157,23 @@ export const userAsync = {
                 };
             }
 
+            const available = limit_hour - ((total_usage as number) / 60);
+            if (available < 20)
+                appDispatch(
+                    popup_open({
+                        type: 'extendService',
+                        data: {
+                            type: 'hour_limit',
+                            available_time: available,
+                            to: formatDate(ended_at)
+                        }
+                    })
+                );
+
             return {
                 node,
                 template,
-                total_usage: total_usage ?? 0
+                total_usage: ((total_usage as number) ?? 0) / 60
             };
         }
     ),
@@ -166,7 +185,7 @@ export const userAsync = {
 
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
-                .select('id,cluster,local_metadata,created_at,ended_at')
+                .select('id,cluster,local_metadata,ended_at')
                 .or(notexpired())
                 .eq('user', email)
                 .is('cancelled_at', null)
@@ -178,19 +197,20 @@ export const userAsync = {
             for (const {
                 id: subscription_id,
                 cluster: cluster_id,
-                created_at,
                 ended_at,
                 local_metadata
             } of subs) {
                 const { data: allPaymentRequest, error: err } = await GLOBAL()
                     .from('payment_request')
-                    .select('id, created_at')
+                    .select('id,created_at,plan')
                     .or('status.eq.PAID,status.eq.IMPORTED')
                     .eq('subscription', subscription_id)
                     .order('created_at', { ascending: false });
 
                 if (err) continue;
                 else if (allPaymentRequest.length > 0) {
+                    const [{ created_at, plan }] = allPaymentRequest;
+
                     const {
                         data: [{ domain: cluster }],
                         error: errrrr
@@ -200,6 +220,15 @@ export const userAsync = {
                         .eq('id', cluster_id);
                     if (errrrr) continue;
 
+                    const {
+                        data: [{ policy }],
+                        error: errrrrr
+                    } = await GLOBAL()
+                        .from('plans')
+                        .select('policy')
+                        .eq('id', plan);
+                    if (errrrrr) continue;
+
                     const origin = new URL(window.location.href).host;
                     return {
                         status: 'PAID',
@@ -207,7 +236,8 @@ export const userAsync = {
                         correct_domain:
                             origin.includes('localhost') || origin == cluster,
                         local_metadata,
-                        created_at: allPaymentRequest[0].created_at,
+                        policy,
+                        created_at,
                         ended_at
                     };
                 }

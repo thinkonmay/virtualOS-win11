@@ -21,9 +21,10 @@ function UserInfo() {
     const {
         email,
         volume_id,
-        subscription: { status, cluster, created_at, ended_at, usage }
+        subscription: { status, cluster, created_at, ended_at, usage, policy }
     } = useAppSelector((state) => state.user);
-    const { node, total_usage, template } = usage ?? {};
+    const { node, total_usage } = usage ?? {};
+    const { limit_hour } = policy ?? {};
 
     const copyClipboard = () => {
         navigator.clipboard.writeText(volume_id);
@@ -56,7 +57,9 @@ function UserInfo() {
             {correctsite ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>{(+total_usage / 60).toFixed(2)}h</span>
+                    <span>
+                        {total_usage?.toFixed(1)} / {limit_hour}h
+                    </span>
                 </div>
             ) : null}
             {cluster ? (

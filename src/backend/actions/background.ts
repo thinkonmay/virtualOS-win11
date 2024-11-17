@@ -149,6 +149,7 @@ const updateUI = async () => {
                 popup_open({
                     type: 'extendService',
                     data: {
+                        type: 'date_limit',
                         to: formatDate(ended_at)
                     }
                 })

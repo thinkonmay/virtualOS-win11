@@ -6,11 +6,11 @@ import {
     popup_close
 } from '../../../backend/reducers';
 
-export function extendService({ data: { to } }) {
+export function extendService({ data: { type, to, available_time } }) {
     const deny = () => {
         UserEvents({
             type: 'payment/extends_service_denied',
-            payload: {}
+            payload: { type, to, available_time }
         });
         appDispatch(popup_close());
     };
@@ -18,9 +18,17 @@ export function extendService({ data: { to } }) {
         <div className="w-[320px] h-auto p-[14px] rounded-lg flex flex-col gap-y-5">
             <div className="flex justify-center items-center gap-2 text-[#B0D0EF]">
                 <MdInfoOutline className="text-3xl"></MdInfoOutline>
-                <h3 className="text-xl">
-                    Dịch vụ hết hạn ngày <br /> {to}
-                </h3>
+                {type == 'hour_limit' && available_time != undefined ? (
+                    <h3 className="text-xl">
+                        Dịch vụ hết hạn ngày <br /> {to}
+                        <br />
+                        Dịch vụ còn lại <br /> {available_time.toFixed(1)}h <br />
+                    </h3>
+                ) : (
+                    <h3 className="text-xl">
+                        Dịch vụ hết hạn ngày <br /> {to}
+                    </h3>
+                )}
             </div>
 
             <div>
