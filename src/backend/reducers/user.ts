@@ -157,7 +157,7 @@ export const userAsync = {
                 };
             }
 
-            const available = limit_hour - ((total_usage as number) / 60);
+            const available = limit_hour - (total_usage as number) / 60;
             if (available < 20)
                 appDispatch(
                     popup_open({

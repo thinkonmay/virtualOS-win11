@@ -221,7 +221,45 @@ export const workerAsync = {
                     `${vcpu ?? 8}`,
                     workerAsync.showPosition
                 );
-                if (resp instanceof Error) {
+                if (!(resp instanceof Error))
+                    UserEvents({
+                        type: 'remote/request_vm_success',
+                        payload: {
+                            id,
+                            email
+                        }
+                    });
+                else if (
+                    resp.message.includes(
+                        'failed to retrieve disk info exit status 2 qemu-img: Could not open'
+                    ) &&
+                    resp.message.includes('Is another process using the image')
+                ) {
+                    // refresh worker to update the lastest worker state
+                } else if (
+                    resp.message.includes(
+                        'internal error: process exited while connecting to monitor'
+                    ) &&
+                    resp.message.includes('Is another process using the image')
+                ) {
+                    // refresh worker to update the lastest worker state
+                } else if (
+                    resp.message.includes(
+                        'internal error: process exited while connecting to monitor'
+                    ) &&
+                    resp.message.includes('Image is corrupt')
+                ) {
+                    UserEvents({
+                        type: 'remote/request_vm_failure',
+                        payload: {
+                            id,
+                            email,
+                            error: 'Your volume data is corrupted, are you installing new game?'
+                        }
+                    });
+                    appDispatch(popup_close());
+                    throw new Error('Your volume data is corrupted, are you installing new game?');
+                } else {
                     UserEvents({
                         type: 'remote/request_vm_failure',
                         payload: {
@@ -233,14 +271,6 @@ export const workerAsync = {
                     appDispatch(popup_close());
                     throw resp;
                 }
-
-                UserEvents({
-                    type: 'remote/request_vm_success',
-                    payload: {
-                        id,
-                        email
-                    }
-                });
 
                 await appDispatch(worker_refresh());
             }

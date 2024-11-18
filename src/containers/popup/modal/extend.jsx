@@ -22,7 +22,8 @@ export function extendService({ data: { type, to, available_time } }) {
                     <h3 className="text-xl">
                         Dịch vụ hết hạn ngày <br /> {to}
                         <br />
-                        Dịch vụ còn lại <br /> {available_time.toFixed(1)}h <br />
+                        Dịch vụ còn lại <br /> {available_time.toFixed(1)}h
+                        <br />
                     </h3>
                 ) : (
                     <h3 className="text-xl">
