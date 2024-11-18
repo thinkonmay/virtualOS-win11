@@ -258,7 +258,9 @@ export const workerAsync = {
                         }
                     });
                     appDispatch(popup_close());
-                    throw new Error('Your volume data is corrupted, are you installing new game?');
+                    throw new Error(
+                        'Your volume data is corrupted, are you installing new game?'
+                    );
                 } else {
                     UserEvents({
                         type: 'remote/request_vm_failure',
