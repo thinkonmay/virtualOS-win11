@@ -34,10 +34,34 @@ jobs:
        echo "COMMIT_ID=$(cat commit_id.txt)" >> $GITHUB_ENV
        echo "CONTAINER_ID=$(cat container_id.txt)" >> $GITHUB_ENV
    
-   - name: Deploy Stage
+   - name: Deploy play.0.thinkmay.net
      uses: fjogeleit/http-request-action@v1
      with:
        url: 'https://play.0.thinkmay.net/rest/v1/version?name=eq.web'
+       method: 'PATCH'
+       bearerToken: ${{ secrets.SUPABASE_KEY }}
+       data: |
+         {
+           "commit_id": "${{ env.COMMIT_ID }}",
+           "container_id": "${{ env.CONTAINER_ID }}"
+         }
+    
+   - name: Deploy play.thinkmay.net
+     uses: fjogeleit/http-request-action@v1
+     with:
+       url: 'https://play.thinkmay.net/rest/v1/version?name=eq.web'
+       method: 'PATCH'
+       bearerToken: ${{ secrets.SUPABASE_KEY }}
+       data: |
+         {
+           "commit_id": "${{ env.COMMIT_ID }}",
+           "container_id": "${{ env.CONTAINER_ID }}"
+         }
+
+   - name: Deploy play.2.thinkmay.net
+     uses: fjogeleit/http-request-action@v1
+     with:
+       url: 'https://play.2.thinkmay.net/rest/v1/version?name=eq.web'
        method: 'PATCH'
        bearerToken: ${{ secrets.SUPABASE_KEY }}
        data: |
