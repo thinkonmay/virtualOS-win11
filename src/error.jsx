@@ -1,24 +1,27 @@
-import { useEffect } from "react";
-import { UserEvents } from "../src-tauri/api/database.ts";
-import { store } from "./backend/reducers/index.ts";
-import { Contents } from "./backend/reducers/locales/index.ts";
-import { externalLink } from "./backend/utils/constant.ts";
+import { useEffect } from 'react';
+import { UserEvents } from '../src-tauri/api/database.ts';
+import { store } from './backend/reducers/index.ts';
+import { Contents } from './backend/reducers/locales/index.ts';
+import { externalLink } from './backend/utils/constant.ts';
 
 export function ErrorFallback({ error }) {
-    useEffect(() =>
-        UserEvents({
-            type: 'panic',
-            payload: {
-                message: error.message,
-                stack: error.stack
-            }
-        }), [])
+    useEffect(
+        () =>
+            UserEvents({
+                type: 'panic',
+                payload: {
+                    message: error.message,
+                    stack: error.stack
+                }
+            }),
+        []
+    );
 
     const t = store.getState().globals.translation;
     const action = async () => {
         await navigator.clipboard.writeText(error.stack);
-        window.open(externalLink.MESSAGE_LINK,'_blank')
-    }
+        window.open(externalLink.MESSAGE_LINK, '_blank');
+    };
 
     return (
         <div>
@@ -29,7 +32,8 @@ export function ErrorFallback({ error }) {
                 <div id="container">
                     <h1>:(</h1>
                     <h2>
-                        Nội dung lỗi đã được copy vào clipboard của bạn, Paste (Ctrl V) cho chúng mình để giải quyết lỗi
+                        Nội dung lỗi đã được copy vào clipboard của bạn, Paste
+                        (Ctrl V) cho chúng mình để giải quyết lỗi
                         {t[Contents.TIME]}
                     </h2>
                     <div id="details">
