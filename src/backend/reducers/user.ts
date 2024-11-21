@@ -218,7 +218,7 @@ export const userAsync = {
                         .from('clusters')
                         .select('domain')
                         .eq('id', cluster_id)
-                        .eq('status', true);
+                        .eq('active', true);
                     if (errrrr) continue;
 
                     const {
