@@ -217,7 +217,8 @@ export const userAsync = {
                     } = await GLOBAL()
                         .from('clusters')
                         .select('domain')
-                        .eq('id', cluster_id);
+                        .eq('id', cluster_id)
+                        .eq('status', true);
                     if (errrrr) continue;
 
                     const {
@@ -341,6 +342,7 @@ export const userAsync = {
                     .from('clusters')
                     .select('id')
                     .eq('domain', domain)
+                    .eq('active', true)
                     .limit(1);
                 if (errrrr) throw new Error(errrrr.message);
                 else if (cluster_ele == undefined)
