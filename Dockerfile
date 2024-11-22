@@ -1,6 +1,9 @@
 # Build stage
 FROM node:20-alpine as build
 
+# Install git
+RUN apk add --no-cache git
+
 WORKDIR /app
 
 # Copy package files
