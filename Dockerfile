@@ -6,6 +6,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+# Copy git related files
+COPY .git* ./
+COPY .gitmodules ./.gitmodules
+
+# Git init submodule
+RUN git submodule update --init --recursive
+
 # Install dependencies
 RUN npm install -f
 
