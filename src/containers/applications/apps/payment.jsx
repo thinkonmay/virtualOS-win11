@@ -28,7 +28,7 @@ const listSubs = [
         ]
     },
     {
-        active: true,
+        active: false,
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: '299',
@@ -120,13 +120,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-              ? appDispatch(
+                ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-              : appDispatch(
+                : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -302,17 +302,16 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
-                                                            ${
-                                                                !sub.active
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
+                                                            ${!sub.active
+                                    ? 'bg-red-500'
+                                    : 'bg-[#0067c0]'
+                                }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? 'Đang đóng!'
                                 : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
+                                    ? 'Gia hạn'
+                                    : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
