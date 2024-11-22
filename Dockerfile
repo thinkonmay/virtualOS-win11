@@ -1,17 +1,18 @@
 # Build stage
-FROM node:20-alpine as build
+FROM node:20-alpine AS build
 
-# Install git
-RUN apk add --no-cache git
+# Install required packages
+RUN apk add --no-cache git openssh-client
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Copy git related files
-COPY .git* ./
-COPY .gitmodules ./.gitmodules
+# Copy Git-related files
+COPY .gitmodules ./
+COPY .git ./
+
 
 # Git init submodule
 RUN git submodule update --init --recursive
