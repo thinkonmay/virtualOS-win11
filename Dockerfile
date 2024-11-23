@@ -1,42 +1,28 @@
-# Build stage
-FROM node:20-alpine AS build
+# Build Stage
+FROM node:20-alpine as builder
 
 # Install required packages
 RUN apk add --no-cache git openssh-client
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Copy Git-related files
-COPY .gitmodules ./
-COPY .git ./
-
-
-# Git init submodule
+# Clone the repository recursively to include submodules
+COPY . .
+RUN git init
 RUN git submodule update --init --recursive
 
-# Install dependencies
+# Install dependencies and build the application
 RUN npm install -f
-
-# Copy source files
-COPY . .
-
-# Build the app
 RUN npm run build
 
-# Production stage
+# Production Stage
 FROM nginx:alpine
 
 # Copy built assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
 EXPOSE 80
 
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
