@@ -164,8 +164,13 @@ const DownPage = ({ action }) => {
 
     return (
         <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
-            <div className="storeHeading mt-4">
-                <b className="font-bold">Tạo máy đã tải sẵn game</b>
+            <div className="flex flex-col justify-center mt-4">
+                <b className=" storeHeading font-bold">
+                    Tạo máy mới đã tải sẵn game
+                </b>
+                <p className="storeSubHeading text-center">
+                    *Không kèm theo tài khoản game
+                </p>
             </div>
             {/* <div className="flex flex-wrap gap-5 w-[10rem] ">
                 <div className="relative srchbar right-0 text-sm ">

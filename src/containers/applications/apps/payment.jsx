@@ -70,7 +70,7 @@ export const PaymentApp = () => {
 
     return (
         <div
-            className="paymentApp floatTab dpShad"
+            className="paymentApp wnstore floatTab dpShad"
             data-size={wnapp.size}
             id={wnapp.id + 'App'}
             data-max={wnapp.max}
@@ -120,13 +120,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-                ? appDispatch(
+              ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-                : appDispatch(
+              : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -142,11 +142,11 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     };
 
     return (
-        <div className="sub relative">
+        <div className="sub ltShad relative">
             {sub.highlight ? (
-                <div className="absolute flex justify-center items-center rounded-[36px] bg-green-600 inset-0 z-[0] w-[102%] h-[10%] top-[-27px] bottom-[-6px] left-[-1%]">
+                <div className="banner">
                     <p className="text-[16px] font-bold leading-4 text-center py-2 text-background">
-                        Gói phổ biến
+                        Phổ biến
                     </p>
                 </div>
             ) : null}
@@ -161,7 +161,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         </div>
                     </div>
 
-                    <hr className="border-[#504646]" />
+                    <hr />
                     <div className=" text-foreground flex items-center text-lg min-h-[116px]">
                         <div className="flex flex-col gap-1">
                             <div className="flex items-end gap-2">
@@ -189,12 +189,12 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             </div>
                         </div>
                     </div>
-                    <hr className="border-[#504646]" />
+                    <hr />
                 </div>
                 <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-4 2xl:px-8 py-6 ">
                     <div
                         onClick={clickDetail}
-                        className="flex items-center text-foreground-light text-[13px] mt-2 mb-2"
+                        className="flex cursor-pointer items-center text-foreground-light text-[13px] mt-2 mb-2 hover:underline"
                     >
                         {isShowDetail ? (
                             <MdArrowDropDown style={{ fontSize: '1.6rem' }} />
@@ -302,16 +302,18 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             shadow-sm w-full flex items-center 
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
-                                                            ${!sub.active
-                                    ? 'bg-red-500'
-                                    : 'bg-[#0067c0]'
-                                }  `}
+                                                            mt-6
+                                                            ${
+                                                                !sub.active
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-[#0067c0]'
+                                                            }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? 'Đang đóng!'
                                 : status != 'NO_ACTION'
-                                    ? 'Gia hạn'
-                                    : 'Mua Ngay'}
+                                  ? 'Gia hạn'
+                                  : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
