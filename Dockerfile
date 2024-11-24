@@ -1,5 +1,6 @@
 # Build Stage
-FROM node:20-alpine as builder
+FROM node:20-alpine 
+# as builder
 
 # Install required packages
 RUN apk add --no-cache git openssh-client
@@ -8,8 +9,6 @@ WORKDIR /app
 
 # Clone the repository recursively to include submodules
 COPY . .
-RUN git init
-RUN git submodule update --init --recursive
 
 # Install dependencies and build the application
 RUN npm install -f
