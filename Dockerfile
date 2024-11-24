@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:20-alpine 
+FROM node:20-alpine as builder
 # as builder
 
 # Install required packages
