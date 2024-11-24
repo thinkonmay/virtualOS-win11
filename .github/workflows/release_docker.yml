@@ -16,6 +16,12 @@ jobs:
      with:
       submodules: recursive
       token: ${{ secrets.PAT_TOKEN }}
+   - name: Add .env file
+     run: |
+       echo "VITE_SUPABASE_GLOBAL_URL=https://play.thinkmay.net" > .env
+       echo "VITE_SUPABASE_LOCAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+       echo "VITE_SUPABASE_GLOBAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
    
    - name: Login to Docker Hub
      uses: docker/login-action@v2
