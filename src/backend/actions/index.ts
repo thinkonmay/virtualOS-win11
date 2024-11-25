@@ -170,6 +170,9 @@ export const login = async (
             w.location.href = url;
         }
     });
+    await POCKETBASE.collection('users').update(POCKETBASE.authStore.model.id, {
+        emailVisibility: true
+    })
     await preload(update_ui);
 };
 export const remotelogin = async (domain: string, email: string) => {
