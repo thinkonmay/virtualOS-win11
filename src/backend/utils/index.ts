@@ -50,7 +50,7 @@ const apps: AppData[] = [
         payload: 'store'
     },
     {
-        name: 'Máy tính cá nhân',
+        name: 'Máy tính cá nhânn',
         id: 'connectPc',
         action: 'apps/app_toggle',
         image: 'worker',
@@ -81,7 +81,7 @@ var { taskbar, desktop } = {
         'Hướng dẫn',
         'Thinkmay Fanpage',
         'Template',
-        'Máy tính cá nhân',
+        'Máy tính cá nhânn',
         'Thanh toán',
         ...(DevEnv ? ['Worker Profile'] : [])
     ]
