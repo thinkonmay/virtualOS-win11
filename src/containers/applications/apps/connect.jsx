@@ -1,6 +1,7 @@
 import {
     appDispatch,
     app_toggle,
+    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
