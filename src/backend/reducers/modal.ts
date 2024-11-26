@@ -56,6 +56,14 @@ type PopupData =
               title: string;
               text: any;
           };
+      }
+    | {
+          type: 'yesNo';
+          data: {
+              title: string;
+              content: string;
+              template: string;
+          };
       };
 
 type Data = {

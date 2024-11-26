@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
     appDispatch,
     change_template,
+    popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import {
@@ -74,12 +75,26 @@ const DetailPage = ({ app }) => {
         }
     } = app;
 
-    const download = () =>
+    const download = () => {
         appDispatch(
             change_template({
                 template: code_name
             })
         );
+    };
+
+    const handleDownload = () => {
+        appDispatch(
+            popup_open({
+                type: 'yesNo',
+                data: {
+                    title: 'Bạn có chắc muốn tạo máy mới',
+                    content: 'Tạo máy sẽ xoá dữ liệu hiện có trên máy cũ',
+                    template: code_name
+                }
+            })
+        );
+    };
 
     const valid = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'
@@ -103,14 +118,14 @@ const DetailPage = ({ app }) => {
                     {valid ? (
                         <>
                             <button
-                                onClick={download}
+                                onClick={handleDownload}
                                 className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
                             >
-                                Cài đặt
+                                Tạo máy mới
                             </button>
                             <div className="text-l mt-6">
-                                Cài đặt sẽ <b>xóa</b> dữ liệu <br /> hiện có
-                                trên Thinkmay
+                                Tạo máy sẽ <b>xóa</b> dữ liệu <br /> hiện có
+                                trên máy cũ
                                 <br />{' '}
                                 <b className="mt-2">Cân nhắc trước khi click</b>
                             </div>
