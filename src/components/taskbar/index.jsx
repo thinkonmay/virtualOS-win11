@@ -23,7 +23,6 @@ import {
 } from '../../backend/utils/dispatch';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
-import { externalLink } from '../../backend/utils/constant';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);
