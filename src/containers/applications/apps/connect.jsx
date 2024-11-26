@@ -1,7 +1,6 @@
 import {
     appDispatch,
     app_toggle,
-    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -41,9 +40,9 @@ export const ConnectApp = () => {
     const { image, name } = useAppSelector((state) =>
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.usage?.template ?? {
-                  image: null,
-                  name: null
-              }
+                image: null,
+                name: null
+            }
             : { image: null, name: null }
     );
 
@@ -51,17 +50,18 @@ export const ConnectApp = () => {
 
     const id = useAppSelector((state) => state.user.id);
     const connect = () => {
-        if (user?.subscription?.usage?.isExpired) {
-            appDispatch(
-                popup_open({
-                    type: 'extendService',
-                    data: {
-                        type: 'expired'
-                    }
-                })
-            );
-            return;
-        }
+        //if (user?.subscription?.usage?.isExpired) {
+        //    appDispatch(
+        //        popup_open({
+        //            type: 'extendService',
+        //            data: {
+        //                type: 'expired',
+        //                to:''
+        //            }
+        //        })
+        //    );
+        //    return;
+        //}
 
         appDispatch(wait_and_claim_volume());
     };
@@ -71,7 +71,6 @@ export const ConnectApp = () => {
         location.reload();
     };
 
-    console.log(user);
     return (
         <div
             className="connectToPcApp floatTab dpShad"
@@ -96,13 +95,13 @@ export const ConnectApp = () => {
                 style={
                     image != null
                         ? {
-                              backgroundImage: `url(${image})`,
-                              backgroundSize: 'cover'
-                          }
+                            backgroundImage: `url(${image})`,
+                            backgroundSize: 'cover'
+                        }
                         : {
-                              background:
-                                  'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
-                          }
+                            background:
+                                'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
+                        }
                 }
             >
                 <LazyComponent show={!wnapp.hide}>
@@ -129,7 +128,7 @@ export const ConnectApp = () => {
                                     Đăng nhập
                                 </button>
                             ) : available == 'ready' ||
-                              available == 'started' ? (
+                                available == 'started' ? (
                                 <button
                                     onClick={connect}
                                     className="instbtn connectBtn12 connectBtn"

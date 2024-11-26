@@ -27,29 +27,29 @@ type Usage = {
 
 export type PaymentStatus =
     | {
-          status: 'PAID';
-          cluster: string;
-          correct_domain: boolean;
-          created_at: string;
-          ended_at?: string;
-          policy?: {
-              size: string;
-              limit_hour: number;
-              total_days: number;
-          };
-          local_metadata: {
-              ram?: string;
-              vcpu?: string;
-          };
+        status: 'PAID';
+        cluster: string;
+        correct_domain: boolean;
+        created_at: string;
+        ended_at?: string;
+        policy?: {
+            size: string;
+            limit_hour: number;
+            total_days: number;
+        };
+        local_metadata: {
+            ram?: string;
+            vcpu?: string;
+        };
 
-          usage?: Usage;
-      }
+        usage?: Usage;
+    }
     | {
-          status: 'NO_ACTION';
-      }
+        status: 'NO_ACTION';
+    }
     | {
-          status: 'PENDING';
-      };
+        status: 'PENDING';
+    };
 
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -134,22 +134,22 @@ export const userAsync = {
                 template =
                     screenshots == null
                         ? {
-                              image: null,
-                              code: tpl,
-                              name
-                          }
+                            image: null,
+                            code: tpl,
+                            name
+                        }
                         : {
-                              image:
-                                  screenshots[
-                                      Math.round(
-                                          Math.random() *
-                                              ((screenshots as any[]).length -
-                                                  1)
-                                      )
-                                  ]?.path_full ?? null,
-                              code: tpl,
-                              name
-                          };
+                            image:
+                                screenshots[
+                                    Math.round(
+                                        Math.random() *
+                                        ((screenshots as any[]).length -
+                                            1)
+                                    )
+                                ]?.path_full ?? null,
+                            code: tpl,
+                            name
+                        };
             } else {
                 template = {
                     image: null,
@@ -177,17 +177,17 @@ export const userAsync = {
                 targetDate.isBefore(currentDate, 'day') ||
                 +total_usage > +limit_hour;
 
-            if (isExpired) {
-                appDispatch(
-                    popup_open({
-                        type: 'extendService',
-                        data: {
-                            type: 'expired',
-                            to: ''
-                        }
-                    })
-                );
-            }
+            //if (isExpired) {
+            //    appDispatch(
+            //        popup_open({
+            //            type: 'extendService',
+            //            data: {
+            //                type: 'expired',
+            //                to: ''
+            //            }
+            //        })
+            //    );
+            //}
 
             return {
                 node,
@@ -432,11 +432,10 @@ export const userAsync = {
                                 loading: true,
                                 timeProcessing: 2,
                                 tips: false,
-                                title: `Đang cài đặt game ${
-                                    data[0].base
-                                } vào lúc ${new Date(
-                                    data[0].created_at
-                                ).toLocaleTimeString()}`,
+                                title: `Đang cài đặt game ${data[0].base
+                                    } vào lúc ${new Date(
+                                        data[0].created_at
+                                    ).toLocaleTimeString()}`,
                                 text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
                             }
                         })
@@ -576,7 +575,7 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.change_template,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             }
         );
     }
