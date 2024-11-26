@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 import { RecordModel } from 'pocketbase';
 import {
     app_toggle,
@@ -11,9 +12,8 @@ import {
 } from '.';
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
-import { BuilderHelper } from './helper';
 import { formatDate } from '../utils/date';
-
+import { BuilderHelper } from './helper';
 type Usage = {
     node: string;
     total_usage: number;
@@ -22,6 +22,7 @@ type Usage = {
         code: string;
         name: string;
     };
+    isExpired?: boolean;
 };
 
 export type PaymentStatus =
@@ -170,10 +171,17 @@ export const userAsync = {
                     })
                 );
 
+            const targetDate = dayjs(ended_at);
+            const currentDate = dayjs();
+            const isExpired =
+                targetDate.isBefore(currentDate, 'day') ||
+                +available > +limit_hour;
+
             return {
                 node,
                 template,
-                total_usage: ((total_usage as number) ?? 0) / 60
+                total_usage: ((total_usage as number) ?? 0) / 60,
+                isExpired
             };
         }
     ),

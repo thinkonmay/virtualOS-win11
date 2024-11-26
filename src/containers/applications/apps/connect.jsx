@@ -1,6 +1,7 @@
 import {
     appDispatch,
     app_toggle,
+    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -10,7 +11,6 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
-import { useEffect } from 'react';
 import { RenderNode } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
@@ -18,6 +18,7 @@ import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
+    const user = useAppSelector((state) => state.user);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
@@ -49,13 +50,28 @@ export const ConnectApp = () => {
     const { browser } = detectBrowserAndOS();
 
     const id = useAppSelector((state) => state.user.id);
-    const connect = () => appDispatch(wait_and_claim_volume());
+    const connect = () => {
+        if (user?.subscription?.usage?.isExpired) {
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'expired'
+                    }
+                })
+            );
+            return;
+        }
+
+        appDispatch(wait_and_claim_volume());
+    };
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
     const reload = () => {
         location.reload();
     };
 
+    console.log(user);
     return (
         <div
             className="connectToPcApp floatTab dpShad"

@@ -15,10 +15,14 @@ export function extendService({ data: { type, to, available_time } }) {
         appDispatch(popup_close());
     };
     return (
-        <div className="w-[320px] h-auto p-[14px] rounded-lg flex flex-col gap-y-5">
+        <div className="w-[320px] h-auto p-[14px] rounded-lg flex flex-col gap-y-3">
             <div className="flex justify-center items-center gap-2 text-[#B0D0EF]">
                 <MdInfoOutline className="text-4xl"></MdInfoOutline>
-                <h3>Dịch vụ sắp hết hạn</h3>
+                <h3>
+                    {type == 'expired'
+                        ? 'Dịch vụ đã hết hạn'
+                        : 'Dịch vụ sắp hết hạn'}
+                </h3>
             </div>
 
             <div>
@@ -29,6 +33,10 @@ export function extendService({ data: { type, to, available_time } }) {
                             <br />
                             <b>Số giờ còn lại:</b> {available_time.toFixed(1)}h
                             <br />
+                        </>
+                    ) : type == 'expired' ? (
+                        <>
+                            Vui lòng gia hạn để tiếp tục sử dụng <br />
                         </>
                     ) : (
                         <>
