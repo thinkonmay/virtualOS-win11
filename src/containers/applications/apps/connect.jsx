@@ -50,18 +50,18 @@ export const ConnectApp = () => {
 
     const id = useAppSelector((state) => state.user.id);
     const connect = () => {
-        //if (user?.subscription?.usage?.isExpired) {
-        //    appDispatch(
-        //        popup_open({
-        //            type: 'extendService',
-        //            data: {
-        //                type: 'expired',
-        //                to:''
-        //            }
-        //        })
-        //    );
-        //    return;
-        //}
+        if (user?.subscription?.usage?.isExpired) {
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'expired',
+                        to: ''
+                    }
+                })
+            );
+            return;
+        }
 
         appDispatch(wait_and_claim_volume());
     };
