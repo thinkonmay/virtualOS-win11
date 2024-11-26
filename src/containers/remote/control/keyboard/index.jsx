@@ -50,17 +50,17 @@ export const VirtKeyboard = () => {
                     default: [
                         'F1 F2 F3 F4 F5             F6 F7 F8 F9 F10 F11 F12',
                         '` 1 2 3 4 5 6          7 8 9 0 - = Backspace',
-                        'q w e r t y u          i o p [ ] \\ Shift',
-                        "a s d f g h            j k l ; ' Enter",
-                        'z x c v b          n m , . / Alt',
+                        'q w e r t              y u i o p [ ] \\ Shift',
+                        "a s d f g            h j k l ; ' Enter",
+                        'z x c v            b n m , . / Alt',
                         'Space                  Space Control'
                     ],
                     shift: [
                         'F1 F2 F3 F4 F5             F6 F7 F8 F9 F10 F11 F12',
                         '~ ! @ # $ % ^          & * ( ) _ + Backspace',
-                        'Q W E R T Y U          I O P { } | Shift',
-                        'A S D F G H            J K L : " Enter',
-                        'Z X C V B          N M < > ? Alt',
+                        'Q W E R T              Y U I O P { } | Shift',
+                        'A S D F G            H J K L : " Enter',
+                        'Z X C V            B N M < > ? Alt',
                         'Space                  Space Control'
                     ]
                 }}
