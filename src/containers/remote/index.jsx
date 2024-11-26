@@ -9,6 +9,7 @@ import { Assign, CLIENT } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     set_fullscreen,
+    toggle_keyboard,
     useAppSelector
 } from '../../backend/reducers';
 import { VirtualGamepad } from './control/gamepad';
@@ -33,6 +34,13 @@ export const Remote = () => {
         if (!active || auth == undefined) return;
         setupWebRTC();
     }, [active]);
+
+    useEffect(() => {
+        CLIENT.touch.touch_callback = async () => {
+            if (keyboard && CLIENT.touch.mode == 'none')
+                appDispatch(toggle_keyboard());
+        };
+    }, [keyboard]);
 
     const setupWebRTC = () =>
         Assign(
