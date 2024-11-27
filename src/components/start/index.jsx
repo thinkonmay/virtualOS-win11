@@ -155,10 +155,10 @@ export const SidePane = () => {
                         <div className="sliderCont flex flex-col items-start">
                             <div className="containerSlider">
                                 <p className="sliderName">
-                                    Packetloss:{' '}
+                                    packetloss:{' '}
                                     <span> {remote.packetLoss}</span>
-                                    IDR: <span> {remote.idrcount}</span>
-                                    Bitrate: <span> {remote.realbitrate}</span>
+                                    idr: <span> {remote.idrcount}</span>
+                                    bitrate: <span> {remote.realbitrate}</span>
                                     kbps
                                 </p>
                                 <p className="sliderName">
@@ -172,7 +172,7 @@ export const SidePane = () => {
                                                     2
                                                 )}
                                             </span>
-                                            ms
+                                            ms{' '}
                                         </>
                                     ) : null}
                                     {!isNaN(remote.realdelay) ? (
@@ -515,6 +515,7 @@ function DesktopComponent({ pnstates }) {
                     </div>
                 ))}
             </div>
+            <hr className="mb-4" />
         </>
     );
 }
