@@ -162,20 +162,29 @@ export const SidePane = () => {
                                     kbps
                                 </p>
                                 <p className="sliderName">
-                                    DecodeFPS: <span> {remote.realfps}</span>fps
-                                </p>
-                                <p className="sliderName">
-                                    DecodeTime:{' '}
-                                    <span>
-                                        {' '}
-                                        {remote.realdecodetime.toFixed(2)}
-                                    </span>
-                                    ms
-                                </p>
-                                <p className="sliderName">
-                                    DelayTime:{' '}
-                                    <span> {remote.realdelay.toFixed(2)}</span>
-                                    ms
+                                    fps: <span> {remote.realfps}</span>
+                                    {!isNaN(remote.realdecodetime) ? (
+                                        <>
+                                            decode:{' '}
+                                            <span>
+                                                {' '}
+                                                {remote.realdecodetime.toFixed(
+                                                    2
+                                                )}
+                                            </span>
+                                            ms
+                                        </>
+                                    ) : null}
+                                    {!isNaN(remote.realdelay) ? (
+                                        <>
+                                            delay:{' '}
+                                            <span>
+                                                {' '}
+                                                {remote.realdelay.toFixed(2)}
+                                            </span>
+                                            ms
+                                        </>
+                                    ) : null}
                                 </p>
 
                                 <div className="sliderName">
@@ -432,9 +441,6 @@ function MobileComponent({ pnstates }) {
                     </div>
                 ))}
             </div>
-            <div className="shortcuts">
-                <hr className="mb-4" />
-            </div>
         </>
     );
 }
@@ -509,7 +515,6 @@ function DesktopComponent({ pnstates }) {
                     </div>
                 ))}
             </div>
-            <hr className="mb-4" />
         </>
     );
 }
