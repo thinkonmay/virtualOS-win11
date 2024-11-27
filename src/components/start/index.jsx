@@ -157,9 +157,24 @@ export const SidePane = () => {
                                     Packetloss:{' '}
                                     <span> {remote.packetLoss}</span>
                                     IDR: <span> {remote.idrcount}</span>
-                                    decodeFPS: <span> {remote.realfps}</span>
-                                    bitrate: <span> {remote.realbitrate}</span>
+                                    Bitrate: <span> {remote.realbitrate}</span>
                                     kbps
+                                </p>
+                                <p className="sliderName">
+                                    DecodeFPS: <span> {remote.realfps}</span>fps
+                                </p>
+                                <p className="sliderName">
+                                    DecodeTime:{' '}
+                                    <span>
+                                        {' '}
+                                        {remote.realdecodetime.toFixed(2)}
+                                    </span>
+                                    ms
+                                </p>
+                                <p className="sliderName">
+                                    DelayTime:{' '}
+                                    <span> {remote.realdelay.toFixed(2)}</span>
+                                    ms
                                 </p>
 
                                 <div className="sliderName">

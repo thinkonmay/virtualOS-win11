@@ -77,6 +77,8 @@ type Data = {
     idrcount: number;
     realfps: number;
     realbitrate: number;
+    realdecodetime: number;
+    realdelay: number;
 
     auth?: AuthSessionResp;
     ref?: string;
@@ -104,7 +106,9 @@ const initialState: Data = {
     idrcount: 0,
     realfps: 0,
     packetLoss: 0,
-    realbitrate: 0
+    realbitrate: 0,
+    realdelay: 0,
+    realdecodetime: 0
 };
 
 export function WindowD() {
@@ -209,7 +213,9 @@ export const remoteAsync = {
                 packetloss: CLIENT.Metrics.video.packetloss.last,
                 idrcount: CLIENT.Metrics.video.idrcount.last,
                 bitrate: CLIENT.Metrics.video.bitrate.persecond,
-                fps: CLIENT.Metrics.video.frame.persecond
+                fps: CLIENT.Metrics.video.frame.persecond,
+                decodetime: CLIENT.Metrics.video.frame.decodetime,
+                delay: CLIENT.Metrics.video.frame.delay
             })
         );
 
@@ -415,12 +421,16 @@ export const remoteSlice = createSlice({
                 idrcount: number;
                 bitrate: number;
                 fps: number;
+                decodetime: number;
+                delay: number;
             }>
         ) => {
             state.idrcount = action.payload.idrcount;
             state.packetLoss = action.payload.packetloss;
             state.realbitrate = action.payload.bitrate;
             state.realfps = action.payload.fps;
+            state.realdecodetime = action.payload.decodetime;
+            state.realdelay = action.payload.delay;
         },
         internal_sync: (state) => {
             if (
