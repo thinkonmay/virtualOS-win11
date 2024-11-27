@@ -41,6 +41,7 @@ export const DesktopApp = () => {
     const deskApps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.desktop.apps.includes(x.id))
     );
+    const t = useAppSelector((state) => state.globals.translation);
 
     const handleTouchEnd = (e) => setTimeout(clickDispatch(e), 200);
     const handleDouble = customClickDispatch((e) => e.stopPropagation());
@@ -78,7 +79,7 @@ export const DesktopApp = () => {
                                 width={Math.round(desk.size * 36)}
                             />
                         )}
-                        <div className="appName">{app.name}</div>
+                        <div className="appName">{t[app.name]}</div>
                     </div>
                 ))}
         </div>

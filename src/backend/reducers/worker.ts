@@ -10,6 +10,7 @@ import {
     remote_ready,
     RootState,
     save_reference,
+    store,
     unclaim_volume,
     vm_session_access,
     vm_session_create,
@@ -38,6 +39,7 @@ import {
 } from '../../../src-tauri/api';
 import { ready, SetPinger } from '../../../src-tauri/singleton';
 import { BuilderHelper } from './helper';
+import { Contents } from './locales';
 
 type WorkerType = {
     data: any;
@@ -60,6 +62,7 @@ const initialState: WorkerType = {
 
 export const workerAsync = {
     showPosition: async (pos: number) => {
+        const t = (store.getState() as RootState).globals.translation;
         appDispatch(popup_close());
         appDispatch(
             popup_open({
@@ -70,10 +73,10 @@ export const workerAsync = {
                     title: 'Connect to PC',
                     text:
                         pos == 0
-                            ? `Bạn đang ở vị trí đầu tiên trong hàng chờ, vui lòng giữ tab!`
-                            : `Bạn đang ở vị trí thứ ${
-                                  pos + 1
-                              } trong hàng chờ, vui lòng giữ tab!`
+                            ? t[Contents.CA_FIRST_QUEUED]
+                            : `${t[Contents.CA_POS_QUEUED_FRIST]} ${pos + 1} ${
+                                  t[Contents.CA_POS_QUEUED_LAST]
+                              }`
                 }
             })
         );
@@ -94,6 +97,7 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const { email, subscription } = (getState() as RootState).user;
+            const t = (getState() as RootState).globals.translation;
             const { status } = subscription;
             const { vcpu, ram } =
                 status == 'PAID'
@@ -155,7 +159,7 @@ export const workerAsync = {
                                 loading: false,
                                 tips: false,
                                 title: 'Connecting video & audio',
-                                text: 'Nếu đợi quá 4 phút, hãy reload & kết nối lại'
+                                text: t[Contents.CA_CONNECT_NOTIFY]
                             }
                         })
                     );
@@ -185,7 +189,7 @@ export const workerAsync = {
                                 loading: false,
                                 tips: false,
                                 title: 'Connecting video & audio',
-                                text: 'Nếu đợi quá 4 phút, hãy reload & kết nối lại'
+                                text: t[Contents.CA_CONNECT_NOTIFY]
                             }
                         })
                     );

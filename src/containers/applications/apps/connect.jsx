@@ -19,6 +19,7 @@ import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const user = useAppSelector((state) => state.user);
+
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
@@ -126,7 +127,7 @@ export const ConnectApp = () => {
                                     onClick={loginNow}
                                     className="instbtn connectBtn12 connectBtn"
                                 >
-                                    Đăng nhập
+                                    Login
                                 </button>
                             ) : available == 'ready' ||
                               available == 'started' ? (
@@ -135,15 +136,15 @@ export const ConnectApp = () => {
                                     className="instbtn connectBtn12 connectBtn"
                                 >
                                     {available == 'ready'
-                                        ? 'Bật máy'
-                                        : 'Kết nối'}
+                                        ? t[Contents.CA_TURN_ON_PC]
+                                        : t[Contents.CA_CONNECT]}
                                 </button>
                             ) : available == 'not_ready' ? (
                                 <button
                                     onClick={reload}
                                     className="instbtn connectBtn12 connectBtn"
                                 >
-                                    Máy đang được khởi tạo
+                                    {t[Contents.CA_INITIALIZING]}
                                 </button>
                             ) : paid ? (
                                 wrongsite ? (
@@ -159,7 +160,7 @@ export const ConnectApp = () => {
                                         onClick={reload}
                                         className="instbtn connectBtn12 connectBtn"
                                     >
-                                        Reload và thử lại sau 5'
+                                        {t[Contents.CA_RELOAD_TRY_AGAIN]}
                                     </button>
                                 )
                             ) : (
@@ -167,7 +168,7 @@ export const ConnectApp = () => {
                                     onClick={pay}
                                     className="instbtn connectBtn12 connectBtn"
                                 >
-                                    Thanh toán
+                                    {t[Contents.PAYMENT_APP]}
                                 </button>
                             )}
                         </div>

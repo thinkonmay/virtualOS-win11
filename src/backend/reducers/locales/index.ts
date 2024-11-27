@@ -182,7 +182,36 @@ export enum Contents {
     SUGGEST_BROWSER,
 
     MAXIMUM_QUALITY,
-    DEBUGGER
+    DEBUGGER,
+    GUIDELINE_APP,
+    PAYMENT_APP,
+    TEMPLATE_APP,
+    CONNECT_APP,
+    WORKER_APP,
+    DISCORD_APP,
+    FANPAGE_APP,
+    //CONNECT APP ( CA )
+    CA_TURN_ON_PC,
+    CA_CONNECT,
+    CA_INITIALIZING,
+    CA_RELOAD_TRY_AGAIN,
+    // HANG CHO
+
+    CA_FIRST_QUEUED,
+    CA_POS_QUEUED_FRIST,
+    CA_POS_QUEUED_LAST,
+    CA_CONNECT_NOTIFY,
+
+    //TEMPLATE APP (TA)
+
+    TA_TILE,
+    TA_SUBTITLE,
+    TA_CRATE_NEW_PC,
+    TA_CRATE_NEW_PC_NOTIFY,
+    TA_POPUP_TITLE,
+    TA_POPUP_SUBTITLE,
+    TA_POPUP_CLOSE,
+    TA_POPUP_CONTINUE
 }
 
 export function language() {
@@ -191,6 +220,112 @@ export function language() {
     t.set('VN', vn);
     const en = new Map<Contents, string>();
     t.set('ENG', en);
+
+    //CA
+
+    en.set(Contents.CA_TURN_ON_PC, 'Turn on PC');
+    vn.set(Contents.CA_TURN_ON_PC, 'Bật masy');
+
+    en.set(Contents.CA_CONNECT, 'Connect');
+    vn.set(Contents.CA_CONNECT, 'Kết nối');
+
+    en.set(Contents.CA_INITIALIZING, 'Your PC is initializing');
+    vn.set(Contents.CA_INITIALIZING, 'Máy đang được khởi tạo');
+
+    en.set(
+        Contents.CA_RELOAD_TRY_AGAIN,
+        'Please wait in 5 minutes & try later'
+    );
+    vn.set(Contents.CA_RELOAD_TRY_AGAIN, 'Reload và thử lại sau 5 phút');
+
+    en.set(
+        Contents.CA_FIRST_QUEUED,
+        'You are first in line in the queue, please keep the tab open!'
+    );
+    vn.set(
+        Contents.CA_FIRST_QUEUED,
+        'Bạn đang ở vị trí đầu tiên trong hàng chờ, vui lòng giữ tab!        '
+    );
+
+    en.set(Contents.CA_POS_QUEUED_FRIST, 'You are currently');
+    vn.set(Contents.CA_POS_QUEUED_FRIST, 'Bạn đang ở vị trí thứ');
+
+    en.set(
+        Contents.CA_POS_QUEUED_LAST,
+        ' in the queue, please keep the tab open!'
+    );
+    vn.set(Contents.CA_POS_QUEUED_LAST, ' trong hàng chờ, vui lòng giữ tab!');
+
+    en.set(
+        Contents.CA_CONNECT_NOTIFY,
+        'If the wait exceeds 4 minutes, please reload and reconnect.       '
+    );
+    vn.set(
+        Contents.CA_CONNECT_NOTIFY,
+        ' Nếu đợi quá 4 phút, hãy reload & kết nối lại.'
+    );
+
+    // TEMPALTE APP
+
+    en.set(
+        Contents.TA_TILE,
+        'A new machine has been pre-created with the game already installed.        '
+    );
+    vn.set(Contents.TA_TILE, 'Tạo sẵn máy mới đã được tải sẵn game        ');
+
+    en.set(
+        Contents.TA_SUBTITLE,
+        'Please note that the game account is not included.'
+    );
+    vn.set(Contents.TA_SUBTITLE, 'Lưu ý không kèm theo tài khoản game        ');
+
+    en.set(Contents.TA_CRATE_NEW_PC, 'Create new PC');
+    vn.set(Contents.TA_CRATE_NEW_PC, 'Tạo máy mới');
+
+    en.set(
+        Contents.TA_CRATE_NEW_PC_NOTIFY,
+        'Creating a new machine will delete the existing data on the old one. Please make sure to provide a clear reminder before clicking.        '
+    );
+    vn.set(
+        Contents.TA_CRATE_NEW_PC_NOTIFY,
+        'Tạo máy sẽ xoá dữ liệu hiện có trên máy cũ, dữ liệu không thể lấy lại. Vui lòng cần nhắc.'
+    );
+
+    en.set(Contents.TA_POPUP_TITLE, 'Are you sure?');
+    vn.set(Contents.TA_POPUP_TITLE, 'Bạn có chắc?');
+
+    en.set(
+        Contents.TA_POPUP_SUBTITLE,
+        'Creating a new machine will delete the existing data on the old one.'
+    );
+    vn.set(
+        Contents.TA_POPUP_SUBTITLE,
+        'Tạo máy sẽ xoá dữ liệu hiện có trên máy cũ'
+    );
+
+    en.set(Contents.TA_POPUP_CLOSE, 'Close');
+    vn.set(Contents.TA_POPUP_CLOSE, 'Đóng');
+
+    en.set(Contents.TA_POPUP_CONTINUE, 'Continue');
+    vn.set(Contents.TA_POPUP_CONTINUE, 'Tiếp tục');
+
+    en.set(Contents.PAYMENT_APP, 'Payment');
+    vn.set(Contents.PAYMENT_APP, 'Thanh toán');
+
+    en.set(Contents.GUIDELINE_APP, 'Guideline');
+    vn.set(Contents.GUIDELINE_APP, 'Hướng dẫn');
+
+    en.set(Contents.TEMPLATE_APP, 'Template');
+    vn.set(Contents.TEMPLATE_APP, 'Template');
+    en.set(Contents.CONNECT_APP, 'Connect to YourPC');
+    vn.set(Contents.CONNECT_APP, 'Máy tính cá nhân');
+    en.set(Contents.WORKER_APP, 'Worker');
+    vn.set(Contents.WORKER_APP, 'Worker');
+
+    en.set(Contents.FANPAGE_APP, 'Fanpage');
+    vn.set(Contents.FANPAGE_APP, 'Fanpage');
+    en.set(Contents.DISCORD_APP, 'Discord');
+    vn.set(Contents.DISCORD_APP, 'Discord');
 
     en.set(
         Contents.PAYMENT_FOLLOW_UP_TITLE,
@@ -905,6 +1040,8 @@ export function language() {
 
     en.set(Contents.MAXIMUM_QUALITY, 'Maximum quality');
     vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng tối đa');
+
+    // Connecta App
 
     return t;
 }

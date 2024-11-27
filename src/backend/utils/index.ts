@@ -1,10 +1,11 @@
 import { DevEnv } from '../../../src-tauri/api/database';
+import { Contents } from '../reducers/locales';
 import { MenuOption } from '../reducers/menu';
 import { externalLink } from './constant';
 
 export type AppData = {
     id: string;
-    name: string;
+    name: Contents[];
     action: string;
     payload?: any;
 
@@ -23,14 +24,14 @@ export type AppData = {
 
 const apps: AppData[] = [
     {
-        name: 'Worker Profile',
+        name: [Contents.WORKER_APP],
         id: 'worker',
         action: 'apps/app_toggle',
         image: 'connectPc',
         payload: 'worker'
     },
     {
-        name: 'Hướng dẫn',
+        name: [Contents.GUIDELINE_APP],
         id: 'guideline',
         action: 'apps/app_toggle',
         payload: 'guideline',
@@ -38,19 +39,19 @@ const apps: AppData[] = [
         size: 'full'
     },
     {
-        name: 'Thanh toán',
+        name: [Contents.PAYMENT_APP],
         id: 'payment',
         action: 'apps/app_toggle',
         payload: 'payment'
     },
     {
-        name: 'Template',
+        name: [Contents.TEMPLATE_APP],
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store'
     },
     {
-        name: 'Máy tính cá nhânn',
+        name: [Contents.CONNECT_APP],
         id: 'connectPc',
         action: 'apps/app_toggle',
         image: 'worker',
@@ -59,14 +60,14 @@ const apps: AppData[] = [
     },
 
     {
-        name: 'Discord',
+        name: [Contents.DISCORD_APP],
         id: 'discord',
         action: 'apps/app_external',
         payload: externalLink.DISCORD_LINK,
         mono: true
     },
     {
-        name: 'Thinkmay Fanpage',
+        name: [Contents.FANPAGE_APP],
         id: 'facebook',
         action: 'apps/app_external',
         payload: externalLink.FACEBOOK_LINK,
@@ -76,14 +77,14 @@ const apps: AppData[] = [
 var { taskbar, desktop } = {
     taskbar: [],
     desktop: [
-        'Local Connect',
-        'Discord',
-        'Hướng dẫn',
-        'Thinkmay Fanpage',
-        'Template',
-        'Máy tính cá nhânn',
-        'Thanh toán',
-        ...(DevEnv ? ['Worker Profile'] : [])
+        //'Local Connect',
+        'discord',
+        'guideline',
+        'facebook',
+        'store',
+        'connectPc',
+        'payment',
+        ...(DevEnv ? ['worker'] : [])
     ]
 };
 
@@ -95,14 +96,12 @@ apps.map((x) => {
 });
 
 export const taskApps = apps
-    .filter((x) => taskbar.includes(x.name))
+    .filter((x) => taskbar.includes(x.id))
     .map((x) => x.id);
 
 export const desktopApps = apps
-    .filter((x) => desktop.includes(x.name))
-    .sort((a, b) =>
-        desktop.indexOf(a.name) > desktop.indexOf(b.name) ? 1 : -1
-    )
+    .filter((x) => desktop.includes(x.id))
+    .sort((a, b) => (desktop.indexOf(a.id) > desktop.indexOf(b.id) ? 1 : -1))
     .map((x) => x.id);
 
 export const allApps = apps;

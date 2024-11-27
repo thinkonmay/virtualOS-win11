@@ -5,6 +5,7 @@ import {
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
+import { Contents } from '../../../backend/reducers/locales';
 import {
     Icon,
     Image,
@@ -35,7 +36,7 @@ export const MicroStore = () => {
                 app={wnapp.id}
                 icon={wnapp.id}
                 size={wnapp.size}
-                name={wnapp.name}
+                name={'Template'}
             />
             <div className="windowScreen flex relative">
                 <LazyComponent show={!wnapp.hide}>
@@ -75,6 +76,7 @@ const DetailPage = ({ app }) => {
         }
     } = app;
 
+    const t = useAppSelector((state) => state.globals.translation);
     const download = () => {
         appDispatch(
             change_template({
@@ -88,8 +90,6 @@ const DetailPage = ({ app }) => {
             popup_open({
                 type: 'yesNo',
                 data: {
-                    title: 'Bạn có chắc muốn tạo máy mới',
-                    content: 'Tạo máy sẽ xoá dữ liệu hiện có trên máy cũ',
                     template: code_name
                 }
             })
@@ -121,13 +121,10 @@ const DetailPage = ({ app }) => {
                                 onClick={handleDownload}
                                 className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
                             >
-                                Tạo máy mới
+                                {t[[Contents.TA_CRATE_NEW_PC]]}
                             </button>
-                            <div className="text-l mt-6">
-                                Tạo máy sẽ <b>xóa</b> dữ liệu <br /> hiện có
-                                trên máy cũ
-                                <br />{' '}
-                                <b className="mt-2">Cân nhắc trước khi click</b>
+                            <div className="text-l p-3  mt-6">
+                                {t[Contents.TA_CRATE_NEW_PC_NOTIFY]}
                             </div>
                         </>
                     ) : (
@@ -172,7 +169,7 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
     const [searchtxt, setShText] = useState('');
 
-    const t = (e) => {};
+    const t = useAppSelector((state) => state.globals.translation);
     const handleSearchChange = (e) => {
         setShText(e.target.value);
     };
@@ -180,11 +177,9 @@ const DownPage = ({ action }) => {
     return (
         <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
             <div className="flex flex-col justify-center mt-4">
-                <b className=" storeHeading font-bold">
-                    Tạo máy mới đã tải sẵn game
-                </b>
+                <b className=" storeHeading font-bold">{t[Contents.TA_TILE]}</b>
                 <p className="storeSubHeading text-center">
-                    *Không kèm theo tài khoản game
+                    *{t[Contents.TA_SUBTITLE]}
                 </p>
             </div>
             {/* <div className="flex flex-wrap gap-5 w-[10rem] ">

@@ -60,8 +60,6 @@ type PopupData =
     | {
           type: 'yesNo';
           data: {
-              title: string;
-              content: string;
               template: string;
           };
       };
