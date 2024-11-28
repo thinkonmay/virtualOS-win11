@@ -9,6 +9,7 @@ import {
 } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
+import { externalLink } from '../../../backend/utils/constant';
 
 const listSubs = [
     {
@@ -28,7 +29,7 @@ const listSubs = [
         ]
     },
     {
-        active: true,
+        active: false,
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: '299',
@@ -287,8 +288,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         ) : null}
                         <button
                             onClick={() => {
-                                if (status == 'NO_ACTION' && !sub.active)
-                                    return;
+                                if (status == 'NO_ACTION' && !sub.active) {
+                                    if (sub.name == 'week1') return;
+                                    window.open(
+                                        externalLink.MESSAGE_LINK,
+                                        '_blank'
+                                    );
+                                }
                                 onChooseSub(sub.name);
                             }}
                             type="button"
@@ -310,7 +316,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
-                                ? 'Đang đóng!'
+                                ? sub.name == 'week1'
+                                    ? 'Đang đóng'
+                                    : 'Đặt trước'
                                 : status != 'NO_ACTION'
                                   ? 'Gia hạn'
                                   : 'Mua Ngay'}
