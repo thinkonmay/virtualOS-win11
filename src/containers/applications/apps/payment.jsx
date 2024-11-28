@@ -290,7 +290,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             onClick={() => {
                                 if (status == 'NO_ACTION' && !sub.active) {
                                     if (sub.name == 'week1') return;
-                                    window.open(
+                                    return window.open(
                                         externalLink.MESSAGE_LINK,
                                         '_blank'
                                     );
