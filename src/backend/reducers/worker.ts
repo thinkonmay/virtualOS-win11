@@ -102,7 +102,7 @@ export const workerAsync = {
             const { vcpu, ram } =
                 status == 'PAID'
                     ? subscription.local_metadata
-                    : { vcpu: '10', ram: '16' };
+                    : { vcpu: '8', ram: '16' };
 
             await appDispatch(worker_refresh());
             appDispatch(
@@ -222,7 +222,7 @@ export const workerAsync = {
                     computer,
                     volume_id,
                     `${ram ?? 16}`,
-                    `${vcpu ?? 12}`,
+                    `${vcpu ?? 8}`,
                     workerAsync.showPosition
                 );
                 if (!(resp instanceof Error))
