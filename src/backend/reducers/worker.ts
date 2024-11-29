@@ -222,7 +222,7 @@ export const workerAsync = {
                     computer,
                     volume_id,
                     `${ram ?? 16}`,
-                    `${vcpu ?? 8}`,
+                    `${vcpu ?? 12}`,
                     workerAsync.showPosition
                 );
                 if (!(resp instanceof Error))
