@@ -102,7 +102,7 @@ export const workerAsync = {
             const { vcpu, ram } =
                 status == 'PAID'
                     ? subscription.local_metadata
-                    : { vcpu: '12', ram: '16' };
+                    : { vcpu: '10', ram: '16' };
 
             await appDispatch(worker_refresh());
             appDispatch(
