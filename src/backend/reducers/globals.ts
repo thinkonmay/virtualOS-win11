@@ -270,7 +270,8 @@ const initialState = {
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     games: [] as IGame[],
-    domains: [] as Domain[]
+    domains: [] as Domain[],
+    opening: null as IGame | null
 };
 
 export const globalAsync = {
@@ -369,8 +370,8 @@ export const globalSlice = createSlice({
                 });
             });
         },
-        update_store_data: (state, payload: any) => {
-            state.games = payload;
+        open_game: (state, payload: PayloadAction<IGame>) => {
+            state.opening = payload.payload;
         },
         show_tutorial: (state, action: PayloadAction<TutorialType>) => {
             state.tutorial = action.payload;

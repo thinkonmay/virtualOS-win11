@@ -211,7 +211,10 @@ export enum Contents {
     TA_POPUP_TITLE,
     TA_POPUP_SUBTITLE,
     TA_POPUP_CLOSE,
-    TA_POPUP_CONTINUE
+    TA_POPUP_CONTINUE,
+
+    TA_PAYMENT,
+    TA_PAYMENT_DESC
 }
 
 export function language() {
@@ -351,6 +354,23 @@ export function language() {
     en.set(Contents.TA_POPUP_CONTINUE, 'Continue');
     vn.set(Contents.TA_POPUP_CONTINUE, 'Tiếp tục');
     id.set(Contents.TA_POPUP_CONTINUE, 'Lanjutkan');
+
+    en.set(Contents.TA_PAYMENT, 'Payment');
+    vn.set(Contents.TA_PAYMENT, 'Thanh toán');
+    id.set(Contents.TA_PAYMENT, 'Payment');
+
+    en.set(
+        Contents.TA_PAYMENT_DESC,
+        'You need to subscribe to Thinkmay before installation'
+    );
+    vn.set(
+        Contents.TA_PAYMENT_DESC,
+        'Bạn cần thanh toán dịch vụ trước khi cài đặt game'
+    );
+    id.set(
+        Contents.TA_PAYMENT_DESC,
+        'You need to subscribe to Thinkmay before installation'
+    );
 
     en.set(Contents.PAYMENT_APP, 'Payment');
     vn.set(Contents.PAYMENT_APP, 'Thanh toán');

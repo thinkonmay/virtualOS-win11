@@ -11,9 +11,12 @@ import {
     appDispatch,
     app_toggle,
     direct_access,
+    fetch_store,
     menu_show,
+    open_game,
     pointer_lock,
     set_fullscreen,
+    store,
     useAppSelector
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
@@ -59,8 +62,9 @@ function App() {
 
     useEffect(() => {
         const url = new URL(window.location.href);
-
         const ref = url.searchParams.get('ref');
+        const game = url.searchParams.get('game');
+
         if (ref != null) {
             appDispatch(direct_access({ ref }));
             window.onbeforeunload = (e) => {
@@ -87,6 +91,20 @@ function App() {
             appDispatch(app_toggle('payment'));
             setDelayPayment(true);
             update_ui = false;
+        }
+
+        if (game != null) {
+            update_ui = false;
+            setDelayPayment(true);
+            appDispatch(fetch_store()).then(() => {
+                const target = store
+                    .getState()
+                    .globals.games.find((x) => x.code_name == game);
+                if (target != undefined) {
+                    appDispatch(open_game(target));
+                    appDispatch(app_toggle('store'));
+                }
+            });
         }
 
         const now = () => new Date().getTime();

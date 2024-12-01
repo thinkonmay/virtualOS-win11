@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { login } from '../../../backend/actions';
 import {
+    app_toggle,
     appDispatch,
-    change_template,
+    open_game,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
@@ -18,7 +19,8 @@ export const MicroStore = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'store')
     );
-    const [opapp, setOpapp] = useState(null);
+
+    const game = useAppSelector((state) => state.globals.opening);
 
     return (
         <div
@@ -43,18 +45,20 @@ export const MicroStore = () => {
                     <div className="storeNav h-full w-20 flex flex-col">
                         <Icon
                             fafa="faHome"
-                            onClick={() => setOpapp(null)}
+                            onClick={() => appDispatch(open_game(null))}
                             click="page1"
                             width={20}
-                            payload={opapp == null}
+                            payload={game == null}
                         />
                     </div>
 
                     <div className="restWindow msfull win11Scroll">
-                        {opapp == null ? (
-                            <DownPage action={setOpapp} />
+                        {game == null ? (
+                            <DownPage
+                                action={(app) => appDispatch(open_game(app))}
+                            />
                         ) : (
-                            <DetailPage app={opapp} />
+                            <DetailPage app={game} />
                         )}
                     </div>
                 </LazyComponent>
@@ -64,6 +68,11 @@ export const MicroStore = () => {
 };
 
 const DetailPage = ({ app }) => {
+    const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
+    const subscribed = useAppSelector(
+        (state) => state.user.subscription.status == 'PAID'
+    );
+    const t = useAppSelector((state) => state.globals.translation);
     const {
         name,
         code_name,
@@ -76,15 +85,6 @@ const DetailPage = ({ app }) => {
         }
     } = app;
 
-    const t = useAppSelector((state) => state.globals.translation);
-    const download = () => {
-        appDispatch(
-            change_template({
-                template: code_name
-            })
-        );
-    };
-
     const handleDownload = () => {
         appDispatch(
             popup_open({
@@ -96,9 +96,6 @@ const DetailPage = ({ app }) => {
         );
     };
 
-    const valid = useAppSelector(
-        (state) => state.user.subscription.status == 'PAID'
-    );
 
     return (
         <div className="detailpage w-full absolute top-0 flex">
@@ -115,7 +112,7 @@ const DetailPage = ({ app }) => {
                     <div className="text-2xl font-semibold mt-6">{name}</div>
                     <div className="text-l font-bold mt-6">{publisher}</div>
                     <div className="text-l font-thin mt-6">Release {date}</div>
-                    {valid ? (
+                    {subscribed ? (
                         <>
                             <button
                                 onClick={handleDownload}
@@ -127,10 +124,27 @@ const DetailPage = ({ app }) => {
                                 {t[Contents.TA_CRATE_NEW_PC_NOTIFY]}
                             </div>
                         </>
+                    ) : !not_logged_in ? (
+                        <>
+                            <button
+                                onClick={() =>
+                                    appDispatch(app_toggle('payment'))
+                                }
+                                className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
+                            >
+                                {t[Contents.TA_PAYMENT]}
+                            </button>
+                            <div className="text-l p-3  mt-6">
+                                {t[Contents.TA_PAYMENT_DESC]}
+                            </div>
+                        </>
                     ) : (
-                        <div className="text-l font-thin mt-6">
-                            Bạn cần đăng kí dịch vụ <br /> trước khi cài đặt
-                        </div>
+                        <button
+                            onClick={() => login('google', false)}
+                            className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
+                        >
+                            login
+                        </button>
                     )}
                 </div>
             </div>
@@ -166,13 +180,8 @@ const DetailPage = ({ app }) => {
 };
 
 const DownPage = ({ action }) => {
-    const games = useAppSelector((state) => state.globals.games);
-    const [searchtxt, setShText] = useState('');
-
     const t = useAppSelector((state) => state.globals.translation);
-    const handleSearchChange = (e) => {
-        setShText(e.target.value);
-    };
+    const games = useAppSelector((state) => state.globals.games);
 
     return (
         <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
@@ -182,17 +191,6 @@ const DownPage = ({ action }) => {
                     *{t[Contents.TA_SUBTITLE]}
                 </p>
             </div>
-            {/* <div className="flex flex-wrap gap-5 w-[10rem] ">
-                <div className="relative srchbar right-0 text-sm ">
-                    <Icon className="searchIcon" src="search" width={12} />
-                    <input
-                        type="text"
-                        onChange={handleSearchChange}
-                        value={searchtxt}
-                        placeholder="Search"
-                    />
-                </div>
-            </div> */}
 
             <div className="appscont mt-8">
                 {games.map((game, i) => (
