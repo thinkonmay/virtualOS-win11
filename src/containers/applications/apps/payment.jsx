@@ -7,9 +7,9 @@ import {
     get_payment,
     useAppSelector
 } from '../../../backend/reducers';
+import { externalLink } from '../../../backend/utils/constant';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
-import { externalLink } from '../../../backend/utils/constant';
 
 const listSubs = [
     {
@@ -33,8 +33,8 @@ const listSubs = [
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: '299',
-        total_time: '150',
-        under_price: 'Giới hạn 150h sử dụng trong tháng',
+        total_time: '120',
+        under_price: 'Giới hạn 120h sử dụng trong tháng',
         name: 'month1',
         period: 'tháng',
         bonus: [
@@ -44,7 +44,7 @@ const listSubs = [
             'Không giới hạn thời gian mỗi session',
             'Có hàng chờ'
         ],
-        storage: ['50GB: 70k/tháng', '100GB: 120k/tháng']
+        storage: ['50GB: 60k/tháng', '100GB: 110k/tháng']
     },
     {
         active: true,
@@ -121,13 +121,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-              ? appDispatch(
+                ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-              : appDispatch(
+                : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -309,19 +309,18 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${
-                                                                !sub.active
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
+                                                            ${!sub.active
+                                    ? 'bg-red-500'
+                                    : 'bg-[#0067c0]'
+                                }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week1'
                                     ? 'Đang đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
+                                    ? 'Gia hạn'
+                                    : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
