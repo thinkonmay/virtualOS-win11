@@ -23,6 +23,7 @@ import {
 } from '../../backend/utils/dispatch';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
+import { externalLink } from '../../backend/utils/constant';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -107,7 +108,8 @@ const Taskbar = () => {
 
                     <div
                         className="p-2 prtclk handcr hvlight flex rounded "
-                        onClick={customDispatch}
+                        // onClick={customDispatch}
+                        onClick={() => window.open(externalLink.MESSAGE_LINK)}
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
                     >
@@ -203,7 +205,8 @@ const Taskbar = () => {
                     >
                         <div
                             className="supportNow p-2 prtclk handcr hvlight flex rounded "
-                            onClick={clickDispatch}
+                            // onClick={clickDispatch}
+                            onClick={() => window.open(externalLink.MESSAGE_LINK)}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
