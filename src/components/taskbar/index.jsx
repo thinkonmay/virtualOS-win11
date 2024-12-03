@@ -12,18 +12,19 @@ import {
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
+    startogg,
     task_hide,
     task_show,
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
+import { externalLink } from '../../backend/utils/constant';
 import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
-import { externalLink } from '../../backend/utils/constant';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -138,14 +139,23 @@ const Taskbar = () => {
                     <audio src={ringSound}></audio>
                     <div className="tasksCont" data-side={tasks.align}>
                         <div className="tsbar" onMouseOut={hidePrev}>
-                            <Icon
-                                className="infoBtn tsIcon tsIconInvert"
-                                src="home"
-                                width={32}
-                                click="startmenu/startogg"
+                            <div
                                 style={{ '--prefix': 'START' }}
-                            />
+                                className='settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight'
+                                onClick={() => {
+                                    appDispatch(startogg())
 
+                                }}
+                            >
+                                <Icon
+                                    className="infoBtn tsIcon tsIconInvert"
+                                    src="home"
+                                    width={32}
+                                //click="startmenu/startogg"
+                                //style={{ '--prefix': 'START' }}
+                                />
+                                <p className='text-xm font-semibold'>Tài khoản</p>
+                            </div>
                             {defaultapps.map((task, i) => {
                                 const isHidden = task.hide;
                                 const isActive = task.z == apps.hz;
@@ -198,9 +208,8 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${
-                            open ? 'slide-in' : 'slide-out'
-                        } taskright`}
+                        className={`${open ? 'slide-in' : 'slide-out'
+                            } taskright`}
                         data-remote={remote.active}
                     >
                         <div

@@ -195,7 +195,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                                1000
+                                            1000
                                         )}
                                     </span>
                                 </div>
@@ -224,8 +224,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                                remote.framerate +
-                                                MIN_FRAMERATE
+                                            remote.framerate +
+                                            MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -243,8 +243,26 @@ export const SidePane = () => {
                                 </div>
                             </div>
                         </div>
+                        <GamePadSetting></GamePadSetting>
+
                     </div>
-                    <GamePadSetting></GamePadSetting>
+
+                    <div className='reduceLagCtn'>
+
+                        <div className='wrapper '>
+                            <span className='italic font-semibold underline'>Làm sao để giảm giật lag khi chơi game?</span>
+                            <div className='child inset'>
+                                <h3>Cách giảm giật lag khi chơi game</h3>
+                                <ul className='my-4'>
+                                    <li>Cách 1:</li>
+                                    <li>Cách 2:</li>
+                                </ul>
+                                <p className='italic'>Nếu các cách trên không giúp giảm giật lag, bạn vui lòng liên hệ <b>fanpage Thinkmay</b> để được hỗ trợ nhé! </p>
+                            </div>
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
         </>
@@ -380,8 +398,8 @@ function MobileComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.mobileControl.buttons
             : sidepane.mobileControl.buttons.filter(
-                  (x) => x.action != 'shutDownVm'
-              );
+                (x) => x.action != 'shutDownVm'
+            );
 
     return (
         <>
@@ -455,8 +473,8 @@ function DesktopComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.desktopControl.buttons
             : sidepane.desktopControl.buttons.filter(
-                  (x) => x.action != 'shutDownVm'
-              );
+                (x) => x.action != 'shutDownVm'
+            );
 
     return (
         <>
@@ -498,7 +516,27 @@ function DesktopComponent({ pnstates }) {
                                 />
                             )}
                         </div>
-                        <div className="qktext">{t[qk.name]}</div>
+                        <div className="qktext flex items-center gap-2">{t[qk.name]}
+
+                            {
+
+                                qk.explain ? <div className="qkExplainCtn  border rounded-sm">
+                                    ?
+                                    <div className="qkExplainText">
+                                        {t[qk.explain]}
+                                    </div>
+                                </div> : null
+
+                            }
+                        </div>
+
+                        {/*{
+                            qk.explain ? <div className="qkExplain">
+                                {
+                                    <div className="qktext">{t[qk.name]}</div>
+                                }
+                            </div> : null
+                        }*/}
                     </div>
                 ))}
                 {sidepane.desktopControl.shortcuts.map((qk, idx) => (
@@ -512,6 +550,7 @@ function DesktopComponent({ pnstates }) {
                         >
                             {qk.name}
                         </div>
+
                     </div>
                 ))}
             </div>

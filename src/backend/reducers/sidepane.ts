@@ -187,7 +187,8 @@ const listDesktopSettings = [
         src: 'MdOutlineKeyboard',
         name: [Contents.SCAN_CODE],
         state: 'scancode',
-        action: 'remote/scancode_toggle'
+        action: 'remote/scancode_toggle',
+        explain: [Contents.SCAN_CODE_EXPLAIN]
     },
     {
         ui: true,
@@ -236,23 +237,23 @@ const listDesktopSettings = [
     ...(!DevEnv
         ? []
         : [
-              {
-                  ui: true,
-                  id: 'toggle_remote_async',
-                  src: 'FiVideoOff',
-                  name: [Contents.VIDEO_TOGGLE],
-                  state: 'active',
-                  action: 'toggle_remote_async'
-              },
-              {
-                  ui: true,
-                  id: 'reset',
-                  src: 'MdResetTv',
-                  name: [Contents.RESET_APP],
-                  state: 'hard_reset_async',
-                  action: 'hard_reset_async'
-              }
-          ])
+            {
+                ui: true,
+                id: 'toggle_remote_async',
+                src: 'FiVideoOff',
+                name: [Contents.VIDEO_TOGGLE],
+                state: 'active',
+                action: 'toggle_remote_async'
+            },
+            {
+                ui: true,
+                id: 'reset',
+                src: 'MdResetTv',
+                name: [Contents.RESET_APP],
+                state: 'hard_reset_async',
+                action: 'hard_reset_async'
+            }
+        ])
 ];
 
 const initialState: Data = {
