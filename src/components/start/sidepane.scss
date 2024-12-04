@@ -451,8 +451,8 @@
            font-size: 0.85rem;
 
            &:hover {
-             background: var(--bg3);
-             opacity: 1;
+             // background: var(--bg3);
+             // opacity: 1;
            }
 
            &:active {
@@ -463,6 +463,20 @@
 
          .qktext {
            display: none;
+         }
+
+         .qkExplainTextMobile {
+
+           position: absolute;
+           top: 0;
+           left: -100px;
+           width: 100px;
+           padding: 8px;
+           z-index: 2;
+           background: rgb(0 0 0 / 80%);
+           color: white;
+           border-radius: 4px;
+
          }
        }
      }

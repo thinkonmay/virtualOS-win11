@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
@@ -404,6 +404,89 @@ const GamePadSetting = () => {
     );
 };
 
+const MobileBtn = ({ qk, pnstates }) => {
+    const t = useAppSelector((state) => state.globals.translation);
+
+    const [isShowExplain, setShowExplain] = useState(false);
+    const touchTimerRef = useRef(null);
+
+    const handleTouchStart = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+        }
+
+        touchTimerRef.current = setTimeout(() => {
+            setShowExplain(true);
+        }, 1000); // 1 giây
+    };
+
+    const handleTouchEnd = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+            touchTimerRef.current = null;
+        }
+        setShowExplain(false)
+    };
+
+    return (
+        <div className="qkGrp">
+            <div
+                style={{
+                    ...qk.style
+                }}
+                className={`qkbtn handcr prtclk ${qk.id}`}
+                onClick={clickDispatch}
+                data-action={qk.action}
+                data-payload={qk.payload || qk.state}
+                data-state={pnstates[qk.state]}
+
+                onTouchEnd={handleTouchEnd}
+                onTouchStart={handleTouchStart}
+            >
+                {Object.keys(md).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = md[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : Object.keys(fi).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = fi[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : Object.keys(fa).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = fa[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : (
+                    <Icon
+                        className="quickIcon"
+                        ui={qk.ui}
+                        src={qk.src}
+                        width={14}
+                        invert={pnstates[qk.state] ? true : null}
+                    />
+                )}
+            </div>
+            <div className="qktext">{t[qk.name]}</div>
+
+            {
+                isShowExplain ? <div className="qkExplainTextMobile">
+                    <h6 className='text-xs text-center'>{t[qk.name]}</h6>
+                    {
+                        qk.explain ? <p className='text-[8px] text-center mt-1'>
+                            {t[qk.explain]}
+                        </p> : null
+                    }
+
+                </div> : null
+            }
+        </div>
+    )
+
+}
+
+
 function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
     const t = useAppSelector((state) => state.globals.translation);
@@ -422,44 +505,7 @@ function MobileComponent({ pnstates }) {
         <>
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
-                    <div key={idx} className="qkGrp">
-                        <div
-                            style={{
-                                ...qk.style
-                            }}
-                            className={`qkbtn handcr prtclk ${qk.id}`}
-                            onClick={clickDispatch}
-                            data-action={qk.action}
-                            data-payload={qk.payload || qk.state}
-                            data-state={pnstates[qk.state]}
-                        >
-                            {Object.keys(md).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = md[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : Object.keys(fi).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = fi[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : Object.keys(fa).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = fa[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : (
-                                <Icon
-                                    className="quickIcon"
-                                    ui={qk.ui}
-                                    src={qk.src}
-                                    width={14}
-                                    invert={pnstates[qk.state] ? true : null}
-                                />
-                            )}
-                        </div>
-                        <div className="qktext">{t[qk.name]}</div>
-                    </div>
+                    <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
                 {sidepane.mobileControl.shortcuts.map((qk, idx) => (
                     <div key={idx} className="qkGrp t">
