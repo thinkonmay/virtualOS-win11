@@ -74,6 +74,7 @@
 
    .mainContent {
      position: relative;
+     z-index: 1;
    }
 
    &.bd-blur {
@@ -88,15 +89,25 @@
      transition: all cubic-bezier(0.62, 0, 0.32, 1) 150ms;
    }
 
+   .gamepadSettingWrapper {
+     position: absolute;
+     right: 0;
+     left: 0;
+     bottom: 0;
+     top: 0;
+     overflow: hidden;
+   }
+
    .gamepadSetting {
      position: absolute;
      right: 0;
      left: 0;
      bottom: 0;
      top: 0;
-     z-index: 2;
+     z-index: 5;
      transition: all ease-in-out 0.5s;
 
+     border-radius: 8px;
      transform: translateX(100%);
 
      padding: 0 var(--padding);
@@ -129,11 +140,9 @@
 
    .quickSettings {
      background: var(--bg2);
-     position: relative;
      height: 100%;
      min-width: 100%;
      display: flex;
-     overflow: hidden;
      flex-direction: column;
      gap: 1rem;
      border-radius: 0.5rem;
@@ -407,7 +416,7 @@
      right: 12px;
      width: 240px;
      height: calc(100% - 56px);
-     max-height: 294px;
+     max-height: 300px;
 
 
      .quickSettings {
@@ -419,7 +428,7 @@
        --padding: 1rem;
 
        padding-top: calc(var(--padding));
-       padding-bottom: 2.4rem;
+       padding-bottom: 1.5rem;
      }
 
      .listBtn {
