@@ -12,6 +12,7 @@ import {
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
+    sidepane_panetogg,
     startogg,
     task_hide,
     task_show,
@@ -32,7 +33,8 @@ const Taskbar = () => {
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
     const apps = useAppSelector((state) => state.apps);
-    const [open, setOpen] = useState(true);
+    const sidepaneOpen = useAppSelector((state) => !state.sidepane.hide);
+
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
     );
@@ -82,9 +84,10 @@ const Taskbar = () => {
     }, [remote.ready]);
 
     const toggleControl = (e) => {
-        setOpen((old) => !old);
+        //setOpen((old) => !old);
 
-        afterMath(e);
+        appDispatch(sidepane_panetogg())
+        //afterMath(e);
     };
 
     const customDispatch = customClickDispatch((e) => afterMath(e));
@@ -92,11 +95,11 @@ const Taskbar = () => {
         <>
             {remote.active ? (
                 <div
-                    className={`${open ? 'slide-in' : 'slide-out'} taskright`}
+                    className={`${sidepaneOpen ? 'slide-in' : 'slide-out'} taskright`}
                     data-remote={remote.active}
                 >
                     <button className="btn-show" onClick={toggleControl}>
-                        {open ? (
+                        {sidepaneOpen ? (
                             <MdArrowForwardIos
                                 style={{ fontSize: '1.2rem' }}
                             ></MdArrowForwardIos>
@@ -108,6 +111,7 @@ const Taskbar = () => {
                     </button>
 
                     <div
+                        id='supportNow'
                         className="p-2 prtclk handcr hvlight flex rounded "
                         // onClick={customDispatch}
                         onClick={() => window.open(externalLink.MESSAGE_LINK)}
@@ -120,6 +124,7 @@ const Taskbar = () => {
                         className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                         onClick={customDispatch}
                         style={{ '--prefix': 'PANE' }}
+                        id='settingBtn'
                         data-action="sidepane_panetogg"
                     >
                         <div className="text-xm flex gap-[4px] font-semibold">
@@ -208,7 +213,7 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${open ? 'slide-in' : 'slide-out'
+                        className={`${sidepaneOpen ? 'slide-in' : 'slide-out'
                             } taskright`}
                         data-remote={remote.active}
                     >
@@ -222,6 +227,7 @@ const Taskbar = () => {
                             <MdSupportAgent fontSize={'2rem'} />
                         </div>
                         <div
+                            //id='settingBtn'
                             className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                             onClick={clickDispatch}
                             style={{ '--prefix': 'PANE' }}

@@ -157,11 +157,6 @@ const updateUI = async () => {
         }
     }
     if (
-        localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true' &&
-        status == 'PAID'
-    ) {
-        appDispatch(show_tutorial('PaidTutorial'));
-    } else if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
         status != 'PAID'

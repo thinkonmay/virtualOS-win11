@@ -1,2 +1,3 @@
 export { NewTutorial } from './newUser';
-export { PaidTutorial } from './paidUser';
+//export { PaidTutorial } from './paidUser';
+

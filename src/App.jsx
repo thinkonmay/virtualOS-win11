@@ -21,7 +21,6 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
-import * as Tutorials from './components/onboarding/index';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { WidPane } from './components/start/widget';
 import Taskbar from './components/taskbar';
@@ -153,13 +152,13 @@ function App() {
         else if (remote.fullscreen) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
-        } else {
+        } else if (!isMobile() && !remote.active) {
             window.oncontextmenu = ctxmenu;
             window.onclick = afterMath;
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => {});
+        job?.catch(() => { });
 
         const handleState = () => {
             const fullscreen =
@@ -175,7 +174,7 @@ function App() {
         return () => {
             clearInterval(UIStateLoop);
         };
-    }, [remote.fullscreen, tutorial]);
+    }, [remote.fullscreen, tutorial, remote.active]);
 
     const exitpointerlock = () => {
         document.exitPointerLock();
@@ -231,12 +230,14 @@ function App() {
                             <Background />
                             <div className="desktop" data-menu="desk">
                                 <DesktopApp />
-                                {Object.keys(Tutorials)
+                                {/*{Object.keys(Tutorials)
                                     .filter((x) => x == tutorial)
                                     .map((key, idx) => {
                                         var WinApp = Tutorials[key];
                                         return <WinApp key={idx} />;
-                                    })}
+                                    })}*/}
+
+                                {/*<Tutorials.NewTutorial />*/}
                                 {Object.keys(Applications).map((key, idx) => {
                                     var WinApp = Applications[key];
                                     return key != 'Worker' || DevEnv ? (
