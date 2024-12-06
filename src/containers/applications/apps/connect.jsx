@@ -131,14 +131,23 @@ export const ConnectApp = () => {
                                 </button>
                             ) : available == 'ready' ||
                               available == 'started' ? (
-                                <button
-                                    onClick={connect}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    {available == 'ready'
-                                        ? t[Contents.CA_TURN_ON_PC]
-                                        : t[Contents.CA_CONNECT]}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={connect}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        {available == 'ready'
+                                            ? t[Contents.CA_TURN_ON_PC]
+                                            : t[Contents.CA_CONNECT]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        Bạn ấn "
+                                        {available == 'ready'
+                                            ? t[Contents.CA_TURN_ON_PC]
+                                            : t[Contents.CA_CONNECT]}
+                                        " để truy cập Cloud PC nhé!
+                                    </p>
+                                </>
                             ) : available == 'not_ready' ? (
                                 <button
                                     onClick={reload}

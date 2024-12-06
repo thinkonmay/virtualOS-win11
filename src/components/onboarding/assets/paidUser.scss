@@ -1,0 +1,143 @@
+.tooltipBody {
+	position: relative;
+	max-width: 480px;
+	background-color: #7B61FF;
+	color: white;
+	border-top-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+
+	padding: 16px;
+
+
+
+	.tooltipTitle {
+		font-size: 16px;
+		font-weight: 700;
+
+	}
+
+	.tooltipContent {
+		font-size: 14px;
+		margin-top: 12px;
+
+	}
+
+	.tooltipClose {
+
+		position: absolute;
+		top: -14px;
+		right: -16px;
+
+		font-size: 20px;
+		width: 32px;
+		height: 32px;
+		padding: 4px;
+		border-radius: 999px;
+		color: white;
+		background-color: #BE0B0B;
+
+
+	}
+
+	.tooltipStep {
+		font-size: 12px;
+		margin-bottom: 4px;
+	}
+
+	.tooltipSpacer {
+		position: absolute;
+		top: -14px;
+		right: 8%;
+		right: 32px;
+
+		display: flex;
+		gap: 8px;
+
+
+	}
+
+	.tooltipSkip {
+
+
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		border-radius: 99px;
+
+		font-size: 13px;
+		padding: 6px 24px;
+		background-color: #8e8150;
+		color: black;
+
+
+	}
+
+	.tooltipContinue {
+
+
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		border-radius: 99px;
+
+		font-size: 13px;
+		padding: 6px 24px;
+		background-color: #17E558;
+		color: black;
+
+	}
+
+}
+
+.tooltipBeacon {
+	animation:
+		pulse 1s ease-in-out infinite;
+	background-color: green;
+	border-radius: 0px;
+	display: inline-block;
+	height: 8rem;
+	width: 8rem;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+	}
+
+	55% {
+		background-color: rgba(255, 100, 100, 0.9);
+		transform: scale(1.6);
+	}
+}
+
+
+
+.guideUsingMouse {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 9;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+
+	.mouseLeft {
+		background: linear-gradient(270deg, rgba(217, 217, 217, 0.00) 20.6%, rgba(109, 223, 146, 0.30) 70.1%, rgba(23, 229, 88, 0.50) 100%);
+
+		color: white;
+		flex: 1;
+		display: flex;
+		align-items: center;
+		padding-left: 24px;
+	}
+
+	.mouseRight {
+		background: linear-gradient(90deg, rgba(217, 217, 217, 0.00) 20.6%, rgba(252, 85, 13, 0.3) 70.1%, rgba(254, 151, 107, 0.50) 100%);
+		color: white;
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding-right: 24px;
+	}
+}

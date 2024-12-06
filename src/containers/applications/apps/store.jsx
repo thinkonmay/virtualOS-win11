@@ -96,7 +96,6 @@ const DetailPage = ({ app }) => {
         );
     };
 
-
     return (
         <div className="detailpage w-full absolute top-0 flex">
             <div className="detailcont">
