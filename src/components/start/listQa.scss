@@ -1,0 +1,48 @@
+.listQAs {
+	--bg1: #dae2f2;
+	--bg2: #e6edf8;
+	--bg3: #fbfbfb;
+	--bg4: rgb(0 0 0 / 5%);
+	--sliderThumbClr: white;
+	--padding: 1.25rem;
+
+	position: absolute;
+	bottom: 56px;
+	right: 12px;
+	width: 376px;
+	border-radius: 0.5rem;
+	color: var(--dark-txt);
+	background: var(--bg1);
+	//overflow: hidden;
+	transition: cubic-bezier(0.62, 0, 0.32, 1) 250ms;
+	z-index: 9999;
+	transform: translateX(0);
+
+
+	&[data-hide="true"] {
+		transform: translateY(110%);
+		animation: overflow-hider 0s ease-in-out 150ms forwards;
+		transition: all cubic-bezier(0.62, 0, 0.32, 1) 150ms;
+	}
+
+
+
+}
+
+
+body[data-theme="dark"] .listQAs {
+	--bg1: #1c1c1c;
+	--bg2: #242424;
+	--bg3: #313131;
+	--bg4: rgb(255 255 255 / 3%);
+	--sliderThumbClr: #454545;
+
+	&.bd-blur {
+		--bg1: rgb(36 36 36 / 85%);
+		--bg2: rgb(255 255 255 / 3.33%);
+	}
+
+	.uicon {
+		filter: invert(1);
+	}
+}
