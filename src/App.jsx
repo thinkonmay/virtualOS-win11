@@ -158,7 +158,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => { });
+        job?.catch(() => {});
 
         const handleState = () => {
             const fullscreen =

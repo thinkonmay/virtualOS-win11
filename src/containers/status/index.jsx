@@ -13,14 +13,14 @@ export const Status = () => {
     const [isOpenStats, setOpenStats] = useState(false);
     const pinging = useAppSelector((state) => state.remote.ping_status);
 
-
-
-    const userCreatedAt = useAppSelector(state => state.user.subscription?.created_at)
+    const userCreatedAt = useAppSelector(
+        (state) => state.user.subscription?.created_at
+    );
 
     const createDate = dayjs(userCreatedAt);
     const targetDate = dayjs('2024-12-01 00:18');
 
-    const isAfter = createDate > targetDate
+    const isAfter = createDate > targetDate;
 
     console.log(isAfter);
     useEffect(() => {
@@ -37,8 +37,8 @@ export const Status = () => {
     useEffect(() => {
         setOpenStats(
             videoConnectivity == 'connecting' ||
-            videoConnectivity == 'close' ||
-            !pinging
+                videoConnectivity == 'close' ||
+                !pinging
         );
     }, [audioConnectivity, videoConnectivity, pinging]);
 
@@ -52,16 +52,15 @@ export const Status = () => {
     //        appDispatch(show_tutorial('PaidTutorial'));
     //    }
 
-
     //}, [audioConnectivity, videoConnectivity])
-
 
     return (
         <>
             <div className="relative">
                 <div
-                    className={`${isOpenStats ? 'slide-in' : 'slide-out'
-                        }  statusConnection`}
+                    className={`${
+                        isOpenStats ? 'slide-in' : 'slide-out'
+                    }  statusConnection`}
                 >
                     <p>
                         Video: <b>{videoConnectivity}</b>
@@ -83,12 +82,10 @@ export const Status = () => {
                 </div>
             </div>
 
-            {
-                localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true'
-                    &&
-                    videoConnectivity == 'connected'
-                    ? <PaidTutorial /> : null
-            }
+            {localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
+                'true' && videoConnectivity == 'connected' ? (
+                <PaidTutorial />
+            ) : null}
         </>
     );
 };

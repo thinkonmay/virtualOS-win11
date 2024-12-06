@@ -42,9 +42,9 @@ export const ConnectApp = () => {
     const { image, name } = useAppSelector((state) =>
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.usage?.template ?? {
-                image: null,
-                name: null
-            }
+                  image: null,
+                  name: null
+              }
             : { image: null, name: null }
     );
 
@@ -97,13 +97,13 @@ export const ConnectApp = () => {
                 style={
                     image != null
                         ? {
-                            backgroundImage: `url(${image})`,
-                            backgroundSize: 'cover'
-                        }
+                              backgroundImage: `url(${image})`,
+                              backgroundSize: 'cover'
+                          }
                         : {
-                            background:
-                                'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
-                        }
+                              background:
+                                  'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
+                          }
                 }
             >
                 <LazyComponent show={!wnapp.hide}>
@@ -130,7 +130,7 @@ export const ConnectApp = () => {
                                     Login
                                 </button>
                             ) : available == 'ready' ||
-                                available == 'started' ? (
+                              available == 'started' ? (
                                 <>
                                     <button
                                         onClick={connect}
@@ -140,9 +140,13 @@ export const ConnectApp = () => {
                                             ? t[Contents.CA_TURN_ON_PC]
                                             : t[Contents.CA_CONNECT]}
                                     </button>
-                                    <p className='text-xs text-center mt-3'>Bạn ấn "{available == 'ready'
-                                        ? t[Contents.CA_TURN_ON_PC]
-                                        : t[Contents.CA_CONNECT]}" để truy cập Cloud PC nhé!</p>
+                                    <p className="text-xs text-center mt-3">
+                                        Bạn ấn "
+                                        {available == 'ready'
+                                            ? t[Contents.CA_TURN_ON_PC]
+                                            : t[Contents.CA_CONNECT]}
+                                        " để truy cập Cloud PC nhé!
+                                    </p>
                                 </>
                             ) : available == 'not_ready' ? (
                                 <button
@@ -176,7 +180,6 @@ export const ConnectApp = () => {
                                     {t[Contents.PAYMENT_APP]}
                                 </button>
                             )}
-
                         </div>
                     </div>
                 </LazyComponent>

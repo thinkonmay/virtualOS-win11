@@ -86,7 +86,7 @@ const Taskbar = () => {
     const toggleControl = (e) => {
         //setOpen((old) => !old);
 
-        appDispatch(sidepane_panetogg())
+        appDispatch(sidepane_panetogg());
         //afterMath(e);
     };
 
@@ -95,7 +95,9 @@ const Taskbar = () => {
         <>
             {remote.active ? (
                 <div
-                    className={`${sidepaneOpen ? 'slide-in' : 'slide-out'} taskright`}
+                    className={`${
+                        sidepaneOpen ? 'slide-in' : 'slide-out'
+                    } taskright`}
                     data-remote={remote.active}
                 >
                     <button className="btn-show" onClick={toggleControl}>
@@ -111,7 +113,7 @@ const Taskbar = () => {
                     </button>
 
                     <div
-                        id='supportNow'
+                        id="supportNow"
                         className="p-2 prtclk handcr hvlight flex rounded "
                         // onClick={customDispatch}
                         onClick={() => window.open(externalLink.MESSAGE_LINK)}
@@ -124,7 +126,7 @@ const Taskbar = () => {
                         className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                         onClick={customDispatch}
                         style={{ '--prefix': 'PANE' }}
-                        id='settingBtn'
+                        id="settingBtn"
                         data-action="sidepane_panetogg"
                     >
                         <div className="text-xm flex gap-[4px] font-semibold">
@@ -146,20 +148,21 @@ const Taskbar = () => {
                         <div className="tsbar" onMouseOut={hidePrev}>
                             <div
                                 style={{ '--prefix': 'START' }}
-                                className='settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight'
+                                className="settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight"
                                 onClick={() => {
-                                    appDispatch(startogg())
-
+                                    appDispatch(startogg());
                                 }}
                             >
                                 <Icon
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={32}
-                                //click="startmenu/startogg"
-                                //style={{ '--prefix': 'START' }}
+                                    //click="startmenu/startogg"
+                                    //style={{ '--prefix': 'START' }}
                                 />
-                                <p className='text-xm font-semibold'>Tài khoản</p>
+                                <p className="text-xm font-semibold">
+                                    Tài khoản
+                                </p>
                             </div>
                             {defaultapps.map((task, i) => {
                                 const isHidden = task.hide;
@@ -213,14 +216,17 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${sidepaneOpen ? 'slide-in' : 'slide-out'
-                            } taskright`}
+                        className={`${
+                            sidepaneOpen ? 'slide-in' : 'slide-out'
+                        } taskright`}
                         data-remote={remote.active}
                     >
                         <div
                             className="supportNow p-2 prtclk handcr hvlight flex rounded "
                             // onClick={clickDispatch}
-                            onClick={() => window.open(externalLink.MESSAGE_LINK)}
+                            onClick={() =>
+                                window.open(externalLink.MESSAGE_LINK)
+                            }
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >

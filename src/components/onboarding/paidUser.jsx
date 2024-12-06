@@ -1,5 +1,9 @@
 import { forwardRef, useEffect, useState } from 'react';
-import { MdCheck, MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import {
+    MdCheck,
+    MdKeyboardArrowLeft,
+    MdKeyboardArrowRight
+} from 'react-icons/md';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import { isMobile } from '../../../src-tauri/core';
 import {
@@ -12,12 +16,12 @@ import { localStorageKey } from '../../backend/utils/constant';
 import { Image } from '../shared/general';
 import './assets/paidUser.scss';
 
-
 const general = [
     {
         content: (
             <>
-                Hãy cùng chúng mình đi 1 tour hướng dẫn cách sử dụng Thinkmay để có trải nghiệm chơi game tuyệt vời nhé ^^
+                Hãy cùng chúng mình đi 1 tour hướng dẫn cách sử dụng Thinkmay để
+                có trải nghiệm chơi game tuyệt vời nhé ^^
                 <br />
             </>
         ),
@@ -27,26 +31,30 @@ const general = [
         placement: 'center',
         target: 'body'
     }
-
 ];
 
 const mobileGuide = [
     {
         title: 'THAM KHẢO: Thêm website về màn hình chính',
-        content: <div>
-            Để bật toàn màn hình trên IOS & thuận tiện sử dụng hơn
+        content: (
+            <div>
+                Để bật toàn màn hình trên IOS & thuận tiện sử dụng hơn
+                <div className="flex gap-4 justify-center mt-2">
+                    <Image
+                        className="w-[140px] rounded-md overflow-hidden"
+                        src="asset/add_homescreen_b1"
+                    />
 
-
-            <div className='flex gap-4 justify-center mt-2'>
-                <Image className='w-[140px] rounded-md overflow-hidden' src='asset/add_homescreen_b1' />
-
-                <Image className='w-[140px] rounded-md overflow-hidden' src='asset/add_homescreen_b2' />
-
+                    <Image
+                        className="w-[140px] rounded-md overflow-hidden"
+                        src="asset/add_homescreen_b2"
+                    />
+                </div>
             </div>
-        </div>,
+        ),
 
         placement: 'center',
-        target: 'body',
+        target: 'body'
     },
     {
         placement: 'center',
@@ -58,7 +66,8 @@ const mobileGuide = [
     {
         placement: 'center',
         target: 'body',
-        content: 'Bấm vào nửa MH bên trái để click chuột trái, phải là chuột phải',
+        content:
+            'Bấm vào nửa MH bên trái để click chuột trái, phải là chuột phải',
         title: 'Làm quen với chuột ảo: CHUỘT TRÁI & PHẢI',
         spotlightPadding: 1
     },
@@ -86,7 +95,6 @@ const mobileGuide = [
         title: 'Mở bàn phím ảo',
         spotlightPadding: 0,
         sidepane_paneopen: true
-
     },
     {
         placement: 'left',
@@ -95,7 +103,6 @@ const mobileGuide = [
         title: 'Mở bàn tay cầm ảo',
         spotlightPadding: 0,
         sidepane_paneopen: true
-
     },
     {
         title: '  Nếu cần Thinkmay hỗ trợ, liên hệ chúng mình ngay nhé!',
@@ -104,26 +111,31 @@ const mobileGuide = [
         spotlightPadding: 1,
 
         target: '#supportNow'
-    },
+    }
 ];
 const desktopGuide = [
     {
         title: 'LƯU Ý: Bạn đang mở chế độ web dành cho máy tính',
-        content: <div>
-            Vui lòng chuyển qua chế độ web dành cho <b>điện thoại</b> nếu thiết bị của bạn là Điện thoại hoặc máy tính bảng
-
-
-            <div className='flex justify-center mt-2'>
-                <Image className='w-[160px] rounded-md overflow-hidden' src='asset/request_mobile_web' />
+        content: (
+            <div>
+                Vui lòng chuyển qua chế độ web dành cho <b>điện thoại</b> nếu
+                thiết bị của bạn là Điện thoại hoặc máy tính bảng
+                <div className="flex justify-center mt-2">
+                    <Image
+                        className="w-[160px] rounded-md overflow-hidden"
+                        src="asset/request_mobile_web"
+                    />
+                </div>
             </div>
-        </div>,
+        ),
 
         placement: 'center',
-        target: 'body',
+        target: 'body'
     },
     {
         title: 'Tinh chỉnh',
-        content: 'Bấm vô đây để tinh chỉnh kết nối sao cho mượt mà nhất, liên hệ Fanpage nếu bạn chưa biết cách chỉnh nhé!',
+        content:
+            'Bấm vô đây để tinh chỉnh kết nối sao cho mượt mà nhất, liên hệ Fanpage nếu bạn chưa biết cách chỉnh nhé!',
 
         placement: 'top',
         locale: {
@@ -161,34 +173,41 @@ const desktopGuide = [
         spotlightPadding: 1,
 
         target: '#supportNow'
-    },
-
+    }
 ];
 
-
-
 const BeaconComponent = forwardRef((props, ref) => {
-    return <div ref={ref} className='tooltipBeacon' {...props} >
-
-
-
-    </div>;
+    return <div ref={ref} className="tooltipBeacon" {...props}></div>;
 });
 
 function CustomTooltip(props) {
-    const { backProps, closeProps, continuous, index, primaryProps, skipProps, step, tooltipProps, size, isLastStep, ...rest } =
-        props;
+    const {
+        backProps,
+        closeProps,
+        continuous,
+        index,
+        primaryProps,
+        skipProps,
+        step,
+        tooltipProps,
+        size,
+        isLastStep,
+        ...rest
+    } = props;
 
     return (
         <div className="tooltipBody" {...tooltipProps}>
             <button className="tooltipClose" {...closeProps}>
                 &times;
             </button>
-            <p className='tooltipStep'>
-                {
-                    index > 0 ? <>Bước {index}/{size - 1}</>
-                        : 'Halu'
-                }
+            <p className="tooltipStep">
+                {index > 0 ? (
+                    <>
+                        Bước {index}/{size - 1}
+                    </>
+                ) : (
+                    'Halu'
+                )}
             </p>
             {step.title && <h4 className="tooltipTitle">{step.title}</h4>}
             <div className="tooltipContent">{step.content}</div>
@@ -196,7 +215,6 @@ function CustomTooltip(props) {
                 {/*<button className="tooltipSkip" {...skipProps}>
                     {skipProps.title}
                 </button>*/}
-
             </div>
             <div className="tooltipSpacer">
                 {index > 0 && (
@@ -206,12 +224,19 @@ function CustomTooltip(props) {
                 )}
                 {continuous && (
                     <button className="tooltipContinue" {...primaryProps}>
-                        {isLastStep ? <>Xong <MdCheck fontSize={'1.2rem'} /> </> : <>Tiếp <MdKeyboardArrowRight fontSize={'1.2rem'} /></>
-                        }
+                        {isLastStep ? (
+                            <>
+                                Xong <MdCheck fontSize={'1.2rem'} />{' '}
+                            </>
+                        ) : (
+                            <>
+                                Tiếp{' '}
+                                <MdKeyboardArrowRight fontSize={'1.2rem'} />
+                            </>
+                        )}
                     </button>
                 )}
             </div>
-
         </div>
     );
 }
@@ -252,7 +277,6 @@ export const PaidTutorial = () => {
             setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
         }
 
-
         if (allSteps[index].sidepane_paneopen) {
             appDispatch(sidepane_paneopen());
         }
@@ -274,33 +298,16 @@ export const PaidTutorial = () => {
                 disableOverlay={isMobile() && stepIndex < 4 ? true : false}
             />
 
-            {
-                stepIndex == 3 && isMobile() ?
-                    <MouseMobileGuide />
-                    : null
-            }
+            {stepIndex == 3 && isMobile() ? <MouseMobileGuide /> : null}
         </>
     );
 };
 
-
 const MouseMobileGuide = () => {
-
-
     return (
-        <div
-            className='guideUsingMouse'
-        >
-
-            <div className="mouseLeft">
-                Bấm chuột trái
-
-            </div>
-            <div className="mouseRight">
-                Bấm chuột phải
-
-            </div>
-
+        <div className="guideUsingMouse">
+            <div className="mouseLeft">Bấm chuột trái</div>
+            <div className="mouseRight">Bấm chuột phải</div>
         </div>
-    )
-}
+    );
+};

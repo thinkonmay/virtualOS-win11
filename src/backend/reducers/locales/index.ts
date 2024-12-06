@@ -591,7 +591,10 @@ export function language() {
     id.set(Contents.SCAN_CODE, 'Perbaiki keyboard');
 
     en.set(Contents.SCAN_CODE_EXPLAIN, 'Fix keyboard');
-    vn.set(Contents.SCAN_CODE_EXPLAIN, 'Bật khi 1 số game không bấm được phím như: GTA 5, FCO, DMC5, vv');
+    vn.set(
+        Contents.SCAN_CODE_EXPLAIN,
+        'Bật khi 1 số game không bấm được phím như: GTA 5, FCO, DMC5, vv'
+    );
     id.set(Contents.SCAN_CODE_EXPLAIN, 'Perbaiki keyboard');
 
     en.set(Contents.STRICT_TIMING, 'Bad network mode');

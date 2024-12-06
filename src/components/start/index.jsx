@@ -195,7 +195,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                            1000
+                                                1000
                                         )}
                                     </span>
                                 </div>
@@ -224,8 +224,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                                remote.framerate +
+                                                MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -243,42 +243,49 @@ export const SidePane = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
-                    <div className='reduceLagCtn'>
-
-                        <div className='wrapper '>
-                            <span className='italic text-[10px] lg:text-base font-semibold underline'>Làm sao để giảm giật lag khi chơi game?</span>
-                            <div className='child inset'>
+                    <div className="reduceLagCtn">
+                        <div className="wrapper ">
+                            <span className="italic text-[10px] lg:text-base font-semibold underline">
+                                Làm sao để giảm giật lag khi chơi game?
+                            </span>
+                            <div className="child inset">
                                 <h3>Cách giảm giật lag khi chơi game</h3>
-                                <ul className='my-4'>
-                                    <li>Cách 1: Mở trên Chrome, đóng các tab, ứng dụng đang chạy trên thiết bị của bạn.</li>
-                                    <li>Cách 2:
+                                <ul className="my-4">
+                                    <li>
+                                        Cách 1: Mở trên Chrome, đóng các tab,
+                                        ứng dụng đang chạy trên thiết bị của
+                                        bạn.
+                                    </li>
+                                    <li>
+                                        Cách 2:
                                         <ul>
                                             <li>
-                                                Giảm bitrate nếu bị delay, tăng nhẹ cho đên khi thấy ổn
+                                                Giảm bitrate nếu bị delay, tăng
+                                                nhẹ cho đên khi thấy ổn
                                             </li>
                                             <li>
-                                                Chỉnh fps: Thử các mốc: 40, 50, 60, vv mỗi mốc trong 30s <br />
-
+                                                Chỉnh fps: Thử các mốc: 40, 50,
+                                                60, vv mỗi mốc trong 30s <br />
                                                 + 60-80 với điện thoại
-                                                <br />
-                                                + 50-120 với laptop(phụ thuộc vào cấu hình)
+                                                <br />+ 50-120 với laptop(phụ
+                                                thuộc vào cấu hình)
                                             </li>
                                         </ul>
                                     </li>
                                 </ul>
-                                <p className='italic'>Nếu các cách trên không giúp giảm giật lag, bạn vui lòng liên hệ <b>fanpage Thinkmay</b> để được hỗ trợ nhé! </p>
+                                <p className="italic">
+                                    Nếu các cách trên không giúp giảm giật lag,
+                                    bạn vui lòng liên hệ <b>fanpage Thinkmay</b>{' '}
+                                    để được hỗ trợ nhé!{' '}
+                                </p>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
 
                 <GamePadSetting></GamePadSetting>
-
             </div>
         </>
     );
@@ -304,7 +311,7 @@ const GamePadSetting = () => {
     };
 
     return (
-        <div className='gamepadSettingWrapper'>
+        <div className="gamepadSettingWrapper">
             <div
                 className={
                     !gamepadSettingOpen
@@ -382,7 +389,9 @@ const GamePadSetting = () => {
                             <button
                                 className="bg-slate-400 rounded-md"
                                 onClick={() =>
-                                    appDispatch(toggle_default_gamepad_position())
+                                    appDispatch(
+                                        toggle_default_gamepad_position()
+                                    )
                                 }
                             >
                                 Default
@@ -425,7 +434,7 @@ const MobileBtn = ({ qk, pnstates }) => {
             clearTimeout(touchTimerRef.current);
             touchTimerRef.current = null;
         }
-        setShowExplain(false)
+        setShowExplain(false);
     };
 
     return (
@@ -439,7 +448,6 @@ const MobileBtn = ({ qk, pnstates }) => {
                 data-action={qk.action}
                 data-payload={qk.payload || qk.state}
                 data-state={pnstates[qk.state]}
-
                 onTouchEnd={handleTouchEnd}
                 onTouchStart={handleTouchStart}
             >
@@ -470,22 +478,19 @@ const MobileBtn = ({ qk, pnstates }) => {
             </div>
             <div className="qktext">{t[qk.name]}</div>
 
-            {
-                isShowExplain ? <div className="qkExplainTextMobile">
-                    <h6 className='text-xs text-center'>{t[qk.name]}</h6>
-                    {
-                        qk.explain ? <p className='text-[8px] text-center mt-1'>
+            {isShowExplain ? (
+                <div className="qkExplainTextMobile">
+                    <h6 className="text-xs text-center">{t[qk.name]}</h6>
+                    {qk.explain ? (
+                        <p className="text-[8px] text-center mt-1">
                             {t[qk.explain]}
-                        </p> : null
-                    }
-
-                </div> : null
-            }
+                        </p>
+                    ) : null}
+                </div>
+            ) : null}
         </div>
-    )
-
-}
-
+    );
+};
 
 function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
@@ -498,8 +503,8 @@ function MobileComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.mobileControl.buttons
             : sidepane.mobileControl.buttons.filter(
-                (x) => x.action != 'shutDownVm'
-            );
+                  (x) => x.action != 'shutDownVm'
+              );
 
     return (
         <>
@@ -536,8 +541,8 @@ function DesktopComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.desktopControl.buttons
             : sidepane.desktopControl.buttons.filter(
-                (x) => x.action != 'shutDownVm'
-            );
+                  (x) => x.action != 'shutDownVm'
+              );
 
     return (
         <>
@@ -579,18 +584,17 @@ function DesktopComponent({ pnstates }) {
                                 />
                             )}
                         </div>
-                        <div className="qktext flex items-center gap-2">{t[qk.name]}
+                        <div className="qktext flex items-center gap-2">
+                            {t[qk.name]}
 
-                            {
-
-                                qk.explain ? <div className="qkExplainCtn  border rounded-sm">
+                            {qk.explain ? (
+                                <div className="qkExplainCtn  border rounded-sm">
                                     ?
                                     <div className="qkExplainText">
                                         {t[qk.explain]}
                                     </div>
-                                </div> : null
-
-                            }
+                                </div>
+                            ) : null}
                         </div>
 
                         {/*{
@@ -613,7 +617,6 @@ function DesktopComponent({ pnstates }) {
                         >
                             {qk.name}
                         </div>
-
                     </div>
                 ))}
             </div>

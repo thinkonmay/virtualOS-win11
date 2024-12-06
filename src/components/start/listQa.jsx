@@ -1,14 +1,5 @@
-
-import './listQa.scss'
-
+import './listQa.scss';
 
 export const ListQAs = () => {
-
-
-	return (
-
-		<div className='listQAs'>
-
-		</div>
-	)
-}
+    return <div className="listQAs"></div>;
+};
