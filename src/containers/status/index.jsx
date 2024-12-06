@@ -22,7 +22,6 @@ export const Status = () => {
 
     const isAfter = createDate > targetDate;
 
-    console.log(isAfter);
     useEffect(() => {
         const interval = setInterval(() => {
             setVideoConnectivity(CLIENT.Metrics.video.status);
@@ -37,8 +36,8 @@ export const Status = () => {
     useEffect(() => {
         setOpenStats(
             videoConnectivity == 'connecting' ||
-                videoConnectivity == 'close' ||
-                !pinging
+            videoConnectivity == 'close' ||
+            !pinging
         );
     }, [audioConnectivity, videoConnectivity, pinging]);
 
@@ -58,9 +57,8 @@ export const Status = () => {
         <>
             <div className="relative">
                 <div
-                    className={`${
-                        isOpenStats ? 'slide-in' : 'slide-out'
-                    }  statusConnection`}
+                    className={`${isOpenStats ? 'slide-in' : 'slide-out'
+                        }  statusConnection`}
                 >
                     <p>
                         Video: <b>{videoConnectivity}</b>
