@@ -1,5 +1,7 @@
 import {
     appDispatch,
+    app_session_login,
+    app_session_logout,
     app_toggle,
     popup_open,
     useAppSelector,
@@ -12,7 +14,6 @@ import {
 } from '../../../components/shared/general';
 
 import { RenderNode } from '../../../../src-tauri/api';
-import { login } from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
@@ -67,6 +68,15 @@ export const ConnectApp = () => {
 
         appDispatch(wait_and_claim_volume());
     };
+    const login = () =>
+        appDispatch(
+            app_session_login({
+                username: 'yLTjg0661',
+                password: 'ycopq2875'
+            })
+        );
+
+    const logout = () => appDispatch(app_session_logout());
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
     const reload = () => {
@@ -139,6 +149,18 @@ export const ConnectApp = () => {
                                         {available == 'ready'
                                             ? t[Contents.CA_TURN_ON_PC]
                                             : t[Contents.CA_CONNECT]}
+                                    </button>
+                                    <button
+                                        onClick={logout}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        logout
+                                    </button>
+                                    <button
+                                        onClick={login}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        login
                                     </button>
                                     <p className="text-xs text-center mt-3">
                                         Bạn ấn "

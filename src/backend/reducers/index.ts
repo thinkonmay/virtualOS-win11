@@ -140,6 +140,8 @@ export const {
     worker_refresh,
     worker_reload,
     wait_and_claim_volume,
+    app_session_login,
+    app_session_logout,
     vm_session_create,
     vm_session_access,
     vm_session_close,

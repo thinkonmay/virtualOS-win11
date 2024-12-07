@@ -26,6 +26,8 @@ import {
     GetInfo,
     KeepaliveVolume,
     LOCAL,
+    LoginSteamOnVM,
+    LogoutSteamOnVM,
     ParseRequest,
     ParseVMRequest,
     PingSession,
@@ -442,6 +444,106 @@ export const workerAsync = {
             }
             await appDispatch(fetch_local_worker(computer.address));
             return resp;
+        }
+    ),
+    app_session_login: createAsyncThunk(
+        'app_session_login',
+        async (
+            {
+                username,
+                password
+            }: {
+                username: string;
+                password: string;
+            },
+            { getState }
+        ): Promise<any> => {
+            await appDispatch(worker_refresh());
+            const volume_id = (getState() as RootState).user.volume_id;
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let result: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    result == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    result = x;
+            });
+
+            if (result == undefined) {
+                appDispatch(popup_close());
+                throw new Error(
+                    'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
+                );
+            }
+
+            const host = node.findParent<Computer>(result.id, 'host_worker');
+            const vm_session = node.findParent<StartRequest>(
+                result.id,
+                'host_session'
+            );
+
+            if (host == undefined) throw new Error('invalid tree');
+            else if (vm_session == undefined) throw new Error('invalid tree');
+
+            return await LoginSteamOnVM(
+                host.info,
+                vm_session.id,
+                username ?? '',
+                password ?? ''
+            );
+        }
+    ),
+    app_session_logout: createAsyncThunk(
+        'app_session_logout',
+        async (_, { getState }): Promise<any> => {
+            await appDispatch(worker_refresh());
+            const volume_id = (getState() as RootState).user.volume_id;
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let result: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    result == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    result = x;
+            });
+
+            let steam: RenderNode<StartRequest> | undefined = undefined;
+            result.iterate((x) => {
+                if ((x.info as StartRequest).app != undefined) steam = x;
+            });
+
+            if (result == undefined) {
+                appDispatch(popup_close());
+                throw new Error(
+                    'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
+                );
+            }
+            if (steam == undefined) {
+                appDispatch(popup_close());
+                throw new Error('Steam not found');
+            }
+
+            const host = node.findParent<Computer>(result.id, 'host_worker');
+            const vm_session = node.findParent<StartRequest>(
+                result.id,
+                'host_session'
+            );
+
+            if (host == undefined) throw new Error('invalid tree');
+            else if (vm_session == undefined) throw new Error('invalid tree');
+
+            const steam_session = steam.info;
+            if (steam_session == undefined)
+                return new Error('steam session is null');
+
+            return await LogoutSteamOnVM(host.info, {
+                ...steam_session,
+                target: vm_session.id
+            });
         }
     ),
     vm_session_create: createAsyncThunk(
