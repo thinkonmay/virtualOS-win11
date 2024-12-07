@@ -162,7 +162,8 @@ const listMobileSettings = [
         src: 'MdAutoFixHigh',
         name: [Contents.SCAN_CODE],
         state: 'scancode',
-        action: 'remote/scancode_toggle'
+        action: 'remote/scancode_toggle',
+        explain: [Contents.SCAN_CODE_EXPLAIN]
     }
 ];
 const listDesktopShortCut = [
@@ -187,7 +188,8 @@ const listDesktopSettings = [
         src: 'MdOutlineKeyboard',
         name: [Contents.SCAN_CODE],
         state: 'scancode',
-        action: 'remote/scancode_toggle'
+        action: 'remote/scancode_toggle',
+        explain: [Contents.SCAN_CODE_EXPLAIN]
     },
     {
         ui: true,

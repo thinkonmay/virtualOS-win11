@@ -132,6 +132,7 @@ export enum Contents {
     FULLSCREEN,
     RELATIVE_MOUSE,
     SCAN_CODE,
+    SCAN_CODE_EXPLAIN,
     STRICT_TIMING,
     EXTERNAL_TAB,
     QUALITY,
@@ -589,6 +590,13 @@ export function language() {
     vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
     id.set(Contents.SCAN_CODE, 'Perbaiki keyboard');
 
+    en.set(Contents.SCAN_CODE_EXPLAIN, 'Fix keyboard');
+    vn.set(
+        Contents.SCAN_CODE_EXPLAIN,
+        'Bật khi 1 số game không bấm được phím như: GTA 5, FCO, DMC5, vv'
+    );
+    id.set(Contents.SCAN_CODE_EXPLAIN, 'Perbaiki keyboard');
+
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
     id.set(Contents.STRICT_TIMING, 'Mode jaringan buruk');
@@ -730,10 +738,6 @@ export function language() {
     en.set(Contents.RELATIVE_MOUSE, 'Gaming mode');
     vn.set(Contents.RELATIVE_MOUSE, 'Chế độ gaming');
     id.set(Contents.RELATIVE_MOUSE, 'Mode bermain');
-
-    en.set(Contents.SCAN_CODE, 'Fix keyboard');
-    vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
-    id.set(Contents.SCAN_CODE, 'Perbaiki keyboard');
 
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');

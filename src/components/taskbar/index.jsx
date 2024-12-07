@@ -12,18 +12,20 @@ import {
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
+    sidepane_panetogg,
+    startogg,
     task_hide,
     task_show,
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
+import { externalLink } from '../../backend/utils/constant';
 import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
-import { externalLink } from '../../backend/utils/constant';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -31,7 +33,8 @@ const Taskbar = () => {
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
     const apps = useAppSelector((state) => state.apps);
-    const [open, setOpen] = useState(true);
+    const sidepaneOpen = useAppSelector((state) => !state.sidepane.hide);
+
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
     );
@@ -81,9 +84,10 @@ const Taskbar = () => {
     }, [remote.ready]);
 
     const toggleControl = (e) => {
-        setOpen((old) => !old);
+        //setOpen((old) => !old);
 
-        afterMath(e);
+        appDispatch(sidepane_panetogg());
+        //afterMath(e);
     };
 
     const customDispatch = customClickDispatch((e) => afterMath(e));
@@ -91,11 +95,13 @@ const Taskbar = () => {
         <>
             {remote.active ? (
                 <div
-                    className={`${open ? 'slide-in' : 'slide-out'} taskright`}
+                    className={`${
+                        sidepaneOpen ? 'slide-in' : 'slide-out'
+                    } taskright`}
                     data-remote={remote.active}
                 >
                     <button className="btn-show" onClick={toggleControl}>
-                        {open ? (
+                        {sidepaneOpen ? (
                             <MdArrowForwardIos
                                 style={{ fontSize: '1.2rem' }}
                             ></MdArrowForwardIos>
@@ -107,6 +113,7 @@ const Taskbar = () => {
                     </button>
 
                     <div
+                        id="supportNow"
                         className="p-2 prtclk handcr hvlight flex rounded "
                         // onClick={customDispatch}
                         onClick={() => window.open(externalLink.MESSAGE_LINK)}
@@ -119,6 +126,7 @@ const Taskbar = () => {
                         className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                         onClick={customDispatch}
                         style={{ '--prefix': 'PANE' }}
+                        id="settingBtn"
                         data-action="sidepane_panetogg"
                     >
                         <div className="text-xm flex gap-[4px] font-semibold">
@@ -138,14 +146,24 @@ const Taskbar = () => {
                     <audio src={ringSound}></audio>
                     <div className="tasksCont" data-side={tasks.align}>
                         <div className="tsbar" onMouseOut={hidePrev}>
-                            <Icon
-                                className="infoBtn tsIcon tsIconInvert"
-                                src="home"
-                                width={32}
-                                click="startmenu/startogg"
+                            <div
                                 style={{ '--prefix': 'START' }}
-                            />
-
+                                className="settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight"
+                                onClick={() => {
+                                    appDispatch(startogg());
+                                }}
+                            >
+                                <Icon
+                                    className="infoBtn tsIcon tsIconInvert"
+                                    src="home"
+                                    width={32}
+                                    //click="startmenu/startogg"
+                                    //style={{ '--prefix': 'START' }}
+                                />
+                                <p className="text-xm font-semibold">
+                                    Tài khoản
+                                </p>
+                            </div>
                             {defaultapps.map((task, i) => {
                                 const isHidden = task.hide;
                                 const isActive = task.z == apps.hz;
@@ -199,20 +217,23 @@ const Taskbar = () => {
                     </div>
                     <div
                         className={`${
-                            open ? 'slide-in' : 'slide-out'
+                            sidepaneOpen ? 'slide-in' : 'slide-out'
                         } taskright`}
                         data-remote={remote.active}
                     >
                         <div
                             className="supportNow p-2 prtclk handcr hvlight flex rounded "
                             // onClick={clickDispatch}
-                            onClick={() => window.open(externalLink.MESSAGE_LINK)}
+                            onClick={() =>
+                                window.open(externalLink.MESSAGE_LINK)
+                            }
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
                             <MdSupportAgent fontSize={'2rem'} />
                         </div>
                         <div
+                            //id='settingBtn'
                             className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
                             onClick={clickDispatch}
                             style={{ '--prefix': 'PANE' }}

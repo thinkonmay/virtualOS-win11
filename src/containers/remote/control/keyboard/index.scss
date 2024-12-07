@@ -18,39 +18,54 @@
 
 
 	.hg-theme-default {
-		background-color: #ececec00;
+		background-color: rgb(28 28 28 / 70%);
 	}
 
+
+	.hg-button+.hg-activeButton {
+		background-color: rgba(0, 0, 0, 0.5);
+
+	}
+
+
 	.hg-standardBtn {
-		background-color: #ffffff;
+		background-color: rgba(0, 0, 0, 0.8);
+		color: white;
 		border-bottom: 0rem;
 		box-shadow: none;
 
 		height: 2.5rem;
 
-		font-size: 1.25rem;
-		font-weight: bold;
+		font-size: 0.9rem;
 
 		&[data-skbtn='Space'] {
 			width: 10rem;
 		}
+
 		&[data-skbtn='Backspace'] {
 			width: 4rem;
 		}
+
 		&[data-skbtn='Shift'] {
 			width: 3rem;
 		}
+
 		&[data-skbtn='Enter'] {
 			width: 4rem;
 		}
+
 		&[data-skbtn='Alt'] {
 			width: 3rem;
 		}
+
 		&[data-skbtn='Control'] {
 			width: 4rem;
 		}
+
 		&[data-skbtn=''] {
 			background-color: #ececec00;
 		}
+
+
 	}
 }

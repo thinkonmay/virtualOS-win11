@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
@@ -244,8 +244,48 @@ export const SidePane = () => {
                             </div>
                         </div>
                     </div>
-                    <GamePadSetting></GamePadSetting>
+
+                    <div className="reduceLagCtn">
+                        <div className="wrapper ">
+                            <span className="italic text-[10px] lg:text-base font-semibold underline">
+                                Làm sao để giảm giật lag khi chơi game?
+                            </span>
+                            <div className="child inset">
+                                <h3>Cách giảm giật lag khi chơi game</h3>
+                                <ul className="my-4">
+                                    <li>
+                                        Cách 1: Mở trên Chrome, đóng các tab,
+                                        ứng dụng đang chạy trên thiết bị của
+                                        bạn.
+                                    </li>
+                                    <li>
+                                        Cách 2:
+                                        <ul>
+                                            <li>
+                                                Giảm bitrate nếu bị delay, tăng
+                                                nhẹ cho đên khi thấy ổn
+                                            </li>
+                                            <li>
+                                                Chỉnh fps: Thử các mốc: 40, 50,
+                                                60, vv mỗi mốc trong 30s <br />
+                                                + 60-80 với điện thoại
+                                                <br />+ 50-120 với laptop(phụ
+                                                thuộc vào cấu hình)
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <p className="italic">
+                                    Nếu các cách trên không giúp giảm giật lag,
+                                    bạn vui lòng liên hệ <b>fanpage Thinkmay</b>{' '}
+                                    để được hỗ trợ nhé!{' '}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <GamePadSetting></GamePadSetting>
             </div>
         </>
     );
@@ -271,99 +311,182 @@ const GamePadSetting = () => {
     };
 
     return (
-        <div
-            className={
-                !gamepadSettingOpen
-                    ? 'gamepadSetting slide-out'
-                    : 'gamepadSetting slide-in'
-            }
-        >
-            <div className="flex justify-between py-4 px-2 mb-[16px] mx-[-12px]">
-                <MdArrowBack
-                    fontSize={'1.5rem'}
+        <div className="gamepadSettingWrapper">
+            <div
+                className={
+                    !gamepadSettingOpen
+                        ? 'gamepadSetting slide-out'
+                        : 'gamepadSetting slide-in'
+                }
+            >
+                <div className="flex justify-between py-4 px-2 mb-[16px] mx-[-12px]">
+                    <MdArrowBack
+                        fontSize={'1.5rem'}
+                        onClick={() => {
+                            appDispatch(toggle_gamepad_setting());
+                        }}
+                    />
+
+                    <MdOutlineClose
+                        onClick={handleClose}
+                        fontSize={'1.5rem'}
+                    ></MdOutlineClose>
+                </div>
+                <button
+                    onClick={() => appDispatch(toggle_gamepad())}
+                    className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
+                >
+                    Đóng/mở gamepad ảo
+                </button>
+                <div className="">
+                    <p className="text-[0.9rem] mb-[4px]">Size:</p>
+                    <form className="flex gap-4">
+                        <label className="size-choosen">
+                            Small
+                            <input
+                                type="radio"
+                                value="1"
+                                checked={selectedOption == '1'}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label className="size-choosen">
+                            Medium
+                            <input
+                                type="radio"
+                                value="1.2"
+                                checked={selectedOption == '1.2'}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label className="size-choosen">
+                            Big
+                            <input
+                                type="radio"
+                                value="3"
+                                checked={selectedOption == '3'}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </form>
+                </div>
+
+                <button
+                    className="instbtn outline-none border-none w-full py-3 bold mt-4 rounded-lg"
                     onClick={() => {
-                        appDispatch(toggle_gamepad_setting());
+                        appDispatch(toggle_gamepad_draggable());
                     }}
-                />
+                >
+                    Đổi vị trí các nút
+                </button>
 
-                <MdOutlineClose
-                    onClick={handleClose}
-                    fontSize={'1.5rem'}
-                ></MdOutlineClose>
+                {gamepadDraggable ? (
+                    <>
+                        <p className="text-[0.75rem] mt-1">
+                            *kéo các nút để chỉnh vị trí
+                        </p>
+                        <div className="ctnBtn flex mt-4 gap-4 justify-end">
+                            <button
+                                className="bg-slate-400 rounded-md"
+                                onClick={() =>
+                                    appDispatch(
+                                        toggle_default_gamepad_position()
+                                    )
+                                }
+                            >
+                                Default
+                            </button>
+                            <button
+                                className="bg-[#0167c0] rounded-md"
+                                onClick={() => {
+                                    appDispatch(toggle_gamepad_draggable());
+                                    appDispatch(toggle_gamepad_setting());
+                                }}
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </>
+                ) : null}
             </div>
-            <button
-                onClick={() => appDispatch(toggle_gamepad())}
-                className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
-            >
-                Đóng/mở gamepad ảo
-            </button>
-            <div className="">
-                <p className="text-[0.9rem] mb-[4px]">Size:</p>
-                <form className="flex gap-4">
-                    <label className="size-choosen">
-                        Small
-                        <input
-                            type="radio"
-                            value="1"
-                            checked={selectedOption == '1'}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label className="size-choosen">
-                        Medium
-                        <input
-                            type="radio"
-                            value="1.2"
-                            checked={selectedOption == '1.2'}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label className="size-choosen">
-                        Big
-                        <input
-                            type="radio"
-                            value="3"
-                            checked={selectedOption == '3'}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </form>
-            </div>
+        </div>
+    );
+};
 
-            <button
-                className="instbtn outline-none border-none w-full py-3 bold mt-4 rounded-lg"
-                onClick={() => {
-                    appDispatch(toggle_gamepad_draggable());
+const MobileBtn = ({ qk, pnstates }) => {
+    const t = useAppSelector((state) => state.globals.translation);
+
+    const [isShowExplain, setShowExplain] = useState(false);
+    const touchTimerRef = useRef(null);
+
+    const handleTouchStart = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+        }
+
+        touchTimerRef.current = setTimeout(() => {
+            setShowExplain(true);
+        }, 1000); // 1 giây
+    };
+
+    const handleTouchEnd = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+            touchTimerRef.current = null;
+        }
+        setShowExplain(false);
+    };
+
+    return (
+        <div className="qkGrp">
+            <div
+                style={{
+                    ...qk.style
                 }}
+                className={`qkbtn handcr prtclk ${qk.id}`}
+                onClick={clickDispatch}
+                data-action={qk.action}
+                data-payload={qk.payload || qk.state}
+                data-state={pnstates[qk.state]}
+                onTouchEnd={handleTouchEnd}
+                onTouchStart={handleTouchStart}
             >
-                Đổi vị trí các nút
-            </button>
+                {Object.keys(md).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = md[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : Object.keys(fi).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = fi[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : Object.keys(fa).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = fa[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : (
+                    <Icon
+                        className="quickIcon"
+                        ui={qk.ui}
+                        src={qk.src}
+                        width={14}
+                        invert={pnstates[qk.state] ? true : null}
+                    />
+                )}
+            </div>
+            <div className="qktext">{t[qk.name]}</div>
 
-            {gamepadDraggable ? (
-                <>
-                    <p className="text-[0.75rem] mt-1">
-                        *kéo các nút để chỉnh vị trí
-                    </p>
-                    <div className="ctnBtn flex mt-4 gap-4 justify-end">
-                        <button
-                            className="bg-slate-400 rounded-md"
-                            onClick={() =>
-                                appDispatch(toggle_default_gamepad_position())
-                            }
-                        >
-                            Default
-                        </button>
-                        <button
-                            className="bg-[#0167c0] rounded-md"
-                            onClick={() => {
-                                appDispatch(toggle_gamepad_draggable());
-                                appDispatch(toggle_gamepad_setting());
-                            }}
-                        >
-                            Save
-                        </button>
-                    </div>
-                </>
+            {isShowExplain ? (
+                <div className="qkExplainTextMobile">
+                    <h6 className="text-xs text-center">{t[qk.name]}</h6>
+                    {qk.explain ? (
+                        <p className="text-[8px] text-center mt-1">
+                            {t[qk.explain]}
+                        </p>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     );
@@ -387,44 +510,7 @@ function MobileComponent({ pnstates }) {
         <>
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
-                    <div key={idx} className="qkGrp">
-                        <div
-                            style={{
-                                ...qk.style
-                            }}
-                            className={`qkbtn handcr prtclk ${qk.id}`}
-                            onClick={clickDispatch}
-                            data-action={qk.action}
-                            data-payload={qk.payload || qk.state}
-                            data-state={pnstates[qk.state]}
-                        >
-                            {Object.keys(md).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = md[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : Object.keys(fi).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = fi[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : Object.keys(fa).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = fa[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : (
-                                <Icon
-                                    className="quickIcon"
-                                    ui={qk.ui}
-                                    src={qk.src}
-                                    width={14}
-                                    invert={pnstates[qk.state] ? true : null}
-                                />
-                            )}
-                        </div>
-                        <div className="qktext">{t[qk.name]}</div>
-                    </div>
+                    <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
                 {sidepane.mobileControl.shortcuts.map((qk, idx) => (
                     <div key={idx} className="qkGrp t">
@@ -498,7 +584,26 @@ function DesktopComponent({ pnstates }) {
                                 />
                             )}
                         </div>
-                        <div className="qktext">{t[qk.name]}</div>
+                        <div className="qktext flex items-center gap-2">
+                            {t[qk.name]}
+
+                            {qk.explain ? (
+                                <div className="qkExplainCtn  border rounded-sm">
+                                    ?
+                                    <div className="qkExplainText">
+                                        {t[qk.explain]}
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        {/*{
+                            qk.explain ? <div className="qkExplain">
+                                {
+                                    <div className="qktext">{t[qk.name]}</div>
+                                }
+                            </div> : null
+                        }*/}
                     </div>
                 ))}
                 {sidepane.desktopControl.shortcuts.map((qk, idx) => (
