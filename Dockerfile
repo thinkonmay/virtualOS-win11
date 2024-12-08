@@ -10,6 +10,9 @@ WORKDIR /app
 # Clone the repository recursively to include submodules
 COPY . .
 
+ARG GOOGLE_ANALYTIC_CODE 
+ENV GOOGLE_ANALYTIC_CODE=${GOOGLE_ANALYTIC_CODE}
+
 # Install dependencies and build the application
 RUN npm install -f
 RUN npm run build
