@@ -24,7 +24,7 @@ export function yesNo({ data: { template } }) {
                 <h2>{t[Contents.TA_POPUP_TITLE]}</h2>
             </div>
             <div>
-                <p className="mt-[8px]">{t[Contents.TA_POPUP_SUBTITLE]}</p>
+                <p className="mt-[8px] text-lg text-center">{t[Contents.TA_POPUP_SUBTITLE]}</p>
             </div>
             <div className="flex gap-3 justify-end mt-3 mb-2">
                 <button

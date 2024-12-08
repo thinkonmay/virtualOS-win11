@@ -22,6 +22,7 @@ const Popup = () => {
 
     const closeModal = () => {
         popup.type == 'complete' ||
+        popup.type == 'showQa' ||
         popup.type == 'maintain' ||
         popup.type == 'shareLink'
             ? appDispatch(popup_close())
@@ -42,7 +43,7 @@ const Popup = () => {
                             : { 'backdrop-filter': 'blur(3px) brightness(0.5)' }
                     }
                 >
-                    <div className="selectText d-flex overflow-auto min-h-full">
+                    <div className="selectText d-flex min-h-full">
                         {Object.keys(modals)
                             .filter((x) => x == popup.type)
                             .map((key, idx) => {

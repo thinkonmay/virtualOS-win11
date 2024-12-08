@@ -312,7 +312,7 @@ a {
   color: #f5f6f7;
   border-radius: 20px;
   outline: none;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 body[data-theme="dark"] .modalContent {

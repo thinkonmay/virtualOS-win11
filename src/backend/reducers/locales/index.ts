@@ -215,7 +215,14 @@ export enum Contents {
     TA_POPUP_CONTINUE,
 
     TA_PAYMENT,
-    TA_PAYMENT_DESC
+    TA_PAYMENT_DESC,
+
+    //listQA
+
+    QA_CLOUDPC,
+    QA_INSTALLGAMES,
+    QA_CONNECTGEARS,
+    QA_FIXLAG
 }
 
 export function language() {
@@ -227,10 +234,27 @@ export function language() {
     t.set('ENG', en);
     t.set('ID', id);
 
+    //QA
+
     //CA
-    en.set(Contents.DEBUGGER, 'Debugger');
-    vn.set(Contents.DEBUGGER, 'Debugger');
-    id.set(Contents.DEBUGGER, 'Debugger');
+    en.set(Contents.QA_CLOUDPC, 'What is CloudPC?');
+    vn.set(Contents.QA_CLOUDPC, 'CloudPC là gì?');
+    id.set(Contents.QA_CLOUDPC, 'What is CloudPC?');
+
+    //CA
+    en.set(Contents.QA_CONNECTGEARS, 'Connect Gears');
+    vn.set(Contents.QA_CONNECTGEARS, 'Kết nối tay cầm & phím chuột?');
+    id.set(Contents.QA_CONNECTGEARS, 'Connect Gears');
+
+    //CA
+    en.set(Contents.QA_INSTALLGAMES, 'How to install games?');
+    vn.set(Contents.QA_INSTALLGAMES, 'Hướng dẫn cài game');
+    id.set(Contents.QA_INSTALLGAMES, 'How to install games?');
+
+    //CA
+    en.set(Contents.QA_FIXLAG, 'How to reduce lagging?');
+    vn.set(Contents.QA_FIXLAG, 'Cách giảm giật/lag');
+    id.set(Contents.QA_FIXLAG, 'How to reduce lagging?');
 
     en.set(Contents.MAXIMUM_QUALITY, 'Maximum quality');
     vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng tối đa');

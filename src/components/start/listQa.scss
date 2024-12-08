@@ -10,6 +10,8 @@
 	bottom: 56px;
 	right: 12px;
 	width: 376px;
+
+	padding: 4px 24px;
 	border-radius: 0.5rem;
 	color: var(--dark-txt);
 	background: var(--bg1);
@@ -18,14 +20,31 @@
 	z-index: 9999;
 	transform: translateX(0);
 
+	display: flex;
+	flex-direction: column;
 
 	&[data-hide="true"] {
-		transform: translateY(110%);
+		transform: translateY(120%);
 		animation: overflow-hider 0s ease-in-out 150ms forwards;
 		transition: all cubic-bezier(0.62, 0, 0.32, 1) 150ms;
 	}
 
 
+
+	.question {
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: normal;
+
+		padding: 16px 0px;
+		border-bottom: 1px solid;
+
+		&:last-child {
+			border-bottom: none;
+
+		}
+	}
 
 }
 

@@ -18,6 +18,7 @@ import { workerAsync, workerSlice } from './worker';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { UserEvents } from '../../../src-tauri/api';
 import { DevEnv } from '../../../src-tauri/api/database';
+import { qaSlices } from './listQa';
 
 const blacklist = ['framerate', 'bitrate', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
@@ -47,7 +48,8 @@ export const store = configureStore({
         worker: workerSlice.reducer,
         popup: popupSlice.reducer,
         remote: remoteSlice.reducer,
-        sidepane: sidepaneSlice.reducer
+        sidepane: sidepaneSlice.reducer,
+        listQa: qaSlices.reducer
     }
 });
 
@@ -128,6 +130,8 @@ export const {
     homescreen,
     relative_mouse
 } = remoteSlice.actions;
+
+export const { showQa, hideQa, toggleQa } = qaSlices.actions;
 
 export const {
     unclaim_volume,
