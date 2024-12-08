@@ -3,7 +3,7 @@ FROM node:20-alpine as builder
 # as builder
 
 # Install required packages
-RUN apk add --no-cache git openssh-client
+RUN apk add --no-cache git openssh-client apk sed
 
 WORKDIR /app
 
