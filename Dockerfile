@@ -17,14 +17,11 @@ RUN npm run build
 # Production Stage
 FROM nginx:alpine
 
+# Copy built assets from build stage
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY /nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY docker-entry.sh /docker-entry.sh
-RUN chmod +x /docker-entry.sh
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-
-ENTRYPOINT ["/docker-entry.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
