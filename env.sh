@@ -1,5 +1,5 @@
 #!/bin/sh
-for i in $(env | grep MY_APP_) // Make sure to use the prefix MY_APP_ if you have any other prefix in env.production file varialbe name replace it with MY_APP_
+for i in $(env | grep VITE_) // Make sure to use the prefix VITE_ if you have any other prefix in env.production file varialbe name replace it with VITE_
 do
     key=$(echo $i | cut -d '=' -f 1)
     value=$(echo $i | cut -d '=' -f 2-)
