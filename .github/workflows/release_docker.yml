@@ -1,77 +1,68 @@
 name: CI/CD
 
 on:
-    push:
-        branches: ['master']
-    pull_request:
-        branches: ['master']
+ push:
+   branches: [ "master" ]
+ pull_request:
+   branches: [ "master" ]
 
 jobs:
-    build-and-push:
-        runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  submodules: recursive
-                  token: ${{ secrets.PAT_TOKEN }}
-            #  - name: Add .env file
-            #    run: |
-            #      echo "VITE_SUPABASE_GLOBAL_URL=https://play.thinkmay.net" > .env
-            #      echo "VITE_SUPABASE_LOCAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
-            #      echo "VITE_SUPABASE_GLOBAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+ build-and-push:
+   runs-on: ubuntu-latest
+   
+   steps:
+   - uses: actions/checkout@v4
+     with:
+      submodules: recursive
+      token: ${{ secrets.PAT_TOKEN }}
+   - name: Add .env file
+     run: |
+       echo "VITE_SUPABASE_GLOBAL_URL=https://play.thinkmay.net" > .env
+       echo "VITE_SUPABASE_LOCAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+       echo "VITE_SUPABASE_GLOBAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
-            - name: Login to Docker Hub
-              uses: docker/login-action@v2
-              with:
-                  username: ${{ secrets.DOCKER_USERNAME }}
-                  password: ${{ secrets.DOCKER_PASSWORD }}
+   
+   - name: Login to Docker Hub
+     uses: docker/login-action@v2
+     with:
+       username: ${{ secrets.DOCKER_USERNAME }}
+       password: ${{ secrets.DOCKER_PASSWORD }}
+       
+   - name: Build Docker image
+     run: |
+       docker build . -t pigeatgarlic/win11
+       docker inspect pigeatgarlic/win11 --format '{{.Id}}' > container_id.txt
+       echo ${{ github.sha }} > commit_id.txt
+       
+   - name: Push to Docker Hub
+     run: docker push pigeatgarlic/win11
 
-            - name: Build Docker image
-              run: |
-                  docker build . -t pigeatgarlic/win11
-                  docker inspect pigeatgarlic/win11 --format '{{.Id}}' > container_id.txt
-                  echo ${{ github.sha }} > commit_id.txt
+   - name: Read commit and container IDs
+     run: |
+       echo "COMMIT_ID=$(cat commit_id.txt)" >> $GITHUB_ENV
+       echo "CONTAINER_ID=$(cat container_id.txt)" >> $GITHUB_ENV
+   
+   - name: Deploy play.thinkmay.net
+     uses: fjogeleit/http-request-action@v1
+     with:
+       url: 'https://play.thinkmay.net/rest/v1/version?name=eq.web'
+       method: 'PATCH'
+       bearerToken: ${{ secrets.SUPABASE_KEY }}
+       data: |
+         {
+           "commit_id": "${{ env.COMMIT_ID }}",
+           "container_id": "${{ env.CONTAINER_ID }}"
+         }
 
-            - name: Push to Docker Hub
-              run: docker push pigeatgarlic/win11
-
-            - name: Read commit and container IDs
-              run: |
-                  echo "COMMIT_ID=$(cat commit_id.txt)" >> $GITHUB_ENV
-                  echo "CONTAINER_ID=$(cat container_id.txt)" >> $GITHUB_ENV
-
-            - name: Deploy play.thinkmay.net
-              uses: fjogeleit/http-request-action@v1
-              with:
-                  url: 'https://play.thinkmay.net/rest/v1/version?name=eq.web'
-                  method: 'PATCH'
-                  bearerToken: ${{ secrets.SUPABASE_KEY }}
-                  data: |
-                      {
-                        "commit_id": "${{ env.COMMIT_ID }}",
-                        "container_id": "${{ env.CONTAINER_ID }}"
-                      }
-
-            - name: Deploy play.2.thinkmay.net
-              uses: fjogeleit/http-request-action@v1
-              with:
-                  url: 'https://play.2.thinkmay.net/rest/v1/version?name=eq.web'
-                  method: 'PATCH'
-                  bearerToken: ${{ secrets.SUPABASE_KEY }}
-                  data: |
-                      {
-                        "commit_id": "${{ env.COMMIT_ID }}",
-                        "container_id": "${{ env.CONTAINER_ID }}"
-                      }
-            - name: Deploy play.3.thinkmay.net
-              uses: fjogeleit/http-request-action@v1
-              with:
-                  url: 'https://play.3.thinkmay.net/rest/v1/version?name=eq.web'
-                  method: 'PATCH'
-                  bearerToken: ${{ secrets.SUPABASE_KEY }}
-                  data: |
-                      {
-                        "commit_id": "${{ env.COMMIT_ID }}",
-                        "container_id": "${{ env.CONTAINER_ID }}"
-                      }
+   - name: Deploy play.2.thinkmay.net
+     uses: fjogeleit/http-request-action@v1
+     with:
+       url: 'https://play.2.thinkmay.net/rest/v1/version?name=eq.web'
+       method: 'PATCH'
+       bearerToken: ${{ secrets.SUPABASE_KEY }}
+       data: |
+         {
+           "commit_id": "${{ env.COMMIT_ID }}",
+           "container_id": "${{ env.CONTAINER_ID }}"
+         }

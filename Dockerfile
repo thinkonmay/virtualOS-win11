@@ -1,21 +1,17 @@
 # Build Stage
 FROM node:20-alpine as builder
+# as builder
 
 # Install required packages
 RUN apk add --no-cache git openssh-client
 
 WORKDIR /app
 
-# Copy only necessary files for dependency installation
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install -f
-
-# Copy the rest of the application code
+# Clone the repository recursively to include submodules
 COPY . .
 
-# Build the application
+# Install dependencies and build the application
+RUN npm install -f
 RUN npm run build
 
 # Production Stage
@@ -24,14 +20,8 @@ FROM nginx:alpine
 # Copy built assets from build stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-# Use the entrypoint script
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
