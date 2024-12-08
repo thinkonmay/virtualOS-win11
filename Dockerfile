@@ -19,9 +19,12 @@ FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY /nginx.conf /etc/nginx/conf.d/default.conf
-COPY env.sh /docker-entrypoint.d/env.sh
-RUN chmod +x /docker-entrypoint.d/env.sh
+
+COPY docker-entry.sh /docker-entry.sh
+RUN chmod +x /docker-entry.sh
 
 EXPOSE 80
+
+ENTRYPOINT ["/docker-entry.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
