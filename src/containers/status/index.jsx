@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { CLIENT } from '../../../src-tauri/singleton';
 import { useAppSelector } from '../../backend/reducers';
-import { localStorageKey } from '../../backend/utils/constant';
-import { PaidTutorial } from '../../components/onboarding/paidUser';
 import './status.scss';
 
 export const Status = () => {
@@ -22,7 +20,6 @@ export const Status = () => {
 
     const isAfter = createDate > targetDate;
 
-    console.log(isAfter);
     useEffect(() => {
         const interval = setInterval(() => {
             setVideoConnectivity(CLIENT.Metrics.video.status);
@@ -82,10 +79,9 @@ export const Status = () => {
                 </div>
             </div>
 
-            {localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
-                'true' && videoConnectivity == 'connected' ? (
-                <PaidTutorial />
-            ) : null}
+            {/*{localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
+            'true' && videoConnectivity == 'connected' ? (
+        ) : null}*/}
         </>
     );
 };

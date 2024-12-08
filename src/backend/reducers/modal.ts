@@ -62,6 +62,12 @@ type PopupData =
           data: {
               template: string;
           };
+      }
+    | {
+          type: 'showQa';
+          data: {
+              key: string;
+          };
       };
 
 type Data = {
@@ -69,7 +75,14 @@ type Data = {
 };
 
 const initialState: Data = {
-    data_stack: []
+    data_stack: [
+        //    {
+        //    type: 'showQa',
+        //    data: {
+        //        key: 'cloudPc'
+        //    }
+        //}
+    ]
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';

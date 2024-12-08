@@ -20,6 +20,7 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
+
 }
 
 body[data-theme="dark"] {
@@ -132,6 +133,14 @@ body[data-theme="dark"] {
 
 
   }
+
+  .settingBtn {
+    font-size: 12px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
 }
 
 .taskIcon {
