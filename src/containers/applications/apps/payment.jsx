@@ -29,7 +29,7 @@ const listSubs = [
         ]
     },
     {
-        active: false,
+        active: true,
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: '299',
