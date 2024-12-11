@@ -76,7 +76,7 @@ const mobileGuide = [
         title: 'Ấn để mở bảng cài đặt',
         content: 'Chạm & giữ để nghiên cứu công dụng các nút này nha',
 
-        placement: 'left-end',
+        placement: 'bottom',
         locale: {
             next: 'Next' // Continue with "Next"
         },
@@ -90,7 +90,7 @@ const mobileGuide = [
         sidepane_paneopen: true
     },
     {
-        placement: 'left',
+        placement: 'bottom',
         target: '.virtKeyboardBtn',
         content: 'Lưu ý: Khi đang mở bàn phím ảo sẽ không sử dụng được chuột',
         title: 'Mở bàn phím ảo',
@@ -98,7 +98,7 @@ const mobileGuide = [
         sidepane_paneopen: true
     },
     {
-        placement: 'left',
+        placement: 'auto',
         target: '.virtGamepadBtn',
         content: 'Lưu ý: Khi đang mở tay cầm ảo sẽ không sử dụng được chuột',
         title: 'Mở bàn tay cầm ảo',
@@ -108,7 +108,7 @@ const mobileGuide = [
     {
         title: '  Nếu cần Thinkmay hỗ trợ, liên hệ chúng mình ngay nhé!',
 
-        placement: 'left',
+        placement: 'auto',
         spotlightPadding: 1,
 
         target: '#supportNow'
@@ -184,7 +184,7 @@ const BeaconComponent = forwardRef((props, ref) => {
 
 const ContinueButton = ({ primaryProps, isLastStep }) => {
     const [timeRemaining, setTimeRemaining] = useState(2);
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(true);
 
     useEffect(() => {
         if (timeRemaining > 0) {

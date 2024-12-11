@@ -35,8 +35,8 @@ const Taskbar = () => {
     const tasks = useAppSelector((state) => state.taskbar);
     const apps = useAppSelector((state) => state.apps);
     //const open = useAppSelector((state) => !state.sidepane.hide);
-
-    const [open, setOpen] = useState(false);
+    const tutorialState = useAppSelector(state => state.globals.tutorial)
+    const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
     );
@@ -86,6 +86,7 @@ const Taskbar = () => {
     }, [remote.ready]);
 
     const toggleControl = (e) => {
+        if (tutorialState == 'PaidTutorial') return
         setOpen((old) => !old);
 
         //appDispatch(sidepane_panetogg());
@@ -169,8 +170,8 @@ const Taskbar = () => {
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={32}
-                                    //click="startmenu/startogg"
-                                    //style={{ '--prefix': 'START' }}
+                                //click="startmenu/startogg"
+                                //style={{ '--prefix': 'START' }}
                                 />
                                 <p className="text-xm font-semibold">
                                     Tài khoản
@@ -228,9 +229,8 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${
-                            open ? 'slide-in' : 'slide-out'
-                        } taskright`}
+                        className={`${open ? 'slide-in' : 'slide-out'
+                            } taskright`}
                         data-remote={remote.active}
                     >
                         <div
