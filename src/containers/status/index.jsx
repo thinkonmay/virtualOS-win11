@@ -1,15 +1,22 @@
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { CLIENT } from '../../../src-tauri/singleton';
-import { appDispatch, set_status_connection, toggle_status_connection, useAppSelector } from '../../backend/reducers';
+import {
+    appDispatch,
+    set_status_connection,
+    toggle_status_connection,
+    useAppSelector
+} from '../../backend/reducers';
 import '../remote/remote.scss';
 
 export const Status = () => {
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
-    const isOpenStats = useAppSelector(state => state.sidepane.statusConnection)
+    const isOpenStats = useAppSelector(
+        (state) => state.sidepane.statusConnection
+    );
 
-    const sidePaneOpen = useAppSelector(state => !state.sidepane.hide)
+    const sidePaneOpen = useAppSelector((state) => !state.sidepane.hide);
 
     const pinging = useAppSelector((state) => state.remote.ping_status);
 
@@ -33,28 +40,28 @@ export const Status = () => {
         };
     }, []);
     useEffect(() => {
-        appDispatch(set_status_connection(sidePaneOpen))
-
-    }, [sidePaneOpen])
+        appDispatch(set_status_connection(sidePaneOpen));
+    }, [sidePaneOpen]);
     useEffect(() => {
-        appDispatch(set_status_connection(
-            videoConnectivity == 'connecting' ||
-            videoConnectivity == 'close' ||
-            !pinging
-        ));
+        appDispatch(
+            set_status_connection(
+                videoConnectivity == 'connecting' ||
+                    videoConnectivity == 'close' ||
+                    !pinging
+            )
+        );
     }, [audioConnectivity, videoConnectivity, pinging]);
 
-
     const toggleStats = () => {
-
-        appDispatch(toggle_status_connection())
-    }
+        appDispatch(toggle_status_connection());
+    };
     return (
         <>
             <div className="relative">
                 <div
-                    className={`${isOpenStats ? 'slide-in' : 'slide-out'
-                        }  statusConnection`}
+                    className={`${
+                        isOpenStats ? 'slide-in' : 'slide-out'
+                    }  statusConnection`}
                 >
                     <p>
                         Video: <b>{videoConnectivity}</b>
@@ -75,7 +82,6 @@ export const Status = () => {
                     </button>*/}
                 </div>
             </div>
-
         </>
     );
 };

@@ -90,7 +90,6 @@ const listMobileShortCut = [
         name: 'Win D',
         val: ['lwin', 'd'],
         explain: [Contents.WIN_D_SHORTCUT]
-
     },
     {
         name: 'Ctrl C',
@@ -134,7 +133,6 @@ const listMobileSettings = [
         state: 'network.airplane',
         action: 'showLinkShare',
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
-
     },
     {
         ui: true,
@@ -154,7 +152,6 @@ const listMobileSettings = [
         state: 'copy_log',
         action: 'copy_log',
         explain: [Contents.DEBUGGER_EXPLAIN]
-
     },
     {
         ui: true,
@@ -164,7 +161,6 @@ const listMobileSettings = [
         state: 'hq',
         action: 'toggle_hq',
         explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
-
     },
     {
         id: 'fixKeyboardBtnMobile',
@@ -210,7 +206,6 @@ const listDesktopSettings = [
         state: 'share_reference',
         action: 'showLinkShare',
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
-
     },
     {
         ui: true,
@@ -221,7 +216,6 @@ const listDesktopSettings = [
         state: 'relative_mouse',
         action: 'remote/relative_mouse',
         explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
-
     },
     {
         ui: true,
@@ -241,7 +235,6 @@ const listDesktopSettings = [
         state: 'copy_log',
         action: 'copy_log',
         explain: [Contents.DEBUGGER_EXPLAIN]
-
     },
     {
         ui: true,
@@ -251,28 +244,27 @@ const listDesktopSettings = [
         state: 'hq',
         action: 'toggle_hq',
         explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
-
     },
     ...(!DevEnv
         ? []
         : [
-            {
-                ui: true,
-                id: 'toggle_remote_async',
-                src: 'FiVideoOff',
-                name: [Contents.VIDEO_TOGGLE],
-                state: 'active',
-                action: 'toggle_remote_async'
-            },
-            {
-                ui: true,
-                id: 'reset',
-                src: 'MdResetTv',
-                name: [Contents.RESET_APP],
-                state: 'hard_reset_async',
-                action: 'hard_reset_async'
-            }
-        ])
+              {
+                  ui: true,
+                  id: 'toggle_remote_async',
+                  src: 'FiVideoOff',
+                  name: [Contents.VIDEO_TOGGLE],
+                  state: 'active',
+                  action: 'toggle_remote_async'
+              },
+              {
+                  ui: true,
+                  id: 'reset',
+                  src: 'MdResetTv',
+                  name: [Contents.RESET_APP],
+                  state: 'hard_reset_async',
+                  action: 'hard_reset_async'
+              }
+          ])
 ];
 
 const initialState: Data = {
@@ -300,7 +292,7 @@ const initialState: Data = {
 
     hide: true,
     banhide: true,
-    statusConnection: false,
+    statusConnection: false
 };
 
 export const sidepaneAsync = {
@@ -437,7 +429,7 @@ export const sidepaneSlice = createSlice({
         },
         set_status_connection: (state, action) => {
             console.log(action.payload);
-            state.statusConnection = action.payload
+            state.statusConnection = action.payload;
         }
     },
     extraReducers: (builder) => {

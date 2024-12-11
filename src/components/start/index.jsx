@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
@@ -165,7 +165,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                            1000
+                                                1000
                                         )}
                                     </span>
                                 </div>
@@ -193,8 +193,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                                remote.framerate +
+                                                MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -263,29 +263,48 @@ export const SidePane = () => {
 const SpecsConnectInfo = () => {
     const remote = useAppSelector((state) => state.remote);
 
-
     return (
         <div className="containerSlider">
-            <div className='wrapperSpecsInfo sliderName    mb-1'>
-                <div className='specsTitle '>Thông số: <AiOutlineQuestionCircle /></div>
+            <div className="wrapperSpecsInfo sliderName    mb-1">
+                <div className="specsTitle ">
+                    Thông số: <AiOutlineQuestionCircle />
+                </div>
 
                 <div className="specsExplain">
-                    <p><b>Packetloss</b>: Tỷ lệ dữ liệu bị mất khi truyền từ cloud về thiết bị của bạn. Mức lý tưởng: 0</p>
+                    <p>
+                        <b>Packetloss</b>: Tỷ lệ dữ liệu bị mất khi truyền từ
+                        cloud về thiết bị của bạn. Mức lý tưởng: 0
+                    </p>
 
-                    <p><b>IDR</b>: Thông số tái tạo khung hình bị vỡ. Mức lý tưởng: 10 - 30.</p>
+                    <p>
+                        <b>IDR</b>: Thông số tái tạo khung hình bị vỡ. Mức lý
+                        tưởng: 10 - 30.
+                    </p>
 
-                    <p><b>Bitrate</b>: Tốc độ truyền dữ liệu mỗi giây. Mức tối thiểu cho cloud gaming: 6Mbps</p>
+                    <p>
+                        <b>Bitrate</b>: Tốc độ truyền dữ liệu mỗi giây. Mức tối
+                        thiểu cho cloud gaming: 6Mbps
+                    </p>
 
-                    <p><b>Fps</b>: Số khung hình hiển thị mỗi giây. Mức tối thiểu: 30</p>
+                    <p>
+                        <b>Fps</b>: Số khung hình hiển thị mỗi giây. Mức tối
+                        thiểu: 30
+                    </p>
 
-                    <p><b>Decode</b>: Thời gian cần để giải mã tín hiệu video từ cloud. Mức lý tưởng: dưới 1 ms</p>
+                    <p>
+                        <b>Decode</b>: Thời gian cần để giải mã tín hiệu video
+                        từ cloud. Mức lý tưởng: dưới 1 ms
+                    </p>
 
-                    <p><b>Delay</b>: Độ trễ từ khi thực hiện thao tác game đến khi hành động xuất hiện trên màn hình. Mức lý tưởng: dưới 30 ms</p>
+                    <p>
+                        <b>Delay</b>: Độ trễ từ khi thực hiện thao tác game đến
+                        khi hành động xuất hiện trên màn hình. Mức lý tưởng:
+                        dưới 30 ms
+                    </p>
                 </div>
             </div>
             <p className="sliderName">
-                packetloss:{' '}
-                <span> {remote.packetLoss}</span>
+                packetloss: <span> {remote.packetLoss}</span>
                 idr: <span> {remote.idrcount}</span>
                 bitrate: <span> {remote.realbitrate}</span>
                 kbps
@@ -294,33 +313,20 @@ const SpecsConnectInfo = () => {
                 fps: <span> {remote.realfps}</span>
                 {!isNaN(remote.realdecodetime) ? (
                     <>
-                        decode:{' '}
-                        <span>
-                            {' '}
-                            {remote.realdecodetime.toFixed(
-                                2
-                            )}
-                        </span>
+                        decode: <span> {remote.realdecodetime.toFixed(2)}</span>
                         ms{' '}
                     </>
                 ) : null}
                 {!isNaN(remote.realdelay) ? (
                     <>
-                        delay:{' '}
-                        <span>
-                            {' '}
-                            {remote.realdelay.toFixed(2)}
-                        </span>
+                        delay: <span> {remote.realdelay.toFixed(2)}</span>
                         ms
                     </>
                 ) : null}
             </p>
-
-
         </div>
-    )
-
-}
+    );
+};
 const GamePadSetting = () => {
     const sidepane = useAppSelector((state) => state.sidepane);
 
@@ -584,8 +590,8 @@ function MobileComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.mobileControl.buttons
             : sidepane.mobileControl.buttons.filter(
-                (x) => x.action != 'shutDownVm'
-            );
+                  (x) => x.action != 'shutDownVm'
+              );
 
     return (
         <>
@@ -594,7 +600,7 @@ function MobileComponent({ pnstates }) {
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
                 {sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                    <MobileShortCutBtn qk={qk} />
+                    <MobileShortCutBtn key={idx} qk={qk} />
                 ))}
             </div>
         </>
@@ -611,8 +617,8 @@ function DesktopComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.desktopControl.buttons
             : sidepane.desktopControl.buttons.filter(
-                (x) => x.action != 'shutDownVm'
-            );
+                  (x) => x.action != 'shutDownVm'
+              );
 
     return (
         <>
@@ -659,7 +665,7 @@ function DesktopComponent({ pnstates }) {
 
                             {qk.explain ? (
                                 <div className="qkExplainCtn">
-                                    <AiOutlineQuestionCircle fontSize='1rem' />
+                                    <AiOutlineQuestionCircle fontSize="1rem" />
                                     <div className="qkExplainText">
                                         {t[qk.explain]}
                                     </div>
@@ -687,14 +693,9 @@ function DesktopComponent({ pnstates }) {
                         >
                             {qk.name}
                         </div>
-                        {
-
-                            qk?.explain ?
-                                <div className="qktext">
-                                    {t[qk.explain]}
-                                </div>
-                                : null
-                        }
+                        {qk?.explain ? (
+                            <div className="qktext">{t[qk.explain]}</div>
+                        ) : null}
                     </div>
                 ))}
             </div>

@@ -322,7 +322,7 @@ export const PaidTutorial = () => {
                 remote.active &&
                 CLIENT?.Metrics?.video?.status == 'connected' &&
                 localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
-                'true'
+                    'true'
             ) {
                 setRun(true);
 
@@ -341,7 +341,7 @@ export const PaidTutorial = () => {
     useEffect(() => {
         setRun(show);
     }, [show]);
-    useEffect(() => { }, [remote.active]);
+    useEffect(() => {}, [remote.active]);
 
     const handleJoyrideCallback = ({ status, index, type, action }) => {
         if (action === ACTIONS.CLOSE) {

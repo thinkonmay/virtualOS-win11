@@ -228,7 +228,7 @@ export enum Contents {
     QA_CONNECTGEARS,
     QA_FIXLAG,
 
-    WIN_D_SHORTCUT,
+    WIN_D_SHORTCUT
 }
 
 export function language() {
@@ -267,7 +267,10 @@ export function language() {
     id.set(Contents.MAXIMUM_QUALITY, 'Kualitas maksimal');
 
     en.set(Contents.MAXIMUM_QUALITY_EXPLAIN, 'Maximum quality');
-    vn.set(Contents.MAXIMUM_QUALITY_EXPLAIN, 'Bật để có thể tăng gấp đôi bitrate hiện tại');
+    vn.set(
+        Contents.MAXIMUM_QUALITY_EXPLAIN,
+        'Bật để có thể tăng gấp đôi bitrate hiện tại'
+    );
     id.set(Contents.MAXIMUM_QUALITY_EXPLAIN, 'Kualitas maksimal');
 
     en.set(Contents.DEBUGGER, 'Debugger');
@@ -275,7 +278,10 @@ export function language() {
     id.set(Contents.DEBUGGER, 'Debugger');
 
     en.set(Contents.DEBUGGER_EXPLAIN, 'Debugger');
-    vn.set(Contents.DEBUGGER_EXPLAIN, 'Bấm đề copy lỗi vào bộ nhớ tạm, dán & gửi cho admin để được hỗ trợ!');
+    vn.set(
+        Contents.DEBUGGER_EXPLAIN,
+        'Bấm đề copy lỗi vào bộ nhớ tạm, dán & gửi cho admin để được hỗ trợ!'
+    );
     id.set(Contents.DEBUGGER_EXPLAIN, 'Debugger');
 
     en.set(Contents.CA_TURN_ON_PC, 'Turn on PC');
@@ -628,7 +634,6 @@ export function language() {
     vn.set(Contents.FULLSCREEN, 'Toàn màn hình');
     id.set(Contents.FULLSCREEN, 'Layar penuh');
 
-
     en.set(Contents.SCAN_CODE, 'Fix keyboard');
     vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
     id.set(Contents.SCAN_CODE, 'Perbaiki keyboard');
@@ -643,7 +648,6 @@ export function language() {
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
     id.set(Contents.STRICT_TIMING, 'Mode jaringan buruk');
-
 
     en.set(Contents.FRAMERATE, 'FPS');
     vn.set(Contents.FRAMERATE, 'FPS: Số khung hình hiển thị/ giây');
@@ -792,7 +796,10 @@ export function language() {
     id.set(Contents.EXTERNAL_TAB, 'Bagikan tautan');
 
     en.set(Contents.EXTERNAL_TAB_EXPlAIN, 'Share link');
-    vn.set(Contents.EXTERNAL_TAB_EXPlAIN, 'Tạo link & gửi cho bạn bè để chơi chung');
+    vn.set(
+        Contents.EXTERNAL_TAB_EXPlAIN,
+        'Tạo link & gửi cho bạn bè để chơi chung'
+    );
     id.set(Contents.EXTERNAL_TAB_EXPlAIN, 'Bagikan tautan');
 
     en.set(Contents.QUALITY, 'Quality');
