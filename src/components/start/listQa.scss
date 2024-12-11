@@ -39,6 +39,12 @@
 
 		padding: 16px 0px;
 		border-bottom: 1px solid;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+			opacity: 0.8;
+		}
 
 		&:last-child {
 			border-bottom: none;

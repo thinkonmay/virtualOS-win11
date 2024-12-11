@@ -86,8 +86,10 @@ const listMobileShortCut = [
         val: ['Escape']
     },
     {
-        name: 'Win+D',
-        val: ['lwin', 'd']
+        name: 'Win D',
+        val: ['lwin', 'd'],
+        explain: [Contents.WIN_D_SHORTCUT]
+
     },
     {
         name: 'Ctrl C',
@@ -129,7 +131,9 @@ const listMobileSettings = [
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
         state: 'network.airplane',
-        action: 'showLinkShare'
+        action: 'showLinkShare',
+        explain: [Contents.EXTERNAL_TAB_EXPlAIN]
+
     },
     {
         ui: true,
@@ -147,7 +151,9 @@ const listMobileSettings = [
         src: 'MdTextSnippet',
         name: [Contents.DEBUGGER],
         state: 'copy_log',
-        action: 'copy_log'
+        action: 'copy_log',
+        explain: [Contents.DEBUGGER_EXPLAIN]
+
     },
     {
         ui: true,
@@ -155,7 +161,9 @@ const listMobileSettings = [
         src: 'MdHighQuality',
         name: [Contents.MAXIMUM_QUALITY],
         state: 'hq',
-        action: 'toggle_hq'
+        action: 'toggle_hq',
+        explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
+
     },
     {
         id: 'fixKeyboardBtnMobile',
@@ -168,8 +176,9 @@ const listMobileSettings = [
 ];
 const listDesktopShortCut = [
     {
-        name: 'Win+D',
-        val: ['lwin', 'd']
+        name: 'Win D',
+        val: ['lwin', 'd'],
+        explain: [Contents.WIN_D_SHORTCUT]
     }
 ];
 const listDesktopSettings = [
@@ -198,7 +207,9 @@ const listDesktopSettings = [
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
         state: 'share_reference',
-        action: 'showLinkShare'
+        action: 'showLinkShare',
+        explain: [Contents.EXTERNAL_TAB_EXPlAIN]
+
     },
     {
         ui: true,
@@ -207,7 +218,9 @@ const listDesktopSettings = [
         src: 'FaMousePointer',
         name: [Contents.RELATIVE_MOUSE],
         state: 'relative_mouse',
-        action: 'remote/relative_mouse'
+        action: 'remote/relative_mouse',
+        explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
+
     },
     {
         ui: true,
@@ -225,7 +238,9 @@ const listDesktopSettings = [
         src: 'MdTextSnippet',
         name: [Contents.DEBUGGER],
         state: 'copy_log',
-        action: 'copy_log'
+        action: 'copy_log',
+        explain: [Contents.DEBUGGER_EXPLAIN]
+
     },
     {
         ui: true,
@@ -233,28 +248,30 @@ const listDesktopSettings = [
         src: 'MdHighQuality',
         name: [Contents.MAXIMUM_QUALITY],
         state: 'hq',
-        action: 'toggle_hq'
+        action: 'toggle_hq',
+        explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
+
     },
     ...(!DevEnv
         ? []
         : [
-              {
-                  ui: true,
-                  id: 'toggle_remote_async',
-                  src: 'FiVideoOff',
-                  name: [Contents.VIDEO_TOGGLE],
-                  state: 'active',
-                  action: 'toggle_remote_async'
-              },
-              {
-                  ui: true,
-                  id: 'reset',
-                  src: 'MdResetTv',
-                  name: [Contents.RESET_APP],
-                  state: 'hard_reset_async',
-                  action: 'hard_reset_async'
-              }
-          ])
+            {
+                ui: true,
+                id: 'toggle_remote_async',
+                src: 'FiVideoOff',
+                name: [Contents.VIDEO_TOGGLE],
+                state: 'active',
+                action: 'toggle_remote_async'
+            },
+            {
+                ui: true,
+                id: 'reset',
+                src: 'MdResetTv',
+                name: [Contents.RESET_APP],
+                state: 'hard_reset_async',
+                action: 'hard_reset_async'
+            }
+        ])
 ];
 
 const initialState: Data = {
