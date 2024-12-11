@@ -46,6 +46,7 @@ type Data = {
     mobileControl: MobileControl;
     hide: boolean;
     banhide: boolean;
+    statusConnection: boolean;
 };
 interface ISettingState {
     gamePad: IGamePadValue;
@@ -298,7 +299,8 @@ const initialState: Data = {
     message: [],
 
     hide: true,
-    banhide: true
+    banhide: true,
+    statusConnection: false,
 };
 
 export const sidepaneAsync = {
@@ -423,6 +425,19 @@ export const sidepaneSlice = createSlice({
                 !state.mobileControl.keyboardHide;
             state.hide = true;
             state.banhide = true;
+        },
+        toggle_status_connection: (state) => {
+            state.statusConnection = !state.statusConnection;
+        },
+        hide_status_connection: (state) => {
+            state.statusConnection = false;
+        },
+        open_status_connection: (state) => {
+            state.statusConnection = true;
+        },
+        set_status_connection: (state, action) => {
+            console.log(action.payload);
+            state.statusConnection = action.payload
         }
     },
     extraReducers: (builder) => {

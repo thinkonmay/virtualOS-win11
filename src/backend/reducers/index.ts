@@ -107,7 +107,11 @@ export const {
     toggle_gamepad_setting,
     change_btnGp_size,
     toggle_gamepad_draggable,
-    toggle_default_gamepad_position
+    toggle_default_gamepad_position,
+    toggle_status_connection,
+    hide_status_connection,
+    open_status_connection,
+    set_status_connection
 } = sidepaneSlice.actions;
 
 export const {

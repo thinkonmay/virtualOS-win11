@@ -1,14 +1,16 @@
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import { CLIENT } from '../../../src-tauri/singleton';
-import { useAppSelector } from '../../backend/reducers';
-import './status.scss';
+import { appDispatch, set_status_connection, toggle_status_connection, useAppSelector } from '../../backend/reducers';
+import '../remote/remote.scss';
 
 export const Status = () => {
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
     const [audioConnectivity, setAudioConnectivity] = useState('not started');
-    const [isOpenStats, setOpenStats] = useState(false);
+    const isOpenStats = useAppSelector(state => state.sidepane.statusConnection)
+
+    const sidePaneOpen = useAppSelector(state => !state.sidepane.hide)
+
     const pinging = useAppSelector((state) => state.remote.ping_status);
 
     const userCreatedAt = useAppSelector(
@@ -30,27 +32,23 @@ export const Status = () => {
             clearInterval(interval);
         };
     }, []);
-
     useEffect(() => {
-        setOpenStats(
+        appDispatch(set_status_connection(sidePaneOpen))
+
+    }, [sidePaneOpen])
+    useEffect(() => {
+        appDispatch(set_status_connection(
             videoConnectivity == 'connecting' ||
             videoConnectivity == 'close' ||
             !pinging
-        );
+        ));
     }, [audioConnectivity, videoConnectivity, pinging]);
 
-    //useEffect(() => {
-    //    if (
-    //        localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true'
-    //        && videoConnectivity == 'connected'
-    //        && audioConnectivity == 'connected'
 
-    //    ) {
-    //        appDispatch(show_tutorial('PaidTutorial'));
-    //    }
+    const toggleStats = () => {
 
-    //}, [audioConnectivity, videoConnectivity])
-
+        appDispatch(toggle_status_connection())
+    }
     return (
         <>
             <div className="relative">
@@ -65,22 +63,19 @@ export const Status = () => {
                         <br />
                         Ping: <b>{pinging ? 'TRUE' : 'FALSE'}</b>
                     </p>
-                    <button
+                    {/*<button
                         className="btn-show"
-                        onClick={() => setOpenStats((old) => !old)}
+                        onClick={toggleStats}
                     >
                         {isOpenStats ? (
-                            <MdArrowBackIos style={{ fontSize: '1.2rem' }} />
+                            <MdArrowBackIos style={{ fontSize: '1.1rem' }} />
                         ) : (
-                            <MdArrowForwardIos style={{ fontSize: '1.2rem' }} />
+                            <MdArrowForwardIos style={{ fontSize: '1.1rem' }} />
                         )}
-                    </button>
+                    </button>*/}
                 </div>
             </div>
 
-            {/*{localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
-            'true' && videoConnectivity == 'connected' ? (
-        ) : null}*/}
         </>
     );
 };
