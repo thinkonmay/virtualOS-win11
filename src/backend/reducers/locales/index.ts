@@ -274,8 +274,8 @@ export function language() {
     vn.set(Contents.DEBUGGER, 'Copy lỗi');
     id.set(Contents.DEBUGGER, 'Debugger');
 
-    vn.set(Contents.DEBUGGER_EXPLAIN, 'Copy lỗi');
-    en.set(Contents.DEBUGGER_EXPLAIN, 'Bấm đề copy lỗi vào bộ nhớ tạm, dán & gửi cho admin để được hỗ trợ!');
+    en.set(Contents.DEBUGGER_EXPLAIN, 'Debugger');
+    vn.set(Contents.DEBUGGER_EXPLAIN, 'Bấm đề copy lỗi vào bộ nhớ tạm, dán & gửi cho admin để được hỗ trợ!');
     id.set(Contents.DEBUGGER_EXPLAIN, 'Debugger');
 
     en.set(Contents.CA_TURN_ON_PC, 'Turn on PC');
