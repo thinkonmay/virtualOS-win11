@@ -69,9 +69,9 @@ body[data-theme="dark"] {
     //height: max-content;
     z-index: 10;
     padding-left: 22px;
-
+    color: #fff;
     --bg1: rgba(32, 32, 32, 0.75);
-    --bg2: rgba(0, 0, 0, 0.8);
+    --bg2: rgba(37, 37, 37, 0.7);
     //-webkit-backdrop-filter: saturate(3) blur(20px);
     //backdrop-filter: saturate(3) blur(20px);
     background-color: var(--bg2);
@@ -105,7 +105,7 @@ body[data-theme="dark"] {
     outline: none;
     border: none;
     background: none;
-    color: var(--dark-txt);
+    color: #fff;
 
     -webkit-tap-highlight-color: transparent;
   }
