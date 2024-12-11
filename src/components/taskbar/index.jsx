@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { MdOutlineMenuBook } from 'react-icons/md';
+import { BiSupport } from "react-icons/bi";
+import { RiBookLine } from "react-icons/ri";
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
 
 import {
     MdArrowBackIos,
     MdArrowForwardIos,
-    MdOutlineVideoSettings,
-    MdSupportAgent
+    MdOutlineVideoSettings
 } from 'react-icons/md';
 
 import { afterMath } from '../../backend/actions';
@@ -123,7 +123,7 @@ const Taskbar = () => {
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
                     >
-                        <MdSupportAgent fontSize={'1.5rem'} />
+                        <BiSupport fontSize={'1.5rem'} />
                     </div>
                     <div
                         className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
@@ -132,7 +132,7 @@ const Taskbar = () => {
                         data-action="toggleQa"
                         style={{ '--prefix': 'QA' }}
                     >
-                        <MdOutlineMenuBook fontSize={'1.2rem'} />
+                        <RiBookLine fontSize={'1.4rem'} />
                         <span className="hidden md:block">Hướng dẫn</span>
                     </div>
                     <div
@@ -169,11 +169,10 @@ const Taskbar = () => {
                                 <Icon
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
-                                    width={32}
+                                    width={28}
                                 //click="startmenu/startogg"
                                 //style={{ '--prefix': 'START' }}
-                                />
-                                <p className="text-xm font-semibold">
+                                />                                <p className="text-xm font-semibold">
                                     Tài khoản
                                 </p>
                             </div>
@@ -242,7 +241,7 @@ const Taskbar = () => {
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
-                            <MdSupportAgent fontSize={'1.5rem'} />
+                            <BiSupport strokeWidth={'0rem'} fontSize={'1.5rem'} />
                         </div>
                         <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
@@ -252,7 +251,7 @@ const Taskbar = () => {
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'QA' }}
                         >
-                            <MdOutlineMenuBook fontSize={'1.2rem'} />
+                            <RiBookLine fontSize={'1.4rem'} />
                             <span className="hidden md:block">Hướng dẫn</span>
                         </div>
                         <div

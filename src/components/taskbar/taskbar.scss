@@ -30,7 +30,7 @@ body[data-theme="dark"] {
 
     .taskright {
       .btn-show {
-        filter: invert(1);
+        //filter: invert(1);
       }
 
     }
@@ -54,6 +54,14 @@ body[data-theme="dark"] {
 
 .taskright {
   position: absolute;
+  color: var(--dark-txt);
+  padding: 0 12px;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
 
   &[data-remote="true"] {
     bottom: 0;
@@ -63,7 +71,7 @@ body[data-theme="dark"] {
     padding-left: 22px;
 
     --bg1: rgba(32, 32, 32, 0.75);
-    --bg2: rgba(255, 255, 255, 0.3);
+    --bg2: rgba(0, 0, 0, 0.8);
     //-webkit-backdrop-filter: saturate(3) blur(20px);
     //backdrop-filter: saturate(3) blur(20px);
     background-color: var(--bg2);
@@ -84,14 +92,6 @@ body[data-theme="dark"] {
 
 
 
-  padding: 0 12px;
-  top: 0;
-  right: 0;
-  width: auto;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 
   .btn-show {
     position: absolute;
@@ -105,6 +105,7 @@ body[data-theme="dark"] {
     outline: none;
     border: none;
     background: none;
+    color: var(--dark-txt);
 
     -webkit-tap-highlight-color: transparent;
   }
@@ -131,14 +132,13 @@ body[data-theme="dark"] {
 
 
 
-
   }
 
   .settingBtn {
     font-size: 12px;
     display: flex;
-    gap: 4px;
     align-items: center;
+    gap: 8xpx;
   }
 
 }
