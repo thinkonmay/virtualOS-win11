@@ -429,8 +429,8 @@ export function language() {
     vn.set(Contents.GUIDELINE_APP, 'Hướng dẫn');
     id.set(Contents.GUIDELINE_APP, 'Panduan');
 
-    en.set(Contents.TEMPLATE_APP, 'Template');
-    vn.set(Contents.TEMPLATE_APP, 'Template');
+    en.set(Contents.TEMPLATE_APP, 'Installed games');
+    vn.set(Contents.TEMPLATE_APP, 'Game đã tải sẵn');
     id.set(Contents.TEMPLATE_APP, 'Template');
 
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
