@@ -61,6 +61,7 @@ type Data = {
     relative_mouse: boolean;
     focus: boolean;
     hq: boolean;
+    prev_hq: boolean;
     direct_access: boolean;
 
     scancode: boolean;
@@ -87,6 +88,7 @@ type Data = {
 const initialState: Data = {
     ping_status: true,
     hq: false,
+    prev_hq: false,
     direct_access: false,
     focus: true,
     active: false,
@@ -194,6 +196,8 @@ export const remoteAsync = {
             framerate,
             prev_bitrate,
             prev_framerate,
+            prev_hq,
+            hq,
             prev_size
         } = store.getState().remote;
         if (!active) return;
@@ -222,6 +226,7 @@ export const remoteAsync = {
         if (
             prev_bitrate != bitrate ||
             prev_framerate != framerate ||
+            prev_hq != hq ||
             prev_size != SIZE()
         )
             appDispatch(remoteSlice.actions.internal_sync());
@@ -435,7 +440,8 @@ export const remoteSlice = createSlice({
         internal_sync: (state) => {
             if (
                 (state.bitrate != state.prev_bitrate ||
-                    state.prev_size != SIZE()) &&
+                    state.prev_size != SIZE() ||
+                    state.prev_hq != state.hq) &&
                 SIZE() > 0
             ) {
                 CLIENT?.ChangeBitrate(
@@ -447,6 +453,7 @@ export const remoteSlice = createSlice({
                 );
                 state.prev_bitrate = state.bitrate;
                 state.prev_size = SIZE();
+                state.prev_hq = state.hq;
             }
 
             if (state.framerate != state.prev_framerate) {

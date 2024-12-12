@@ -91,7 +91,7 @@ export const {
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =
     settSlice.actions;
-export const { worker_prev, worker_view } = workerSlice.actions;
+export const { worker_prev, worker_view, toggle_hide_vm } = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
     sidepane_bandhide,
@@ -143,8 +143,6 @@ export const {
     worker_session_access,
     worker_session_close,
     worker_session_create,
-    worker_vm_create,
-    worker_vm_create_from_volume,
     worker_refresh,
     worker_reload,
     wait_and_claim_volume,

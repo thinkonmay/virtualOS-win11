@@ -169,6 +169,13 @@ const listMobileSettings = [
         state: 'scancode',
         action: 'remote/scancode_toggle',
         explain: [Contents.SCAN_CODE_EXPLAIN]
+    },
+    {
+        src: 'MdVideogameAsset',
+        name: [Contents.HIDE_VM],
+        state: 'HideVM',
+        action: 'worker/toggle_hide_vm',
+        explain: [Contents.HIDE_VM_EXPLAIN]
     }
 ];
 const listDesktopShortCut = [
@@ -244,6 +251,13 @@ const listDesktopSettings = [
         state: 'hq',
         action: 'toggle_hq',
         explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
+    },
+    {
+        src: 'MdVideogameAsset',
+        name: [Contents.HIDE_VM],
+        state: 'HideVM',
+        action: 'worker/toggle_hide_vm',
+        explain: [Contents.HIDE_VM_EXPLAIN]
     },
     ...(!DevEnv
         ? []

@@ -91,7 +91,7 @@ export const SidePane = () => {
     const sidepane = useAppSelector((state) => state.sidepane);
     const setting = useAppSelector((state) => state.setting);
     const remote = useAppSelector((state) => state.remote);
-    const t = useAppSelector((state) => state.globals.translation);
+    const HideVM = useAppSelector((state) => state.worker.HideVM);
     const [pnstates, setPnstate] = useState({});
     const dispatch = appDispatch;
     useEffect(() => {
@@ -128,7 +128,7 @@ export const SidePane = () => {
         const tmp = {};
         for (const { state, name } of states) {
             let val = getTreeValue(
-                { ...setting, ...remote, ...mobileState },
+                { ...setting, ...remote, ...mobileState, HideVM },
                 state
             );
             if (name == 'Theme') val = val == 'dark';
@@ -136,7 +136,7 @@ export const SidePane = () => {
         }
 
         setPnstate(tmp);
-    }, [setting, sidepane, remote]);
+    }, [setting, sidepane, remote, HideVM]);
 
     return (
         <>
@@ -590,7 +590,10 @@ function MobileComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.mobileControl.buttons
             : sidepane.mobileControl.buttons.filter(
-                  (x) => x.action != 'shutDownVm'
+                  (x) =>
+                      !['shutDownVm', 'copy_log', 'showLinkShare'].includes(
+                          x.action
+                      )
               );
 
     return (
@@ -599,9 +602,11 @@ function MobileComponent({ pnstates }) {
                 {renderList.map((qk, idx) => (
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
-                {sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                    <MobileShortCutBtn key={idx} qk={qk} />
-                ))}
+                {shutdownable == 'started'
+                    ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
+                          <MobileShortCutBtn key={idx} qk={qk} />
+                      ))
+                    : null}
             </div>
         </>
     );
@@ -617,7 +622,10 @@ function DesktopComponent({ pnstates }) {
         shutdownable == 'started'
             ? sidepane.desktopControl.buttons
             : sidepane.desktopControl.buttons.filter(
-                  (x) => x.action != 'shutDownVm'
+                  (x) =>
+                      !['shutDownVm', 'copy_log', 'showLinkShare'].includes(
+                          x.action
+                      )
               );
 
     return (
@@ -682,22 +690,24 @@ function DesktopComponent({ pnstates }) {
                         }*/}
                     </div>
                 ))}
-                {sidepane.desktopControl.shortcuts.map((qk, idx) => (
-                    <div key={idx} className="qkGrp t">
-                        <div
-                            style={{
-                                fontSize: '0.8rem'
-                            }}
-                            className="qkbtn handcr prtclk"
-                            onClick={() => Actions.clickShortCut(qk.val)}
-                        >
-                            {qk.name}
-                        </div>
-                        {qk?.explain ? (
-                            <div className="qktext">{t[qk.explain]}</div>
-                        ) : null}
-                    </div>
-                ))}
+                {shutdownable == 'started'
+                    ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
+                          <div key={idx} className="qkGrp t">
+                              <div
+                                  style={{
+                                      fontSize: '0.8rem'
+                                  }}
+                                  className="qkbtn handcr prtclk"
+                                  onClick={() => Actions.clickShortCut(qk.val)}
+                              >
+                                  {qk.name}
+                              </div>
+                              {qk?.explain ? (
+                                  <div className="qktext">{t[qk.explain]}</div>
+                              ) : null}
+                          </div>
+                      ))
+                    : null}
             </div>
             <hr className="mb-2 lg:mb-1" />
         </>
