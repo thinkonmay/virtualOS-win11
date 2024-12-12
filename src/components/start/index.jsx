@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
@@ -153,42 +154,11 @@ export const SidePane = () => {
                         )}
 
                         <div className="sliderCont flex flex-col items-start">
-                            <div className="containerSlider">
-                                <p className="sliderName">
-                                    packetloss:{' '}
-                                    <span> {remote.packetLoss}</span>
-                                    idr: <span> {remote.idrcount}</span>
-                                    bitrate: <span> {remote.realbitrate}</span>
-                                    kbps
-                                </p>
-                                <p className="sliderName">
-                                    fps: <span> {remote.realfps}</span>
-                                    {!isNaN(remote.realdecodetime) ? (
-                                        <>
-                                            decode:{' '}
-                                            <span>
-                                                {' '}
-                                                {remote.realdecodetime.toFixed(
-                                                    2
-                                                )}
-                                            </span>
-                                            ms{' '}
-                                        </>
-                                    ) : null}
-                                    {!isNaN(remote.realdelay) ? (
-                                        <>
-                                            delay:{' '}
-                                            <span>
-                                                {' '}
-                                                {remote.realdelay.toFixed(2)}
-                                            </span>
-                                            ms
-                                        </>
-                                    ) : null}
-                                </p>
+                            <SpecsConnectInfo />
 
+                            <div className="containerSlider mb-[-4px]">
                                 <div className="sliderName">
-                                    Bitrate:
+                                    <b>Bitrate:</b>
                                     <span>
                                         {Math.round(
                                             (((MAX_BITRATE() - MIN_BITRATE()) /
@@ -216,10 +186,9 @@ export const SidePane = () => {
                                     </span>
                                 </div>
                             </div>
-
                             <div className="containerSlider">
                                 <div className="sliderName">
-                                    Fps:
+                                    <b>Fps:</b>
                                     <span>
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
@@ -247,7 +216,7 @@ export const SidePane = () => {
 
                     <div className="reduceLagCtn">
                         <div className="wrapper ">
-                            <span className="italic text-[10px] lg:text-base font-semibold underline">
+                            <span className="italic text-[10px] lg:text-sm font-semibold underline">
                                 Làm sao để giảm giật lag khi chơi game?
                             </span>
                             <div className="child inset">
@@ -291,6 +260,73 @@ export const SidePane = () => {
     );
 };
 
+const SpecsConnectInfo = () => {
+    const remote = useAppSelector((state) => state.remote);
+
+    return (
+        <div className="containerSlider">
+            <div className="wrapperSpecsInfo sliderName    mb-1">
+                <div className="specsTitle ">
+                    Thông số: <AiOutlineQuestionCircle />
+                </div>
+
+                <div className="specsExplain">
+                    <p>
+                        <b>Packetloss</b>: Tỷ lệ dữ liệu bị mất khi truyền từ
+                        cloud về thiết bị của bạn. Mức lý tưởng: 0
+                    </p>
+
+                    <p>
+                        <b>IDR</b>: Thông số tái tạo khung hình bị vỡ. Mức lý
+                        tưởng: 10 - 30.
+                    </p>
+
+                    <p>
+                        <b>Bitrate</b>: Tốc độ truyền dữ liệu mỗi giây. Mức tối
+                        thiểu cho cloud gaming: 6Mbps
+                    </p>
+
+                    <p>
+                        <b>Fps</b>: Số khung hình hiển thị mỗi giây. Mức tối
+                        thiểu: 30
+                    </p>
+
+                    <p>
+                        <b>Decode</b>: Thời gian cần để giải mã tín hiệu video
+                        từ cloud. Mức lý tưởng: dưới 1 ms
+                    </p>
+
+                    <p>
+                        <b>Delay</b>: Độ trễ từ khi thực hiện thao tác game đến
+                        khi hành động xuất hiện trên màn hình. Mức lý tưởng:
+                        dưới 30 ms
+                    </p>
+                </div>
+            </div>
+            <p className="sliderName">
+                packetloss: <span> {remote.packetLoss}</span>
+                idr: <span> {remote.idrcount}</span>
+                bitrate: <span> {remote.realbitrate}</span>
+                kbps
+            </p>
+            <p className="sliderName">
+                fps: <span> {remote.realfps}</span>
+                {!isNaN(remote.realdecodetime) ? (
+                    <>
+                        decode: <span> {remote.realdecodetime.toFixed(2)}</span>
+                        ms{' '}
+                    </>
+                ) : null}
+                {!isNaN(remote.realdelay) ? (
+                    <>
+                        delay: <span> {remote.realdelay.toFixed(2)}</span>
+                        ms
+                    </>
+                ) : null}
+            </p>
+        </div>
+    );
+};
 const GamePadSetting = () => {
     const sidepane = useAppSelector((state) => state.sidepane);
 
@@ -492,6 +528,57 @@ const MobileBtn = ({ qk, pnstates }) => {
     );
 };
 
+const MobileShortCutBtn = ({ qk }) => {
+    const t = useAppSelector((state) => state.globals.translation);
+
+    const [isShowExplain, setShowExplain] = useState(false);
+    const touchTimerRef = useRef(null);
+
+    const handleTouchStart = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+        }
+
+        touchTimerRef.current = setTimeout(() => {
+            setShowExplain(true);
+        }, 1000); // 1 giây
+    };
+
+    const handleTouchEnd = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+            touchTimerRef.current = null;
+        }
+        setShowExplain(false);
+    };
+
+    return (
+        <div className="qkGrp">
+            <div
+                className={`qkbtn handcr prtclk`}
+                onClick={() => Actions.clickShortCut(qk.val)}
+                onTouchEnd={handleTouchEnd}
+                onTouchStart={handleTouchStart}
+                style={{
+                    fontSize: '0.6rem'
+                }}
+            >
+                {qk.name}
+            </div>
+
+            {isShowExplain ? (
+                <div className="qkExplainTextMobile">
+                    <h6 className="text-xs text-center">{qk.name}</h6>
+                    {qk.explain ? (
+                        <p className="text-[8px] text-center mt-1">
+                            {t[qk.explain]}
+                        </p>
+                    ) : null}
+                </div>
+            ) : null}
+        </div>
+    );
+};
 function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
     const t = useAppSelector((state) => state.globals.translation);
@@ -517,17 +604,7 @@ function MobileComponent({ pnstates }) {
                 ))}
                 {shutdownable == 'started'
                     ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                          <div key={idx} className="qkGrp t">
-                              <div
-                                  style={{
-                                      fontSize: '0.6rem'
-                                  }}
-                                  className="qkbtn handcr prtclk"
-                                  onClick={() => Actions.clickShortCut(qk.val)}
-                              >
-                                  {qk.name}
-                              </div>
-                          </div>
+                          <MobileShortCutBtn key={idx} qk={qk} />
                       ))
                     : null}
             </div>
@@ -595,8 +672,8 @@ function DesktopComponent({ pnstates }) {
                             {t[qk.name]}
 
                             {qk.explain ? (
-                                <div className="qkExplainCtn  border rounded-sm">
-                                    ?
+                                <div className="qkExplainCtn">
+                                    <AiOutlineQuestionCircle fontSize="1rem" />
                                     <div className="qkExplainText">
                                         {t[qk.explain]}
                                     </div>
@@ -625,11 +702,14 @@ function DesktopComponent({ pnstates }) {
                               >
                                   {qk.name}
                               </div>
+                              {qk?.explain ? (
+                                  <div className="qktext">{t[qk.explain]}</div>
+                              ) : null}
                           </div>
                       ))
                     : null}
             </div>
-            <hr className="mb-4" />
+            <hr className="mb-2 lg:mb-1" />
         </>
     );
 }

@@ -46,6 +46,7 @@ type Data = {
     mobileControl: MobileControl;
     hide: boolean;
     banhide: boolean;
+    statusConnection: boolean;
 };
 interface ISettingState {
     gamePad: IGamePadValue;
@@ -86,8 +87,9 @@ const listMobileShortCut = [
         val: ['Escape']
     },
     {
-        name: 'Win+D',
-        val: ['lwin', 'd']
+        name: 'Win D',
+        val: ['lwin', 'd'],
+        explain: [Contents.WIN_D_SHORTCUT]
     },
     {
         name: 'Ctrl C',
@@ -129,7 +131,8 @@ const listMobileSettings = [
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
         state: 'network.airplane',
-        action: 'showLinkShare'
+        action: 'showLinkShare',
+        explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
         ui: true,
@@ -147,7 +150,8 @@ const listMobileSettings = [
         src: 'MdTextSnippet',
         name: [Contents.DEBUGGER],
         state: 'copy_log',
-        action: 'copy_log'
+        action: 'copy_log',
+        explain: [Contents.DEBUGGER_EXPLAIN]
     },
     {
         ui: true,
@@ -155,7 +159,8 @@ const listMobileSettings = [
         src: 'MdHighQuality',
         name: [Contents.MAXIMUM_QUALITY],
         state: 'hq',
-        action: 'toggle_hq'
+        action: 'toggle_hq',
+        explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
     },
     {
         id: 'fixKeyboardBtnMobile',
@@ -175,8 +180,9 @@ const listMobileSettings = [
 ];
 const listDesktopShortCut = [
     {
-        name: 'Win+D',
-        val: ['lwin', 'd']
+        name: 'Win D',
+        val: ['lwin', 'd'],
+        explain: [Contents.WIN_D_SHORTCUT]
     }
 ];
 const listDesktopSettings = [
@@ -205,7 +211,8 @@ const listDesktopSettings = [
         src: 'MdOutlineLink',
         name: [Contents.EXTERNAL_TAB],
         state: 'share_reference',
-        action: 'showLinkShare'
+        action: 'showLinkShare',
+        explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
         ui: true,
@@ -214,7 +221,8 @@ const listDesktopSettings = [
         src: 'FaMousePointer',
         name: [Contents.RELATIVE_MOUSE],
         state: 'relative_mouse',
-        action: 'remote/relative_mouse'
+        action: 'remote/relative_mouse',
+        explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
     },
     {
         ui: true,
@@ -232,7 +240,8 @@ const listDesktopSettings = [
         src: 'MdTextSnippet',
         name: [Contents.DEBUGGER],
         state: 'copy_log',
-        action: 'copy_log'
+        action: 'copy_log',
+        explain: [Contents.DEBUGGER_EXPLAIN]
     },
     {
         ui: true,
@@ -240,7 +249,8 @@ const listDesktopSettings = [
         src: 'MdHighQuality',
         name: [Contents.MAXIMUM_QUALITY],
         state: 'hq',
-        action: 'toggle_hq'
+        action: 'toggle_hq',
+        explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
     },
     {
         src: 'MdVideogameAsset',
@@ -295,7 +305,8 @@ const initialState: Data = {
     message: [],
 
     hide: true,
-    banhide: true
+    banhide: true,
+    statusConnection: false
 };
 
 export const sidepaneAsync = {
@@ -420,6 +431,19 @@ export const sidepaneSlice = createSlice({
                 !state.mobileControl.keyboardHide;
             state.hide = true;
             state.banhide = true;
+        },
+        toggle_status_connection: (state) => {
+            state.statusConnection = !state.statusConnection;
+        },
+        hide_status_connection: (state) => {
+            state.statusConnection = false;
+        },
+        open_status_connection: (state) => {
+            state.statusConnection = true;
+        },
+        set_status_connection: (state, action) => {
+            console.log(action.payload);
+            state.statusConnection = action.payload;
         }
     },
     extraReducers: (builder) => {

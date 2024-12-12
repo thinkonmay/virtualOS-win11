@@ -3,12 +3,15 @@ FROM node:20-alpine as builder
 # as builder
 
 # Install required packages
-RUN apk add --no-cache git openssh-client
+RUN apk add --no-cache git openssh-client sed
 
 WORKDIR /app
 
 # Clone the repository recursively to include submodules
 COPY . .
+
+ARG GOOGLE_ANALYTIC_CODE 
+ENV GOOGLE_ANALYTIC_CODE=${GOOGLE_ANALYTIC_CODE}
 
 # Install dependencies and build the application
 RUN npm install -f

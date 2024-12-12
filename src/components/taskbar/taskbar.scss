@@ -20,6 +20,7 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
+
 }
 
 body[data-theme="dark"] {
@@ -29,7 +30,7 @@ body[data-theme="dark"] {
 
     .taskright {
       .btn-show {
-        filter: invert(1);
+        //filter: invert(1);
       }
 
     }
@@ -53,6 +54,14 @@ body[data-theme="dark"] {
 
 .taskright {
   position: absolute;
+  color: var(--dark-txt);
+  padding: 0 12px;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
 
   &[data-remote="true"] {
     bottom: 0;
@@ -60,9 +69,9 @@ body[data-theme="dark"] {
     //height: max-content;
     z-index: 10;
     padding-left: 22px;
-
+    color: #fff;
     --bg1: rgba(32, 32, 32, 0.75);
-    --bg2: rgba(255, 255, 255, 0.3);
+    --bg2: rgba(37, 37, 37, 0.7);
     //-webkit-backdrop-filter: saturate(3) blur(20px);
     //backdrop-filter: saturate(3) blur(20px);
     background-color: var(--bg2);
@@ -83,14 +92,6 @@ body[data-theme="dark"] {
 
 
 
-  padding: 0 12px;
-  top: 0;
-  right: 0;
-  width: auto;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 
   .btn-show {
     position: absolute;
@@ -104,6 +105,7 @@ body[data-theme="dark"] {
     outline: none;
     border: none;
     background: none;
+    color: #fff;
 
     -webkit-tap-highlight-color: transparent;
   }
@@ -116,7 +118,7 @@ body[data-theme="dark"] {
     &[data-remote="true"] {
       //bottom: 0;
       top: 0;
-      height: 56px;
+      height: 40px;
       z-index: 10;
       padding-left: 22px;
 
@@ -130,8 +132,15 @@ body[data-theme="dark"] {
 
 
 
-
   }
+
+  .settingBtn {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8xpx;
+  }
+
 }
 
 .taskIcon {
