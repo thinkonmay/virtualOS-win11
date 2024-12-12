@@ -133,6 +133,8 @@ export enum Contents {
     RELATIVE_MOUSE,
     SCAN_CODE,
     SCAN_CODE_EXPLAIN,
+    HIDE_VM,
+    HIDE_VM_EXPLAIN,
     STRICT_TIMING,
     EXTERNAL_TAB,
     QUALITY,
@@ -585,6 +587,17 @@ export function language() {
     en.set(Contents.RELATIVE_MOUSE, 'Gaming mode');
     vn.set(Contents.RELATIVE_MOUSE, 'Chế độ gaming');
     id.set(Contents.RELATIVE_MOUSE, 'Mode gaming');
+
+    en.set(Contents.HIDE_VM, 'Online game');
+    vn.set(Contents.HIDE_VM, 'Online game');
+    id.set(Contents.HIDE_VM, 'Online game');
+
+    en.set(Contents.HIDE_VM_EXPLAIN, 'Enable for online games like FC Online');
+    vn.set(
+        Contents.HIDE_VM_EXPLAIN,
+        'Bật khi bạn chơi những game online như FC Online'
+    );
+    id.set(Contents.HIDE_VM_EXPLAIN, 'Enable for online games like FC Online');
 
     en.set(Contents.SCAN_CODE, 'Fix keyboard');
     vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
