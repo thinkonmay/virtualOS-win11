@@ -34,7 +34,7 @@ const listSubs = [
         ]
     },
     {
-        active: true,
+        active: false,
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: '299',
