@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
+import {
+    MdArrowDropDown,
+    MdArrowForwardIos,
+    MdArrowRight
+} from 'react-icons/md';
 import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
 import {
     appDispatch,
     get_payment,
+    popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
@@ -283,6 +288,19 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                             </label>
                                         ) : null
                                     )}
+                                </div>
+
+                                <div
+                                    className="flex items-center gap-1 hover:underline cursor-pointer font-semibold"
+                                    onClick={() => {
+                                        appDispatch(
+                                            popup_open({
+                                                type: 'serversInfo'
+                                            })
+                                        );
+                                    }}
+                                >
+                                    Hướng dẫn chọn server <MdArrowForwardIos />
                                 </div>
                             </>
                         ) : null}

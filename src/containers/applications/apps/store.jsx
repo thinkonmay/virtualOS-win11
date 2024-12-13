@@ -108,7 +108,9 @@ const DetailPage = ({ app }) => {
                     err="img/asset/bootlogo.png"
                 />
                 <div className="flex flex-col items-center text-center relative">
-                    <div className="text-2xl font-semibold mt-4 lg:mt-6">{name}</div>
+                    <div className="text-2xl font-semibold mt-4 lg:mt-6">
+                        {name}
+                    </div>
                     <div className="text-l font-bold ">{publisher}</div>
                     <div className="text-l font-thin ">Release {date}</div>
                     {subscribed ? (
