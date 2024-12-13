@@ -10,7 +10,6 @@ import {
     check_worker,
     desk_remove,
     fetch_domain,
-    fetch_message,
     fetch_store,
     fetch_subscription,
     fetch_under_maintenance,
@@ -85,9 +84,6 @@ const handleClipboard = async () => {
     }
 };
 
-const fetchMessage = async () => {
-    await appDispatch(fetch_message());
-};
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
@@ -179,8 +175,7 @@ export const preload = async (update_ui?: boolean) => {
             fetchApp(),
             fetchSubscription(),
             fetchSetting(),
-            fetchDomains(),
-            fetchMessage()
+            fetchDomains()
         ]);
         await fetchUsage();
         await fetchStore();

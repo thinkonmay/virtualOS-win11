@@ -175,7 +175,7 @@ export const {
 
 export const { fetch_store, fetch_under_maintenance, fetch_domain } =
     globalAsync;
-export const { push_message, fetch_message } = sidepaneAsync;
+export const {} = sidepaneAsync;
 
 export const dispatch_generic = async ({
     type,

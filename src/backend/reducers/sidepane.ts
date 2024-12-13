@@ -309,71 +309,7 @@ const initialState: Data = {
     statusConnection: false
 };
 
-export const sidepaneAsync = {
-    push_message: createAsyncThunk(
-        'push_message',
-        async (input: Message, { getState }): Promise<void> => {
-            const email = store.getState().user.email;
-            await LOCAL()
-                .from('user_message')
-                .insert({
-                    metadata: {
-                        email,
-                        type: input.type,
-                        recipient: input.recipient
-                    },
-                    value: { content: input.content }
-                });
-        }
-    ),
-    handle_message: async (payload: any) => {
-        if (payload.new.metadata.email != store.getState().user.email) return;
-        appDispatch(
-            render_message({
-                ...payload.new.value,
-                ...payload.new.metadata,
-                timestamp: payload.new.timestamp
-            })
-        );
-    },
-    fetch_message: createAsyncThunk(
-        'fetch_message',
-        async (_, { getState }): Promise<Message[]> => {
-            const email = (getState() as RootState).user.email;
-            LOCAL()
-                .channel('schema-message-changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'INSERT',
-                        schema: 'public',
-                        table: 'user_message'
-                    },
-                    sidepaneAsync.handle_message
-                )
-                .subscribe();
-
-            return await CacheRequest('message', 30, async () => {
-                const { data, error } = await LOCAL()
-                    .from('user_message')
-                    .select('timestamp,value,metadata')
-                    .order('timestamp', { ascending: false })
-                    .eq(`metadata->>email`, email)
-                    .limit(10);
-
-                if (error) throw error;
-
-                return data.map((x) => {
-                    return {
-                        ...x.value,
-                        ...x.metadata,
-                        timestamp: x.timestamp
-                    };
-                });
-            });
-        }
-    )
-};
+export const sidepaneAsync = {};
 
 export const sidepaneSlice = createSlice({
     name: 'sidepane',
@@ -445,13 +381,5 @@ export const sidepaneSlice = createSlice({
             console.log(action.payload);
             state.statusConnection = action.payload;
         }
-    },
-    extraReducers: (builder) => {
-        BuilderHelper(builder, {
-            fetch: sidepaneAsync.fetch_message,
-            hander: (state, action: PayloadAction<Message[]>) => {
-                state.message = [...state.message, ...action.payload];
-            }
-        });
     }
 });
