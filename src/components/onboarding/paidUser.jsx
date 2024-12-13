@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import {
     MdCheck,
     MdKeyboardArrowLeft,
@@ -6,6 +6,7 @@ import {
 } from 'react-icons/md';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import { isMobile } from '../../../src-tauri/core';
+import { CLIENT } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     show_tutorial,
@@ -75,7 +76,7 @@ const mobileGuide = [
         title: 'Ấn để mở bảng cài đặt',
         content: 'Chạm & giữ để nghiên cứu công dụng các nút này nha',
 
-        placement: 'left-end',
+        placement: 'bottom',
         locale: {
             next: 'Next' // Continue with "Next"
         },
@@ -89,7 +90,7 @@ const mobileGuide = [
         sidepane_paneopen: true
     },
     {
-        placement: 'left',
+        placement: 'bottom',
         target: '.virtKeyboardBtn',
         content: 'Lưu ý: Khi đang mở bàn phím ảo sẽ không sử dụng được chuột',
         title: 'Mở bàn phím ảo',
@@ -97,7 +98,7 @@ const mobileGuide = [
         sidepane_paneopen: true
     },
     {
-        placement: 'left',
+        placement: 'auto',
         target: '.virtGamepadBtn',
         content: 'Lưu ý: Khi đang mở tay cầm ảo sẽ không sử dụng được chuột',
         title: 'Mở bàn tay cầm ảo',
@@ -107,7 +108,7 @@ const mobileGuide = [
     {
         title: '  Nếu cần Thinkmay hỗ trợ, liên hệ chúng mình ngay nhé!',
 
-        placement: 'left',
+        placement: 'auto',
         spotlightPadding: 1,
 
         target: '#supportNow'
@@ -154,7 +155,8 @@ const desktopGuide = [
         placement: 'left',
         target: '.fixKeyboardBtn',
         title: 'Đưa chuột vào icon “?” để nghiên cứu công dụng các nút này nha',
-        spotlightPadding: 1
+        spotlightPadding: 1,
+        sidepane_paneopen: true
     },
     {
         title: 'Thông tin tài khoản',
@@ -180,6 +182,49 @@ const BeaconComponent = forwardRef((props, ref) => {
     return <div ref={ref} className="tooltipBeacon" {...props}></div>;
 });
 
+const ContinueButton = ({ primaryProps, isLastStep }) => {
+    const [timeRemaining, setTimeRemaining] = useState(2);
+    const [isActive, setIsActive] = useState(true);
+
+    useEffect(() => {
+        if (timeRemaining > 0) {
+            const timer = setInterval(() => {
+                setTimeRemaining((prevTime) => {
+                    if (prevTime <= 1) {
+                        clearInterval(timer);
+                        setIsActive(true);
+                        return 0;
+                    }
+                    return prevTime - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(timer);
+        }
+    }, []);
+
+    return (
+        <>
+            {isActive ? (
+                <button className="tooltipContinue" {...primaryProps}>
+                    {isLastStep ? (
+                        <>
+                            Xong <MdCheck fontSize={'1.2rem'} />{' '}
+                        </>
+                    ) : (
+                        <>
+                            Tiếp <MdKeyboardArrowRight fontSize={'1.2rem'} />
+                        </>
+                    )}
+                </button>
+            ) : (
+                <button className="tooltipContinue ">
+                    Đợi: {timeRemaining}s
+                </button>
+            )}
+        </>
+    );
+};
 function CustomTooltip(props) {
     const {
         backProps,
@@ -223,18 +268,10 @@ function CustomTooltip(props) {
                     </button>
                 )}
                 {continuous && (
-                    <button className="tooltipContinue" {...primaryProps}>
-                        {isLastStep ? (
-                            <>
-                                Xong <MdCheck fontSize={'1.2rem'} />{' '}
-                            </>
-                        ) : (
-                            <>
-                                Tiếp{' '}
-                                <MdKeyboardArrowRight fontSize={'1.2rem'} />
-                            </>
-                        )}
-                    </button>
+                    <ContinueButton
+                        primaryProps={primaryProps}
+                        isLastStep={isLastStep}
+                    />
                 )}
             </div>
         </div>
@@ -255,30 +292,69 @@ function CustomTooltip(props) {
 //}
 export const PaidTutorial = () => {
     const logged_in = useAppSelector((state) => state.user.id != 'unknown');
+    const [videoConnectivity, setVideoConnectivity] = useState('not started');
+
+    const remote = useAppSelector((state) => state.remote);
+    const show = useAppSelector(
+        (state) => state.globals.tutorial == 'PaidTutorial'
+    );
+
+    const firstCondition =
+        videoConnectivity == 'connected' &&
+        localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true';
     const [run, setRun] = useState(false);
+
+    const intervalRef = useRef(null);
 
     const [stepIndex, setStepIndex] = useState(0);
 
     const stop = () => {
         setRun(false);
+        setStepIndex(0);
         appDispatch(show_tutorial('close'));
         localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
     };
 
     const allSteps = [...general, ...(isMobile() ? mobileGuide : desktopGuide)];
-
     useEffect(() => {
-        if (logged_in) setRun(true);
-    }, [logged_in]);
+        intervalRef.current = setInterval(() => {
+            if (
+                remote.active &&
+                CLIENT?.Metrics?.video?.status == 'connected' &&
+                localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
+                    'true'
+            ) {
+                setRun(true);
+
+                if (!run) {
+                    setRun(true);
+                } else {
+                    clearInterval(intervalRef.current);
+                }
+            }
+        }, 3000);
+
+        return () => {
+            clearInterval(intervalRef.current);
+        };
+    }, [run, remote.active]);
+    useEffect(() => {
+        setRun(show);
+    }, [show]);
+    useEffect(() => {}, [remote.active]);
 
     const handleJoyrideCallback = ({ status, index, type, action }) => {
+        if (action === ACTIONS.CLOSE) {
+            stop();
+            clearInterval(intervalRef?.current);
+            setStepIndex(0);
+        }
+        if (allSteps[index]?.sidepane_paneopen && action != ACTIONS.CLOSE) {
+            appDispatch(sidepane_paneopen());
+        }
         if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) stop();
         else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
             setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
-        }
-
-        if (allSteps[index].sidepane_paneopen) {
-            appDispatch(sidepane_paneopen());
         }
     };
 
@@ -287,12 +363,13 @@ export const PaidTutorial = () => {
             <Joyride
                 callback={handleJoyrideCallback}
                 //beaconComponent={BeaconComponent}
-
+                disableScrollParentFix={true}
                 scrollToFirstStep
                 continuous
                 showProgress
                 disableOverlayClose
                 steps={allSteps}
+                stepIndex={stepIndex}
                 run={run}
                 tooltipComponent={CustomTooltip}
                 disableOverlay={isMobile() && stepIndex < 4 ? true : false}

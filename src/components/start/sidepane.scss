@@ -62,12 +62,12 @@
    position: absolute;
    bottom: 56px;
    right: 12px;
-   width: 376px;
+   width: 400px;
    border-radius: 0.5rem;
    color: var(--dark-txt);
    background: var(--bg1);
    //overflow: hidden;
-   transition: cubic-bezier(0.62, 0, 0.32, 1) 250ms;
+   transition: cubic-bezier(0.62, 0, 0.32, 1) 100ms;
    z-index: 9999;
    transform: translateX(0);
 
@@ -85,8 +85,8 @@
 
    &[data-hide="true"] {
      transform: translateY(110%);
-     animation: overflow-hider 0s ease-in-out 150ms forwards;
-     transition: all cubic-bezier(0.62, 0, 0.32, 1) 150ms;
+     animation: overflow-hider 0s ease-in-out 80ms forwards;
+     transition: all cubic-bezier(0.62, 0, 0.32, 1) 80ms;
    }
 
    .gamepadSettingWrapper {
@@ -173,10 +173,10 @@
          display: none;
          color: white;
          position: absolute;
-         top: -300px;
-         right: 52px;
+         bottom: 48px;
+         right: 120px;
          width: 120%;
-         background: rgba($color: #000000, $alpha: 0.8);
+         background: rgba($color: #000000, $alpha: 1);
 
          padding: 12px;
 
@@ -250,11 +250,7 @@
          display: flex;
          align-items: center;
          justify-content: center;
-         width: 14px;
-         height: 14px;
-
-         border: 1px solid;
-         border-radius: 100%;
+         // width: 14px;
 
          &:hover {
            .qkExplainText {
@@ -266,8 +262,8 @@
            display: none;
            position: absolute;
            z-index: 3;
-           top: -550%;
-           right: 4px;
+           bottom: 16px;
+           right: 20px;
            width: 240px;
            padding: 8px;
            font-size: 14px;
@@ -407,6 +403,47 @@
    }
 
 
+   .wrapperSpecsInfo {
+
+     position: relative;
+     width: min-content;
+
+     .specsTitle {
+       display: flex;
+       align-items: center;
+       gap: 4px;
+
+       &:hover {
+         text-decoration: underline;
+
+         +.specsExplain {
+           display: flex;
+         }
+       }
+     }
+
+     &:hover {}
+
+     .specsExplain {
+
+       display: none;
+       flex-direction: column;
+       gap: 12px;
+       color: white;
+       position: absolute;
+       bottom: -120px;
+       right: 110%;
+       width: 120%;
+       background: rgba($color: #000000, $alpha: 1);
+
+       padding: 24px 16px;
+
+       border-radius: 16px;
+     }
+
+
+
+   }
  }
 
  @media (1px < width < 1024px) {
@@ -416,7 +453,7 @@
      right: 12px;
      width: 240px;
      height: calc(100% - 56px);
-     max-height: 300px;
+     max-height: 320px;
 
 
      .quickSettings {
@@ -424,7 +461,7 @@
        height: 100%;
        display: flex;
        flex-direction: column;
-       gap: 14px;
+       gap: 6px;
        --padding: 1rem;
 
        padding-top: calc(var(--padding));
@@ -468,7 +505,7 @@
          .qkExplainTextMobile {
 
            position: absolute;
-           top: 0;
+           bottom: 0px;
            left: -100px;
            width: 100px;
            padding: 8px;
@@ -492,7 +529,7 @@
 
        .containerSlider {
 
-         gap: 4px;
+         gap: 2px;
        }
 
        .sliderName {

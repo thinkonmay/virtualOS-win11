@@ -38,7 +38,8 @@ export const afterMath = (event: any) => {
         ['START', 'startmenu/starthid', 'startmenu.hide'], // TODO
         ['BAND', 'sidepane/sidepane_bandhide', 'sidepane.banhide'],
         ['PANE', 'sidepane/sidepane_panehide', 'sidepane.hide'],
-        ['MENU', 'menu/menu_hide', 'menus.hide']
+        ['MENU', 'menu/menu_hide', 'menus.hide'],
+        ['QA', 'listQa/hideQa', 'listQa.hide']
     ];
 
     var actionType = '';

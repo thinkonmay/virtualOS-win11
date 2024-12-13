@@ -10,8 +10,9 @@
 	color: var(--dark-txt);
 
 	&[data-size="mini"] {
-		top: 1%;
-		right: 20%;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 		max-width: 780px;
 		max-height: 640px;
 		width: 100%;
@@ -89,12 +90,11 @@
 		border-radius: 0px;
 
 		&[data-size="mini"] {
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			max-width: 100%;
-			max-height: 100%;
+			max-width: 60%;
+			max-height: 60%;
+			min-width: 320px;
+			min-height: 300px;
+			left: 55%;
 		}
 
 

@@ -18,6 +18,7 @@ import { workerAsync, workerSlice } from './worker';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { UserEvents } from '../../../src-tauri/api';
 import { DevEnv } from '../../../src-tauri/api/database';
+import { qaSlices } from './listQa';
 
 const blacklist = ['framerate', 'bitrate', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
@@ -47,7 +48,8 @@ export const store = configureStore({
         worker: workerSlice.reducer,
         popup: popupSlice.reducer,
         remote: remoteSlice.reducer,
-        sidepane: sidepaneSlice.reducer
+        sidepane: sidepaneSlice.reducer,
+        listQa: qaSlices.reducer
     }
 });
 
@@ -89,7 +91,7 @@ export const {
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =
     settSlice.actions;
-export const { worker_prev, worker_view } = workerSlice.actions;
+export const { worker_prev, worker_view, toggle_hide_vm } = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
     sidepane_bandhide,
@@ -105,7 +107,11 @@ export const {
     toggle_gamepad_setting,
     change_btnGp_size,
     toggle_gamepad_draggable,
-    toggle_default_gamepad_position
+    toggle_default_gamepad_position,
+    toggle_status_connection,
+    hide_status_connection,
+    open_status_connection,
+    set_status_connection
 } = sidepaneSlice.actions;
 
 export const {
@@ -129,14 +135,14 @@ export const {
     relative_mouse
 } = remoteSlice.actions;
 
+export const { showQa, hideQa, toggleQa } = qaSlices.actions;
+
 export const {
     unclaim_volume,
     fetch_local_worker,
     worker_session_access,
     worker_session_close,
     worker_session_create,
-    worker_vm_create,
-    worker_vm_create_from_volume,
     worker_refresh,
     worker_reload,
     wait_and_claim_volume,

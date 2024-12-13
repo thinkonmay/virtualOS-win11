@@ -131,10 +131,14 @@ export enum Contents {
     HOMESCREEN,
     FULLSCREEN,
     RELATIVE_MOUSE,
+    RELATIVE_MOUSE_EXPLAIN,
     SCAN_CODE,
     SCAN_CODE_EXPLAIN,
+    HIDE_VM,
+    HIDE_VM_EXPLAIN,
     STRICT_TIMING,
     EXTERNAL_TAB,
+    EXTERNAL_TAB_EXPlAIN,
     QUALITY,
     FRAMERATE,
     DEMO_TUTORIAL_HEAD,
@@ -183,7 +187,9 @@ export enum Contents {
     SUGGEST_BROWSER,
 
     MAXIMUM_QUALITY,
+    MAXIMUM_QUALITY_EXPLAIN,
     DEBUGGER,
+    DEBUGGER_EXPLAIN,
     GUIDELINE_APP,
     PAYMENT_APP,
     TEMPLATE_APP,
@@ -215,7 +221,16 @@ export enum Contents {
     TA_POPUP_CONTINUE,
 
     TA_PAYMENT,
-    TA_PAYMENT_DESC
+    TA_PAYMENT_DESC,
+
+    //listQA
+
+    QA_CLOUDPC,
+    QA_INSTALLGAMES,
+    QA_CONNECTGEARS,
+    QA_FIXLAG,
+
+    WIN_D_SHORTCUT
 }
 
 export function language() {
@@ -227,14 +242,49 @@ export function language() {
     t.set('ENG', en);
     t.set('ID', id);
 
+    //QA
+
     //CA
-    en.set(Contents.DEBUGGER, 'Debugger');
-    vn.set(Contents.DEBUGGER, 'Debugger');
-    id.set(Contents.DEBUGGER, 'Debugger');
+    en.set(Contents.QA_CLOUDPC, 'What is CloudPC?');
+    vn.set(Contents.QA_CLOUDPC, 'CloudPC là gì?');
+    id.set(Contents.QA_CLOUDPC, 'What is CloudPC?');
+
+    //CA
+    en.set(Contents.QA_CONNECTGEARS, 'Connect Gears');
+    vn.set(Contents.QA_CONNECTGEARS, 'Kết nối tay cầm & phím chuột?');
+    id.set(Contents.QA_CONNECTGEARS, 'Connect Gears');
+
+    //CA
+    en.set(Contents.QA_INSTALLGAMES, 'How to install games?');
+    vn.set(Contents.QA_INSTALLGAMES, 'Hướng dẫn cài game');
+    id.set(Contents.QA_INSTALLGAMES, 'How to install games?');
+
+    //CA
+    en.set(Contents.QA_FIXLAG, 'How to reduce lagging?');
+    vn.set(Contents.QA_FIXLAG, 'Cách giảm giật/lag');
+    id.set(Contents.QA_FIXLAG, 'How to reduce lagging?');
 
     en.set(Contents.MAXIMUM_QUALITY, 'Maximum quality');
     vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng tối đa');
     id.set(Contents.MAXIMUM_QUALITY, 'Kualitas maksimal');
+
+    en.set(Contents.MAXIMUM_QUALITY_EXPLAIN, 'Maximum quality');
+    vn.set(
+        Contents.MAXIMUM_QUALITY_EXPLAIN,
+        'Bật để có thể tăng gấp đôi bitrate hiện tại'
+    );
+    id.set(Contents.MAXIMUM_QUALITY_EXPLAIN, 'Kualitas maksimal');
+
+    en.set(Contents.DEBUGGER, 'Debugger');
+    vn.set(Contents.DEBUGGER, 'Copy lỗi');
+    id.set(Contents.DEBUGGER, 'Debugger');
+
+    en.set(Contents.DEBUGGER_EXPLAIN, 'Debugger');
+    vn.set(
+        Contents.DEBUGGER_EXPLAIN,
+        'Bấm đề copy lỗi vào bộ nhớ tạm, dán & gửi cho admin để được hỗ trợ!'
+    );
+    id.set(Contents.DEBUGGER_EXPLAIN, 'Debugger');
 
     en.set(Contents.CA_TURN_ON_PC, 'Turn on PC');
     vn.set(Contents.CA_TURN_ON_PC, 'Bật máy');
@@ -381,8 +431,8 @@ export function language() {
     vn.set(Contents.GUIDELINE_APP, 'Hướng dẫn');
     id.set(Contents.GUIDELINE_APP, 'Panduan');
 
-    en.set(Contents.TEMPLATE_APP, 'Template');
-    vn.set(Contents.TEMPLATE_APP, 'Template');
+    en.set(Contents.TEMPLATE_APP, 'Installed games');
+    vn.set(Contents.TEMPLATE_APP, 'Game đã tải sẵn');
     id.set(Contents.TEMPLATE_APP, 'Template');
 
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
@@ -424,6 +474,10 @@ export function language() {
     en.set(Contents.STORE_OWNED, 'Owned');
     vn.set(Contents.STORE_OWNED, 'Owned');
     id.set(Contents.STORE_OWNED, 'Dimiliki');
+
+    en.set(Contents.WIN_D_SHORTCUT, 'Homescreen');
+    vn.set(Contents.WIN_D_SHORTCUT, 'Về màn hình Window');
+    id.set(Contents.WIN_D_SHORTCUT, 'Homescreen');
 
     en.set(Contents.STORE_RENT, 'Rent');
     vn.set(Contents.STORE_RENT, 'Rent');
@@ -586,6 +640,17 @@ export function language() {
     vn.set(Contents.RELATIVE_MOUSE, 'Chế độ gaming');
     id.set(Contents.RELATIVE_MOUSE, 'Mode gaming');
 
+    en.set(Contents.HIDE_VM, 'Online game');
+    vn.set(Contents.HIDE_VM, 'Online game');
+    id.set(Contents.HIDE_VM, 'Online game');
+
+    en.set(Contents.HIDE_VM_EXPLAIN, 'Enable for online games like FC Online');
+    vn.set(
+        Contents.HIDE_VM_EXPLAIN,
+        'Bật khi bạn chơi những game online như FC Online'
+    );
+    id.set(Contents.HIDE_VM_EXPLAIN, 'Enable for online games like FC Online');
+
     en.set(Contents.SCAN_CODE, 'Fix keyboard');
     vn.set(Contents.SCAN_CODE, 'Fix lỗi phím');
     id.set(Contents.SCAN_CODE, 'Perbaiki keyboard');
@@ -600,10 +665,6 @@ export function language() {
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
     id.set(Contents.STRICT_TIMING, 'Mode jaringan buruk');
-
-    en.set(Contents.EXTERNAL_TAB, 'Share link');
-    vn.set(Contents.EXTERNAL_TAB, 'Chia sẻ link');
-    id.set(Contents.EXTERNAL_TAB, 'Bagikan tautan');
 
     en.set(Contents.FRAMERATE, 'FPS');
     vn.set(Contents.FRAMERATE, 'FPS: Số khung hình hiển thị/ giây');
@@ -661,7 +722,7 @@ export function language() {
     id.set(Contents.ADDITIONAL_TIME, 'Waktu tambahan');
 
     en.set(Contents.SHUT_DOWN, 'Shut down');
-    vn.set(Contents.SHUT_DOWN, 'Shut down');
+    vn.set(Contents.SHUT_DOWN, 'Tắt máy');
     id.set(Contents.SHUT_DOWN, 'Matikan');
 
     en.set(Contents.OPEN_GAMEPAD, 'Gamepad');
@@ -739,6 +800,10 @@ export function language() {
     vn.set(Contents.RELATIVE_MOUSE, 'Chế độ gaming');
     id.set(Contents.RELATIVE_MOUSE, 'Mode bermain');
 
+    en.set(Contents.RELATIVE_MOUSE_EXPLAIN, 'Gaming mode');
+    vn.set(Contents.RELATIVE_MOUSE_EXPLAIN, 'Bật để khoá chuột khi chơi game');
+    id.set(Contents.RELATIVE_MOUSE_EXPLAIN, 'Mode bermain');
+
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
     id.set(Contents.STRICT_TIMING, 'Mode jaringan buruk');
@@ -746,6 +811,13 @@ export function language() {
     en.set(Contents.EXTERNAL_TAB, 'Share link');
     vn.set(Contents.EXTERNAL_TAB, 'Chia sẻ link');
     id.set(Contents.EXTERNAL_TAB, 'Bagikan tautan');
+
+    en.set(Contents.EXTERNAL_TAB_EXPlAIN, 'Share link');
+    vn.set(
+        Contents.EXTERNAL_TAB_EXPlAIN,
+        'Tạo link & gửi cho bạn bè để chơi chung'
+    );
+    id.set(Contents.EXTERNAL_TAB_EXPlAIN, 'Bagikan tautan');
 
     en.set(Contents.QUALITY, 'Quality');
     vn.set(Contents.QUALITY, 'MBps: Chất lượng video -> tốc độ mạng');

@@ -29,9 +29,9 @@
   border-bottom-right-radius: 15px;
   background-color: rgba(255, 255, 255, 0.3);
   color: rgba(0, 0, 0, 0.9);
-  padding: 12px 14px;
+  padding: 8px 12px;
+  font-size: 12px;
   //height: 56px;
-  padding-right: 32px;
 
   //display: flex;
   align-items: center;
@@ -42,7 +42,7 @@
   }
 
   &.slide-out {
-    transform: translateX(calc(-100% + 26px))
+    transform: translateX(calc(-100%))
   }
 
 

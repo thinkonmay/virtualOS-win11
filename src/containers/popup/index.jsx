@@ -22,6 +22,7 @@ const Popup = () => {
 
     const closeModal = () => {
         popup.type == 'complete' ||
+        popup.type == 'showQa' ||
         popup.type == 'maintain' ||
         popup.type == 'shareLink'
             ? appDispatch(popup_close())
@@ -29,29 +30,29 @@ const Popup = () => {
     };
     return (
         <>
-            {popup != undefined ? (
-                <ReactModal
-                    isOpen={true}
-                    contentLabel="Modal"
-                    className="modalContent "
-                    overlayClassName="modalOverlay"
-                    onRequestClose={closeModal}
-                    style={
-                        popup.type == 'guidance'
-                            ? { 'backdrop-filter': '' }
-                            : { 'backdrop-filter': 'blur(3px) brightness(0.5)' }
-                    }
-                >
-                    <div className="selectText d-flex overflow-auto min-h-full">
-                        {Object.keys(modals)
-                            .filter((x) => x == popup.type)
-                            .map((key, idx) => {
-                                const Modal = modals[key];
-                                return <Modal key={idx} data={popup.data} />;
-                            })}
-                    </div>
-                </ReactModal>
-            ) : null}
+            <ReactModal
+                isOpen={popup != undefined}
+                contentLabel="Modal"
+                className="modalContent "
+                overlayClassName="modalOverlay"
+                onRequestClose={closeModal}
+                style={
+                    popup?.type == 'guidance'
+                        ? { 'backdrop-filter': '' }
+                        : { 'backdrop-filter': 'blur(3px) brightness(0.5)' }
+                }
+            >
+                <div className="selectText d-flex min-h-full">
+                    {popup != undefined
+                        ? Object.keys(modals)
+                              .filter((x) => x == popup.type)
+                              .map((key, idx) => {
+                                  const Modal = modals[key];
+                                  return <Modal key={idx} data={popup.data} />;
+                              })
+                        : null}
+                </div>
+            </ReactModal>
         </>
     );
 };

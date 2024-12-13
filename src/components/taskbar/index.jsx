@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react';
+import { BiSupport } from 'react-icons/bi';
+import { RiBookLine } from 'react-icons/ri';
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
 
 import {
     MdArrowBackIos,
     MdArrowForwardIos,
-    MdOutlineVideoSettings,
-    MdSupportAgent
+    MdOutlineVideoSettings
 } from 'react-icons/md';
 
 import { afterMath } from '../../backend/actions';
 import {
     appDispatch,
-    sidepane_panetogg,
     startogg,
     task_hide,
     task_show,
+    toggleQa,
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
@@ -33,8 +34,9 @@ const Taskbar = () => {
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
     const apps = useAppSelector((state) => state.apps);
-    const sidepaneOpen = useAppSelector((state) => !state.sidepane.hide);
-
+    //const open = useAppSelector((state) => !state.sidepane.hide);
+    const tutorialState = useAppSelector((state) => state.globals.tutorial);
+    const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
     );
@@ -84,10 +86,13 @@ const Taskbar = () => {
     }, [remote.ready]);
 
     const toggleControl = (e) => {
-        //setOpen((old) => !old);
+        if (tutorialState == 'PaidTutorial') return;
+        setOpen((old) => !old);
 
-        appDispatch(sidepane_panetogg());
-        //afterMath(e);
+        //appDispatch(sidepane_panetogg());
+
+        //appDispatch()
+        afterMath(e);
     };
 
     const customDispatch = customClickDispatch((e) => afterMath(e));
@@ -95,13 +100,11 @@ const Taskbar = () => {
         <>
             {remote.active ? (
                 <div
-                    className={`${
-                        sidepaneOpen ? 'slide-in' : 'slide-out'
-                    } taskright`}
+                    className={`${open ? 'slide-in' : 'slide-out'} taskright`}
                     data-remote={remote.active}
                 >
                     <button className="btn-show" onClick={toggleControl}>
-                        {sidepaneOpen ? (
+                        {open ? (
                             <MdArrowForwardIos
                                 style={{ fontSize: '1.2rem' }}
                             ></MdArrowForwardIos>
@@ -120,16 +123,26 @@ const Taskbar = () => {
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
                     >
-                        <MdSupportAgent fontSize={'2rem'} />
+                        <BiSupport fontSize={'1.5rem'} />
                     </div>
                     <div
-                        className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
+                        className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
+                        // onClick={clickDispatch}
+                        onClick={customDispatch}
+                        data-action="toggleQa"
+                        style={{ '--prefix': 'QA' }}
+                    >
+                        <RiBookLine fontSize={'1.4rem'} />
+                        <span className="hidden md:block">Hướng dẫn</span>
+                    </div>
+                    <div
+                        className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] items-center rounded"
                         onClick={customDispatch}
                         style={{ '--prefix': 'PANE' }}
                         id="settingBtn"
                         data-action="sidepane_panetogg"
                     >
-                        <div className="text-xm flex gap-[4px] font-semibold">
+                        <div className="text-xm flex items-center gap-[4px] font-semibold">
                             <MdOutlineVideoSettings
                                 fontSize={'1.2rem'}
                             ></MdOutlineVideoSettings>
@@ -156,10 +169,10 @@ const Taskbar = () => {
                                 <Icon
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
-                                    width={32}
+                                    width={28}
                                     //click="startmenu/startogg"
                                     //style={{ '--prefix': 'START' }}
-                                />
+                                />{' '}
                                 <p className="text-xm font-semibold">
                                     Tài khoản
                                 </p>
@@ -217,7 +230,7 @@ const Taskbar = () => {
                     </div>
                     <div
                         className={`${
-                            sidepaneOpen ? 'slide-in' : 'slide-out'
+                            open ? 'slide-in' : 'slide-out'
                         } taskright`}
                         data-remote={remote.active}
                     >
@@ -230,16 +243,30 @@ const Taskbar = () => {
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
-                            <MdSupportAgent fontSize={'2rem'} />
+                            <BiSupport
+                                strokeWidth={'0rem'}
+                                fontSize={'1.5rem'}
+                            />
                         </div>
                         <div
-                            //id='settingBtn'
-                            className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
+                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
+                            // onClick={clickDispatch}
+                            id="supportNow"
+                            onClick={() => appDispatch(toggleQa())}
+                            data-action="sidepane/sidepane_bandtogg"
+                            style={{ '--prefix': 'QA' }}
+                        >
+                            <RiBookLine fontSize={'1.4rem'} />
+                            <span className="hidden md:block">Hướng dẫn</span>
+                        </div>
+                        <div
+                            id="settingBtn"
+                            className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] items-center rounded"
                             onClick={clickDispatch}
                             style={{ '--prefix': 'PANE' }}
                             data-action="sidepane_panetogg"
                         >
-                            <div className="text-xm flex gap-[4px] font-semibold">
+                            <div className="text-xm flex gap-[4px] items-center font-semibold">
                                 <MdOutlineVideoSettings
                                     fontSize={'1.2rem'}
                                 ></MdOutlineVideoSettings>

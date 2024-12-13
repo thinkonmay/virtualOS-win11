@@ -66,3 +66,14 @@ jobs:
            "commit_id": "${{ env.COMMIT_ID }}",
            "container_id": "${{ env.CONTAINER_ID }}"
          }
+   - name: Deploy play.3.thinkmay.net
+     uses: fjogeleit/http-request-action@v1
+     with:
+       url: 'https://play.3.thinkmay.net/rest/v1/version?name=eq.web'
+       method: 'PATCH'
+       bearerToken: ${{ secrets.SUPABASE_KEY }}
+       data: |
+         {
+           "commit_id": "${{ env.COMMIT_ID }}",
+           "container_id": "${{ env.CONTAINER_ID }}"
+         }

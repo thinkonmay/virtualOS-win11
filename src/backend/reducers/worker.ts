@@ -50,6 +50,9 @@ type WorkerType = {
 
     hist: any[];
     hid: number;
+
+    //
+    HideVM: boolean;
 };
 
 const initialState: WorkerType = {
@@ -59,7 +62,9 @@ const initialState: WorkerType = {
     cdata: [],
 
     hist: [],
-    hid: 0
+    hid: 0,
+
+    HideVM: true
 };
 
 export const workerAsync = {
@@ -99,6 +104,7 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const { email, subscription } = (getState() as RootState).user;
+            const HideVM = (getState() as RootState).worker.HideVM;
             const t = (getState() as RootState).globals.translation;
             const { status } = subscription;
             const { vcpu, ram } =
@@ -225,6 +231,7 @@ export const workerAsync = {
                     volume_id,
                     `${ram ?? 16}`,
                     `${vcpu ?? 8}`,
+                    HideVM,
                     workerAsync.showPosition
                 );
                 if (!(resp instanceof Error))
@@ -415,35 +422,6 @@ export const workerAsync = {
 
             await CloseSession(computer, session);
             await appDispatch(fetch_local_worker(computer.address));
-        }
-    ),
-    worker_vm_create: createAsyncThunk(
-        'worker_vm_create',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer: Computer = node.find<Computer>(input).info;
-            if (computer == undefined) throw new Error('invalid tree');
-
-            await StartVirtdaemon(computer);
-            await appDispatch(fetch_local_worker(computer.address));
-        }
-    ),
-    worker_vm_create_from_volume: createAsyncThunk(
-        'worker_vm_create_from_volume',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer: Computer = node.findParent<Computer>(
-                input,
-                'host_worker'
-            ).info;
-            if (computer == undefined) throw new Error('invalid tree');
-
-            const resp = await StartVirtdaemon(computer, input);
-            if (resp instanceof Error) {
-                throw resp.message;
-            }
-            await appDispatch(fetch_local_worker(computer.address));
-            return resp;
         }
     ),
     app_session_login: createAsyncThunk(
@@ -756,6 +734,9 @@ export const workerSlice = createSlice({
             });
 
             state.cdata = target.data.map((x) => x.any());
+        },
+        toggle_hide_vm: (state) => {
+            state.HideVM = !state.HideVM;
         }
     },
     extraReducers: (build) => {
