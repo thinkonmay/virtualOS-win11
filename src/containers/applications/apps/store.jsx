@@ -1,3 +1,5 @@
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { MdArrowForward } from 'react-icons/md';
 import { login } from '../../../backend/actions';
 import {
     app_toggle,
@@ -113,14 +115,19 @@ const DetailPage = ({ app }) => {
                     </div>
                     <div className="text-l font-bold ">{publisher}</div>
                     <div className="text-l font-thin ">Release {date}</div>
+
                     {subscribed ? (
                         <>
-                            <button
-                                onClick={handleDownload}
-                                className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
-                            >
-                                {t[[Contents.TA_CRATE_NEW_PC]]}
-                            </button>
+                            <div className="flex mt-5 items-center justify-between gap-2">
+                                <button
+                                    onClick={handleDownload}
+                                    className=" flex-1 font-semibold text-base rounded-lg instbtn handcr !px-[32px] !py-[12px]"
+                                >
+                                    {t[[Contents.TA_CRATE_NEW_PC]]}
+                                </button>
+                                <G4MarketBtn />
+                            </div>
+
                             <div className="text-l p-3  mt-6">
                                 {t[Contents.TA_CRATE_NEW_PC_NOTIFY]}
                             </div>
@@ -186,13 +193,17 @@ const DownPage = ({ action }) => {
 
     return (
         <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
-            <div className="flex flex-col justify-center mt-4">
-                <b className=" storeHeading font-bold">{t[Contents.TA_TILE]}</b>
-                <p className="storeSubHeading text-center">
-                    *{t[Contents.TA_SUBTITLE]}
-                </p>
+            <div className="flex justify-center px-8 mt-4">
+                <div className="lex flex-col justify-center">
+                    <b className=" storeHeading font-bold">
+                        {t[Contents.TA_TILE]}
+                    </b>
+                    <p className="storeSubHeading text-center mt-2">
+                        {t[Contents.TA_SUBTITLE]}
+                    </p>
+                </div>
+                {/*<G4MarketBtn></G4MarketBtn>*/}
             </div>
-
             <div className="appscont mt-8">
                 {games.map((game, i) => (
                     <div
@@ -211,6 +222,43 @@ const DownPage = ({ action }) => {
                     </div>
                 ))}
             </div>
+        </div>
+    );
+};
+
+const G4MarketBtn = () => {
+    return (
+        <div className="g4MarketCtn">
+            <div className="flex items-center justify-between">
+                <p className="font-bold text-[10px]">
+                    G4<span className="text-[#99EE2D]">Market</span>
+                </p>
+                <div className="explainCtn">
+                    <AiOutlineQuestionCircle fontSize="0.7rem" />
+                    <div className="explainText text-[8px]">
+                        <p className="font-bold">
+                            Mua game bản quyền trên G4
+                            <span className="text-[#99EE2D]">Market</span>
+                        </p>
+                        <br />
+                        <p className="mt-2">
+                            G4Market là đối tác uy tín của Thinkmay, cung cấp
+                            tài khoản chơi game bản quyền với giá rẻ.
+                        </p>
+                        <br />
+                    </div>
+                </div>
+            </div>
+
+            <a
+                href="https://g4market.com/"
+                target="_blank"
+                className="wrapperBtn mt-1 bg-[#99EE2D] text-black  px-1 "
+            >
+                <span className="text-[8px]">Mua TK game</span>
+                <MdArrowForward fontSize={'0.8rem'} />
+                <div className="banner"></div>
+            </a>
         </div>
     );
 };

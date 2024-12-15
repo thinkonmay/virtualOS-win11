@@ -58,7 +58,12 @@ const apps: AppData[] = [
         payload: 'connectPc',
         size: 'mini'
     },
-
+    {
+        name: [Contents.G4MARKET_APP],
+        id: 'G4Market',
+        action: 'apps/app_external',
+        payload: externalLink.G4MARKET_LINK
+    },
     {
         name: [Contents.DISCORD_APP],
         id: 'discord',
@@ -82,6 +87,7 @@ var { taskbar, desktop } = {
         'guideline',
         'facebook',
         'store',
+        'G4Market',
         'connectPc',
         'payment',
         ...(DevEnv ? ['worker'] : [])

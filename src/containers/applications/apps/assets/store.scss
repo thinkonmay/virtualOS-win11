@@ -267,7 +267,8 @@ body[data-theme="dark"] {
 }
 
 .detailcont {
-  width: 320px;
+  width: 340px;
+  z-index: 2;
   margin-right: 8px;
   padding-top: 2rem;
   display: flex;
@@ -411,5 +412,74 @@ body[data-theme="dark"] {
 
   to {
     left: 100%;
+  }
+}
+
+.g4MarketCtn {
+  background-color: #000000;
+  color: #fefefe;
+  padding: 6px 8px;
+  width: max-content;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 48px;
+
+  :hover {
+    opacity: 0.8;
+  }
+
+  .explainCtn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // width: 14px;
+
+    &:hover {
+      .explainText {
+        display: block;
+      }
+    }
+
+    .explainText {
+      display: none;
+      position: absolute;
+      z-index: 8;
+      bottom: 16px;
+      left: 20px;
+      width: 320px;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 4px;
+      background: rgb(0 0 0 / 80%);
+      color: white;
+    }
+  }
+
+  .wrapperBtn {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .banner {
+      position: absolute;
+      width: 200px;
+      height: 20px;
+
+      top: -3px;
+      background: #000000;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 30px;
+      letter-spacing: 0;
+      text-align: center;
+      transform: rotate(30deg);
+    }
   }
 }

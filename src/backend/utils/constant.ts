@@ -3,7 +3,7 @@ export const externalLink = {
         'https://www.youtube.com/embed/asrq0ArmCY4?si=9SdJDxoYBCDLrQaw',
     DISCORD_LINK: 'https://discord.gg/wbHXT93jHf',
     FACEBOOK_LINK: 'https://www.facebook.com/thinkonmay',
-    MESSAGE_LINK: 'https://www.facebook.com/messages/t/105408644972153'
+    G4MARKET_LINK: 'https://g4market.com/'
 };
 
 export const scanCodeApps = [
