@@ -14,6 +14,7 @@ import {
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
+import './assets/payment.scss';
 import './assets/store.scss';
 
 const listSubs = [
@@ -73,7 +74,12 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
+    const [page, setPage] = useState('sub'); //sub - refund - storage
 
+    console.log(page);
+    const handleChangePage = (input) => {
+        setPage(input);
+    };
     return (
         <div
             className="paymentApp wnstore floatTab dpShad"
@@ -94,13 +100,40 @@ export const PaymentApp = () => {
             />
             <div className="windowScreen wrapperPayment">
                 <LazyComponent show={!wnapp.hide}>
+                    <div className="navPayment">
+                        <div
+                            className={
+                                page == 'storage' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('storage')}
+                        >
+                            Giá dung lượng
+                        </div>
+                        <div
+                            className={
+                                page == 'sub' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('sub')}
+                        >
+                            Bảng giá
+                        </div>
+                        <div
+                            className={
+                                page == 'refund' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('refund')}
+                        >
+                            Hoàn tiền
+                        </div>
+                    </div>
                     <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
-                        {listSubs.map((sub, index) => (
-                            <SubscriptionCard
-                                key={index}
-                                subInfo={sub}
-                            ></SubscriptionCard>
-                        ))}
+                        {page == 'sub' ? (
+                            <SubscriptionPage />
+                        ) : page == 'refund' ? (
+                            <RefundPage />
+                        ) : (
+                            <StoragePage />
+                        )}
                     </div>
                 </LazyComponent>
             </div>
@@ -357,6 +390,108 @@ const GreenLight = () => {
             <div className="relative h-4 w-4 rounded-full bg-green-500 shadow-lg shadow-green-500/50">
                 {/* Highlight effect */}
                 {/*<div className="absolute top-0.5 left-0.5 h-1.5 w-1.5 rounded-full bg-green-200/60"></div>*/}
+            </div>
+        </div>
+    );
+};
+
+const SubscriptionPage = () => {
+    return (
+        <>
+            {listSubs.map((sub, index) => (
+                <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
+            ))}
+        </>
+    );
+};
+
+const RefundPage = () => {
+    return (
+        <div className="refundPage">
+            <div className="title">
+                <h2 className="title">Chính sách hoàn 80% tiền</h2>
+                <p className="md:max-w-[80% md:text-xs lg:max-w-[60%] lg:text-base">
+                    Do tính chất đặc thù của dịch vụ CloudPC là có độ trễ về
+                    đường truyền và mong muốn mọi người có trải nghiệm tốt nhất
+                    khi sử dụng, Thinkmay khuyến khích bạn liên hệ qua Fanpage
+                    để được hỗ trợ xử lý hoặc hoàn tiền nếu sau khi sử dụng, bạn
+                    cảm thấy không hài lòng vì bất kỳ lý do nào.
+                </p>
+            </div>
+
+            <div className="pl-2 lg:pl-20">
+                <h3>Điều kiện áp dụng</h3>
+
+                <div className="flex gap-16 mb-5">
+                    <div>
+                        <h4>Với gói tháng:</h4>
+                        <ul>
+                            <li>Thời gian: 5 ngày kể từ khi được cấp máy.</li>
+                            <li>Số giờ sử dụng: không quá 12h.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4>Với gói tuần:</h4>
+                        <ul>
+                            <li>Thời gian: 2 ngày kể từ khi được cấp máy.</li>
+                            <li>Số giờ sử dụng: không quá 3h.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 className="mt-8">Quy trình yêu cầu hoàn tiền:</h3>
+                <ul className="list-decimal">
+                    <li> Liên hệ qua Fanpage chính thức của Thinkmay.</li>
+                    <li>
+                        {' '}
+                        Cung cấp thông tin tài khoản, lý do yêu cầu hoàn tiền
+                    </li>
+                    <li> Yêu cầu sẽ được xử lý trong vòng 1 ngày làm việc.</li>
+                </ul>
+
+                <h3 className="mt-8">Lưu ý:</h3>
+                <ul className="list-decimal">
+                    <li>
+                        Chính sách không áp dụng cho các trường hợp vi phạm điều
+                        khoản sử dụng dịch vụ hoặc cố ý gây lỗi.
+                    </li>
+                    <li>
+                        Hãy trải nghiệm dịch vụ miễn phí trước khi đưa ra quyết
+                        định mua!
+                    </li>
+                </ul>
+            </div>
+        </div>
+    );
+};
+
+const StoragePage = () => {
+    return (
+        <div className="storagePage h-full pt-[5%] overflow-x-auto">
+            <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
+            <div className="wrapperTableStorage">
+                <div className="rowContent" style={{ borderTop: 'unset' }}>
+                    <div className="columnContent">Dung lượng</div>
+                    <div className="columnContent">Mua lần đầu</div>
+                    <div className="columnContent">Gia hạn</div>
+                </div>
+
+                <div className="rowContent">
+                    <div className="columnContent">50GB</div>
+                    <div className="columnContent">60k/tháng</div>
+                    <div className="columnContent">40k/tháng</div>
+                </div>
+                <div className="rowContent">
+                    <div className="columnContent">100GB</div>
+                    <div className="columnContent">110k/tháng</div>
+                    <div className="columnContent">80k/tháng</div>
+                </div>
+                <div className="rowContent">
+                    <div className="columnContent">200GB</div>
+                    <div className="columnContent">190k/tháng</div>
+                    <div className="columnContent">150k/tháng</div>
+                </div>
             </div>
         </div>
     );
