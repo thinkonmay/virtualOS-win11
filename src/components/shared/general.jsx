@@ -1,16 +1,16 @@
 import * as FaRegIcons from '@fortawesome/free-regular-svg-icons';
 import * as FaIcons from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    clickDispatch,
-    customClickDispatch
-} from '../../backend/utils/dispatch';
 import { useEffect, useState } from 'react';
 import {
     appDispatch,
     dispatch_generic,
     useAppSelector
 } from '../../backend/reducers';
+import {
+    clickDispatch,
+    customClickDispatch
+} from '../../backend/utils/dispatch';
 import './general.scss';
 import * as AllIcons from './icons';
 
@@ -216,6 +216,7 @@ export const Image = (props) => {
                         loading={props.lazy ? 'lazy' : undefined}
                         src={src}
                         alt=""
+                        className={props.imgClass ? props.imgClass : ''}
                         onError={errorHandler}
                     />
                 )

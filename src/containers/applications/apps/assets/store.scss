@@ -81,6 +81,8 @@ body[data-theme="dark"] {
   width: max-content;
   padding: 0 28px;
 
+
+
   &::-webkit-scroll-bar {
     width: 0;
   }
@@ -167,13 +169,20 @@ body[data-theme="dark"] {
   align-items: center;
   background: var(--rib-bg);
   margin: 0 6px;
-  height: 12rem;
+  max-height: 180px;
   padding: 1rem;
   padding-top: 1.5rem;
   transform-origin: center;
   transition: all ease-in-out 200ms;
   color: var(--dark-txt);
-  max-width: 200px;
+  max-width: 180px;
+
+  background: var(--rib2-bg);
+  margin-right: 1em;
+  margin-bottom: 1.5em;
+  width: auto;
+  cursor: pointer;
+  border-radius: 6px;
 
   &:hover {
     transform: scale(1.06);
@@ -202,30 +211,35 @@ body[data-theme="dark"] {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    font-size: 12px;
+    font-size: 11px;
     text-align: center;
     font-weight: 600;
     //font-style: ;
     //apitalize text-xs text-center font-semibold
-    margin-top: auto;
-    margin-bottom: 16px;
+    margin-top: 8px;
+    //margin-bottom: 12px;
   }
 }
 
 @media (1px < width < 1024px) {
-  .ribcont {
-    max-width: 180px;
-    padding: 0.5rem;
-    padding-top: 1rem;
+  .appscont {
 
-    .img {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-      margin: 0 0.5rem 0.75rem 0.5rem;
+    .ribcont {
+      max-width: 100px;
+      padding: 0.5rem;
+      padding-top: 1rem;
+      margin-right: 0.5em;
+      margin-bottom: 1em;
 
+      .img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        margin: 0 0.5rem 0.75rem 0.5rem;
+
+      }
     }
   }
 
@@ -252,14 +266,7 @@ body[data-theme="dark"] {
   justify-content: center;
 }
 
-.appscont .ribcont {
-  background: var(--rib2-bg);
-  margin-right: 1em;
-  margin-bottom: 2em;
-  width: auto;
-  cursor: pointer;
-  border-radius: 6px;
-}
+.appscont .ribcont {}
 
 .detailpage {
   display: flex;
@@ -270,7 +277,8 @@ body[data-theme="dark"] {
   width: 340px;
   z-index: 2;
   margin-right: 8px;
-  padding-top: 2rem;
+  padding: 1.2rem 1rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -421,15 +429,12 @@ body[data-theme="dark"] {
   padding: 6px 8px;
   width: max-content;
   border-radius: 4px;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 48px;
 
-  :hover {
-    opacity: 0.8;
-  }
+
 
   .explainCtn {
     position: relative;
@@ -465,6 +470,11 @@ body[data-theme="dark"] {
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
+
+    :hover {
+      opacity: 0.8;
+    }
 
     .banner {
       position: absolute;

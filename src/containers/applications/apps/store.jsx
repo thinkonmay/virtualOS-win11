@@ -9,6 +9,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
+import { externalLink } from '../../../backend/utils/constant';
 import {
     Icon,
     Image,
@@ -110,25 +111,25 @@ const DetailPage = ({ app }) => {
                     err="img/asset/bootlogo.png"
                 />
                 <div className="flex flex-col items-center text-center relative">
-                    <div className="text-2xl font-semibold mt-4 lg:mt-6">
+                    <div className="text-xl font-semibold mt-4 lg:mt-6">
                         {name}
                     </div>
-                    <div className="text-l font-bold ">{publisher}</div>
-                    <div className="text-l font-thin ">Release {date}</div>
+                    <div className="text-sm mt-4">{publisher}</div>
+                    <div className="text-sm font-thin ">Release {date}</div>
 
                     {subscribed ? (
                         <>
                             <div className="flex mt-5 items-center justify-between gap-2">
                                 <button
                                     onClick={handleDownload}
-                                    className=" flex-1 font-semibold text-base rounded-lg instbtn handcr !px-[32px] !py-[12px]"
+                                    className=" flex-1 font-semibold text-base rounded-lg instbtn handcr !px-[12px] !py-[12px]"
                                 >
                                     {t[[Contents.TA_CRATE_NEW_PC]]}
                                 </button>
                                 <G4MarketBtn />
                             </div>
 
-                            <div className="text-l p-3  mt-6">
+                            <div className="text-sm p-3  mt-6">
                                 {t[Contents.TA_CRATE_NEW_PC_NOTIFY]}
                             </div>
                         </>
@@ -209,13 +210,13 @@ const DownPage = ({ action }) => {
                     <div
                         key={i}
                         onClick={() => action(game)}
-                        className="ribcont p-4 pt-8 ltShad prtclk"
+                        className="ribcont p-4 ltShad prtclk"
                         data-action="page2"
                     >
                         <Image
-                            className="mx-4 mb-6 rounded"
-                            w={150}
+                            className=" mb-2 rounded"
                             src={game.metadata.capsule_image}
+                            imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
                             ext
                         />
                         <div className="name capitalize">{game.name}</div>
@@ -251,7 +252,7 @@ const G4MarketBtn = () => {
             </div>
 
             <a
-                href="https://g4market.com/"
+                href={externalLink.G4MARKET_LINK_STORE}
                 target="_blank"
                 className="wrapperBtn mt-1 bg-[#99EE2D] text-black  px-1 "
             >
