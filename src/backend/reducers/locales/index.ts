@@ -433,7 +433,7 @@ export function language() {
     id.set(Contents.PAYMENT_APP, 'Pembayaran');
 
     en.set(Contents.GUIDELINE_APP, 'Guideline');
-    vn.set(Contents.GUIDELINE_APP, 'Hướng dẫn');
+    vn.set(Contents.GUIDELINE_APP, 'Video hướng dẫn');
     id.set(Contents.GUIDELINE_APP, 'Panduan');
 
     en.set(Contents.TEMPLATE_APP, 'Installed games');
