@@ -124,7 +124,7 @@ const filterActions = [
     'fetch_subscription',
     'fetch_store',
     'fetch_under_maintenance',
-    'fetch_subscription',
+    'get_plans',
     'save_reference',
     'fetch_domain'
 ];

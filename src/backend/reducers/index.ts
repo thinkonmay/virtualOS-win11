@@ -158,6 +158,7 @@ export const {
     fetch_subscription,
     fetch_usage,
     get_payment,
+    get_plans,
     change_template
 } = userAsync;
 export const {

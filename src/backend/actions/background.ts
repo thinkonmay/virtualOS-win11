@@ -15,6 +15,7 @@ import {
     fetch_under_maintenance,
     fetch_usage,
     fetch_user,
+    get_plans,
     have_focus,
     loose_focus,
     ping_session,
@@ -108,6 +109,9 @@ const checkMaintain = async () => {
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
 };
+const fetchPlans = async () => {
+    await appDispatch(get_plans());
+};
 
 const updateUI = async () => {
     store
@@ -175,7 +179,8 @@ export const preload = async (update_ui?: boolean) => {
             fetchApp(),
             fetchSubscription(),
             fetchSetting(),
-            fetchDomains()
+            fetchDomains(),
+            fetchPlans()
         ]);
         await fetchUsage();
         await fetchStore();

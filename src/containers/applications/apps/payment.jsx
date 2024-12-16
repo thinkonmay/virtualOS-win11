@@ -22,8 +22,9 @@ const listSubs = [
         active: false,
         highlight: false,
         title: 'Gói tuần',
-        price_in_vnd: '99',
-        under_price: 'Giới hạn 25h sử dụng trong 7 ngày',
+        price_in_vnd: 99000,
+        total_time: 25,
+        total_days: 7,
         name: 'week1',
         period: 'tuần',
         bonus: [
@@ -38,9 +39,9 @@ const listSubs = [
         active: false,
         highlight: true,
         title: 'Gói tháng',
-        price_in_vnd: '299',
-        total_time: '120',
-        under_price: 'Giới hạn 120h sử dụng trong tháng',
+        price_in_vnd: 299000,
+        total_time: 120,
+        total_days: 30,
         name: 'month1',
         period: 'tháng',
         bonus: [
@@ -56,11 +57,11 @@ const listSubs = [
         active: true,
         highlight: false,
         title: 'Gói cao cấp',
-        price_in_vnd: '1699',
-        period: 'tháng',
-        total_time: 'Không giới hạn',
-        under_price: 'Không giới hạn giờ sử dụng',
+        price_in_vnd: 1699000,
+        total_time: 9999,
+        total_days: 30,
         name: 'month2',
+        period: 'tháng',
         bonus: [
             'Sở hữu PC riêng',
             'Không hàng chờ',
@@ -76,7 +77,6 @@ export const PaymentApp = () => {
     );
     const [page, setPage] = useState('sub'); //sub - refund - storage
 
-    console.log(page);
     const handleChangePage = (input) => {
         setPage(input);
     };
@@ -209,9 +209,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         {
                                             <>
                                                 <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
-                                                    {sub.price_in_vnd
-                                                        ? `${sub.price_in_vnd}k VND`
-                                                        : `\$${sub.price}`}
+                                                    {sub.price_in_vnd / 1000}k
+                                                    VND
                                                 </h3>
                                                 <p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                     / {sub.period}{' '}
@@ -221,7 +220,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                     </div>
                                     <p className="-mt-2">
                                         <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                            {sub.under_price}
+                                            Giới hạn {sub.total_time}h sử dụng
+                                            trong {sub.total_days} ngày
                                         </span>
                                     </p>
                                 </div>
@@ -396,6 +396,16 @@ const GreenLight = () => {
 };
 
 const SubscriptionPage = () => {
+    const plans = useAppSelector((state) => state.user.plans);
+
+    listSubs.forEach((e) => {
+        const plan = plans.find((x) => x.name == e.name);
+        if (plan == null || undefined) return;
+        e.active = plan.allow_payment;
+        e.price_in_vnd = plan.amount;
+        e.total_time = plan.limit_hour;
+        e.total_days = plan.total_days;
+    });
     return (
         <>
             {listSubs.map((sub, index) => (
