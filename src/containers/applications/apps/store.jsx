@@ -193,35 +193,37 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
 
     return (
-        <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
-            <div className="flex justify-center px-8 mt-4">
-                <div className="lex flex-col justify-center">
-                    <b className=" storeHeading font-bold">
-                        {t[Contents.TA_TILE]}
-                    </b>
-                    <p className="storeSubHeading text-center mt-2">
-                        {t[Contents.TA_SUBTITLE]}
-                    </p>
-                </div>
-                {/*<G4MarketBtn></G4MarketBtn>*/}
-            </div>
-            <div className="appscont mt-8">
-                {games.map((game, i) => (
-                    <div
-                        key={i}
-                        onClick={() => action(game)}
-                        className="ribcont p-4 ltShad prtclk"
-                        data-action="page2"
-                    >
-                        <Image
-                            className=" mb-2 rounded"
-                            src={game.metadata.capsule_image}
-                            imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
-                            ext
-                        />
-                        <div className="name capitalize">{game.name}</div>
+        <div className="pagecont w-full absolute top-0 box-border pt-8">
+            <div className='max-w-[1200px] mx-auto'>
+                <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
+                    <div className="">
+                        <b className=" storeHeading font-bold">
+                            {t[Contents.TA_TILE]}
+                        </b>
+                        <p className="storeSubHeading text-left mt-2">
+                            {t[Contents.TA_SUBTITLE]}
+                        </p>
                     </div>
-                ))}
+                    <G4MarketBtn></G4MarketBtn>
+                </div>
+                <div className="appscont mt-16">
+                    {games.map((game, i) => (
+                        <div
+                            key={i}
+                            onClick={() => action(game)}
+                            className="ribcont p-4 ltShad prtclk"
+                            data-action="page2"
+                        >
+                            <Image
+                                className=" mb-2 rounded"
+                                src={game.metadata.capsule_image}
+                                imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
+                                ext
+                            />
+                            <div className="name capitalize">{game.name}</div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

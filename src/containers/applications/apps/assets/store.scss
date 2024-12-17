@@ -493,3 +493,20 @@ body[data-theme="dark"] {
     }
   }
 }
+
+@media (1px < width < 568px) {
+  .g4MarketCtn {
+
+    .explainCtn {
+
+      .explainText {
+        bottom: -138px;
+        left: -247px;
+
+      }
+    }
+
+
+  }
+
+}
