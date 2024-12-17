@@ -581,7 +581,7 @@ const MobileShortCutBtn = ({ qk }) => {
 };
 function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
-    const t = useAppSelector((state) => state.globals.translation);
+    const active = useAppSelector((state) => state.remote.active);
     const shutdownable = useAppSelector(
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
@@ -602,7 +602,7 @@ function MobileComponent({ pnstates }) {
                 {renderList.map((qk, idx) => (
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
-                {shutdownable == 'started'
+                {active
                     ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
                           <MobileShortCutBtn key={idx} qk={qk} />
                       ))
@@ -617,6 +617,7 @@ function DesktopComponent({ pnstates }) {
     const shutdownable = useAppSelector(
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
+    const active = useAppSelector((state) => state.remote.active);
 
     const renderList =
         shutdownable == 'started'
@@ -690,7 +691,7 @@ function DesktopComponent({ pnstates }) {
                         }*/}
                     </div>
                 ))}
-                {shutdownable == 'started'
+                {active
                     ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
                           <div key={idx} className="qkGrp t">
                               <div
