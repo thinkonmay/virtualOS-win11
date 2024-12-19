@@ -135,6 +135,13 @@ const listMobileSettings = [
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
+        src: 'FaSteam',
+        name: [Contents.STEAM_LOGIN],
+        state: 'steam',
+        action: 'app_session_toggle',
+        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+    },
+    {
         ui: true,
         id: 'shutdownBtn',
 
@@ -213,6 +220,13 @@ const listDesktopSettings = [
         state: 'share_reference',
         action: 'showLinkShare',
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
+    },
+    {
+        src: 'FaSteam',
+        name: [Contents.STEAM_LOGIN],
+        state: 'steam',
+        action: 'app_session_toggle',
+        explain: [Contents.STEAM_LOGIN_EXPlAIN]
     },
     {
         ui: true,

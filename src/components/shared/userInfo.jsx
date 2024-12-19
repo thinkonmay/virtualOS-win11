@@ -26,6 +26,14 @@ function UserInfo() {
     const { node, total_usage } = usage ?? {};
     const { limit_hour } = policy ?? {};
 
+    const linkSteamAccount = () => {
+        appDispatch(
+            popup_open({
+                type: 'linkSteam',
+                data: {}
+            })
+        );
+    };
     const copyClipboard = () => {
         navigator.clipboard.writeText(volume_id);
         appDispatch(
@@ -113,6 +121,15 @@ function UserInfo() {
                         <div
                             className="strBtn handcr prtclk"
                             onClick={copyClipboard}
+                        >
+                            <MdOutlineLink width={14} />
+                        </div>
+                    </div>
+                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
+                        <span>Steam account</span>
+                        <div
+                            className="strBtn handcr prtclk"
+                            onClick={linkSteamAccount}
                         >
                             <MdOutlineLink width={14} />
                         </div>
