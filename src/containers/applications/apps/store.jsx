@@ -194,7 +194,7 @@ const DownPage = ({ action }) => {
 
     return (
         <div className="pagecont w-full absolute top-0 box-border pt-8">
-            <div className='max-w-[1200px] mx-auto'>
+            <div className="max-w-[1200px] mx-auto">
                 <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
                     <div className="">
                         <b className=" storeHeading font-bold">

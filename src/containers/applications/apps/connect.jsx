@@ -12,7 +12,6 @@ import {
 } from '../../../components/shared/general';
 
 import { RenderNode } from '../../../../src-tauri/api';
-import { login } from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';

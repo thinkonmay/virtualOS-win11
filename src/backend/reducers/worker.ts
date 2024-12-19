@@ -26,9 +26,12 @@ import {
     GetInfo,
     KeepaliveVolume,
     LOCAL,
+    LoginSteamOnVM,
+    LogoutSteamOnVM,
     ParseRequest,
     ParseVMRequest,
     PingSession,
+    POCKETBASE,
     RenderNode,
     StartRequest,
     StartThinkmay,
@@ -331,6 +334,17 @@ export const workerAsync = {
                     node.info.available = 'started';
             }
 
+            const accounts =
+                await POCKETBASE.collection('thirdparty_account').getFullList();
+            if (accounts.length == 0) node.info.steam = undefined;
+            else {
+                node.info.steam = false;
+                node.iterate((x) => {
+                    if ((x.info as StartRequest).app != undefined)
+                        node.info.steam = true;
+                });
+            }
+
             return node.any();
         }
     ),
@@ -420,6 +434,134 @@ export const workerAsync = {
 
             await CloseSession(computer, session);
             await appDispatch(fetch_local_worker(computer.address));
+        }
+    ),
+    app_session_toggle: createAsyncThunk(
+        'app_session_toggle',
+        async (_, { getState }): Promise<any> => {
+            await appDispatch(worker_refresh());
+            const volume_id = (getState() as RootState).user.volume_id;
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let volumeFound: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    volumeFound == undefined &&
+                    x.info?.Volumes?.includes(volume_id)
+                )
+                    volumeFound = x;
+            });
+
+            if (volumeFound == undefined)
+                throw new Error('user do not have available volume');
+
+            const computer = node.findParent<Computer>(
+                volumeFound.id,
+                'host_worker'
+            );
+
+            if (computer.info.steam)
+                await appDispatch(workerAsync.app_session_logout());
+            else await appDispatch(workerAsync.app_session_login());
+            await appDispatch(worker_refresh());
+        }
+    ),
+    app_session_login: createAsyncThunk(
+        'app_session_login',
+        async (_, { getState }): Promise<any> => {
+            const accounts =
+                await POCKETBASE.collection('thirdparty_account').getFullList();
+            if (accounts.length == 0)
+                throw new Error(`You have not link any steam account`);
+            const [
+                {
+                    metadata: { username, password }
+                }
+            ] = accounts;
+
+            const volume_id = (getState() as RootState).user.volume_id;
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let result: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    result == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    result = x;
+            });
+
+            if (result == undefined) {
+                appDispatch(popup_close());
+                throw new Error(
+                    'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
+                );
+            }
+
+            const host = node.findParent<Computer>(result.id, 'host_worker');
+            const vm_session = node.findParent<StartRequest>(
+                result.id,
+                'host_session'
+            );
+
+            if (host == undefined) throw new Error('invalid tree');
+            else if (vm_session == undefined) throw new Error('invalid tree');
+
+            return await LoginSteamOnVM(
+                host.info,
+                vm_session.id,
+                username ?? '',
+                password ?? ''
+            );
+        }
+    ),
+    app_session_logout: createAsyncThunk(
+        'app_session_logout',
+        async (_, { getState }): Promise<any> => {
+            const volume_id = (getState() as RootState).user.volume_id;
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let result: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    result == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    result = x;
+            });
+
+            let steam: RenderNode<StartRequest> | undefined = undefined;
+            result.iterate((x) => {
+                if ((x.info as StartRequest).app != undefined) steam = x;
+            });
+
+            if (result == undefined) {
+                appDispatch(popup_close());
+                throw new Error(
+                    'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
+                );
+            }
+            if (steam == undefined) {
+                appDispatch(popup_close());
+                throw new Error('Steam not found');
+            }
+
+            const host = node.findParent<Computer>(result.id, 'host_worker');
+            const vm_session = node.findParent<StartRequest>(
+                result.id,
+                'host_session'
+            );
+
+            if (host == undefined) throw new Error('invalid tree');
+            else if (vm_session == undefined) throw new Error('invalid tree');
+
+            const steam_session = steam.info;
+            if (steam_session == undefined)
+                return new Error('steam session is null');
+
+            return await LogoutSteamOnVM(host.info, {
+                ...steam_session,
+                target: vm_session.id
+            });
         }
     ),
     vm_session_create: createAsyncThunk(

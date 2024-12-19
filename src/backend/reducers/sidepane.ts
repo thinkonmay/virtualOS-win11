@@ -135,6 +135,13 @@ const listMobileSettings = [
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
+        src: 'FaSteam',
+        name: [Contents.STEAM_LOGIN],
+        state: 'steam',
+        action: 'app_session_toggle',
+        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+    },
+    {
         ui: true,
         id: 'shutdownBtn',
 
@@ -215,6 +222,13 @@ const listDesktopSettings = [
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
+        src: 'FaSteam',
+        name: [Contents.STEAM_LOGIN],
+        state: 'steam',
+        action: 'app_session_toggle',
+        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+    },
+    {
         ui: true,
         id: 'gamingMouseBtn',
 
@@ -262,22 +276,22 @@ const listDesktopSettings = [
     ...(!DevEnv
         ? []
         : [
-              {
-                  ui: true,
-                  id: 'toggle_remote_async',
-                  src: 'FiVideoOff',
-                  name: [Contents.VIDEO_TOGGLE],
-                  state: 'active',
-                  action: 'toggle_remote_async'
-              },
-              {
-                  ui: true,
-                  id: 'reset',
-                  src: 'MdResetTv',
-                  name: [Contents.RESET_APP],
-                  state: 'hard_reset_async',
-                  action: 'hard_reset_async'
-              }
+              //   {
+              //       ui: true,
+              //       id: 'toggle_remote_async',
+              //       src: 'FiVideoOff',
+              //       name: [Contents.VIDEO_TOGGLE],
+              //       state: 'active',
+              //       action: 'toggle_remote_async'
+              //   },
+              //   {
+              //       ui: true,
+              //       id: 'reset',
+              //       src: 'MdResetTv',
+              //       name: [Contents.RESET_APP],
+              //       state: 'hard_reset_async',
+              //       action: 'hard_reset_async'
+              //   }
           ])
 ];
 

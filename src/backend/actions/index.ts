@@ -214,6 +214,7 @@ export const showLinkShare = () => {
         })
     );
 };
+
 export const bindStoreId = async (email: string, store_id: number) => {
     try {
         const data = await fetch(`${getDomainURL()}/access_store_volume`, {

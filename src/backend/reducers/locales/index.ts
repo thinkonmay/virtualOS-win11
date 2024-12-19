@@ -139,6 +139,8 @@ export enum Contents {
     STRICT_TIMING,
     EXTERNAL_TAB,
     EXTERNAL_TAB_EXPlAIN,
+    STEAM_LOGIN,
+    STEAM_LOGIN_EXPlAIN,
     QUALITY,
     FRAMERATE,
     DEMO_TUTORIAL_HEAD,
@@ -364,7 +366,10 @@ export function language() {
         Contents.TA_SUBTITLE,
         'Please note that the game account is not included.'
     );
-    vn.set(Contents.TA_SUBTITLE, 'Lưu ý: Không bao gồm tài khoản game, bạn có thể mua tài khoản game giá rẻ tại G4Market');
+    vn.set(
+        Contents.TA_SUBTITLE,
+        'Lưu ý: Không bao gồm tài khoản game, bạn có thể mua tài khoản game giá rẻ tại G4Market'
+    );
     id.set(
         Contents.TA_SUBTITLE,
         'Perhatikan bahwa akun game tidak disertakan.'
@@ -812,6 +817,23 @@ export function language() {
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
     id.set(Contents.STRICT_TIMING, 'Mode jaringan buruk');
+
+    en.set(Contents.STEAM_LOGIN, 'Login Steam');
+    vn.set(Contents.STEAM_LOGIN, 'Login Steam');
+    id.set(Contents.STEAM_LOGIN, 'Login Steam');
+
+    en.set(
+        Contents.STEAM_LOGIN_EXPlAIN,
+        'Login to Thinkmay machine with your linked Steam account'
+    );
+    id.set(
+        Contents.STEAM_LOGIN_EXPlAIN,
+        'Login to Thinkmay machine with your linked Steam account'
+    );
+    vn.set(
+        Contents.STEAM_LOGIN_EXPlAIN,
+        'Đăng nhập steam bằng tài khoản bạn đã liên kết'
+    );
 
     en.set(Contents.EXTERNAL_TAB, 'Share link');
     vn.set(Contents.EXTERNAL_TAB, 'Chia sẻ link');

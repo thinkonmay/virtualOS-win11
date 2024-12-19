@@ -92,6 +92,9 @@ export const SidePane = () => {
     const setting = useAppSelector((state) => state.setting);
     const remote = useAppSelector((state) => state.remote);
     const HideVM = useAppSelector((state) => state.worker.HideVM);
+    const steam = useAppSelector(
+        (state) => new RenderNode(state.worker.data).data[0]?.info?.steam
+    );
     const [pnstates, setPnstate] = useState({});
     const dispatch = appDispatch;
     useEffect(() => {
@@ -128,7 +131,7 @@ export const SidePane = () => {
         const tmp = {};
         for (const { state, name } of states) {
             let val = getTreeValue(
-                { ...setting, ...remote, ...mobileState, HideVM },
+                { ...setting, ...remote, ...mobileState, HideVM, steam },
                 state
             );
             if (name == 'Theme') val = val == 'dark';
@@ -136,7 +139,7 @@ export const SidePane = () => {
         }
 
         setPnstate(tmp);
-    }, [setting, sidepane, remote, HideVM]);
+    }, [setting, sidepane, remote, HideVM, steam]);
 
     return (
         <>
@@ -585,16 +588,23 @@ function MobileComponent({ pnstates }) {
     const shutdownable = useAppSelector(
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
+    const steam_available = useAppSelector(
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.steam != undefined
+    );
 
-    const renderList =
-        shutdownable == 'started'
-            ? sidepane.mobileControl.buttons
-            : sidepane.mobileControl.buttons.filter(
-                  (x) =>
-                      !['shutDownVm', 'copy_log', 'showLinkShare'].includes(
-                          x.action
-                      )
-              );
+    const renderList = sidepane.mobileControl.buttons.filter((x) =>
+        shutdownable != 'started'
+            ? ![
+                  'shutDownVm',
+                  'copy_log',
+                  'showLinkShare',
+                  'app_session_toggle'
+              ].includes(x.action)
+            : !steam_available
+              ? !['app_session_toggle'].includes(x.action)
+              : true
+    );
 
     return (
         <>
@@ -618,16 +628,23 @@ function DesktopComponent({ pnstates }) {
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
     const active = useAppSelector((state) => state.remote.active);
+    const steam_available = useAppSelector(
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.steam != undefined
+    );
 
-    const renderList =
-        shutdownable == 'started'
-            ? sidepane.desktopControl.buttons
-            : sidepane.desktopControl.buttons.filter(
-                  (x) =>
-                      !['shutDownVm', 'copy_log', 'showLinkShare'].includes(
-                          x.action
-                      )
-              );
+    const renderList = sidepane.desktopControl.buttons.filter((x) =>
+        shutdownable != 'started'
+            ? ![
+                  'shutDownVm',
+                  'copy_log',
+                  'showLinkShare',
+                  'app_session_toggle'
+              ].includes(x.action)
+            : !steam_available
+              ? !['app_session_toggle'].includes(x.action)
+              : true
+    );
 
     return (
         <>

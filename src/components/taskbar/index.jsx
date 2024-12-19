@@ -125,7 +125,6 @@ const Taskbar = () => {
                     >
                         <BiSupport fontSize={'1.5rem'} />
                         <span className="hidden md:block">Hỗ trợ</span>
-
                     </div>
                     <div
                         className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
@@ -172,8 +171,8 @@ const Taskbar = () => {
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={28}
-                                //click="startmenu/startogg"
-                                //style={{ '--prefix': 'START' }}
+                                    //click="startmenu/startogg"
+                                    //style={{ '--prefix': 'START' }}
                                 />{' '}
                                 <p className="text-xm font-semibold">
                                     Tài khoản
@@ -231,8 +230,9 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${open ? 'slide-in' : 'slide-out'
-                            } taskright`}
+                        className={`${
+                            open ? 'slide-in' : 'slide-out'
+                        } taskright`}
                         data-remote={remote.active}
                     >
                         <div
@@ -249,7 +249,6 @@ const Taskbar = () => {
                                 fontSize={'1.5rem'}
                             />
                             <span className="hidden md:block">Hỗ trợ</span>
-
                         </div>
                         <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
