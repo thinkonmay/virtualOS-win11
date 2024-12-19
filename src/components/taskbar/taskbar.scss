@@ -86,11 +86,9 @@ body[data-theme="dark"] {
     }
 
     &.slide-out {
-      transform: translateX(90%)
+      transform: translateX(92%)
     }
   }
-
-
 
 
   .btn-show {
@@ -209,6 +207,13 @@ body[data-theme="dark"] {
   display: flex;
   align-items: center;
   transition: all ease-in-out 200ms;
+}
+
+@media (1px < width < 680px) {
+  .tsbar {
+    width: 100%;
+    padding-left: 8px;
+  }
 }
 
 .tsIcon {

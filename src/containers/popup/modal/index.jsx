@@ -6,5 +6,6 @@ export { maintain } from './maintain';
 export { notify } from './notify';
 export { showQa } from './qa';
 export { redirectDomain } from './redirect';
+export { serversInfo } from './serversInfo';
 export { shareLink } from './shareLink';
 export { yesNo } from './yesNo';

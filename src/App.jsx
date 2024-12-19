@@ -24,7 +24,6 @@ import ActMenu from './components/menu';
 import { PaidTutorial } from './components/onboarding/paidUser';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { ListQAs } from './components/start/listQa';
-import { WidPane } from './components/start/widget';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
 import { Background, BootScreen, LockScreen } from './containers/background';
@@ -216,7 +215,6 @@ function App() {
                         <>
                             <Taskbar />
                             <ActMenu />
-                            <WidPane />
                             <StartMenu />
                             <SidePane />
                             <ListQAs></ListQAs>

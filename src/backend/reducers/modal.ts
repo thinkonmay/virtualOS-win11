@@ -68,6 +68,10 @@ type PopupData =
           data: {
               key: string;
           };
+      }
+    | {
+          type: 'serversInfo';
+          data: {};
       };
 
 type Data = {
@@ -76,8 +80,8 @@ type Data = {
 
 const initialState: Data = {
     data_stack: [
-        //    {
-        //    type: 'showQa',
+        //{
+        //    type: 'serversInfo',
         //    data: {
         //        key: 'cloudPc'
         //    }

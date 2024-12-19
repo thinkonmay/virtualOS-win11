@@ -160,6 +160,7 @@ export const {
     fetch_subscription,
     fetch_usage,
     get_payment,
+    get_plans,
     change_template
 } = userAsync;
 export const {
@@ -177,7 +178,7 @@ export const {
 
 export const { fetch_store, fetch_under_maintenance, fetch_domain } =
     globalAsync;
-export const { push_message, fetch_message } = sidepaneAsync;
+export const {} = sidepaneAsync;
 
 export const dispatch_generic = async ({
     type,

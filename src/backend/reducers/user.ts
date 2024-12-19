@@ -51,9 +51,19 @@ export type PaymentStatus =
           status: 'PENDING';
       };
 
+type Plan = {
+    name: string;
+    size: number;
+    limit_hour: number;
+    total_days: number;
+    amount: number;
+    allow_payment: boolean;
+};
+
 type Data = RecordModel & {
     subscription: PaymentStatus;
     volume_id: string;
+    plans: Plan[];
 };
 
 const notexpired = () =>
@@ -73,7 +83,8 @@ const initialState: Data = {
     updated: '',
     subscription: {
         status: 'NO_ACTION'
-    }
+    },
+    plans: []
 };
 
 export const userAsync = {
@@ -274,6 +285,35 @@ export const userAsync = {
             }
 
             return { status: !has_pending ? 'NO_ACTION' : 'PENDING' };
+        }
+    ),
+    get_plans: createAsyncThunk(
+        'get_plans',
+        async (_: void, { getState }): Promise<Plan[]> => {
+            const plans = [];
+            const { data, error } = await GLOBAL()
+                .from('plans')
+                .select(
+                    'name, policy->size, policy->limit_hour, policy->total_days , price->amount, metadata->allow_payment'
+                )
+                .eq('active', true);
+
+            if (error != null)
+                throw new Error(
+                    `Failed to query plan table + ${error.message}`
+                );
+
+            data.forEach((e) => {
+                plans.push({
+                    name: e.name,
+                    size: Number(e.size),
+                    limit_hour: Number(e.limit_hour),
+                    total_days: Number(e.total_days),
+                    amount: Number(e.amount),
+                    allow_payment: Boolean(e.allow_payment)
+                } as Plan);
+            });
+            return plans;
         }
     ),
     get_payment: createAsyncThunk(
@@ -566,6 +606,12 @@ export const userSlice = createSlice({
                 fetch: userAsync.fetch_subscription,
                 hander: (state, action) => {
                     state.subscription = action.payload;
+                }
+            },
+            {
+                fetch: userAsync.get_plans,
+                hander: (state, action) => {
+                    state.plans = action.payload;
                 }
             },
             {

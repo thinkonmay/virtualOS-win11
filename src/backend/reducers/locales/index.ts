@@ -197,6 +197,7 @@ export enum Contents {
     WORKER_APP,
     DISCORD_APP,
     FANPAGE_APP,
+    G4MARKET_APP,
     //CONNECT APP ( CA )
     CA_TURN_ON_PC,
     CA_CONNECT,
@@ -267,6 +268,10 @@ export function language() {
     en.set(Contents.MAXIMUM_QUALITY, 'Maximum quality');
     vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng tối đa');
     id.set(Contents.MAXIMUM_QUALITY, 'Kualitas maksimal');
+
+    en.set(Contents.G4MARKET_APP, 'G4 MARKET');
+    vn.set(Contents.G4MARKET_APP, 'Mua game giá rẻ');
+    id.set(Contents.G4MARKET_APP, 'G4 MARKET');
 
     en.set(Contents.MAXIMUM_QUALITY_EXPLAIN, 'Maximum quality');
     vn.set(
@@ -349,7 +354,7 @@ export function language() {
         Contents.TA_TILE,
         'A new machine has been pre-created with the game already installed.'
     );
-    vn.set(Contents.TA_TILE, 'Tạo sẵn máy mới đã được tải sẵn game');
+    vn.set(Contents.TA_TILE, 'Tạo máy mới đã đã được tải sẵn game');
     id.set(
         Contents.TA_TILE,
         'Sebuah mesin baru telah dibuat sebelumnya dengan game sudah terinstal.'
@@ -359,7 +364,7 @@ export function language() {
         Contents.TA_SUBTITLE,
         'Please note that the game account is not included.'
     );
-    vn.set(Contents.TA_SUBTITLE, 'Lưu ý không kèm theo tài khoản game');
+    vn.set(Contents.TA_SUBTITLE, 'Lưu ý: Không bao gồm tài khoản game, bạn có thể mua tài khoản game giá rẻ tại G4Market');
     id.set(
         Contents.TA_SUBTITLE,
         'Perhatikan bahwa akun game tidak disertakan.'
@@ -428,7 +433,7 @@ export function language() {
     id.set(Contents.PAYMENT_APP, 'Pembayaran');
 
     en.set(Contents.GUIDELINE_APP, 'Guideline');
-    vn.set(Contents.GUIDELINE_APP, 'Hướng dẫn');
+    vn.set(Contents.GUIDELINE_APP, 'Video hướng dẫn');
     id.set(Contents.GUIDELINE_APP, 'Panduan');
 
     en.set(Contents.TEMPLATE_APP, 'Installed games');

@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { MdArrowDropDown, MdArrowRight } from 'react-icons/md';
+import {
+    MdArrowDropDown,
+    MdArrowForwardIos,
+    MdArrowRight
+} from 'react-icons/md';
 import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
 import {
     appDispatch,
     get_payment,
+    popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
+import './assets/payment.scss';
 import './assets/store.scss';
 
 const listSubs = [
@@ -16,8 +22,9 @@ const listSubs = [
         active: false,
         highlight: false,
         title: 'Gói tuần',
-        price_in_vnd: '99',
-        under_price: 'Giới hạn 25h sử dụng trong 7 ngày',
+        price_in_vnd: 99000,
+        total_time: 25,
+        total_days: 7,
         name: 'week1',
         period: 'tuần',
         bonus: [
@@ -29,12 +36,12 @@ const listSubs = [
         ]
     },
     {
-        active: true,
+        active: false,
         highlight: true,
         title: 'Gói tháng',
-        price_in_vnd: '299',
-        total_time: '120',
-        under_price: 'Giới hạn 120h sử dụng trong tháng',
+        price_in_vnd: 299000,
+        total_time: 120,
+        total_days: 30,
         name: 'month1',
         period: 'tháng',
         bonus: [
@@ -50,11 +57,11 @@ const listSubs = [
         active: true,
         highlight: false,
         title: 'Gói cao cấp',
-        price_in_vnd: '1699',
-        period: 'tháng',
-        total_time: 'Không giới hạn',
-        under_price: 'Không giới hạn giờ sử dụng',
+        price_in_vnd: 1699000,
+        total_time: 9999,
+        total_days: 30,
         name: 'month2',
+        period: 'tháng',
         bonus: [
             'Sở hữu PC riêng',
             'Không hàng chờ',
@@ -68,7 +75,11 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
+    const [page, setPage] = useState('sub'); //sub - refund - storage
 
+    const handleChangePage = (input) => {
+        setPage(input);
+    };
     return (
         <div
             className="paymentApp wnstore floatTab dpShad"
@@ -89,13 +100,40 @@ export const PaymentApp = () => {
             />
             <div className="windowScreen wrapperPayment">
                 <LazyComponent show={!wnapp.hide}>
+                    <div className="navPayment">
+                        <div
+                            className={
+                                page == 'storage' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('storage')}
+                        >
+                            Giá dung lượng
+                        </div>
+                        <div
+                            className={
+                                page == 'sub' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('sub')}
+                        >
+                            Bảng giá
+                        </div>
+                        <div
+                            className={
+                                page == 'refund' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('refund')}
+                        >
+                            Hoàn tiền
+                        </div>
+                    </div>
                     <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
-                        {listSubs.map((sub, index) => (
-                            <SubscriptionCard
-                                key={index}
-                                subInfo={sub}
-                            ></SubscriptionCard>
-                        ))}
+                        {page == 'sub' ? (
+                            <SubscriptionPage />
+                        ) : page == 'refund' ? (
+                            <RefundPage />
+                        ) : (
+                            <StoragePage />
+                        )}
                     </div>
                 </LazyComponent>
             </div>
@@ -171,9 +209,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         {
                                             <>
                                                 <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
-                                                    {sub.price_in_vnd
-                                                        ? `${sub.price_in_vnd}k VND`
-                                                        : `\$${sub.price}`}
+                                                    {sub.price_in_vnd / 1000}k
+                                                    VND
                                                 </h3>
                                                 <p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                     / {sub.period}{' '}
@@ -183,7 +220,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                     </div>
                                     <p className="-mt-2">
                                         <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                            {sub.under_price}
+                                            Giới hạn {sub.total_time}h sử dụng
+                                            trong {sub.total_days} ngày
                                         </span>
                                     </p>
                                 </div>
@@ -284,6 +322,19 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         ) : null
                                     )}
                                 </div>
+
+                                <div
+                                    className="flex items-center gap-1 hover:underline cursor-pointer font-semibold"
+                                    onClick={() => {
+                                        appDispatch(
+                                            popup_open({
+                                                type: 'serversInfo'
+                                            })
+                                        );
+                                    }}
+                                >
+                                    Hướng dẫn chọn server <MdArrowForwardIos />
+                                </div>
                             </>
                         ) : null}
                         <button
@@ -339,6 +390,118 @@ const GreenLight = () => {
             <div className="relative h-4 w-4 rounded-full bg-green-500 shadow-lg shadow-green-500/50">
                 {/* Highlight effect */}
                 {/*<div className="absolute top-0.5 left-0.5 h-1.5 w-1.5 rounded-full bg-green-200/60"></div>*/}
+            </div>
+        </div>
+    );
+};
+
+const SubscriptionPage = () => {
+    const plans = useAppSelector((state) => state.user.plans);
+
+    listSubs.forEach((e) => {
+        const plan = plans.find((x) => x.name == e.name);
+        if (plan == null || undefined) return;
+        e.active = plan.allow_payment;
+        e.price_in_vnd = plan.amount;
+        e.total_time = plan.limit_hour;
+        e.total_days = plan.total_days;
+    });
+    return (
+        <>
+            {listSubs.map((sub, index) => (
+                <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
+            ))}
+        </>
+    );
+};
+
+const RefundPage = () => {
+    return (
+        <div className="refundPage">
+            <div className="title">
+                <h2 className="title">Chính sách hoàn 80% tiền</h2>
+                <p className="md:max-w-[80% md:text-xs lg:max-w-[60%] lg:text-base">
+                    Do tính chất đặc thù của dịch vụ CloudPC là có độ trễ về
+                    đường truyền và mong muốn mọi người có trải nghiệm tốt nhất
+                    khi sử dụng, Thinkmay khuyến khích bạn liên hệ qua Fanpage
+                    để được hỗ trợ xử lý hoặc hoàn tiền nếu sau khi sử dụng, bạn
+                    cảm thấy không hài lòng vì bất kỳ lý do nào.
+                </p>
+            </div>
+
+            <div className="pl-2 lg:pl-20">
+                <h3>Điều kiện áp dụng</h3>
+
+                <div className="flex gap-16 mb-5">
+                    <div>
+                        <h4>Với gói tháng:</h4>
+                        <ul>
+                            <li>Thời gian: 5 ngày kể từ khi được cấp máy.</li>
+                            <li>Số giờ sử dụng: không quá 12h.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4>Với gói tuần:</h4>
+                        <ul>
+                            <li>Thời gian: 2 ngày kể từ khi được cấp máy.</li>
+                            <li>Số giờ sử dụng: không quá 3h.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 className="mt-8">Quy trình yêu cầu hoàn tiền:</h3>
+                <ul className="list-decimal">
+                    <li> Liên hệ qua Fanpage chính thức của Thinkmay.</li>
+                    <li>
+                        {' '}
+                        Cung cấp thông tin tài khoản, lý do yêu cầu hoàn tiền
+                    </li>
+                    <li> Yêu cầu sẽ được xử lý trong vòng 1 ngày làm việc.</li>
+                </ul>
+
+                <h3 className="mt-8">Lưu ý:</h3>
+                <ul className="list-decimal">
+                    <li>
+                        Chính sách không áp dụng cho các trường hợp vi phạm điều
+                        khoản sử dụng dịch vụ hoặc cố ý gây lỗi.
+                    </li>
+                    <li>
+                        Hãy trải nghiệm dịch vụ miễn phí trước khi đưa ra quyết
+                        định mua!
+                    </li>
+                </ul>
+            </div>
+        </div>
+    );
+};
+
+const StoragePage = () => {
+    return (
+        <div className="storagePage h-full pt-[5%] overflow-x-auto">
+            <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
+            <div className="wrapperTableStorage">
+                <div className="rowContent" style={{ borderTop: 'unset' }}>
+                    <div className="columnContent">Dung lượng</div>
+                    <div className="columnContent">Mua lần đầu</div>
+                    <div className="columnContent">Gia hạn</div>
+                </div>
+
+                <div className="rowContent">
+                    <div className="columnContent">50GB</div>
+                    <div className="columnContent">60k/tháng</div>
+                    <div className="columnContent">40k/tháng</div>
+                </div>
+                <div className="rowContent">
+                    <div className="columnContent">100GB</div>
+                    <div className="columnContent">110k/tháng</div>
+                    <div className="columnContent">80k/tháng</div>
+                </div>
+                <div className="rowContent">
+                    <div className="columnContent">200GB</div>
+                    <div className="columnContent">190k/tháng</div>
+                    <div className="columnContent">150k/tháng</div>
+                </div>
             </div>
         </div>
     );

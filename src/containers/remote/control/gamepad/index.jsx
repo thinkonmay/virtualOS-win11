@@ -10,7 +10,7 @@ import './button/index.scss'; // Import your SCSS file
 import { CustomJoyStick } from './button/joystick';
 import YBXA from './button/ybxa';
 
-const BUTTON_SIZE = 50;
+const BUTTON_SIZE = 55;
 const JOYSTICK_SIZE = 100;
 
 export const VirtualGamepad = (props) => {

@@ -1,3 +1,5 @@
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { MdArrowForward } from 'react-icons/md';
 import { login } from '../../../backend/actions';
 import {
     app_toggle,
@@ -7,6 +9,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
+import { externalLink } from '../../../backend/utils/constant';
 import {
     Icon,
     Image,
@@ -108,20 +111,25 @@ const DetailPage = ({ app }) => {
                     err="img/asset/bootlogo.png"
                 />
                 <div className="flex flex-col items-center text-center relative">
-                    <div className="text-2xl font-semibold mt-4 lg:mt-6">
-                        {name} 
+                    <div className="text-xl font-semibold mt-4 lg:mt-6">
+                        {name}
                     </div>
-                    <div className="text-l font-bold ">{publisher}</div>
-                    <div className="text-l font-thin ">Release {date}</div>
+                    <div className="text-sm mt-4">{publisher}</div>
+                    <div className="text-sm font-thin ">Release {date}</div>
+
                     {subscribed ? (
                         <>
-                            <button
-                                onClick={handleDownload}
-                                className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
-                            >
-                                {t[[Contents.TA_CRATE_NEW_PC]]}
-                            </button>
-                            <div className="text-l p-3  mt-6">
+                            <div className="flex mt-5 items-center justify-between gap-2">
+                                <button
+                                    onClick={handleDownload}
+                                    className=" flex-1 font-semibold text-base rounded-lg instbtn handcr !px-[12px] !py-[12px]"
+                                >
+                                    {t[[Contents.TA_CRATE_NEW_PC]]}
+                                </button>
+                                <G4MarketBtn />
+                            </div>
+
+                            <div className="text-sm p-3  mt-6">
                                 {t[Contents.TA_CRATE_NEW_PC_NOTIFY]}
                             </div>
                         </>
@@ -185,32 +193,75 @@ const DownPage = ({ action }) => {
     const games = useAppSelector((state) => state.globals.games);
 
     return (
-        <div className="pagecont w-full absolute top-0 box-border p-3 lg:p-12 lg: pt-4">
-            <div className="flex flex-col justify-center mt-4">
-                <b className=" storeHeading font-bold">{t[Contents.TA_TILE]}</b>
-                <p className="storeSubHeading text-center">
-                    *{t[Contents.TA_SUBTITLE]}
+        <div className="pagecont w-full absolute top-0 box-border pt-8">
+            <div className='max-w-[1200px] mx-auto'>
+                <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
+                    <div className="">
+                        <b className=" storeHeading font-bold">
+                            {t[Contents.TA_TILE]}
+                        </b>
+                        <p className="storeSubHeading text-left mt-2">
+                            {t[Contents.TA_SUBTITLE]}
+                        </p>
+                    </div>
+                    <G4MarketBtn></G4MarketBtn>
+                </div>
+                <div className="appscont mt-16">
+                    {games.map((game, i) => (
+                        <div
+                            key={i}
+                            onClick={() => action(game)}
+                            className="ribcont p-4 ltShad prtclk"
+                            data-action="page2"
+                        >
+                            <Image
+                                className=" mb-2 rounded"
+                                src={game.metadata.capsule_image}
+                                imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
+                                ext
+                            />
+                            <div className="name capitalize">{game.name}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const G4MarketBtn = () => {
+    return (
+        <div className="g4MarketCtn">
+            <div className="flex items-center justify-between">
+                <p className="font-bold text-[10px]">
+                    G4<span className="text-[#99EE2D]">Market</span>
                 </p>
+                <div className="explainCtn">
+                    <AiOutlineQuestionCircle fontSize="0.7rem" />
+                    <div className="explainText text-[8px]">
+                        <p className="font-bold">
+                            Mua game bản quyền trên G4
+                            <span className="text-[#99EE2D]">Market</span>
+                        </p>
+                        <br />
+                        <p className="mt-2">
+                            G4Market là đối tác uy tín của Thinkmay, cung cấp
+                            tài khoản chơi game bản quyền với giá rẻ.
+                        </p>
+                        <br />
+                    </div>
+                </div>
             </div>
 
-            <div className="appscont mt-8">
-                {games.map((game, i) => (
-                    <div
-                        key={i}
-                        onClick={() => action(game)}
-                        className="ribcont p-4 pt-8 ltShad prtclk"
-                        data-action="page2"
-                    >
-                        <Image
-                            className="mx-4 mb-6 rounded"
-                            w={150}
-                            src={game.metadata.capsule_image}
-                            ext
-                        />
-                        <div className="name capitalize">{game.name}</div>
-                    </div>
-                ))}
-            </div>
+            <a
+                href={externalLink.G4MARKET_LINK_STORE}
+                target="_blank"
+                className="wrapperBtn mt-1 bg-[#99EE2D] text-black  px-1 "
+            >
+                <span className="text-[8px]">Mua TK game</span>
+                <MdArrowForward fontSize={'0.8rem'} />
+                <div className="banner"></div>
+            </a>
         </div>
     );
 };

@@ -10,12 +10,12 @@ import {
     check_worker,
     desk_remove,
     fetch_domain,
-    fetch_message,
     fetch_store,
     fetch_subscription,
     fetch_under_maintenance,
     fetch_usage,
     fetch_user,
+    get_plans,
     have_focus,
     loose_focus,
     ping_session,
@@ -85,9 +85,6 @@ const handleClipboard = async () => {
     }
 };
 
-const fetchMessage = async () => {
-    await appDispatch(fetch_message());
-};
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
@@ -111,6 +108,9 @@ const checkMaintain = async () => {
 };
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
+};
+const fetchPlans = async () => {
+    await appDispatch(get_plans());
 };
 
 const updateUI = async () => {
@@ -180,7 +180,7 @@ export const preload = async (update_ui?: boolean) => {
             fetchSubscription(),
             fetchSetting(),
             fetchDomains(),
-            fetchMessage()
+            fetchPlans()
         ]);
         await fetchUsage();
         await fetchStore();

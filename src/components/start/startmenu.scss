@@ -9,7 +9,7 @@
 .dskApp {
   margin: 4px;
   height: 84px;
-  width: 74px;
+  width: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,164 +157,10 @@ body[data-theme="dark"] .startMenu {
   }
 }
 
-.paymentApp {
-  --bg1: rgba(242, 242, 242, 0.9);
-  --bg2: rgba(255, 255, 255, 0.9);
-  --bg3: rgba(0, 0, 0, 0.5);
-  --bg4: #aaa;
-  --rib-bg: #ffffffb8;
-
-  //background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
-  background: var(--bg1);
-
-  .wrapperPayment {
-    //background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
-    background: var(--page-bg);
-    border: 1px solid var(--page-bd-col);
-
-  }
-
-  &[data-size="mini"] {
-    top: 4%;
-    left: 8%;
-    width: 320px;
-    height: 500px;
-  }
-
-  .paymentContent {
-    padding: 36px;
-    padding-top: 50px;
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 10px;
-    row-gap: 48px;
-    justify-content: space-between;
-
-    align-items: center;
-    width: 100%;
-    height: 100%;
-
-    color: var(--dark-txt);
-    overflow-y: auto;
-    box-sizing: border-box;
-
-    .sub {
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      min-width: 320px;
-      max-width: 360px;
-      flex: 1;
-      min-height: 420px;
-      height: max-content;
-
-      flex-direction: column;
-      border-radius: 20px;
-      padding: 16px 12px;
-      background: var(--rib2-bg);
-      -webkit-transform-origin: center;
-      transform-origin: center;
-      transition: all ease-in-out .2s;
-      color: var(--dark-txt);
-
-      &:hover {
-        transform: scale(1.4);
-        transform: translateY(-16px);
-      }
-
-      .banner {
-        position: absolute;
-        width: 200px;
-        top: 4%;
-        right: -19%;
-        background: #06c;
-        color: #fff;
-        font-size: 20px;
-        font-weight: 500;
-        line-height: 30px;
-        letter-spacing: 0;
-        text-align: center;
-        transform: rotate(40deg);
-      }
-
-      hr {
-        border-color: var(--bg3);
-      }
-    }
-  }
-
-  &[data-hide="true"] {
-    z-index: -1 !important;
-  }
-}
 
 
-@media (1px < width < 1024px) {
-  .paymentApp {
-    --bg1: rgba(242, 242, 242, 0.9);
-    --bg2: rgba(255, 255, 255, 0.9);
-    --bg3: rgba(0, 0, 0, 0.033);
-    --bg4: #aaa;
-    --rib-bg: #ffffffb8;
 
-    //min-width: 550px;
-    //background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
-    background: var(--bg1);
 
-    .wrapperPayment {
-      background: var(--page-bg);
-      border: 1px solid var(--page-bd-col);
-    }
-
-    &[data-size="mini"] {
-      top: 4%;
-      left: 8%;
-      width: 320px;
-      height: 500px;
-    }
-
-    .paymentContent {
-      padding: 16px;
-      padding-top: 50px;
-      display: flex;
-      flex-wrap: wrap;
-      column-gap: 10px;
-      row-gap: 48px;
-      justify-content: center;
-
-      width: 100%;
-      height: 100%;
-
-      color: var(--dark-txt);
-      overflow-y: auto;
-      box-sizing: border-box;
-
-      .sub {
-        display: flex;
-        min-width: 320px;
-        max-width: 340px;
-        flex-direction: column;
-        border-radius: 16px;
-        padding: 12px 8px;
-        background: var(--rib2-bg);
-        height: auto;
-        -webkit-transform-origin: center;
-        transform-origin: center;
-        transition: all ease-in-out .2s;
-        color: var(--dark-txt);
-      }
-
-      .sub:nth-child(1) {
-        order: 1;
-      }
-    }
-
-    &[data-hide="true"] {
-      z-index: -1 !important;
-    }
-  }
-
-}
 
 .paypal-buttons {
   min-width: 120px !important;
@@ -327,16 +173,6 @@ body[data-theme="dark"] .startMenu {
   background: red;
 }
 
-body[data-theme="dark"] .paymentApp {
-
-  --bg1: #1c1c1c;
-  --bg2: #242424;
-  --bg3: #dfdbdb;
-  --bg4: #444;
-  --rib-bg: #2f2e30b8;
-
-
-}
 
 .refundApp {
   --bg1: rgba(242, 242, 242, 0.9);
