@@ -168,7 +168,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                            1000
+                                                1000
                                         )}
                                     </span>
                                 </div>
@@ -196,8 +196,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                                remote.framerate +
+                                                MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -588,16 +588,23 @@ function MobileComponent({ pnstates }) {
     const shutdownable = useAppSelector(
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
+    const steam_available = useAppSelector(
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.steam != undefined
+    );
 
-    const renderList =
-        shutdownable == 'started'
-            ? sidepane.mobileControl.buttons
-            : sidepane.mobileControl.buttons.filter(
-                (x) =>
-                    !['shutDownVm', 'copy_log', 'showLinkShare'].includes(
-                        x.action
-                    )
-            );
+    const renderList = sidepane.mobileControl.buttons.filter((x) =>
+        shutdownable != 'started'
+            ? ![
+                  'shutDownVm',
+                  'copy_log',
+                  'showLinkShare',
+                  'app_session_toggle'
+              ].includes(x.action)
+            : !steam_available
+              ? !['app_session_toggle'].includes(x.action)
+              : true
+    );
 
     return (
         <>
@@ -607,8 +614,8 @@ function MobileComponent({ pnstates }) {
                 ))}
                 {active
                     ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                        <MobileShortCutBtn key={idx} qk={qk} />
-                    ))
+                          <MobileShortCutBtn key={idx} qk={qk} />
+                      ))
                     : null}
             </div>
         </>
@@ -621,16 +628,23 @@ function DesktopComponent({ pnstates }) {
         (state) => new RenderNode(state.worker.data).data[0]?.info?.available
     );
     const active = useAppSelector((state) => state.remote.active);
+    const steam_available = useAppSelector(
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.steam != undefined
+    );
 
-    const renderList =
-        shutdownable == 'started'
-            ? sidepane.desktopControl.buttons
-            : sidepane.desktopControl.buttons.filter(
-                (x) =>
-                    !['shutDownVm', 'copy_log', 'showLinkShare'].includes(
-                        x.action
-                    )
-            );
+    const renderList = sidepane.desktopControl.buttons.filter((x) =>
+        shutdownable != 'started'
+            ? ![
+                  'shutDownVm',
+                  'copy_log',
+                  'showLinkShare',
+                  'app_session_toggle'
+              ].includes(x.action)
+            : !steam_available
+              ? !['app_session_toggle'].includes(x.action)
+              : true
+    );
 
     return (
         <>
@@ -696,21 +710,21 @@ function DesktopComponent({ pnstates }) {
                 ))}
                 {active
                     ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
-                        <div key={idx} className="qkGrp t">
-                            <div
-                                style={{
-                                    fontSize: '0.8rem'
-                                }}
-                                className="qkbtn handcr prtclk"
-                                onClick={() => Actions.clickShortCut(qk.val)}
-                            >
-                                {qk.name}
-                            </div>
-                            {qk?.explain ? (
-                                <div className="qktext">{t[qk.explain]}</div>
-                            ) : null}
-                        </div>
-                    ))
+                          <div key={idx} className="qkGrp t">
+                              <div
+                                  style={{
+                                      fontSize: '0.8rem'
+                                  }}
+                                  className="qkbtn handcr prtclk"
+                                  onClick={() => Actions.clickShortCut(qk.val)}
+                              >
+                                  {qk.name}
+                              </div>
+                              {qk?.explain ? (
+                                  <div className="qktext">{t[qk.explain]}</div>
+                              ) : null}
+                          </div>
+                      ))
                     : null}
             </div>
             <hr className="mb-2 lg:mb-1" />

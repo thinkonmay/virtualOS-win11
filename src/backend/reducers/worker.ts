@@ -334,11 +334,16 @@ export const workerAsync = {
                     node.info.available = 'started';
             }
 
-            let steam: RenderNode<StartRequest> | undefined = undefined;
-            node.iterate((x) => {
-                if ((x.info as StartRequest).app != undefined) steam = x;
-            });
-            node.info.steam = steam != undefined;
+            const accounts =
+                await POCKETBASE.collection('thirdparty_account').getFullList();
+            if (accounts.length == 0) node.info.steam = undefined;
+            else {
+                node.info.steam = false;
+                node.iterate((x) => {
+                    if ((x.info as StartRequest).app != undefined)
+                        node.info.steam = true;
+                });
+            }
 
             return node.any();
         }

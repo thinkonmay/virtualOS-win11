@@ -276,22 +276,22 @@ const listDesktopSettings = [
     ...(!DevEnv
         ? []
         : [
-              {
-                  ui: true,
-                  id: 'toggle_remote_async',
-                  src: 'FiVideoOff',
-                  name: [Contents.VIDEO_TOGGLE],
-                  state: 'active',
-                  action: 'toggle_remote_async'
-              },
-              {
-                  ui: true,
-                  id: 'reset',
-                  src: 'MdResetTv',
-                  name: [Contents.RESET_APP],
-                  state: 'hard_reset_async',
-                  action: 'hard_reset_async'
-              }
+              //   {
+              //       ui: true,
+              //       id: 'toggle_remote_async',
+              //       src: 'FiVideoOff',
+              //       name: [Contents.VIDEO_TOGGLE],
+              //       state: 'active',
+              //       action: 'toggle_remote_async'
+              //   },
+              //   {
+              //       ui: true,
+              //       id: 'reset',
+              //       src: 'MdResetTv',
+              //       name: [Contents.RESET_APP],
+              //       state: 'hard_reset_async',
+              //       action: 'hard_reset_async'
+              //   }
           ])
 ];
 

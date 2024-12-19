@@ -822,9 +822,18 @@ export function language() {
     vn.set(Contents.STEAM_LOGIN, 'Login Steam');
     id.set(Contents.STEAM_LOGIN, 'Login Steam');
 
-    en.set(Contents.STEAM_LOGIN_EXPlAIN, 'Login to Thinkmay machine with your linked Steam account');
-    id.set(Contents.STEAM_LOGIN_EXPlAIN, 'Login to Thinkmay machine with your linked Steam account');
-    vn.set(Contents.STEAM_LOGIN_EXPlAIN, 'Đăng nhập steam bằng tài khoản bạn đã liên kết');
+    en.set(
+        Contents.STEAM_LOGIN_EXPlAIN,
+        'Login to Thinkmay machine with your linked Steam account'
+    );
+    id.set(
+        Contents.STEAM_LOGIN_EXPlAIN,
+        'Login to Thinkmay machine with your linked Steam account'
+    );
+    vn.set(
+        Contents.STEAM_LOGIN_EXPlAIN,
+        'Đăng nhập steam bằng tài khoản bạn đã liên kết'
+    );
 
     en.set(Contents.EXTERNAL_TAB, 'Share link');
     vn.set(Contents.EXTERNAL_TAB, 'Chia sẻ link');
