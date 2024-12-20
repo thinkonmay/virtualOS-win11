@@ -5,13 +5,11 @@ import { gamepadAxis, gamepadButton } from '../../../../../src-tauri/singleton';
 import { useAppSelector } from '../../../../backend/reducers';
 import GamepadButton from './button/defaultBtn';
 import DPad from './button/dpad';
-import { LeftFuncButton, RightFuncButton } from './button/funcBtn';
 import './button/index.scss'; // Import your SCSS file
 import { CustomJoyStick } from './button/joystick';
-import YBXA from './button/ybxa';
 
 const BUTTON_SIZE = 55;
-const JOYSTICK_SIZE = 100;
+const JOYSTICK_SIZE = 130;
 
 export const VirtualGamepad = (props) => {
     const draggable = useAppSelector(
@@ -20,20 +18,25 @@ export const VirtualGamepad = (props) => {
 
     return (
         <>
-            <div className={`virtGamepad slide-in`}>
-                <ButtonGroupLeft draggable={draggable} />
+            <div className={`virtGamepad slide-in ${draggable ? 'draggable' : ''}`}>
                 <ButtonGroupRight draggable={draggable} />
+                <ButtonGroupLeft draggable={draggable} />
             </div>
         </>
     );
 };
 
 const defaultButtonGroupRightValue = {
+    joystick: { x: 0.6, y: 0.35 },
+    rs: { x: 0.65, y: 0.8 },
+    rb: { x: 0.8, y: 0.28 },
+    rt: { x: 0.75, y: 0.12 },
+    btnY: { x: 0.78, y: 0.78 },
+    btnA: { x: 0.82, y: 0.59 },
+    btnB: { x: 0.9, y: 0.47 },
+    btnX: { x: 0.88, y: 0.7 },
     ybxa: { x: 0.93, y: 0.45 },
-    joystick: { x: 0.65, y: 0.55 },
-    funcBtn: { x: 0.82, y: 0.043 },
-    subBtn: { x: 0.45, y: 0.03 },
-    rs: { x: 0.87, y: 0.8 }
+    subBtn: { x: 0.45, y: 0.03 }
 };
 
 export const ButtonGroupRight = (props) => {
@@ -48,11 +51,11 @@ export const ButtonGroupRight = (props) => {
     const [posBtn, setPosBtn] = useState(defaultButtonGroupRightValue);
 
     useEffect(() => {
-        localStorage.removeItem('right_group_pos');
+        localStorage.removeItem('right_group_pos1');
     }, []);
 
     const handleResize = () => {
-        let cache = localStorage.getItem(`right_group_pos1`);
+        let cache = localStorage.getItem(`right_group_pos2`);
         if (cache === null) {
             const deviceWidth = window.innerWidth;
             const deviceHeight = window.innerHeight;
@@ -65,10 +68,6 @@ export const ButtonGroupRight = (props) => {
                     x: deviceWidth * defaultButtonGroupRightValue.joystick.x,
                     y: deviceHeight * defaultButtonGroupRightValue.joystick.y
                 },
-                funcBtn: {
-                    x: deviceWidth * defaultButtonGroupRightValue.funcBtn.x,
-                    y: deviceHeight * defaultButtonGroupRightValue.funcBtn.y
-                },
                 subBtn: {
                     x: deviceWidth * defaultButtonGroupRightValue.subBtn.x,
                     y: deviceHeight * defaultButtonGroupRightValue.subBtn.y
@@ -76,18 +75,60 @@ export const ButtonGroupRight = (props) => {
                 rs: {
                     x: deviceWidth * defaultButtonGroupRightValue.rs.x,
                     y: deviceHeight * defaultButtonGroupRightValue.rs.y
+                },
+                rt: {
+                    x: deviceWidth * defaultButtonGroupRightValue.rt.x,
+                    y: deviceHeight * defaultButtonGroupRightValue.rt.y
+                },
+                rb: {
+                    x: deviceWidth * defaultButtonGroupRightValue.rb.x,
+                    y: deviceHeight * defaultButtonGroupRightValue.rb.y
+                },
+                btnY: {
+                    x: deviceWidth * defaultButtonGroupRightValue.btnY.x,
+                    y: deviceHeight * defaultButtonGroupRightValue.btnY.y
+                },
+                btnB: {
+                    x: deviceWidth * defaultButtonGroupRightValue.btnB.x,
+                    y: deviceHeight * defaultButtonGroupRightValue.btnB.y
+                },
+                btnX: {
+                    x: deviceWidth * defaultButtonGroupRightValue.btnX.x,
+                    y: deviceHeight * defaultButtonGroupRightValue.btnX.y
+                },
+                btnA: {
+                    x: deviceWidth * defaultButtonGroupRightValue.btnA.x,
+                    y: deviceHeight * defaultButtonGroupRightValue.btnA.y
                 }
             });
             return;
         }
-        const { ybxa, joystick, funcBtn, subBtn, rs } = JSON.parse(cache);
+        const {
+            ybxa,
+            joystick,
+            funcBtn,
+            subBtn,
+            rs,
+            rt,
+            rb,
+            btnA,
+            btnB,
+            btnY,
+            btnX
+        } = JSON.parse(cache);
 
         setPosBtn({
             ybxa,
             joystick,
             funcBtn,
             subBtn,
-            rs
+            rs,
+            rt,
+            rb,
+            btnA,
+            btnB,
+            btnY,
+            btnX
         });
     };
 
@@ -100,6 +141,7 @@ export const ButtonGroupRight = (props) => {
     const handleDrag = (e, data) => {
         const key = data.node.id;
         const value = { x: data.x, y: data.y };
+        (e, data);
         startTransition(() => {
             setPosBtn((prev) => {
                 return {
@@ -112,7 +154,7 @@ export const ButtonGroupRight = (props) => {
 
     const handleStop = (e, data) => {
         startTransition(() => {
-            localStorage.setItem(`right_group_pos1`, JSON.stringify(posBtn));
+            localStorage.setItem(`right_group_pos2`, JSON.stringify(posBtn));
         });
     };
 
@@ -130,10 +172,7 @@ export const ButtonGroupRight = (props) => {
                 x: deviceWidth * defaultButtonGroupRightValue.joystick.x,
                 y: deviceHeight * defaultButtonGroupRightValue.joystick.y
             },
-            funcBtn: {
-                x: deviceWidth * defaultButtonGroupRightValue.funcBtn.x,
-                y: deviceHeight * defaultButtonGroupRightValue.funcBtn.y
-            },
+
             subBtn: {
                 x: deviceWidth * defaultButtonGroupRightValue.subBtn.x,
                 y: deviceHeight * defaultButtonGroupRightValue.subBtn.y
@@ -141,48 +180,155 @@ export const ButtonGroupRight = (props) => {
             rs: {
                 x: deviceWidth * defaultButtonGroupRightValue.rs.x,
                 y: deviceHeight * defaultButtonGroupRightValue.rs.y
+            },
+            rt: {
+                x: deviceWidth * defaultButtonGroupRightValue.rt.x,
+                y: deviceHeight * defaultButtonGroupRightValue.rt.y
+            },
+            rb: {
+                x: deviceWidth * defaultButtonGroupRightValue.rb.x,
+                y: deviceHeight * defaultButtonGroupRightValue.rb.y
+            },
+            btnA: {
+                x: deviceWidth * defaultButtonGroupRightValue.btnA.x,
+                y: deviceHeight * defaultButtonGroupRightValue.btnA.y
+            },
+            btnB: {
+                x: deviceWidth * defaultButtonGroupRightValue.btnB.x,
+                y: deviceHeight * defaultButtonGroupRightValue.btnB.y
+            },
+            btnX: {
+                x: deviceWidth * defaultButtonGroupRightValue.btnX.x,
+                y: deviceHeight * defaultButtonGroupRightValue.btnX.y
+            },
+            btnY: {
+                x: deviceWidth * defaultButtonGroupRightValue.btnY.x,
+                y: deviceHeight * defaultButtonGroupRightValue.btnY.y
             }
         };
         setPosBtn(defaultPos);
-        localStorage.setItem(`right_group_pos1`, JSON.stringify(defaultPos));
+        localStorage.setItem(`right_group_pos2`, JSON.stringify(defaultPos));
     }, [DefaultPosition]);
 
-    const ybxaRef = useRef(null);
     const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
-    const funcBtnRef = useRef(null);
     const subBtnRef = useRef(null);
-    const rsRef = useRef(null);
 
     const gamepadCallBack = (x, y) => gamepadAxis(x, y, 'right');
     return (
         <>
-            <Draggable
-                disabled={!props.draggable}
-                position={{ x: posBtn.funcBtn.x, y: posBtn.funcBtn.y }}
+            <GamepadButton
+                id={'rt'}
+                onTouchStart={() => gamepadButton(7, 'down')}
+                onTouchEnd={() => gamepadButton(7, 'up')}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={funcBtnRef}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.rt.x,
+                    y: posBtn.rt.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
+                type="rectangle"
             >
-                <div ref={funcBtnRef} id="funcBtn" className="wrapperDraggable">
-                    <RightFuncButton
-                        ref={funcBtnRef}
-                        name="funcBtn"
-                        size={BUTTON_SIZE * btnSize}
-                    />
-                </div>
-            </Draggable>
-            <Draggable
-                disabled={!props.draggable}
-                position={{ x: posBtn.ybxa.x, y: posBtn.ybxa.y }}
+                RT
+            </GamepadButton>
+
+            <GamepadButton
+                id={'rb'}
+                onTouchStart={() => gamepadButton(5, 'down')}
+                onTouchEnd={() => gamepadButton(5, 'up')}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={ybxaRef}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.rb.x,
+                    y: posBtn.rb.y
+                }}
+                type="rectangle"
+                style={{
+                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
             >
-                <div ref={ybxaRef} id="ybxa" className="wrapperDraggable">
-                    <YBXA ref={ybxaRef} size={BUTTON_SIZE * btnSize} />
-                </div>
-            </Draggable>
+                RB
+            </GamepadButton>
+
+            <GamepadButton
+                id={'btnY'}
+                onTouchStart={() => gamepadButton(3, 'down')}
+                onTouchEnd={() => gamepadButton(3, 'up')}
+                onStop={handleStop}
+                onDrag={handleDrag}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.btnY.x,
+                    y: posBtn.btnY.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
+            >
+                Y
+            </GamepadButton>
+            <GamepadButton
+                id={'btnA'}
+                onTouchStart={() => gamepadButton(0, 'down')}
+                onTouchEnd={() => gamepadButton(0, 'up')}
+                onStop={handleStop}
+                onDrag={handleDrag}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.btnA.x,
+                    y: posBtn.btnA.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
+            >
+                A
+            </GamepadButton>
+            <GamepadButton
+                id={'btnB'}
+                onTouchStart={() => gamepadButton(1, 'down')}
+                onTouchEnd={() => gamepadButton(1, 'up')}
+                onStop={handleStop}
+                onDrag={handleDrag}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.btnB.x,
+                    y: posBtn.btnB.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
+            >
+                B
+            </GamepadButton>
+            <GamepadButton
+                id={'btnX'}
+                onTouchStart={() => gamepadButton(2, 'down')}
+                onTouchEnd={() => gamepadButton(2, 'up')}
+                onStop={handleStop}
+                onDrag={handleDrag}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.btnX.x,
+                    y: posBtn.btnX.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
+                    height: `${BUTTON_SIZE * btnSize * 1.5}px`
+                }}
+            >
+                X
+            </GamepadButton>
             <Draggable
                 disabled={!props.draggable}
                 position={{ x: posBtn.joystick.x, y: posBtn.joystick.y }}
@@ -227,36 +373,35 @@ export const ButtonGroupRight = (props) => {
                     </div>
                 </div>
             </Draggable>
-            <Draggable
-                disabled={!props.draggable}
-                position={{ x: posBtn.rs.x, y: posBtn.rs.y }}
+
+            <GamepadButton
+                id={'rs'}
+                onTouchStart={() => gamepadButton(11, 'down')}
+                onTouchEnd={() => gamepadButton(11, 'up')}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={rsRef}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.rs.x,
+                    y: posBtn.rs.y
+                }}
+                style={{
+                    width: `${(BUTTON_SIZE * btnSize) / 1.5}px`,
+                    height: `${(BUTTON_SIZE * btnSize) / 1.5}px`
+                }}
             >
-                <div id="rs" className="wrapperDraggable" ref={rsRef}>
-                    <GamepadButton
-                        id="rs"
-                        style={{
-                            width: `${BUTTON_SIZE * btnSize}px`,
-                            height: `${BUTTON_SIZE * btnSize}px`
-                        }}
-                        onTouchStart={() => gamepadButton(11, 'down')}
-                        onTouchEnd={() => gamepadButton(11, 'up')}
-                    >
-                        RS
-                    </GamepadButton>
-                </div>
-            </Draggable>
+                RS
+            </GamepadButton>
         </>
     );
 };
 
 const defaultButtonGroupLeftValue = {
-    dpad: { x: 0.07, y: 0.45 },
-    joystick: { x: 0.22, y: 0.55 },
-    funcBtn: { x: 0.03, y: 0.043 },
-    ls: { x: 0.07, y: 0.8 }
+    dpad: { x: 0.3, y: 0.75 },
+    joystick: { x: 0.02, y: 0.55 },
+    lt: { x: 0.2, y: 0.14 },
+    lb: { x: 0.15, y: 0.3 },
+    ls: { x: 0.02, y: 0.4 }
 };
 
 export const ButtonGroupLeft = (props) => {
@@ -271,11 +416,11 @@ export const ButtonGroupLeft = (props) => {
     const [posBtn, setPosBtn] = useState(defaultButtonGroupLeftValue);
 
     useEffect(() => {
-        localStorage.removeItem('left_group_pos');
+        localStorage.removeItem('left_group_pos1');
     }, []);
 
     const handleResize = () => {
-        let cache = localStorage.getItem(`left_group_pos1`);
+        let cache = localStorage.getItem(`left_group_pos2`);
         if (cache === null) {
             const deviceWidth = window.innerWidth;
             const deviceHeight = window.innerHeight;
@@ -288,24 +433,29 @@ export const ButtonGroupLeft = (props) => {
                     x: deviceWidth * defaultButtonGroupLeftValue.joystick.x,
                     y: deviceHeight * defaultButtonGroupLeftValue.joystick.y
                 },
-                funcBtn: {
-                    x: deviceWidth * defaultButtonGroupLeftValue.funcBtn.x,
-                    y: deviceHeight * defaultButtonGroupLeftValue.funcBtn.y
-                },
                 ls: {
                     x: deviceWidth * defaultButtonGroupLeftValue.ls.x,
                     y: deviceHeight * defaultButtonGroupLeftValue.ls.y
+                },
+                lt: {
+                    x: deviceWidth * defaultButtonGroupLeftValue.lt.x,
+                    y: deviceHeight * defaultButtonGroupLeftValue.lt.y
+                },
+                lb: {
+                    x: deviceWidth * defaultButtonGroupLeftValue.lb.x,
+                    y: deviceHeight * defaultButtonGroupLeftValue.lb.y
                 }
             });
             return;
         }
-        const { dpad, joystick, funcBtn, ls } = JSON.parse(cache);
+        const { dpad, joystick, ls, lt, lb } = JSON.parse(cache);
 
         setPosBtn({
             dpad,
             joystick,
-            funcBtn,
-            ls
+            ls,
+            lt,
+            lb
         });
     };
 
@@ -330,7 +480,7 @@ export const ButtonGroupLeft = (props) => {
 
     const handleStop = (e, data) => {
         startTransition(() => {
-            localStorage.setItem(`left_group_pos1`, JSON.stringify(posBtn));
+            localStorage.setItem(`left_group_pos2`, JSON.stringify(posBtn));
         });
     };
 
@@ -348,44 +498,71 @@ export const ButtonGroupLeft = (props) => {
                 x: deviceWidth * defaultButtonGroupLeftValue.joystick.x,
                 y: deviceHeight * defaultButtonGroupLeftValue.joystick.y
             },
-            funcBtn: {
-                x: deviceWidth * defaultButtonGroupLeftValue.funcBtn.x,
-                y: deviceHeight * defaultButtonGroupLeftValue.funcBtn.y
-            },
+
             ls: {
                 x: deviceWidth * defaultButtonGroupLeftValue.ls.x,
                 y: deviceHeight * defaultButtonGroupLeftValue.ls.y
+            },
+            lt: {
+                x: deviceWidth * defaultButtonGroupLeftValue.lt.x,
+                y: deviceHeight * defaultButtonGroupLeftValue.lt.y
+            },
+            lb: {
+                x: deviceWidth * defaultButtonGroupLeftValue.lb.x,
+                y: deviceHeight * defaultButtonGroupLeftValue.lb.y
             }
         };
         setPosBtn(defaultPos);
-        localStorage.setItem(`left_group_pos1`, JSON.stringify(defaultPos));
+        localStorage.setItem(`left_group_pos2`, JSON.stringify(defaultPos));
     }, [DefaultPosition]);
 
     const dpadRef = useRef(null);
     const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
-    const funcBtnRef = useRef(null);
-    const lsRef = useRef(null);
     const gamepadCallBack = (x, y) => gamepadAxis(x, y, 'left');
     return (
         <>
-            <Draggable
-                disabled={!props.draggable}
-                position={{ x: posBtn.funcBtn.x, y: posBtn.funcBtn.y }}
+            <GamepadButton
+                id={'lt'}
+                onTouchStart={() => gamepadButton(6, 'down')}
+                onTouchEnd={() => gamepadButton(6, 'up')}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={funcBtnRef}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.lt.x,
+                    y: posBtn.lt.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
+                type="rectangle"
             >
-                <div ref={funcBtnRef} id="funcBtn" className="wrapperDraggable">
-                    <LeftFuncButton
-                        ref={funcBtnRef}
-                        size={BUTTON_SIZE * btnSize}
-                    />
-                </div>
-            </Draggable>
+                LT
+            </GamepadButton>
+            <GamepadButton
+                id={'lb'}
+                onTouchStart={() => gamepadButton(4, 'down')}
+                onTouchEnd={() => gamepadButton(4, 'up')}
+                onStop={handleStop}
+                onDrag={handleDrag}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.lb.x,
+                    y: posBtn.lb.y
+                }}
+                style={{
+                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
+                    height: `${BUTTON_SIZE * btnSize}px`
+                }}
+                type="rectangle"
+            >
+                LB
+            </GamepadButton>
             <Draggable
                 disabled={!props.draggable}
-                position={{ x: posBtn.dpad.x, y: posBtn.dpad.y }}
+                position={{ x: posBtn.dpad.x, y: posBtn.dpad.y - 50 }}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 nodeRef={dpadRef}
@@ -394,27 +571,25 @@ export const ButtonGroupLeft = (props) => {
                     <DPad ref={dpadRef} size={BUTTON_SIZE * btnSize} />
                 </div>
             </Draggable>
-            <Draggable
-                disabled={!props.draggable}
-                position={{ x: posBtn.ls.x, y: posBtn.ls.y }}
+            <GamepadButton
+                id={'ls'}
+                onTouchStart={() => gamepadButton(10, 'down')}
+                onTouchEnd={() => gamepadButton(10, 'up')}
                 onStop={handleStop}
                 onDrag={handleDrag}
-                nodeRef={lsRef}
+                draggable={props.draggable}
+                pos={{
+                    x: posBtn.ls.x,
+                    y: posBtn.ls.y
+                }}
+                style={{
+                    width: `${(BUTTON_SIZE * btnSize) / 1.5}px`,
+                    height: `${(BUTTON_SIZE * btnSize) / 1.5}px`
+                }}
             >
-                <div id="ls" className="wrapperDraggable" ref={lsRef}>
-                    <GamepadButton
-                        onTouchStart={() => gamepadButton(10, 'down')}
-                        onTouchEnd={() => gamepadButton(10, 'up')}
-                        draggable={props.draggable}
-                        style={{
-                            width: `${BUTTON_SIZE * btnSize}px`,
-                            height: `${BUTTON_SIZE * btnSize}px`
-                        }}
-                    >
-                        LS
-                    </GamepadButton>
-                </div>
-            </Draggable>
+                LS
+            </GamepadButton>
+
             <Draggable
                 disabled={!props.draggable}
                 position={{ x: posBtn.joystick.x, y: posBtn.joystick.y }}

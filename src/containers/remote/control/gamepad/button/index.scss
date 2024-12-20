@@ -16,6 +16,10 @@
 
 	}
 
+	&.draggable {
+		background-color: rgba($color: #2d2b2b, $alpha: 0.5);
+	}
+
 	.containerSubButton {
 		display: flex;
 		gap: 8px;
@@ -28,6 +32,8 @@
 		position: absolute;
 	}
 
+
+
 	.defaultButton {
 		display: flex;
 		align-items: center;
@@ -35,19 +41,34 @@
 		outline: none;
 		width: inherit;
 		height: inherit;
-		color: rgba(255, 255, 255, 0.553);
-		border: 1.5px solid rgba($color: white, $alpha: 0.4);
-		border-radius: 50%;
-		background-color: transparent;
+		color: rgba(255, 255, 255);
+		border: 1.5px solid rgba($color: rgb(255, 255, 255), $alpha: 0.2);
+		font-size: 12px;
+		font-weight: 600;
+		background-color: rgba($color: #2d2b2b, $alpha: 0.5);
 		-webkit-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
 		-webkit-tap-highlight-color: transparent;
 		overflow: hidden;
 
-		&:active {
-			background-color: rgba($color: #ffffff, $alpha: 0.4);
+		//&:active {
+		//	background-color: rgba($color: #ffffff, $alpha: 0.4);
+		//}
+		&.circle {
+			border-radius: 50%;
 		}
+
+		&.rectangle {
+			border-radius: 1em;
+		}
+
+		&.hold {
+			box-shadow: rgba(2, 2, 255, 0.2) 0px 0px 2px 3px;
+			//border-color: unset;
+			//border: unset;/
+		}
+
 	}
 
 	.centerButton {
@@ -63,7 +84,9 @@
 		justify-content: center;
 
 		&:active {
-			background-color: rgba($color: #ffffff, $alpha: 0.5);
+			//background-color: rgba($color: #ffffff, $alpha: 0.5);
+			box-shadow: rgba(2, 2, 255, 0.3) 0px 0px 4px 5px;
+
 		}
 	}
 
@@ -111,6 +134,8 @@
 
 	.dpad {
 		position: relative;
+		--veritcalBtnWith: 52px;
+		--horizontalWith: 37px;
 
 		.top {
 			@extend .defaultButton;
@@ -118,6 +143,11 @@
 			top: 0;
 			right: 50%;
 			transform: translate(50%, -100%);
+			width: var(--horizontalWith) !important;
+			height: var(--veritcalBtnWith);
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+
 		}
 
 		.right {
@@ -126,6 +156,11 @@
 			bottom: 50%;
 			right: 0;
 			transform: translate(100%, 50%);
+			width: var(--veritcalBtnWith);
+			height: var(--horizontalWith);
+			border-bottom-right-radius: 8px;
+			border-top-right-radius: 8px;
+
 		}
 
 		.left {
@@ -134,6 +169,11 @@
 			bottom: 50%;
 			left: 0;
 			transform: translate(-100%, 50%);
+			width: var(--veritcalBtnWith);
+			height: var(--horizontalWith);
+			border-bottom-left-radius: 8px;
+			border-top-left-radius: 8px;
+
 		}
 
 		.bottom {
@@ -142,7 +182,15 @@
 			bottom: 0%;
 			right: 50%;
 			transform: translate(50%, 100%);
+			height: var(--veritcalBtnWith) !important;
+			width: var(--horizontalWith);
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
+
 		}
+
+		button {}
+
 
 
 	}

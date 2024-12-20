@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useId, useState } from 'react';
 
 export const CustomJoyStick = forwardRef((props, ref) => {
-    const { size = 100, moveCallback = () => { } } = props;
+    const { size = 100, moveCallback = () => {} } = props;
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [touching, setTouching] = useState(false);
@@ -65,7 +65,7 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                 height: `${size}px`,
                 borderRadius: '50%',
                 backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -80,12 +80,13 @@ export const CustomJoyStick = forwardRef((props, ref) => {
             <div
                 id={knobId}
                 style={{
-                    width: `${knobRadius * 1.8}px`,
-                    height: `${knobRadius * 1.8}px`,
+                    width: `${knobRadius * 1.5}px`,
+                    height: `${knobRadius * 1.5}px`,
                     borderRadius: '50%',
                     backgroundColor: 'rgba(255, 255, 255,0.5',
                     position: 'absolute',
                     transform: `translate(${position.x}px, ${position.y}px)`,
+                    boxShadow: 'rgba(255, 255, 255, 0.1) 0px 0px 4px 5px',
                     transition: touching ? 'none' : 'transform 0.1s ease-out'
                 }}
             />
