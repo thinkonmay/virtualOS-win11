@@ -658,10 +658,10 @@ export const workerAsync = {
                     result = x;
             });
 
-            let s3bucket: RenderNode<StartRequest> | undefined = undefined;
+            let steam: RenderNode<StartRequest> | undefined = undefined;
             result.iterate((x) => {
                 if ((x.info as StartRequest).s3bucket != undefined)
-                    s3bucket = x;
+                    steam = x;
             });
 
             if (result == undefined) {
@@ -670,7 +670,7 @@ export const workerAsync = {
                     'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
                 );
             }
-            if (s3bucket == undefined) {
+            if (steam == undefined) {
                 appDispatch(popup_close());
                 throw new Error('Storage not found');
             }
@@ -684,7 +684,7 @@ export const workerAsync = {
             if (host == undefined) throw new Error('invalid tree');
             else if (vm_session == undefined) throw new Error('invalid tree');
 
-            const steam_session = s3bucket.info;
+            const steam_session = steam.info;
             if (steam_session == undefined)
                 return new Error('steam session is null');
 
