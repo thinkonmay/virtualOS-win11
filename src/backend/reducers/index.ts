@@ -150,8 +150,7 @@ export const {
     worker_reload,
     wait_and_claim_volume,
     app_session_toggle,
-    app_session_login,
-    app_session_logout,
+    storage_session_toggle,
     vm_session_create,
     vm_session_access,
     vm_session_close,
@@ -182,7 +181,7 @@ export const {
 
 export const { fetch_store, fetch_under_maintenance, fetch_domain } =
     globalAsync;
-export const {} = sidepaneAsync;
+export const { } = sidepaneAsync;
 
 export const dispatch_generic = async ({
     type,

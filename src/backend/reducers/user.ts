@@ -63,6 +63,7 @@ type Plan = {
 type Data = RecordModel & {
     subscription: PaymentStatus;
     volume_id: string;
+    bucket_name?: string;
     plans: Plan[];
 };
 
@@ -90,17 +91,30 @@ const initialState: Data = {
 export const userAsync = {
     fetch_user: createAsyncThunk(
         'fetch_user',
-        async (): Promise<RecordModel & { volume_id: string }> => {
+        async (): Promise<
+            RecordModel & { volume_id: string; bucket_name?: string }
+        > => {
             const {
                 items: [result]
             } = await POCKETBASE.collection('users').getList(1);
             const [vol] = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;
             }>();
+            const [bucket] = await POCKETBASE.collection(
+                'buckets'
+            ).getFullList<{
+                bucket_name: string;
+            }>();
 
             return result != undefined
                 ? vol != undefined
-                    ? { ...result, volume_id: vol.local_id }
+                    ? bucket != undefined
+                        ? {
+                              ...result,
+                              volume_id: vol.local_id,
+                              bucket_name: bucket.bucket_name
+                          }
+                        : { ...result, volume_id: vol.local_id }
                     : { ...result, volume_id: '' }
                 : initialState;
         }
@@ -587,6 +601,7 @@ export const userSlice = createSlice({
                     state.id = action.payload.id;
                     state.collectionId = action.payload.collectionId;
                     state.volume_id = action.payload.volume_id;
+                    state.bucket_name = action.payload.bucket_name;
                     state.collectionName = action.payload.collectionName;
                     state.created = action.payload.created;
                     state.updated = action.payload.updated;

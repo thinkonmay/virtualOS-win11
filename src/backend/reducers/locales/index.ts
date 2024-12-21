@@ -141,6 +141,8 @@ export enum Contents {
     EXTERNAL_TAB_EXPlAIN,
     STEAM_LOGIN,
     STEAM_LOGIN_EXPlAIN,
+    MOUNT_STORAGE,
+    MOUNT_STORAGE_EXPlAIN,
     QUALITY,
     FRAMERATE,
     DEMO_TUTORIAL_HEAD,
@@ -817,6 +819,23 @@ export function language() {
     en.set(Contents.STRICT_TIMING, 'Bad network mode');
     vn.set(Contents.STRICT_TIMING, 'Chế độ sóng yếu');
     id.set(Contents.STRICT_TIMING, 'Mode jaringan buruk');
+
+    en.set(Contents.MOUNT_STORAGE, 'Cloud Storage');
+    vn.set(Contents.MOUNT_STORAGE, 'Cloud Storage');
+    id.set(Contents.MOUNT_STORAGE, 'Cloud Storage');
+
+    en.set(
+        Contents.MOUNT_STORAGE_EXPlAIN,
+        'Access Thinkmay cloud storage from Thinkmay VM'
+    );
+    id.set(
+        Contents.MOUNT_STORAGE_EXPlAIN,
+        'Access Thinkmay cloud storage from Thinkmay VM'
+    );
+    vn.set(
+        Contents.MOUNT_STORAGE_EXPlAIN,
+        'Access Thinkmay cloud storage from Thinkmay VM'
+    );
 
     en.set(Contents.STEAM_LOGIN, 'Login Steam');
     vn.set(Contents.STEAM_LOGIN, 'Login Steam');
