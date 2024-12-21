@@ -364,7 +364,7 @@ const GamePadSetting = () => {
                         : 'gamepadSetting slide-in'
                 }
             >
-                <div className="flex justify-between py-4 px-2 mb-[16px] mx-[-12px]">
+                <div className="flex justify-between py-4 px-2 mb-[12px] mx-[-12px]">
                     <MdArrowBack
                         fontSize={'1.5rem'}
                         onClick={() => {
@@ -377,83 +377,28 @@ const GamePadSetting = () => {
                         fontSize={'1.5rem'}
                     ></MdOutlineClose>
                 </div>
-                <button
-                    onClick={() => appDispatch(toggle_gamepad())}
-                    className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
-                >
-                    Đóng/mở gamepad ảo
-                </button>
-                <div className="">
-                    <p className="text-[0.9rem] mb-[4px]">Size:</p>
-                    <form className="flex gap-4">
-                        <label className="size-choosen">
-                            Small
-                            <input
-                                type="radio"
-                                value="1"
-                                checked={selectedOption == '1'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label className="size-choosen">
-                            Medium
-                            <input
-                                type="radio"
-                                value="1.2"
-                                checked={selectedOption == '1.2'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <label className="size-choosen">
-                            Big
-                            <input
-                                type="radio"
-                                value="3"
-                                checked={selectedOption == '3'}
-                                onChange={handleChange}
-                            />
-                        </label>
-                    </form>
+
+                <div className='flex gap-4'>
+                    <button
+                        onClick={() => appDispatch(toggle_gamepad())}
+                        className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
+                    >
+                        Đóng/mở
+                    </button>
+                    <button
+                        className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
+                        onClick={() => {
+                            appDispatch(toggle_gamepad_draggable());
+                            appDispatch(sidepane_panehide());
+                        }}
+                    >
+                        Đổi vị trí
+                    </button>
                 </div>
 
-                <button
-                    className="instbtn outline-none border-none w-full py-3 bold mt-4 rounded-lg"
-                    onClick={() => {
-                        appDispatch(toggle_gamepad_draggable());
-                        appDispatch(sidepane_panehide());
-                    }}
-                >
-                    Đổi vị trí các nút
-                </button>
 
-                {/*{gamepadDraggable ? (
-                    <>
-                        <p className="text-[0.75rem] mt-1">
-                            *kéo các nút để chỉnh vị trí
-                        </p>
-                        <div className="ctnBtn flex mt-4 gap-4 justify-end">
-                            <button
-                                className="bg-slate-400 rounded-md"
-                                onClick={() =>
-                                    appDispatch(
-                                        toggle_default_gamepad_position()
-                                    )
-                                }
-                            >
-                                Default
-                            </button>
-                            <button
-                                className="bg-[#0167c0] rounded-md"
-                                onClick={() => {
-                                    appDispatch(toggle_gamepad_draggable());
-                                    appDispatch(toggle_gamepad_setting());
-                                }}
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </>
-                ) : null}*/}
+
+
             </div>
         </div>
     );
@@ -622,7 +567,7 @@ function MobileComponent({ pnstates }) {
             blacklist = [...blacklist, 'storage_session_toggle'];
     }
 
-    const renderList = sidepane.desktopControl.buttons.filter(
+    const renderList = sidepane.mobileControl.buttons.filter(
         (x) => !blacklist.includes(x.action)
     );
 
