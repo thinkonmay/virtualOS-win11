@@ -17,7 +17,7 @@
 	}
 
 	&.draggable {
-		background-color: rgba($color: #2d2b2b, $alpha: 0.5);
+		background-color: rgba($color: #000, $alpha: 0.5);
 	}
 
 	.containerSubButton {
@@ -30,6 +30,12 @@
 	.wrapperDraggable {
 		width: max-content;
 		position: absolute;
+
+		&.selected {
+			border: 1px solid rgb(175, 169, 169);
+			padding: 2px;
+			box-sizing: border-box;
+		}
 	}
 
 
@@ -45,10 +51,19 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 16px 32px;
+		transform: translateY(-100%);
 
 		background-color: black;
-		border-bottom: 1px solid white;
+		border-bottom: 1px solid rgba(143, 137, 137, 0.514);
 
+
+		&.slide-in {
+			transform: translateY(0%)
+		}
+
+		&.slide-out {
+			transform: translateY(-100%)
+		}
 
 		.wrapperLeft {
 			display: flex;
@@ -198,55 +213,65 @@
 		--veritcalBtnWith: 52px;
 		--horizontalWith: 37px;
 
-		.top {
+		.dpadBtn {
 			@extend .defaultButton;
+
+			width: inherit;
+			height: inherit;
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+		}
+
+		.top {
+			//@extend .defaultButton;
 			position: absolute;
 			top: 0;
 			right: 50%;
 			transform: translate(50%, -100%);
-			width: var(--horizontalWith) !important;
-			height: var(--veritcalBtnWith);
-			border-top-left-radius: 8px;
-			border-top-right-radius: 8px;
+
+
+
 
 		}
 
 		.right {
-			@extend .defaultButton;
+			//@extend .defaultButton;
 			position: absolute;
 			bottom: 50%;
-			right: 0;
-			transform: translate(100%, 50%);
-			width: var(--veritcalBtnWith);
-			height: var(--horizontalWith);
-			border-bottom-right-radius: 8px;
-			border-top-right-radius: 8px;
+			right: -26%;
+			//top: 0;
+			//right: 50%;
+			transform: translate(100%, 50%) rotate(90deg);
+			//transform: ;
+
+
+
 
 		}
 
 		.left {
-			@extend .defaultButton;
+			//@extend .defaultButton;
 			position: absolute;
 			bottom: 50%;
-			left: 0;
-			transform: translate(-100%, 50%);
-			width: var(--veritcalBtnWith);
-			height: var(--horizontalWith);
-			border-bottom-left-radius: 8px;
-			border-top-left-radius: 8px;
+			left: -26%;
+			transform: translate(-100%, 50%) rotate(270deg);
+
+
+
+
 
 		}
 
 		.bottom {
-			@extend .defaultButton;
+			//@extend .defaultButton;
 			position: absolute;
 			bottom: 0%;
 			right: 50%;
-			transform: translate(50%, 100%);
-			height: var(--veritcalBtnWith) !important;
-			width: var(--horizontalWith);
-			border-bottom-left-radius: 8px;
-			border-bottom-right-radius: 8px;
+			transform: translate(50%, 100%) rotate(180deg);
+
+
+
+
 
 		}
 

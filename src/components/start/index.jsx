@@ -21,7 +21,6 @@ import {
     change_btnGp_size,
     change_framerate,
     sidepane_panehide,
-    toggle_default_gamepad_position,
     toggle_gamepad,
     toggle_gamepad_draggable,
     toggle_gamepad_setting,
@@ -414,12 +413,13 @@ const GamePadSetting = () => {
                     className="instbtn outline-none border-none w-full py-3 bold mt-4 rounded-lg"
                     onClick={() => {
                         appDispatch(toggle_gamepad_draggable());
+                        appDispatch(sidepane_panehide());
                     }}
                 >
                     Đổi vị trí các nút
                 </button>
 
-                {gamepadDraggable ? (
+                {/*{gamepadDraggable ? (
                     <>
                         <p className="text-[0.75rem] mt-1">
                             *kéo các nút để chỉnh vị trí
@@ -446,7 +446,7 @@ const GamePadSetting = () => {
                             </button>
                         </div>
                     </>
-                ) : null}
+                ) : null}*/}
             </div>
         </div>
     );
