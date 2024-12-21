@@ -38,6 +38,8 @@ import {
     StartThinkmayOnPeer,
     StartThinkmayOnVM,
     StartVirtdaemon,
+    MountOnVM,
+    UnmountOnVM,
     UserEvents
 } from '../../../src-tauri/api';
 import { ready, SetPinger } from '../../../src-tauri/singleton';
@@ -298,14 +300,15 @@ export const workerAsync = {
     fetch_local_worker: createAsyncThunk(
         'fetch_local_worker',
         async (address: string, { getState }): Promise<any> => {
+            const { volume_id, bucket_name } = (getState() as RootState).user;
+            const accounts =
+                await POCKETBASE.collection('thirdparty_account').getFullList();
             const result = await GetInfo(address);
             if (result instanceof Error) {
                 const node = new RenderNode<{}>();
                 node.id = address;
                 return node.any();
             }
-
-            const volume_id = (getState() as RootState).user.volume_id;
 
             let found: RenderNode<Computer> | undefined = undefined;
             const node = fromComputer(address, result);
@@ -334,14 +337,21 @@ export const workerAsync = {
                     node.info.available = 'started';
             }
 
-            const accounts =
-                await POCKETBASE.collection('thirdparty_account').getFullList();
             if (accounts.length == 0) node.info.steam = undefined;
             else {
                 node.info.steam = false;
                 node.iterate((x) => {
                     if ((x.info as StartRequest).app != undefined)
                         node.info.steam = true;
+                });
+            }
+
+            if (bucket_name == undefined) node.info.storage = undefined;
+            else {
+                node.info.storage = false;
+                node.iterate((x) => {
+                    if ((x.info as StartRequest).s3bucket != undefined)
+                        node.info.storage = true;
                 });
             }
 
@@ -434,6 +444,125 @@ export const workerAsync = {
 
             await CloseSession(computer, session);
             await appDispatch(fetch_local_worker(computer.address));
+        }
+    ),
+    storage_session_toggle: createAsyncThunk(
+        'storage_session_toggle',
+        async (_, { getState }): Promise<any> => {
+            await appDispatch(worker_refresh());
+            const volume_id = (getState() as RootState).user.volume_id;
+            const node = new RenderNode((getState() as RootState).worker.data);
+
+            let volumeFound: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    volumeFound == undefined &&
+                    x.info?.Volumes?.includes(volume_id)
+                )
+                    volumeFound = x;
+            });
+
+            if (volumeFound == undefined)
+                throw new Error('user do not have available volume');
+
+            const computer = node.findParent<Computer>(
+                volumeFound.id,
+                'host_worker'
+            );
+
+            if (computer.info.storage == undefined)
+                throw new Error(' no storage available');
+            else if (computer.info.storage)
+                await appDispatch(workerAsync.storage_session_logout());
+            else await appDispatch(workerAsync.storage_session_login());
+            await appDispatch(worker_refresh());
+        }
+    ),
+    storage_session_login: createAsyncThunk(
+        'storage_session_login',
+        async (_, { getState }): Promise<any> => {
+            const { volume_id, bucket_name } = (getState() as RootState).user;
+            if (bucket_name == undefined)
+                throw new Error(`no bucket available`);
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let result: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    result == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    result = x;
+            });
+
+            if (result == undefined) {
+                appDispatch(popup_close());
+                throw new Error(
+                    'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
+                );
+            }
+
+            const host = node.findParent<Computer>(result.id, 'host_worker');
+            const vm_session = node.findParent<StartRequest>(
+                result.id,
+                'host_session'
+            );
+
+            if (host == undefined) throw new Error('invalid tree');
+            else if (vm_session == undefined) throw new Error('invalid tree');
+
+            return await MountOnVM(host.info, vm_session.id, bucket_name);
+        }
+    ),
+    storage_session_logout: createAsyncThunk(
+        'storage_session_logout',
+        async (_, { getState }): Promise<any> => {
+            const volume_id = (getState() as RootState).user.volume_id;
+
+            const node = new RenderNode((getState() as RootState).worker.data);
+            let result: RenderNode<Computer> | undefined = undefined;
+            node.iterate((x) => {
+                if (
+                    result == undefined &&
+                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                )
+                    result = x;
+            });
+
+            let s3bucket: RenderNode<StartRequest> | undefined = undefined;
+            result.iterate((x) => {
+                if ((x.info as StartRequest).s3bucket != undefined)
+                    s3bucket = x;
+            });
+
+            if (result == undefined) {
+                appDispatch(popup_close());
+                throw new Error(
+                    'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
+                );
+            }
+            if (s3bucket == undefined) {
+                appDispatch(popup_close());
+                throw new Error('Steam not found');
+            }
+
+            const host = node.findParent<Computer>(result.id, 'host_worker');
+            const vm_session = node.findParent<StartRequest>(
+                result.id,
+                'host_session'
+            );
+
+            if (host == undefined) throw new Error('invalid tree');
+            else if (vm_session == undefined) throw new Error('invalid tree');
+
+            const s3session = s3bucket.info;
+            if (s3session == undefined)
+                return new Error('steam session is null');
+
+            return await UnmountOnVM(host.info, {
+                ...s3session,
+                target: vm_session.id
+            });
         }
     ),
     app_session_toggle: createAsyncThunk(
@@ -529,9 +658,10 @@ export const workerAsync = {
                     result = x;
             });
 
-            let steam: RenderNode<StartRequest> | undefined = undefined;
+            let s3bucket: RenderNode<StartRequest> | undefined = undefined;
             result.iterate((x) => {
-                if ((x.info as StartRequest).app != undefined) steam = x;
+                if ((x.info as StartRequest).s3bucket != undefined)
+                    s3bucket = x;
             });
 
             if (result == undefined) {
@@ -540,9 +670,9 @@ export const workerAsync = {
                     'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
                 );
             }
-            if (steam == undefined) {
+            if (s3bucket == undefined) {
                 appDispatch(popup_close());
-                throw new Error('Steam not found');
+                throw new Error('Storage not found');
             }
 
             const host = node.findParent<Computer>(result.id, 'host_worker');
@@ -554,7 +684,7 @@ export const workerAsync = {
             if (host == undefined) throw new Error('invalid tree');
             else if (vm_session == undefined) throw new Error('invalid tree');
 
-            const steam_session = steam.info;
+            const steam_session = s3bucket.info;
             if (steam_session == undefined)
                 return new Error('steam session is null');
 

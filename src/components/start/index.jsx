@@ -92,8 +92,8 @@ export const SidePane = () => {
     const setting = useAppSelector((state) => state.setting);
     const remote = useAppSelector((state) => state.remote);
     const HideVM = useAppSelector((state) => state.worker.HideVM);
-    const steam = useAppSelector(
-        (state) => new RenderNode(state.worker.data).data[0]?.info?.steam
+    const { steam, storage } = useAppSelector(
+        (state) => new RenderNode(state.worker.data).data[0]?.info ?? {}
     );
     const [pnstates, setPnstate] = useState({});
     const dispatch = appDispatch;
@@ -131,7 +131,14 @@ export const SidePane = () => {
         const tmp = {};
         for (const { state, name } of states) {
             let val = getTreeValue(
-                { ...setting, ...remote, ...mobileState, HideVM, steam },
+                {
+                    ...setting,
+                    ...remote,
+                    ...mobileState,
+                    HideVM,
+                    steam,
+                    storage
+                },
                 state
             );
             if (name == 'Theme') val = val == 'dark';
@@ -592,6 +599,11 @@ function MobileComponent({ pnstates }) {
         (state) =>
             new RenderNode(state.worker.data).data[0]?.info?.steam != undefined
     );
+    const storage_available = useAppSelector(
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.storage !=
+            undefined
+    );
 
     const renderList = sidepane.mobileControl.buttons.filter((x) =>
         shutdownable != 'started'
@@ -603,7 +615,9 @@ function MobileComponent({ pnstates }) {
               ].includes(x.action)
             : !steam_available
               ? !['app_session_toggle'].includes(x.action)
-              : true
+              : !storage_available
+                ? !['storage_session_toggle'].includes(x.action)
+                : true
     );
 
     return (
@@ -632,6 +646,11 @@ function DesktopComponent({ pnstates }) {
         (state) =>
             new RenderNode(state.worker.data).data[0]?.info?.steam != undefined
     );
+    const storage_available = useAppSelector(
+        (state) =>
+            new RenderNode(state.worker.data).data[0]?.info?.storage !=
+            undefined
+    );
 
     const renderList = sidepane.desktopControl.buttons.filter((x) =>
         shutdownable != 'started'
@@ -643,7 +662,9 @@ function DesktopComponent({ pnstates }) {
               ].includes(x.action)
             : !steam_available
               ? !['app_session_toggle'].includes(x.action)
-              : true
+              : !storage_available
+                ? !['storage_session_toggle'].includes(x.action)
+                : true
     );
 
     return (

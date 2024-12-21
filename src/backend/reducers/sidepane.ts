@@ -142,6 +142,13 @@ const listMobileSettings = [
         explain: [Contents.STEAM_LOGIN_EXPlAIN]
     },
     {
+        src: 'MdCloudUpload',
+        name: [Contents.STEAM_LOGIN],
+        state: 'storage',
+        action: 'storage_session_toggle',
+        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+    },
+    {
         ui: true,
         id: 'shutdownBtn',
 
@@ -226,6 +233,13 @@ const listDesktopSettings = [
         name: [Contents.STEAM_LOGIN],
         state: 'steam',
         action: 'app_session_toggle',
+        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+    },
+    {
+        src: 'MdCloudUpload',
+        name: [Contents.STEAM_LOGIN],
+        state: 'storage',
+        action: 'storage_session_toggle',
         explain: [Contents.STEAM_LOGIN_EXPlAIN]
     },
     {
