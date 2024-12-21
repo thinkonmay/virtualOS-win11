@@ -606,7 +606,7 @@ function MobileComponent({ pnstates }) {
     );
 
     let blacklist = [];
-    if (shutdownable != 'ready')
+    if (shutdownable == 'ready')
         blacklist = [
             ...blacklist,
             'shutDownVm',
@@ -659,7 +659,7 @@ function DesktopComponent({ pnstates }) {
     );
 
     let blacklist = [];
-    if (shutdownable != 'ready')
+    if (shutdownable == 'ready')
         blacklist = [
             ...blacklist,
             'shutDownVm',
