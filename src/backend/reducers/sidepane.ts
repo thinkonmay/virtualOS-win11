@@ -142,10 +142,10 @@ const listMobileSettings = [
     },
     {
         src: 'MdCloudUpload',
-        name: [Contents.STEAM_LOGIN],
+        name: [Contents.MOUNT_STORAGE],
         state: 'storage',
         action: 'storage_session_toggle',
-        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+        explain: [Contents.MOUNT_STORAGE_EXPlAIN]
     },
     {
         ui: true,
@@ -236,10 +236,10 @@ const listDesktopSettings = [
     },
     {
         src: 'MdCloudUpload',
-        name: [Contents.STEAM_LOGIN],
+        name: [Contents.MOUNT_STORAGE],
         state: 'storage',
         action: 'storage_session_toggle',
-        explain: [Contents.STEAM_LOGIN_EXPlAIN]
+        explain: [Contents.MOUNT_STORAGE_EXPlAIN]
     },
     {
         ui: true,
