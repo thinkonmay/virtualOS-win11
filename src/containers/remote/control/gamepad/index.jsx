@@ -32,9 +32,8 @@ export const VirtualGamepad = (props) => {
     return (
         <>
             <div
-                className={`virtGamepad slide-in  ${
-                    draggable ? 'draggable' : ''
-                }`}
+                className={`virtGamepad slide-in  ${draggable ? 'draggable' : ''
+                    }`}
             >
                 <NavSettings show={draggable} />
                 <ButtonGroupRight draggable={draggable} />
@@ -605,9 +604,8 @@ export const ButtonGroupLeft = (props) => {
                 <div
                     ref={dpadRef}
                     id="dpad"
-                    className={`wrapperDraggable ${
-                        selected == 'dpad' && props.draggable ? 'selected' : ''
-                    }`}
+                    className={`wrapperDraggable ${selected == 'dpad' && props.draggable ? 'selected' : ''
+                        }`}
                 >
                     <DPad ref={dpadRef} size={BUTTON_SIZE * btnSizes.dpad} />
                 </div>
@@ -639,7 +637,7 @@ export const ButtonGroupLeft = (props) => {
                 nodeRef={joystickWrapperRef}
             >
                 <div
-                    id="leftRt"
+                    id="leftJt"
                     className="wrapperDraggable"
                     ref={joystickWrapperRef}
                 >
