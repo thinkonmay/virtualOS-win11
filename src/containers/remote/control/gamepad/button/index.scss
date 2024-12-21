@@ -33,6 +33,67 @@
 	}
 
 
+	.navSetting {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		z-index: 2;
+		height: 56px;
+
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 16px 32px;
+
+		background-color: black;
+		border-bottom: 1px solid white;
+
+
+		.wrapperLeft {
+			display: flex;
+			gap: 16px;
+
+			.ctnContent {
+				display: flex;
+				gap: 8px;
+				color: white;
+				font-size: 12px;
+
+				.title {
+					font-weight: 600;
+				}
+			}
+
+			.btnGroup {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+
+				button {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					background-color: transparent;
+
+					outline: none;
+
+				}
+			}
+		}
+
+		.ctnBtns {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			.instbtn {
+				padding: 8px 12px;
+				font-weight: 600;
+			}
+		}
+	}
 
 	.defaultButton {
 		display: flex;

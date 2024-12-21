@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
 import Draggable from 'react-draggable'; // Both at the same time
-import { MdArrowLeft, MdArrowRight } from 'react-icons/md';
+import { MdAddCircleOutline, MdArrowLeft, MdArrowRight, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { gamepadAxis, gamepadButton } from '../../../../../src-tauri/singleton';
-import { useAppSelector } from '../../../../backend/reducers';
+import { appDispatch, decrease_btn_gamepad, increase_btn_gamepad, useAppSelector } from '../../../../backend/reducers';
 import GamepadButton from './button/defaultBtn';
 import DPad from './button/dpad';
 import './button/index.scss'; // Import your SCSS file
@@ -18,7 +18,11 @@ export const VirtualGamepad = (props) => {
 
     return (
         <>
-            <div className={`virtGamepad slide-in draggable ${draggable ? 'draggable' : ''}`}>
+            <div
+                className={`virtGamepad slide-in  ${draggable ? 'draggable' : ''
+                    }`}
+            >
+                {/*<NavSettings />*/}
                 <ButtonGroupRight draggable={draggable} />
                 <ButtonGroupLeft draggable={draggable} />
             </div>
@@ -145,7 +149,7 @@ export const ButtonGroupRight = (props) => {
     const handleDrag = (e, data) => {
         const key = data.node.id;
         const value = { x: data.x, y: data.y };
-        (e, data);
+        e, data;
         startTransition(() => {
             setPosBtn((prev) => {
                 return {
@@ -621,3 +625,73 @@ export const ButtonGroupLeft = (props) => {
         </>
     );
 };
+
+
+const NavSettings = () => {
+
+    const selected = useAppSelector(state => state.sidepane.mobileControl.gamepadSetting.currentSelected)
+    const btnSizes = useAppSelector(state => state.sidepane.mobileControl.gamepadSetting.btnSizes)
+
+    const text = Math.round(btnSizes[selected] * 50)
+
+
+    return (
+        <div className='navSetting'>
+
+            <div className='wrapperLeft'>
+                <div className='ctnContent'>
+                    <p className='title'>Kích cỡ:</p>
+
+                    <div className='btnGroup'>
+                        <button
+
+                            onClick={() => {
+                                appDispatch(decrease_btn_gamepad({
+                                    key: selected.key,
+                                    val: selected.val
+                                }))
+
+                            }}>
+                            <MdOutlineRemoveCircleOutline color='#fff' />
+                        </button>
+
+                        <p>{text}%</p>
+
+                        <button
+                            onClick={() => {
+                                appDispatch(increase_btn_gamepad({
+                                    key: selected.key,
+                                    val: selected.val
+                                }))
+
+                            }}
+                        >
+                            <MdAddCircleOutline color='#fff' />
+                        </button>
+                    </div>
+                </div>
+                {/*<div className='ctnContent'>
+                    <p className='title'>Độ mờ:</p>
+                    <div className='btnGroup'>
+                        <button>
+                            -
+                        </button>
+
+                        <p>100%</p>
+
+                        <button>+</button>
+                    </div>
+                </div>*/}
+            </div>
+
+            <div className='ctnBtns '>
+                <button className='instbtn bg-slate-700'>Huỷ</button>
+                <button className='instbtn bg-green-700'>Về mặc định</button>
+                <button className='instbtn'>Lưu</button>
+            </div>
+
+
+
+        </div>
+    )
+}

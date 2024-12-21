@@ -22,6 +22,7 @@ type IGamePadSetting = {
     draggable: boolean;
     isDefaultPos: boolean;
     btnSizes: IGamePadBtnSize;
+    currentSelected: ICurrentSelectedGamepadBtn | ''
 };
 type DesktopControl = {
     buttons: any[];
@@ -46,6 +47,7 @@ type Data = {
     statusConnection: boolean;
 };
 
+type ICurrentSelectedGamepadBtn = keyof IGamePadBtnSize
 interface IGamePadBtnSize {
     leftJt: number;
     dpad: number;
@@ -73,7 +75,7 @@ const btnSizes: IGamePadBtnSize = {
     rs: 1,
     y: 1,
     a: 1,
-    x: 1.2,
+    x: 1,
     b: 1,
     rt: 1,
     rb: 1
@@ -273,23 +275,23 @@ const listDesktopSettings = [
     ...(!DevEnv
         ? []
         : [
-              //   {
-              //       ui: true,
-              //       id: 'toggle_remote_async',
-              //       src: 'FiVideoOff',
-              //       name: [Contents.VIDEO_TOGGLE],
-              //       state: 'active',
-              //       action: 'toggle_remote_async'
-              //   },
-              //   {
-              //       ui: true,
-              //       id: 'reset',
-              //       src: 'MdResetTv',
-              //       name: [Contents.RESET_APP],
-              //       state: 'hard_reset_async',
-              //       action: 'hard_reset_async'
-              //   }
-          ])
+            //   {
+            //       ui: true,
+            //       id: 'toggle_remote_async',
+            //       src: 'FiVideoOff',
+            //       name: [Contents.VIDEO_TOGGLE],
+            //       state: 'active',
+            //       action: 'toggle_remote_async'
+            //   },
+            //   {
+            //       ui: true,
+            //       id: 'reset',
+            //       src: 'MdResetTv',
+            //       name: [Contents.RESET_APP],
+            //       state: 'hard_reset_async',
+            //       action: 'hard_reset_async'
+            //   }
+        ])
 ];
 
 const initialState: Data = {
@@ -308,7 +310,8 @@ const initialState: Data = {
             draggable: false,
             open: false,
             isDefaultPos: false,
-            btnSizes: btnSizes
+            btnSizes: btnSizes,
+            currentSelected: ''
         }
     },
 
@@ -364,6 +367,32 @@ export const sidepaneSlice = createSlice({
         change_btnGp_size: (state, action) => {
             state.mobileControl.gamepadSetting.btnSize = action.payload;
         },
+        select_btn_gamepad: (state, action) => {
+            state.mobileControl.gamepadSetting.currentSelected = action.payload;
+        },
+        increase_btn_gamepad: (state, action) => {
+            const key = action.payload.key
+            const val = action.payload.val
+            const current = state.mobileControl.gamepadSetting.btnSizes[key]
+            if (current >= 1.9) {
+                state.mobileControl.gamepadSetting.btnSizes[key] = 2
+            }
+            else {
+                state.mobileControl.gamepadSetting.btnSizes[key] = current + 0.1;
+            }
+        },
+        decrease_btn_gamepad: (state, action) => {
+            const key = action.payload.key
+            const val = action.payload.val
+            const current = state.mobileControl.gamepadSetting.btnSizes[key]
+            if (current <= 0.1) {
+                state.mobileControl.gamepadSetting.btnSizes[key] = 0.1
+            }
+            else {
+                state.mobileControl.gamepadSetting.btnSizes[key] = current - 0.1;
+            }
+        },
+
         toggle_gamepad_draggable: (state, action) => {
             state.mobileControl.gamePadHide = false;
             state.mobileControl.gamepadSetting.draggable =

@@ -111,7 +111,10 @@ export const {
     toggle_status_connection,
     hide_status_connection,
     open_status_connection,
-    set_status_connection
+    set_status_connection,
+    decrease_btn_gamepad,
+    increase_btn_gamepad,
+    select_btn_gamepad
 } = sidepaneSlice.actions;
 
 export const {
@@ -179,7 +182,7 @@ export const {
 
 export const { fetch_store, fetch_under_maintenance, fetch_domain } =
     globalAsync;
-export const {} = sidepaneAsync;
+export const { } = sidepaneAsync;
 
 export const dispatch_generic = async ({
     type,
