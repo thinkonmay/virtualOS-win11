@@ -9,7 +9,7 @@ import './button/index.scss'; // Import your SCSS file
 import { CustomJoyStick } from './button/joystick';
 
 const BUTTON_SIZE = 55;
-const JOYSTICK_SIZE = 130;
+const JOYSTICK_SIZE = 100;
 
 export const VirtualGamepad = (props) => {
     const draggable = useAppSelector(
@@ -18,7 +18,7 @@ export const VirtualGamepad = (props) => {
 
     return (
         <>
-            <div className={`virtGamepad slide-in ${draggable ? 'draggable' : ''}`}>
+            <div className={`virtGamepad slide-in draggable ${draggable ? 'draggable' : ''}`}>
                 <ButtonGroupRight draggable={draggable} />
                 <ButtonGroupLeft draggable={draggable} />
             </div>
@@ -31,10 +31,10 @@ const defaultButtonGroupRightValue = {
     rs: { x: 0.65, y: 0.8 },
     rb: { x: 0.8, y: 0.28 },
     rt: { x: 0.75, y: 0.12 },
-    btnY: { x: 0.78, y: 0.78 },
-    btnA: { x: 0.82, y: 0.59 },
-    btnB: { x: 0.9, y: 0.47 },
-    btnX: { x: 0.88, y: 0.7 },
+    btnY: { x: 0.77, y: 0.78 },
+    btnA: { x: 0.8, y: 0.59 },
+    btnB: { x: 0.9, y: 0.52 },
+    btnX: { x: 0.89, y: 0.74 },
     ybxa: { x: 0.93, y: 0.45 },
     subBtn: { x: 0.45, y: 0.03 }
 };
@@ -43,6 +43,10 @@ export const ButtonGroupRight = (props) => {
     const btnSize = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
     );
+    const btnSizes = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamepadSetting.btnSizes
+    );
+
     const [isPending, startTransition] = useTransition();
     const DefaultPosition = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.isDefaultPos
@@ -229,8 +233,8 @@ export const ButtonGroupRight = (props) => {
                     y: posBtn.rt.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.rt * 1.2}px`,
+                    height: `${BUTTON_SIZE * btnSizes.rt * 0.9}px`
                 }}
                 type="rectangle"
             >
@@ -250,8 +254,8 @@ export const ButtonGroupRight = (props) => {
                 }}
                 type="rectangle"
                 style={{
-                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.rb * 1.2}px`,
+                    height: `${BUTTON_SIZE * btnSizes.rb * 0.8}px`
                 }}
             >
                 RB
@@ -269,8 +273,8 @@ export const ButtonGroupRight = (props) => {
                     y: posBtn.btnY.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.y}px`,
+                    height: `${BUTTON_SIZE * btnSizes.y}px`
                 }}
             >
                 Y
@@ -287,8 +291,8 @@ export const ButtonGroupRight = (props) => {
                     y: posBtn.btnA.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.a}px`,
+                    height: `${BUTTON_SIZE * btnSizes.a}px`
                 }}
             >
                 A
@@ -305,8 +309,8 @@ export const ButtonGroupRight = (props) => {
                     y: posBtn.btnB.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.b}px`,
+                    height: `${BUTTON_SIZE * btnSizes.b}px`
                 }}
             >
                 B
@@ -323,8 +327,8 @@ export const ButtonGroupRight = (props) => {
                     y: posBtn.btnX.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
-                    height: `${BUTTON_SIZE * btnSize * 1.5}px`
+                    width: `${BUTTON_SIZE * btnSizes.x}px`,
+                    height: `${BUTTON_SIZE * btnSizes.x}px`
                 }}
             >
                 X
@@ -344,7 +348,7 @@ export const ButtonGroupRight = (props) => {
                     <CustomJoyStick
                         ref={joystickRef}
                         draggable={props.draggable}
-                        size={JOYSTICK_SIZE * btnSize}
+                        size={JOYSTICK_SIZE * btnSizes.rightJt}
                         moveCallback={gamepadCallBack}
                     />
                 </div>
@@ -386,8 +390,8 @@ export const ButtonGroupRight = (props) => {
                     y: posBtn.rs.y
                 }}
                 style={{
-                    width: `${(BUTTON_SIZE * btnSize) / 1.5}px`,
-                    height: `${(BUTTON_SIZE * btnSize) / 1.5}px`
+                    width: `${(BUTTON_SIZE * btnSizes.rs) / 1.5}px`,
+                    height: `${(BUTTON_SIZE * btnSizes.rs) / 1.5}px`
                 }}
             >
                 RS
@@ -407,6 +411,9 @@ const defaultButtonGroupLeftValue = {
 export const ButtonGroupLeft = (props) => {
     const btnSize = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
+    );
+    const btnSizes = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamepadSetting.btnSizes
     );
     const [isPending, startTransition] = useTransition();
     const DefaultPosition = useAppSelector(
@@ -534,8 +541,8 @@ export const ButtonGroupLeft = (props) => {
                     y: posBtn.lt.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.lt * 1.2}px`,
+                    height: `${BUTTON_SIZE * btnSizes.lt * 0.8}px`
                 }}
                 type="rectangle"
             >
@@ -553,8 +560,8 @@ export const ButtonGroupLeft = (props) => {
                     y: posBtn.lb.y
                 }}
                 style={{
-                    width: `${BUTTON_SIZE * btnSize * 1.5}px`,
-                    height: `${BUTTON_SIZE * btnSize}px`
+                    width: `${BUTTON_SIZE * btnSizes.lb * 1.2}px`,
+                    height: `${BUTTON_SIZE * btnSizes.lb * 0.8}px`
                 }}
                 type="rectangle"
             >
@@ -568,7 +575,7 @@ export const ButtonGroupLeft = (props) => {
                 nodeRef={dpadRef}
             >
                 <div ref={dpadRef} id="dpad" className="wrapperDraggable">
-                    <DPad ref={dpadRef} size={BUTTON_SIZE * btnSize} />
+                    <DPad ref={dpadRef} size={BUTTON_SIZE * btnSizes.dpad} />
                 </div>
             </Draggable>
             <GamepadButton
@@ -583,8 +590,8 @@ export const ButtonGroupLeft = (props) => {
                     y: posBtn.ls.y
                 }}
                 style={{
-                    width: `${(BUTTON_SIZE * btnSize) / 1.5}px`,
-                    height: `${(BUTTON_SIZE * btnSize) / 1.5}px`
+                    width: `${(BUTTON_SIZE * btnSizes.ls) / 1.5}px`,
+                    height: `${(BUTTON_SIZE * btnSizes.ls) / 1.5}px`
                 }}
             >
                 LS
@@ -607,7 +614,7 @@ export const ButtonGroupLeft = (props) => {
                         moveCallback={gamepadCallBack}
                         ref={joystickRef}
                         draggable={props.draggable}
-                        size={JOYSTICK_SIZE * btnSize}
+                        size={JOYSTICK_SIZE * btnSizes.leftJt}
                     />
                 </div>
             </Draggable>

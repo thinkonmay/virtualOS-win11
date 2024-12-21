@@ -1,8 +1,5 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState, appDispatch, render_message, store } from '.';
-import { LOCAL } from '../../../src-tauri/api';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { DevEnv } from '../../../src-tauri/api/database';
-import { BuilderHelper, CacheRequest } from './helper';
 import { Contents } from './locales';
 
 export type Notification = {
@@ -24,6 +21,7 @@ type IGamePadSetting = {
     btnSize: 1 | 2 | 3;
     draggable: boolean;
     isDefaultPos: boolean;
+    btnSizes: IGamePadBtnSize;
 };
 type DesktopControl = {
     buttons: any[];
@@ -33,7 +31,6 @@ type MobileControl = {
     hide: boolean;
     buttons: any[];
     shortcuts: any[];
-    setting: ISettingState;
     gamePadHide: boolean;
     keyboardHide: boolean;
     gamepadSetting: IGamePadSetting;
@@ -48,38 +45,38 @@ type Data = {
     banhide: boolean;
     statusConnection: boolean;
 };
-interface ISettingState {
-    gamePad: IGamePadValue;
-    virtMouse: any;
-}
-interface IGamePadValue {
-    leftScale: number;
-    rightScale: number;
+
+interface IGamePadBtnSize {
     leftJt: number;
-    rightJt: number;
     dpad: number;
-    ybxa: number;
-    rbRt: number;
-    lbLt: number;
-    subBtn: number;
     ls: number;
+    lt: number;
+    lb: number;
+
+    rightJt: number;
     rs: number;
+    y: number;
+    a: number;
+    x: number;
+    b: number;
+    rt: number;
+    rb: number;
 }
-const initialSetting: ISettingState = {
-    gamePad: {
-        leftScale: 1,
-        rightScale: 1,
-        leftJt: 1,
-        rightJt: 1,
-        dpad: 1,
-        ybxa: 1,
-        rbRt: 1,
-        lbLt: 1,
-        subBtn: 1,
-        ls: 1,
-        rs: 1
-    },
-    virtMouse: {}
+const btnSizes: IGamePadBtnSize = {
+    leftJt: 1,
+    dpad: 1,
+    ls: 1,
+    lt: 1,
+    lb: 1,
+
+    rightJt: 1,
+    rs: 1,
+    y: 1,
+    a: 1,
+    x: 1.2,
+    b: 1,
+    rt: 1,
+    rb: 1
 };
 const listMobileShortCut = [
     {
@@ -304,14 +301,14 @@ const initialState: Data = {
         hide: true,
         buttons: listMobileSettings,
         shortcuts: listMobileShortCut,
-        setting: initialSetting,
         gamePadHide: true,
         keyboardHide: true,
         gamepadSetting: {
             btnSize: 1,
             draggable: false,
             open: false,
-            isDefaultPos: false
+            isDefaultPos: false,
+            btnSizes: btnSizes
         }
     },
 
