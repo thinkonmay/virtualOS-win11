@@ -660,7 +660,7 @@ export const workerAsync = {
 
             let steam: RenderNode<StartRequest> | undefined = undefined;
             result.iterate((x) => {
-                if ((x.info as StartRequest).s3bucket != undefined) steam = x;
+                if ((x.info as StartRequest).app != undefined) steam = x;
             });
 
             if (result == undefined) {
