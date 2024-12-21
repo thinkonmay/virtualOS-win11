@@ -174,7 +174,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                                1000
+                                            1000
                                         )}
                                     </span>
                                 </div>
@@ -202,8 +202,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                                remote.framerate +
-                                                MIN_FRAMERATE
+                                            remote.framerate +
+                                            MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -606,7 +606,7 @@ function MobileComponent({ pnstates }) {
     );
 
     let blacklist = [];
-    if (shutdownable == 'ready')
+    if (shutdownable != 'started')
         blacklist = [
             ...blacklist,
             'shutDownVm',
@@ -634,8 +634,8 @@ function MobileComponent({ pnstates }) {
                 ))}
                 {active
                     ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                          <MobileShortCutBtn key={idx} qk={qk} />
-                      ))
+                        <MobileShortCutBtn key={idx} qk={qk} />
+                    ))
                     : null}
             </div>
         </>
@@ -659,7 +659,7 @@ function DesktopComponent({ pnstates }) {
     );
 
     let blacklist = [];
-    if (shutdownable == 'ready')
+    if (shutdownable != 'started')
         blacklist = [
             ...blacklist,
             'shutDownVm',
@@ -743,21 +743,21 @@ function DesktopComponent({ pnstates }) {
                 ))}
                 {active
                     ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
-                          <div key={idx} className="qkGrp t">
-                              <div
-                                  style={{
-                                      fontSize: '0.8rem'
-                                  }}
-                                  className="qkbtn handcr prtclk"
-                                  onClick={() => Actions.clickShortCut(qk.val)}
-                              >
-                                  {qk.name}
-                              </div>
-                              {qk?.explain ? (
-                                  <div className="qktext">{t[qk.explain]}</div>
-                              ) : null}
-                          </div>
-                      ))
+                        <div key={idx} className="qkGrp t">
+                            <div
+                                style={{
+                                    fontSize: '0.8rem'
+                                }}
+                                className="qkbtn handcr prtclk"
+                                onClick={() => Actions.clickShortCut(qk.val)}
+                            >
+                                {qk.name}
+                            </div>
+                            {qk?.explain ? (
+                                <div className="qktext">{t[qk.explain]}</div>
+                            ) : null}
+                        </div>
+                    ))
                     : null}
             </div>
             <hr className="mb-2 lg:mb-1" />
