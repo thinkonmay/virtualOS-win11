@@ -605,19 +605,25 @@ function MobileComponent({ pnstates }) {
             undefined
     );
 
-    const renderList = sidepane.mobileControl.buttons.filter((x) =>
-        shutdownable != 'started'
-            ? ![
-                  'shutDownVm',
-                  'copy_log',
-                  'showLinkShare',
-                  'app_session_toggle'
-              ].includes(x.action)
-            : !steam_available
-              ? !['app_session_toggle'].includes(x.action)
-              : !storage_available
-                ? !['storage_session_toggle'].includes(x.action)
-                : true
+    let blacklist = [];
+    if (shutdownable != 'ready')
+        blacklist = [
+            ...blacklist,
+            'shutDownVm',
+            'copy_log',
+            'showLinkShare',
+            'app_session_toggle',
+            'storage_session_toggle',
+            'app_session_toggle'
+        ];
+    else {
+        if (!steam_available) blacklist = [...blacklist, 'app_session_toggle'];
+        if (!storage_available)
+            blacklist = [...blacklist, 'storage_session_toggle'];
+    }
+
+    const renderList = sidepane.desktopControl.buttons.filter(
+        (x) => !blacklist.includes(x.action)
     );
 
     return (
@@ -652,19 +658,25 @@ function DesktopComponent({ pnstates }) {
             undefined
     );
 
-    const renderList = sidepane.desktopControl.buttons.filter((x) =>
-        shutdownable != 'started'
-            ? ![
-                  'shutDownVm',
-                  'copy_log',
-                  'showLinkShare',
-                  'app_session_toggle'
-              ].includes(x.action)
-            : !steam_available
-              ? !['app_session_toggle'].includes(x.action)
-              : !storage_available
-                ? !['storage_session_toggle'].includes(x.action)
-                : true
+    let blacklist = [];
+    if (shutdownable != 'ready')
+        blacklist = [
+            ...blacklist,
+            'shutDownVm',
+            'copy_log',
+            'showLinkShare',
+            'app_session_toggle',
+            'storage_session_toggle',
+            'app_session_toggle'
+        ];
+    else {
+        if (!steam_available) blacklist = [...blacklist, 'app_session_toggle'];
+        if (!storage_available)
+            blacklist = [...blacklist, 'storage_session_toggle'];
+    }
+
+    const renderList = sidepane.desktopControl.buttons.filter(
+        (x) => !blacklist.includes(x.action)
     );
 
     return (
