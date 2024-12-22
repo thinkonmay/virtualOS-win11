@@ -28,7 +28,8 @@ export const localStorageKey = {
     language: 'language',
     PATH_NAME: 'FINISH_PAYMENT',
     shownTutorial: 'SHOWN_TUTORIAL',
-    shownPaidUserTutorial: 'SHOWN_PAID_USER_TUTORIAL'
+    shownPaidUserTutorial: 'SHOWN_PAID_USER_TUTORIAL',
+    gamepadBtnSizes: 'GAMEPAD_BUTTON_SIZE'
 };
 
 export type PlanName = 'month1' | 'week1';

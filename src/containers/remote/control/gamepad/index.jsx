@@ -12,10 +12,12 @@ import {
     decrease_btn_gamepad,
     increase_btn_gamepad,
     select_btn_gamepad,
+    set_gamepad_button_size,
     toggle_default_gamepad_position,
     toggle_gamepad_draggable,
     useAppSelector
 } from '../../../../backend/reducers';
+import { localStorageKey } from '../../../../backend/utils/constant';
 import GamepadButton from './button/defaultBtn';
 import DPad from './button/dpad';
 import './button/index.scss'; // Import your SCSS file
@@ -28,6 +30,17 @@ export const VirtualGamepad = (props) => {
     const draggable = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.draggable
     );
+    const currentSizes = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamepadSetting.btnSizes
+    );
+
+    useEffect(() => {
+        const gamepadBtnSizes = localStorage.getItem(
+            localStorageKey.gamepadBtnSizes
+        );
+        if (gamepadBtnSizes != null || gamepadBtnSizes != undefined)
+            appDispatch(set_gamepad_button_size(gamepadBtnSizes));
+    }, []);
 
     return (
         <>
@@ -63,7 +76,9 @@ export const ButtonGroupRight = (props) => {
     const btnSizes = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.btnSizes
     );
-
+    const selected = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamepadSetting.currentSelected
+    );
     const [isPending, startTransition] = useTransition();
     const DefaultPosition = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.isDefaultPos
@@ -236,6 +251,9 @@ export const ButtonGroupRight = (props) => {
     const subBtnRef = useRef(null);
 
     const gamepadCallBack = (x, y) => gamepadAxis(x, y, 'right');
+    const handleSelectedBtn = (key) => {
+        appDispatch(select_btn_gamepad(key));
+    };
     return (
         <>
             <GamepadButton
@@ -355,11 +373,17 @@ export const ButtonGroupRight = (props) => {
                 position={{ x: posBtn.rightJt.x, y: posBtn.rightJt.y }}
                 onStop={handleStop}
                 onDrag={handleDrag}
+                onMouseDown={() => {
+                    props.draggable ? handleSelectedBtn('rightJt') : null;
+                }}
                 nodeRef={joystickWrapperRef}
             >
                 <div
                     id="rightJt"
-                    className="wrapperDraggable"
+                    className={`wrapperDraggable ${selected == 'rightJt' && props.draggable
+                            ? 'selected'
+                            : ''
+                        }`}
                     ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
@@ -635,10 +659,16 @@ export const ButtonGroupLeft = (props) => {
                 onStop={handleStop}
                 onDrag={handleDrag}
                 nodeRef={joystickWrapperRef}
+                onMouseDown={() => {
+                    props.draggable ? handleSelectedBtn('leftJt') : null;
+                }}
             >
                 <div
                     id="leftJt"
-                    className="wrapperDraggable"
+                    className={`wrapperDraggable ${selected == 'leftJt' && props.draggable
+                            ? 'selected'
+                            : ''
+                        }`}
                     ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
@@ -664,10 +694,17 @@ const NavSettings = ({ show }) => {
 
     const text = selected ? Math.round(btnSizes[selected] * 50) : 0;
 
+    const handleDone = () => {
+        appDispatch(toggle_gamepad_draggable());
+        localStorage.setItem(
+            localStorageKey.gamepadBtnSizes,
+            JSON.stringify(btnSizes)
+        );
+    };
     return (
         <div className={`${show ? 'slide-in' : 'slide-out'} navSetting`}>
             <div className="wrapperLeft">
-                <div className="ctnContent">
+                <div className="ctnContent items-center">
                     <p className="title">Kích cỡ:</p>
 
                     <div className="btnGroup">
@@ -679,7 +716,9 @@ const NavSettings = ({ show }) => {
                             <MdOutlineRemoveCircleOutline color="#fff" />
                         </button>
 
-                        <p>{text}%</p>
+                        <p className="px-2 py-1 bg-blue-600 rounded-md">
+                            {text}%
+                        </p>
 
                         <button
                             onClick={() => {
@@ -713,12 +752,7 @@ const NavSettings = ({ show }) => {
                 >
                     Về mặc định
                 </button>
-                <button
-                    onClick={() => {
-                        appDispatch(toggle_gamepad_draggable());
-                    }}
-                    className="instbtn"
-                >
+                <button onClick={handleDone} className="instbtn">
                     Xong
                 </button>
             </div>

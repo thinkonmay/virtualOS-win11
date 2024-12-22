@@ -18,7 +18,6 @@ import {
 import {
     appDispatch,
     change_bitrate,
-    change_btnGp_size,
     change_framerate,
     sidepane_panehide,
     toggle_gamepad,
@@ -174,7 +173,7 @@ export const SidePane = () => {
                                                 100) *
                                                 remote.bitrate +
                                                 MIN_BITRATE()) /
-                                            1000
+                                                1000
                                         )}
                                     </span>
                                 </div>
@@ -202,8 +201,8 @@ export const SidePane = () => {
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                                 100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                                remote.framerate +
+                                                MIN_FRAMERATE
                                         )}
                                     </span>
                                 </div>
@@ -348,9 +347,6 @@ const GamePadSetting = () => {
         (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
     );
 
-    const handleChange = (e) => {
-        appDispatch(change_btnGp_size(e.target.value));
-    };
     const handleClose = (e) => {
         appDispatch(sidepane_panehide());
     };
@@ -378,7 +374,7 @@ const GamePadSetting = () => {
                     ></MdOutlineClose>
                 </div>
 
-                <div className='flex gap-4'>
+                <div className="flex gap-4">
                     <button
                         onClick={() => appDispatch(toggle_gamepad())}
                         className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
@@ -395,10 +391,6 @@ const GamePadSetting = () => {
                         Đổi vị trí
                     </button>
                 </div>
-
-
-
-
             </div>
         </div>
     );
@@ -579,8 +571,8 @@ function MobileComponent({ pnstates }) {
                 ))}
                 {active
                     ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                        <MobileShortCutBtn key={idx} qk={qk} />
-                    ))
+                          <MobileShortCutBtn key={idx} qk={qk} />
+                      ))
                     : null}
             </div>
         </>
@@ -688,21 +680,21 @@ function DesktopComponent({ pnstates }) {
                 ))}
                 {active
                     ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
-                        <div key={idx} className="qkGrp t">
-                            <div
-                                style={{
-                                    fontSize: '0.8rem'
-                                }}
-                                className="qkbtn handcr prtclk"
-                                onClick={() => Actions.clickShortCut(qk.val)}
-                            >
-                                {qk.name}
-                            </div>
-                            {qk?.explain ? (
-                                <div className="qktext">{t[qk.explain]}</div>
-                            ) : null}
-                        </div>
-                    ))
+                          <div key={idx} className="qkGrp t">
+                              <div
+                                  style={{
+                                      fontSize: '0.8rem'
+                                  }}
+                                  className="qkbtn handcr prtclk"
+                                  onClick={() => Actions.clickShortCut(qk.val)}
+                              >
+                                  {qk.name}
+                              </div>
+                              {qk?.explain ? (
+                                  <div className="qktext">{t[qk.explain]}</div>
+                              ) : null}
+                          </div>
+                      ))
                     : null}
             </div>
             <hr className="mb-2 lg:mb-1" />

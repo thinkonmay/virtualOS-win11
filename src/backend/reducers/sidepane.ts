@@ -64,7 +64,7 @@ interface IGamePadBtnSize {
     rt: number;
     rb: number;
 }
-const btnSizes: IGamePadBtnSize = {
+const btnGamepadSizes: IGamePadBtnSize = {
     leftJt: 1,
     dpad: 0.7,
     ls: 1,
@@ -324,7 +324,7 @@ const initialState: Data = {
             draggable: false,
             open: false,
             isDefaultPos: false,
-            btnSizes: btnSizes,
+            btnSizes: btnGamepadSizes,
             currentSelected: ''
         }
     },
@@ -378,8 +378,9 @@ export const sidepaneSlice = createSlice({
             state.mobileControl.gamepadSetting.open =
                 !state.mobileControl.gamepadSetting.open!;
         },
-        change_btnGp_size: (state, action) => {
-            state.mobileControl.gamepadSetting.btnSize = action.payload;
+        set_gamepad_button_size: (state, action) => {
+            const parsePayload = JSON.parse(action.payload);
+            state.mobileControl.gamepadSetting.btnSizes = parsePayload;
         },
         select_btn_gamepad: (state, action) => {
             state.mobileControl.gamepadSetting.currentSelected = action.payload;

@@ -8,7 +8,7 @@ import { menusSlice } from './menu';
 import { modalSlice as popupSlice } from './modal';
 import { remoteAsync, remoteSlice } from './remote.js';
 import { settSlice } from './settings.js';
-import { sidepaneAsync, sidepaneSlice } from './sidepane';
+import { sidepaneSlice } from './sidepane';
 import { menuSlice } from './startmenu';
 import { taskSlice } from './taskbar';
 import { userAsync, userSlice } from './user';
@@ -105,7 +105,7 @@ export const {
     toggle_gamepad,
     toggle_keyboard,
     toggle_gamepad_setting,
-    change_btnGp_size,
+    set_gamepad_button_size,
     toggle_gamepad_draggable,
     toggle_default_gamepad_position,
     toggle_status_connection,
