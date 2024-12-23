@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { MdOutlineKeyboard } from 'react-icons/md';
 import {
     AudioWrapper,
     RemoteDesktopClient,
@@ -71,8 +72,18 @@ export const Remote = () => {
                     <VirtKeyboard />
                 ) : gamepad || draggable ? (
                     <VirtualGamepad />
-                ) : null
+                ) : (
+                    <div
+                        onClick={() => {
+                            appDispatch(toggle_keyboard());
+                        }}
+                        className="z-10 absolute bottom-5 right-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+                    >
+                        <MdOutlineKeyboard fontSize={'1.4rem'} />
+                    </div>
+                )
             ) : null}
+
             <video
                 className="remote"
                 ref={remoteVideo}

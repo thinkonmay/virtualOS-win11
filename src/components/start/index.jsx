@@ -388,7 +388,7 @@ const GamePadSetting = () => {
                             appDispatch(sidepane_panehide());
                         }}
                     >
-                        Đổi vị trí
+                        Chỉnh sửa
                     </button>
                 </div>
             </div>

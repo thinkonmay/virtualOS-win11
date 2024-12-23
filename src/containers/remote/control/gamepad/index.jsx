@@ -14,6 +14,7 @@ import {
     select_btn_gamepad,
     set_gamepad_button_size,
     toggle_default_gamepad_position,
+    toggle_gamepad,
     toggle_gamepad_draggable,
     useAppSelector
 } from '../../../../backend/reducers';
@@ -412,6 +413,14 @@ export const ButtonGroupRight = (props) => {
                         <MdArrowLeft />
                     </div>
                     <div
+                        onClick={() => {
+                            appDispatch(toggle_gamepad());
+                        }}
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-white bg-[#da5102]"
+                    >
+                        ✕
+                    </div>
+                    <div
                         className="centerButton"
                         onTouchStart={() => gamepadButton(9, 'down')}
                         onTouchEnd={() => gamepadButton(9, 'up')}
@@ -717,7 +726,10 @@ const NavSettings = ({ show }) => {
                                 appDispatch(decrease_btn_gamepad(selected));
                             }}
                         >
-                            <MdOutlineRemoveCircleOutline color="#fff" />
+                            <MdOutlineRemoveCircleOutline
+                                fontSize={'1.4rem'}
+                                color="#fff"
+                            />
                         </button>
 
                         <p className="px-2 py-1 bg-blue-600 rounded-md">
@@ -729,7 +741,10 @@ const NavSettings = ({ show }) => {
                                 appDispatch(increase_btn_gamepad(selected));
                             }}
                         >
-                            <MdAddCircleOutline color="#fff" />
+                            <MdAddCircleOutline
+                                fontSize={'1.4rem'}
+                                color="#fff"
+                            />
                         </button>
                     </div>
                 </div>

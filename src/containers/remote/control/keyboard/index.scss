@@ -62,7 +62,14 @@
 			width: 4rem;
 		}
 
+		&[data-skbtn='Close'] {
+			width: 40px;
+			border-radius: 999px;
+			background-color: rgb(218, 81, 2);
+		}
+
 		&[data-skbtn=''] {
+			width: 1rem;
 			background-color: #ececec00;
 		}
 

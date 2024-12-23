@@ -14,6 +14,10 @@ export const VirtKeyboard = () => {
 
     const handleKeyPress = async (button) => {
         if (button == '') return appDispatch(toggle_keyboard());
+        if (button === 'Close') {
+            appDispatch(toggle_keyboard());
+            return;
+        }
         keyboard(
             ...(useShift(button)
                 ? [
@@ -44,7 +48,8 @@ export const VirtKeyboard = () => {
                 disableButtonHold={true}
                 display={{
                     Control: 'Ctrl',
-                    Backspace: 'Del'
+                    Backspace: 'Del',
+                    Close: '&#x2715;'
                 }}
                 layout={{
                     default: [
@@ -53,7 +58,7 @@ export const VirtKeyboard = () => {
                         'q w e r t              y u i o p [ ] \\ Shift',
                         "a s d f g            h j k l ; ' Enter",
                         'z x c v            b n m , . / Alt',
-                        'Space                  Space Control'
+                        'Space          Close        Space Control'
                     ],
                     shift: [
                         'F1 F2 F3 F4 F5             F6 F7 F8 F9 F10 F11 F12',
@@ -61,7 +66,7 @@ export const VirtKeyboard = () => {
                         'Q W E R T              Y U I O P { } | Shift',
                         'A S D F G            H J K L : " Enter',
                         'Z X C V            B N M < > ? Alt',
-                        'Space                  Space Control'
+                        'Space          Close        Space Control'
                     ]
                 }}
             />
