@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { MdOutlineLink } from 'react-icons/md';
 import { changeTheme } from '../../backend/actions';
 import {
@@ -24,7 +25,12 @@ function UserInfo() {
         subscription: { status, cluster, created_at, ended_at, usage, policy }
     } = useAppSelector((state) => state.user);
     const { node, total_usage } = usage ?? {};
-    const { limit_hour } = policy ?? {};
+    let { limit_hour } = policy ?? {};
+    const oldPaidUser = dayjs('2024-12-30');
+    const endedAtFormat = dayjs(ended_at);
+    if (endedAtFormat.isBefore(oldPaidUser, 'day') && limit_hour == 120) {
+        limit_hour = 150;
+    }
 
     const linkSteamAccount = () => {
         appDispatch(
@@ -72,7 +78,7 @@ function UserInfo() {
             ) : null}
             {cluster ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">Domain</span>
+                    <span className="text-left">Server</span>
                     <span>{cluster}</span>
                 </div>
             ) : null}

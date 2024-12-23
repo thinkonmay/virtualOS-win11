@@ -126,8 +126,17 @@ export const userAsync = {
             if (!isUUID(volume_id)) return null;
             else if (subscription.status != 'PAID') return;
             const { created_at, ended_at, policy } = subscription;
-            const { limit_hour } = policy ?? { limit_hour: Infinity };
+            let { limit_hour } = policy ?? { limit_hour: Infinity };
 
+            // Adjust sub after 30-12
+            const oldPaidUser = dayjs('2024-12-30');
+            const endedAtFormat = dayjs(ended_at);
+            if (
+                endedAtFormat.isBefore(oldPaidUser, 'day') &&
+                limit_hour == 120
+            ) {
+                limit_hour = 150;
+            }
             const { data: total_usage, error } = await LOCAL().rpc(
                 'get_volume_usage',
                 {
