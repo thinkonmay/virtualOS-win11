@@ -21,11 +21,28 @@ const listSubs = [
     {
         active: false,
         highlight: false,
-        title: 'Gói tuần',
+        title: 'Gói 2 tuần',
+        price_in_vnd: 199000,
+        total_time: 50,
+        total_days: 14,
+        name: 'week1',
+        period: 'tuần',
+        bonus: [
+            'RTX 3060TI',
+            '16GB ram',
+            '150GB dung lượng riêng, Cloud-save',
+            'Không giới hạn thời gian mỗi session',
+            'Có hàng chờ'
+        ]
+    },
+    {
+        active: false,
+        highlight: false,
+        title: 'Gói 1 tuần',
         price_in_vnd: 99000,
         total_time: 25,
         total_days: 7,
-        name: 'week1',
+        name: 'week2',
         period: 'tuần',
         bonus: [
             'RTX 3060TI',
