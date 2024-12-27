@@ -40,8 +40,8 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                     y_speed *= scale;
                 }
 
-                const normalizedX = x / maxDistance;
-                const normalizedY = y / maxDistance;
+                const normalizedX = x_speed / maxDistance;
+                const normalizedY = y_speed / maxDistance;
 
 
                 setPosition({ x: x_speed, y: y_speed })
