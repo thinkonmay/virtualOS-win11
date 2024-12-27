@@ -4,7 +4,8 @@ export const externalLink = {
     DISCORD_LINK: 'https://discord.gg/wbHXT93jHf',
     FACEBOOK_LINK: 'https://www.facebook.com/thinkonmay',
     G4MARKET_LINK_DESKTOP: 'https://bit.ly/G4M-Thinkmay-Desktop',
-    G4MARKET_LINK_STORE: 'https://bit.ly/G4M-Thinkmay-In-store-game'
+    G4MARKET_LINK_STORE: 'https://bit.ly/G4M-Thinkmay-In-store-game',
+    MESSAGE_LINK: 'https://www.facebook.com/messages/t/105408644972153'
 };
 
 export const scanCodeApps = [
