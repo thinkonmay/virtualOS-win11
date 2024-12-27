@@ -6,7 +6,7 @@ import {
     MdArrowRight,
     MdOutlineRemoveCircleOutline
 } from 'react-icons/md';
-import { gamepadAxis, gamepadButton } from '../../../../../src-tauri/singleton';
+import { gamepadButton } from '../../../../../src-tauri/singleton';
 import {
     appDispatch,
     decrease_btn_gamepad,
@@ -46,9 +46,8 @@ export const VirtualGamepad = (props) => {
     return (
         <>
             <div
-                className={`virtGamepad slide-in  ${
-                    draggable ? 'draggable' : ''
-                }`}
+                className={`virtGamepad slide-in  ${draggable ? 'draggable' : ''
+                    }`}
             >
                 <NavSettings show={draggable} />
                 <ButtonGroupRight draggable={draggable} />
@@ -252,7 +251,6 @@ export const ButtonGroupRight = (props) => {
     const joystickWrapperRef = useRef(null);
     const subBtnRef = useRef(null);
 
-    const gamepadCallBack = (x, y) => gamepadAxis(x, y, 'right');
     const handleSelectedBtn = (key) => {
         appDispatch(select_btn_gamepad(key));
     };
@@ -382,18 +380,17 @@ export const ButtonGroupRight = (props) => {
             >
                 <div
                     id="rightJt"
-                    className={`wrapperDraggable ${
-                        selected == 'rightJt' && props.draggable
-                            ? 'selected'
-                            : ''
-                    }`}
+                    className={`wrapperDraggable ${selected == 'rightJt' && props.draggable
+                        ? 'selected'
+                        : ''
+                        }`}
                     ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
                         ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSizes.rightJt}
-                        moveCallback={gamepadCallBack}
+                        type='right'
                     />
                 </div>
             </Draggable>
@@ -585,7 +582,6 @@ export const ButtonGroupLeft = (props) => {
     const dpadRef = useRef(null);
     const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
-    const gamepadCallBack = (x, y) => gamepadAxis(x, y, 'left');
     return (
         <>
             <GamepadButton
@@ -639,9 +635,8 @@ export const ButtonGroupLeft = (props) => {
                 <div
                     ref={dpadRef}
                     id="dpad"
-                    className={`wrapperDraggable ${
-                        selected == 'dpad' && props.draggable ? 'selected' : ''
-                    }`}
+                    className={`wrapperDraggable ${selected == 'dpad' && props.draggable ? 'selected' : ''
+                        }`}
                 >
                     <DPad ref={dpadRef} size={BUTTON_SIZE * btnSizes.dpad} />
                 </div>
@@ -677,16 +672,15 @@ export const ButtonGroupLeft = (props) => {
             >
                 <div
                     id="leftJt"
-                    className={`wrapperDraggable ${
-                        selected == 'leftJt' && props.draggable
-                            ? 'selected'
-                            : ''
-                    }`}
+                    className={`wrapperDraggable ${selected == 'leftJt' && props.draggable
+                        ? 'selected'
+                        : ''
+                        }`}
                     ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
                         color="black"
-                        moveCallback={gamepadCallBack}
+                        type='left'
                         ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSizes.leftJt}
