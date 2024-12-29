@@ -60,9 +60,9 @@ const apps: AppData[] = [
     },
     {
         name: [Contents.G4MARKET_APP],
-        id: 'G4Market',
-        action: 'apps/app_external',
-        payload: externalLink.G4MARKET_LINK_DESKTOP
+        id: 'g4market',
+        action: 'apps/app_toggle',
+        payload: 'g4market',
     },
     {
         name: [Contents.DISCORD_APP],
@@ -87,7 +87,7 @@ var { taskbar, desktop } = {
         'guideline',
         'facebook',
         'store',
-        'G4Market',
+        'g4market',
         'connectPc',
         'payment',
         ...(DevEnv ? ['worker'] : [])

@@ -5,6 +5,7 @@ import './wnapp.scss';
 
 export * from './apps/connect';
 export * from './apps/guideline';
+export * from './apps/g4market';
 export * from './apps/payment';
 export * from './apps/store';
 export * from './apps/worker';
