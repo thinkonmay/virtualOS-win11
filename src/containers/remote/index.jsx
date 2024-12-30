@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { MdOutlineKeyboard } from 'react-icons/md';
+import { MdOutlineKeyboard, MdOutlineSportsEsports } from 'react-icons/md';
 import {
     AudioWrapper,
     RemoteDesktopClient,
@@ -10,6 +10,7 @@ import { Assign, CLIENT } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     set_fullscreen,
+    toggle_gamepad,
     toggle_keyboard,
     useAppSelector
 } from '../../backend/reducers';
@@ -73,14 +74,24 @@ export const Remote = () => {
                 ) : gamepad || draggable ? (
                     <VirtualGamepad />
                 ) : (
-                    <div
-                        onClick={() => {
-                            appDispatch(toggle_keyboard());
-                        }}
-                        className="z-10 absolute bottom-5 right-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
-                    >
-                        <MdOutlineKeyboard fontSize={'1.4rem'} />
-                    </div>
+                    <>
+                        <div
+                            onClick={() => {
+                                appDispatch(toggle_keyboard());
+                            }}
+                            className="z-10 absolute bottom-5 right-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+                        >
+                            <MdOutlineKeyboard fontSize={'1.4rem'} />
+                        </div>
+                        <div
+                            onClick={() => {
+                                appDispatch(toggle_gamepad());
+                            }}
+                            className="z-10 absolute bottom-5 left-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+                        >
+                            <MdOutlineSportsEsports fontSize={'1.4rem'} />
+                        </div>
+                    </>
                 )
             ) : null}
 
