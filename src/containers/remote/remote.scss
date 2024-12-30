@@ -9,7 +9,7 @@
 }
 
 .remote {
-  object-fit: fill;
+  //object-fit: fill;
   width: 100vw;
   height: 100vh;
   //background-color: var(--wintheme);
@@ -65,7 +65,7 @@
 
 @media (1px < width < 1024px) {
   .remote {
-    object-fit: contain;
+    //object-fit: contain;
   }
 }
 

@@ -364,7 +364,8 @@ export const PaidTutorial = () => {
                 callback={handleJoyrideCallback}
                 //beaconComponent={BeaconComponent}
                 disableScrollParentFix={true}
-                scrollToFirstStep
+                scrollToFirstStep={false}
+                disableScrolling={false}
                 continuous
                 showProgress
                 disableOverlayClose

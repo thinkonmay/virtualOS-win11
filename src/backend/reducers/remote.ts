@@ -83,6 +83,8 @@ type Data = {
 
     auth?: AuthSessionResp;
     ref?: string;
+
+    objectFit: 'fill' | 'contain';
 };
 
 const initialState: Data = {
@@ -110,7 +112,8 @@ const initialState: Data = {
     packetLoss: 0,
     realbitrate: 0,
     realdelay: 0,
-    realdecodetime: 0
+    realdecodetime: 0,
+    objectFit: 'fill'
 };
 
 export function WindowD() {
@@ -472,6 +475,10 @@ export const remoteSlice = createSlice({
         },
         change_bitrate: (state, action: PayloadAction<number>) => {
             state.bitrate = action.payload;
+        },
+        toggle_objectfit: (state) => {
+            const currentState = state.objectFit;
+            state.objectFit = currentState == 'fill' ? 'contain' : 'fill';
         }
     },
     extraReducers: (builder) => {

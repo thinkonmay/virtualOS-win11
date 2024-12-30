@@ -235,7 +235,12 @@ export enum Contents {
     QA_CONNECTGEARS,
     QA_FIXLAG,
 
-    WIN_D_SHORTCUT
+    WIN_D_SHORTCUT,
+
+    //SIDEPANE
+
+    SP_PULL_VIDEO,
+    SP_PULL_VIDEO_EXPLAIN
 }
 
 export function language() {
@@ -247,6 +252,13 @@ export function language() {
     t.set('ENG', en);
     t.set('ID', id);
 
+    en.set(Contents.SP_PULL_VIDEO, 'Pull Video');
+    vn.set(Contents.SP_PULL_VIDEO, 'Kéo video');
+    id.set(Contents.SP_PULL_VIDEO, 'Pull Video');
+
+    en.set(Contents.SP_PULL_VIDEO_EXPLAIN, 'Pull the video fit in screen');
+    vn.set(Contents.SP_PULL_VIDEO_EXPLAIN, 'Kéo hình sao cho vừa với màn hình');
+    id.set(Contents.SP_PULL_VIDEO_EXPLAIN, 'Pull the video fit in screen');
     //QA
 
     //CA
@@ -444,7 +456,7 @@ export function language() {
     id.set(Contents.GUIDELINE_APP, 'Panduan');
 
     en.set(Contents.TEMPLATE_APP, 'Installed games');
-    vn.set(Contents.TEMPLATE_APP, 'Game đã tải sẵn');
+    vn.set(Contents.TEMPLATE_APP, 'Tạo máy có sẵn game');
     id.set(Contents.TEMPLATE_APP, 'Template');
 
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');

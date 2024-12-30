@@ -28,7 +28,7 @@ export const Remote = () => {
     const draggable = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.draggable
     );
-    const { active, auth, scancode, relative_mouse, fullscreen } =
+    const { active, auth, scancode, relative_mouse, fullscreen, objectFit } =
         useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
@@ -103,6 +103,9 @@ export const Remote = () => {
                 muted
                 playsInline
                 loop
+                style={{
+                    objectFit: objectFit
+                }}
             ></video>
             <audio
                 ref={remoteAudio}
