@@ -12,6 +12,7 @@ import {
     set_fullscreen,
     toggle_gamepad,
     toggle_keyboard,
+    toggle_objectfit,
     useAppSelector
 } from '../../backend/reducers';
 import { VirtualGamepad } from './control/gamepad';
@@ -32,8 +33,13 @@ export const Remote = () => {
         useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
+
+
     useEffect(() => {
         if (!active || auth == undefined) return;
+        if (isMobile()) {
+            appDispatch(toggle_objectfit())
+        }
         setupWebRTC();
     }, [active]);
 
