@@ -28,6 +28,7 @@ import {
     LOCAL,
     LoginSteamOnVM,
     LogoutSteamOnVM,
+    MountOnVM,
     ParseRequest,
     ParseVMRequest,
     PingSession,
@@ -38,7 +39,6 @@ import {
     StartThinkmayOnPeer,
     StartThinkmayOnVM,
     StartVirtdaemon,
-    MountOnVM,
     UnmountOnVM,
     UserEvents
 } from '../../../src-tauri/api';
@@ -71,8 +71,9 @@ const initialState: WorkerType = {
 };
 
 export const workerAsync = {
-    showPosition: async (pos: number) => {
+    showPosition: async (text: string) => {
         const t = (store.getState() as RootState).globals.translation;
+
         appDispatch(popup_close());
         appDispatch(
             popup_open({
@@ -81,12 +82,7 @@ export const workerAsync = {
                     loading: false,
                     tips: true,
                     title: 'Connect to PC',
-                    text:
-                        pos == 0
-                            ? t[Contents.CA_FIRST_QUEUED]
-                            : `${t[Contents.CA_POS_QUEUED_FRIST]} ${pos + 1} ${
-                                  t[Contents.CA_POS_QUEUED_LAST]
-                              }`
+                    text: text
                 }
             })
         );
