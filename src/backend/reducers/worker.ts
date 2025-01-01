@@ -241,21 +241,22 @@ export const workerAsync = {
                             email
                         }
                     });
+                // else if (
+                //     resp.message.includes(
+                //         'failed to retrieve disk info exit status 2 qemu-img: Could not open'
+                //     ) &&
+                //     resp.message.includes('Is another process using the image')
+                // ) {
+                //     // refresh worker to update the lastest worker state
+                // } else if (
+                //     resp.message.includes(
+                //         'internal error: process exited while connecting to monitor'
+                //     ) &&
+                //     resp.message.includes('Is another process using the image')
+                // ) {
+                // refresh worker to update the lastest worker state
+                // } 
                 else if (
-                    resp.message.includes(
-                        'failed to retrieve disk info exit status 2 qemu-img: Could not open'
-                    ) &&
-                    resp.message.includes('Is another process using the image')
-                ) {
-                    // refresh worker to update the lastest worker state
-                } else if (
-                    resp.message.includes(
-                        'internal error: process exited while connecting to monitor'
-                    ) &&
-                    resp.message.includes('Is another process using the image')
-                ) {
-                    // refresh worker to update the lastest worker state
-                } else if (
                     resp.message.includes(
                         'internal error: process exited while connecting to monitor'
                     ) &&
@@ -394,7 +395,7 @@ export const workerAsync = {
     ),
     retry_volume_claim: createAsyncThunk(
         'retry_volume_claim',
-        async (_: void, {}): Promise<any> => {
+        async (_: void, { }): Promise<any> => {
             appDispatch(close_remote());
             await appDispatch(unclaim_volume());
             await appDispatch(wait_and_claim_volume());
@@ -936,10 +937,10 @@ export const workerSlice = createSlice({
                     } else {
                         paths.forEach(
                             (x) =>
-                                (target =
-                                    new RenderNode(target).data.find(
-                                        (y) => y.id == x
-                                    ) ?? target)
+                            (target =
+                                new RenderNode(target).data.find(
+                                    (y) => y.id == x
+                                ) ?? target)
                         );
                         state.cdata = target.data.map((x) => x.any());
                     }
@@ -947,19 +948,19 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.worker_session_close,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.worker_reload,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             }
         );
     }
