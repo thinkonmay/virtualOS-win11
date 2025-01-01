@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import {
     appDispatch,
@@ -46,25 +46,6 @@ const GamepadButton = ({
         onTouchEnd();
         setHolding(false);
     };
-    useEffect(() => {
-        const divElement = buttonChildRef.current;
-
-        if (divElement) {
-            divElement.addEventListener('touchstart', handleTouchStart, {
-                passive: true
-            });
-            divElement.addEventListener('touchcancel', handleTouchCancel);
-            divElement.addEventListener('touchend', handleTouchEnd);
-        }
-
-        return () => {
-            if (divElement) {
-                divElement.removeEventListener('touchstart', handleTouchStart);
-                divElement.addEventListener('touchcancel', handleTouchCancel);
-                divElement.removeEventListener('touchend', handleTouchEnd);
-            }
-        };
-    }, []);
 
     const handleSelectedBtn = (key) => {
         appDispatch(select_btn_gamepad(key));
@@ -88,8 +69,11 @@ const GamepadButton = ({
                 id={id}
             >
                 <div
-                    //id={id}
+                    id={id}
                     //ref={buttonRef}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    onTouchCancel={handleTouchCancel}
                     ref={buttonChildRef}
                     className={`${className} defaultButton ${type} ${
                         holding ? 'hold' : ''

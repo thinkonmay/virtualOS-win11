@@ -110,6 +110,15 @@ const listMobileSettings = [
     },
     {
         ui: true,
+        id: 'objectfitBtn',
+        src: 'MdAspectRatio',
+        name: [Contents.SP_PULL_VIDEO],
+        state: 'objectFit',
+        explain: [Contents.SP_PULL_VIDEO_EXPLAIN],
+        action: 'remote/toggle_objectfit'
+    },
+    {
+        ui: true,
         id: 'virtKeyboardBtn',
         src: 'MdOutlineKeyboard',
         name: [Contents.OPEN_KEYBOARD],
@@ -198,6 +207,7 @@ const listDesktopShortCut = [
         explain: [Contents.WIN_D_SHORTCUT]
     }
 ];
+
 const listDesktopSettings = [
     {
         ui: true,
@@ -206,6 +216,15 @@ const listDesktopSettings = [
         name: [Contents.FULLSCREEN],
         state: 'fullscreen',
         action: 'remote/toggle_fullscreen'
+    },
+    {
+        ui: true,
+        id: 'objectfitBtn',
+        src: 'MdAspectRatio',
+        name: [Contents.SP_PULL_VIDEO],
+        state: 'objectFit',
+        explain: [Contents.SP_PULL_VIDEO_EXPLAIN],
+        action: 'remote/toggle_objectfit'
     },
     {
         ui: true,

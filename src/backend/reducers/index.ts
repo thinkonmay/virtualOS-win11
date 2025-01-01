@@ -135,7 +135,8 @@ export const {
     pointer_lock,
     toggle_hq,
     homescreen,
-    relative_mouse
+    relative_mouse,
+    toggle_objectfit
 } = remoteSlice.actions;
 
 export const { showQa, hideQa, toggleQa } = qaSlices.actions;
