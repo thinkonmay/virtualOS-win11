@@ -15,8 +15,8 @@ const GamepadButton = ({
     id,
     pos,
     draggable,
-    onStop = () => { },
-    onDrag = () => { },
+    onStop = () => {},
+    onDrag = () => {},
     posX,
     posY,
     type = 'circle' //'circle'  - rectangle
@@ -29,42 +29,42 @@ const GamepadButton = ({
     const buttonChildRef = useRef(null);
 
     const handleTouchStart = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         onTouchStart();
         setHolding(true);
-    }
+    };
     const handleTouchEnd = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         onTouchEnd();
         setHolding(false);
-    }
+    };
     const handleTouchCancel = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         onTouchEnd();
         setHolding(false);
-    }
+    };
     useEffect(() => {
-
         const divElement = buttonChildRef.current;
 
         if (divElement) {
-            divElement.addEventListener("touchstart", handleTouchStart, { passive: true });
-            divElement.addEventListener("touchcancel", handleTouchCancel);
-            divElement.addEventListener("touchend", handleTouchEnd);
+            divElement.addEventListener('touchstart', handleTouchStart, {
+                passive: true
+            });
+            divElement.addEventListener('touchcancel', handleTouchCancel);
+            divElement.addEventListener('touchend', handleTouchEnd);
         }
 
         return () => {
             if (divElement) {
-                divElement.removeEventListener("touchstart", handleTouchStart);
-                divElement.addEventListener("touchcancel", handleTouchCancel);
-                divElement.removeEventListener("touchend", handleTouchEnd);
+                divElement.removeEventListener('touchstart', handleTouchStart);
+                divElement.addEventListener('touchcancel', handleTouchCancel);
+                divElement.removeEventListener('touchend', handleTouchEnd);
             }
         };
-
-    }, [])
+    }, []);
 
     const handleSelectedBtn = (key) => {
         appDispatch(select_btn_gamepad(key));
@@ -82,17 +82,18 @@ const GamepadButton = ({
         >
             <div
                 ref={buttonRef}
-                className={`wrapperDraggable ${selected == id && draggable ? 'selected' : ''
-                    }`}
+                className={`wrapperDraggable ${
+                    selected == id && draggable ? 'selected' : ''
+                }`}
                 id={id}
             >
                 <div
                     //id={id}
                     //ref={buttonRef}
                     ref={buttonChildRef}
-                    className={`${className} defaultButton ${type} ${holding ? 'hold' : ''
-                        }`}
-
+                    className={`${className} defaultButton ${type} ${
+                        holding ? 'hold' : ''
+                    }`}
                     style={style}
                 >
                     {children}

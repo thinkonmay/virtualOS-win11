@@ -2,14 +2,14 @@ import { forwardRef, useEffect, useId, useState, useTransition } from 'react';
 import { gamepadAxis } from '../../../../../../src-tauri/singleton';
 
 export const CustomJoyStick = forwardRef((props, ref) => {
-    const { size = 100, type = 'right', } = props;
-    const [isPending, startTransition] = useTransition()
+    const { size = 100, type = 'right' } = props;
+    const [isPending, startTransition] = useTransition();
 
     console.log('render joystick');
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [touching, setTouching] = useState(false);
     const knobRadius = size * 0.2;
-    const speed = 0.5
+    const speed = 0.5;
     const id = useId();
     const knobId = useId();
     //const updatePosition = useCallback(
@@ -27,10 +27,12 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                 let x_speed = (touch.clientX - rect.left - centerX) * speed;
                 let y_speed = (touch.clientY - rect.top - centerY) * speed;
 
-                let x = (touch.clientX - rect.left - centerX);
-                let y = (touch.clientY - rect.top - centerY);
+                let x = touch.clientX - rect.left - centerX;
+                let y = touch.clientY - rect.top - centerY;
 
-                const distance = Math.sqrt(x_speed * x_speed + y_speed * y_speed);
+                const distance = Math.sqrt(
+                    x_speed * x_speed + y_speed * y_speed
+                );
                 const maxDistance = size / 2;
                 //const maxDistance = size / 2 - knobRadius;
 
@@ -43,29 +45,25 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                 const normalizedX = x_speed / maxDistance;
                 const normalizedY = y_speed / maxDistance;
 
-
-                setPosition({ x: x_speed, y: y_speed })
-                gamepadAxis(normalizedX, normalizedY, type)
-
+                setPosition({ x: x_speed, y: y_speed });
+                gamepadAxis(normalizedX, normalizedY, type);
             }
-        })
-    }
+        });
+    };
 
     useEffect(() => {
-        const buttonElement = ref.current
+        const buttonElement = ref.current;
         if (buttonElement) {
-            buttonElement.addEventListener('pointerdown', handlePointerDown)
-            buttonElement.addEventListener('pointermove', handlePointerMove)
-            buttonElement.addEventListener('pointerup', handlePointerUp)
-
+            buttonElement.addEventListener('pointerdown', handlePointerDown);
+            buttonElement.addEventListener('pointermove', handlePointerMove);
+            buttonElement.addEventListener('pointerup', handlePointerUp);
         }
-        return (() => {
-            buttonElement.removeEventListener('pointerdown', handlePointerDown)
-            buttonElement.removeEventListener('pointermove', handlePointerMove)
-            buttonElement.removeEventListener('pointerup', handlePointerUp)
-
-        })
-    }, [type, ref])
+        return () => {
+            buttonElement.removeEventListener('pointerdown', handlePointerDown);
+            buttonElement.removeEventListener('pointermove', handlePointerMove);
+            buttonElement.removeEventListener('pointerup', handlePointerUp);
+        };
+    }, [type, ref]);
     const handlePointerDown = (e) => {
         e.target.setPointerCapture(e.pointerId);
         console.log('touch start');
@@ -84,7 +82,7 @@ export const CustomJoyStick = forwardRef((props, ref) => {
     const handlePointerUp = () => {
         setTouching(false);
         setPosition({ x: 0, y: 0 });
-        gamepadAxis(0, 0, type)
+        gamepadAxis(0, 0, type);
     };
 
     return (
@@ -104,10 +102,10 @@ export const CustomJoyStick = forwardRef((props, ref) => {
                 touchAction: 'none',
                 position: 'relative'
             }}
-        //onPointerDown={handlePointerDown}
-        //onPointerMove={handlePointerMove}
-        //onPointerUp={handlePointerUp}
-        //onPointerCancel={handlePointerUp}
+            //onPointerDown={handlePointerDown}
+            //onPointerMove={handlePointerMove}
+            //onPointerUp={handlePointerUp}
+            //onPointerCancel={handlePointerUp}
         >
             <div
                 id={knobId}

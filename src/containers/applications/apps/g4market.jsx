@@ -28,9 +28,11 @@ export const G4Market = () => {
             <div className="windowScreen wrapperGuideline">
                 <LazyComponent show={!wnapp.hide}>
                     <iframe
-                        src={'https://g4market.com/?utm_source=thinkmay&utm_medium=desktopscreen&utm_campaign=referral'}
+                        src={
+                            'https://g4market.com/?utm_source=thinkmay&utm_medium=desktopscreen&utm_campaign=referral'
+                        }
                         id="isite"
-                        frameborder="0"
+                        frameBorder="0"
                         className="w-full h-full"
                         title="site"
                     ></iframe>

@@ -62,7 +62,7 @@ const apps: AppData[] = [
         name: [Contents.G4MARKET_APP],
         id: 'g4market',
         action: 'apps/app_toggle',
-        payload: 'g4market',
+        payload: 'g4market'
     },
     {
         name: [Contents.DISCORD_APP],
