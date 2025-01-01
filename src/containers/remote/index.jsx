@@ -34,11 +34,10 @@ export const Remote = () => {
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
 
-
     useEffect(() => {
         if (!active || auth == undefined) return;
         if (isMobile()) {
-            appDispatch(toggle_objectfit())
+            appDispatch(toggle_objectfit());
         }
         setupWebRTC();
     }, [active]);
