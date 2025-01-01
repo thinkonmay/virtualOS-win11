@@ -82,7 +82,7 @@ export const workerAsync = {
                     loading: false,
                     tips: true,
                     title: 'Connect to PC',
-                    text: text
+                    text: `Progress: ${text}`
                 }
             })
         );
