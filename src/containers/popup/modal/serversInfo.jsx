@@ -41,7 +41,7 @@ export function serversInfo() {
                     <div className="columnContent">Khuyến nghị</div>
                     <div className="columnContent">Phù hợp mọi nhu cầu</div>
                     <div className="columnContent">
-                        Chơi FC Online & thiết bị là Iphone, IPad
+                        Chơi GTA 5 & thiết bị là Iphone, IPad
                     </div>
                     <div className="columnContent">
                         Chơi AAA games & thiết bị là Iphone, IPad
