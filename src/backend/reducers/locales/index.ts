@@ -212,7 +212,12 @@ export enum Contents {
     CA_FIRST_QUEUED,
     CA_POS_QUEUED_FRIST,
     CA_POS_QUEUED_LAST,
+    CA_POS_QUEUED_OPENING,
+    CA_POS_QUEUED_NOTIFY,
+    CA_POS_PLEASE,
+
     CA_CONNECT_NOTIFY,
+
 
     //TEMPLATE APP (TA)
 
@@ -319,6 +324,10 @@ export function language() {
     vn.set(Contents.CA_INITIALIZING, 'Máy đang được khởi tạo');
     id.set(Contents.CA_INITIALIZING, 'PC Anda sedang menginisialisasi');
 
+    en.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
+    vn.set(Contents.CA_POS_PLEASE, 'Vui lòng không thoát ứng dụng!');
+    id.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
+
     en.set(
         Contents.CA_RELOAD_TRY_AGAIN,
         'Please wait in 5 minutes & try later'
@@ -342,6 +351,14 @@ export function language() {
     en.set(Contents.CA_POS_QUEUED_FRIST, 'You are currently');
     vn.set(Contents.CA_POS_QUEUED_FRIST, 'Bạn đang ở vị trí thứ');
     id.set(Contents.CA_POS_QUEUED_FRIST, 'Anda saat ini berada di posisi');
+
+    en.set(Contents.CA_POS_QUEUED_OPENING, 'Your PC is booting');
+    vn.set(Contents.CA_POS_QUEUED_OPENING, 'Đang mở máy');
+    id.set(Contents.CA_POS_QUEUED_OPENING, 'Your PC is booting');
+
+    en.set(Contents.CA_POS_QUEUED_NOTIFY, 'The system is out of machines. It will automatically connect and notify you when a machine becomes available. Please do not close the tab.');
+    vn.set(Contents.CA_POS_QUEUED_NOTIFY, 'Đang hết máy, sẽ tự động kết nối & thông báo khi vào được máy, vui lòng không thoát ứng dụng');
+    id.set(Contents.CA_POS_QUEUED_NOTIFY, 'Sistem sedang kehabisan mesin. Sistem akan secara otomatis terhubung dan memberi tahu Anda ketika mesin tersedia. Mohon jangan keluar dari tab.');
 
     en.set(
         Contents.CA_POS_QUEUED_LAST,

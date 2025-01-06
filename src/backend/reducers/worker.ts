@@ -43,6 +43,7 @@ import {
     UserEvents
 } from '../../../src-tauri/api';
 import { ready, SetPinger } from '../../../src-tauri/singleton';
+import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 import { Contents } from './locales';
 
@@ -75,6 +76,7 @@ export const workerAsync = {
         const t = (store.getState() as RootState).globals.translation;
 
         appDispatch(popup_close());
+
         appDispatch(
             popup_open({
                 type: 'notify',
@@ -82,7 +84,8 @@ export const workerAsync = {
                     loading: false,
                     tips: true,
                     title: 'Connect to PC',
-                    text: `Progress: ${text}`
+                    //text: `Progress: ${text}`
+                    text: formatWaitingLog(text)
                 }
             })
         );
