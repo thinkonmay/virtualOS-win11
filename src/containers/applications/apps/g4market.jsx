@@ -29,7 +29,7 @@ export const G4Market = () => {
                 <LazyComponent show={!wnapp.hide}>
                     <iframe
                         src={
-                            'https://g4market.com/?utm_source=thinkmay&utm_medium=desktopscreen&utm_campaign=referral'
+                            'https://bit.ly/G4M-Thinkmay-Desktop'
                         }
                         id="isite"
                         frameBorder="0"
