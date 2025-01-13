@@ -379,12 +379,15 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             mt-6
                                                             ${
                                                                 !sub.active
-                                                                    ? 'bg-red-500'
+                                                                    ? sub.name ==
+                                                                      'week2'
+                                                                        ? 'bg-red-500'
+                                                                        : 'bg-[#0067c0]'
                                                                     : 'bg-[#0067c0]'
                                                             }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
-                                ? sub.name == 'week1'
+                                ? sub.name == 'week2'
                                     ? 'Đang đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
