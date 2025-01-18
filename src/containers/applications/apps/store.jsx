@@ -197,14 +197,14 @@ const DownPage = ({ action }) => {
             <div className="max-w-[1200px] mx-auto">
                 <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
                     <div className="">
-                        <b className=" storeHeading font-bold">
+                        <b className=" storeHeading capitalize font-bold">
                             {t[Contents.TA_TILE]}
                         </b>
-                        <p className="storeSubHeading text-left mt-2">
+                        <p className="storeSubHeading font-bold text-left mt-2">
                             {t[Contents.TA_SUBTITLE]}
                         </p>
                     </div>
-                    <G4MarketBtn></G4MarketBtn>
+                    <G4MarketBtn offset='bottom' />
                 </div>
                 <div className="appscont mt-16">
                     {games.map((game, i) => (
@@ -229,7 +229,7 @@ const DownPage = ({ action }) => {
     );
 };
 
-const G4MarketBtn = () => {
+const G4MarketBtn = ({ offset = 'top' }) => {
     return (
         <div className="g4MarketCtn">
             <div className="flex items-center justify-between">
@@ -238,7 +238,7 @@ const G4MarketBtn = () => {
                 </p>
                 <div className="explainCtn">
                     <AiOutlineQuestionCircle fontSize="0.7rem" />
-                    <div className="explainText text-[8px]">
+                    <div className={`explainText text-[8px] ${offset}`}>
                         <p className="font-bold">
                             Mua game bản quyền trên G4
                             <span className="text-[#99EE2D]">Market</span>

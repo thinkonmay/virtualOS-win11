@@ -176,13 +176,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-              ? appDispatch(
+                ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-              : appDispatch(
+                : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -229,9 +229,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                     {sub.price_in_vnd / 1000}k
                                                     VND
                                                 </h3>
-                                                <p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
+                                                {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                     / {sub.period}{' '}
-                                                </p>
+                                                </p>*/}
                                             </>
                                         }
                                     </div>
@@ -377,22 +377,21 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${
-                                                                !sub.active
-                                                                    ? sub.name ==
-                                                                      'week2'
-                                                                        ? 'bg-red-500'
-                                                                        : 'bg-[#0067c0]'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
+                                                            ${!sub.active
+                                    ? sub.name ==
+                                        'week2'
+                                        ? 'bg-red-500'
+                                        : 'bg-[#0067c0]'
+                                    : 'bg-[#0067c0]'
+                                }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week2'
                                     ? 'Đang đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
+                                    ? 'Gia hạn'
+                                    : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>

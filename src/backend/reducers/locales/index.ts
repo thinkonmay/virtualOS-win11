@@ -387,7 +387,7 @@ export function language() {
         Contents.TA_TILE,
         'A new machine has been pre-created with the game already installed.'
     );
-    vn.set(Contents.TA_TILE, 'Tạo máy mới đã đã được tải sẵn game');
+    vn.set(Contents.TA_TILE, 'Tạo Máy Mới Đã Tải Sẵn Game');
     id.set(
         Contents.TA_TILE,
         'Sebuah mesin baru telah dibuat sebelumnya dengan game sudah terinstal.'
@@ -399,7 +399,7 @@ export function language() {
     );
     vn.set(
         Contents.TA_SUBTITLE,
-        'Lưu ý: Không bao gồm tài khoản game, bạn có thể mua tài khoản game giá rẻ tại G4Market'
+        'Lưu ý: Không bao gồm tài khoản game'
     );
     id.set(
         Contents.TA_SUBTITLE,

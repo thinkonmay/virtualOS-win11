@@ -453,14 +453,23 @@ body[data-theme="dark"] {
       display: none;
       position: absolute;
       z-index: 8;
-      bottom: 16px;
-      left: 20px;
+
       width: 320px;
       padding: 8px;
       font-size: 14px;
       border-radius: 4px;
       background: rgb(0 0 0 / 80%);
       color: white;
+
+      &.top {
+        bottom: 16px;
+        left: 20px;
+      }
+
+      &.bottom {
+        top: 46px;
+        right: 0;
+      }
     }
   }
 
