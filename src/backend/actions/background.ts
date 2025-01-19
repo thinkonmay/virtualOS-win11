@@ -3,7 +3,6 @@ import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
-    app_close,
     app_toggle,
     change_bitrate,
     change_framerate,
@@ -114,13 +113,14 @@ const fetchPlans = async () => {
 };
 
 const updateUI = async () => {
-    store
-        .getState()
-        .apps.apps.filter((x) => !x.hide)
-        .forEach((x) => appDispatch(app_close(x.id)));
+    //store
+    //    .getState()
+    //    .apps.apps.filter((x) => !x.hide)
+    //    .forEach((x) => appDispatch(app_close(x.id)));
     appDispatch(show_tutorial('close'));
 
     const subscription = store.getState().user.subscription as PaymentStatus;
+    let isNewUser = false;
     const { status } = subscription;
     if (status == 'PAID' && !subscription.correct_domain) {
         appDispatch(
@@ -139,11 +139,13 @@ const updateUI = async () => {
     if (status == 'PENDING') ops.push('payment');
     else if (status == 'PAID') {
         ops.push('connectPc');
-
+        if (subscription?.usage?.isNewUser) {
+            ops.push('store');
+        }
         const { ended_at } = subscription;
         if (
             ended_at != null &&
-            new Date(ended_at).getTime() - Date.now() < 7 * 24 * 3600 * 1000
+            new Date(ended_at).getTime() - Date.now() < 3 * 24 * 3600 * 1000
         ) {
             appDispatch(
                 popup_open({

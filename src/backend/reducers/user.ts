@@ -23,6 +23,7 @@ type Usage = {
         name: string;
     };
     isExpired?: boolean;
+    isNewUser: boolean;
 };
 
 export type PaymentStatus =
@@ -122,7 +123,8 @@ export const userAsync = {
     fetch_usage: createAsyncThunk(
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
-            const { volume_id, subscription } = (getState() as RootState).user;
+            const { volume_id, subscription, email } = (getState() as RootState)
+                .user;
             if (!isUUID(volume_id)) return null;
             else if (subscription.status != 'PAID') return;
             const { created_at, ended_at, policy } = subscription;
@@ -137,16 +139,26 @@ export const userAsync = {
             ) {
                 limit_hour = 150;
             }
-            const { data: total_usage, error } = await LOCAL().rpc(
-                'get_volume_usage',
+            //const { data: total_usage, error } = await LOCAL().rpc(
+            //    'get_volume_usage',
+            //    {
+            //        volume_id,
+            //        _to: new Date().toISOString(),
+            //        _from: created_at
+            //    }
+            //);
+            //if (error) throw error;
+
+            const { data: usageData, error: usageErr } = await LOCAL().rpc(
+                'get_subscription',
                 {
-                    volume_id,
-                    _to: new Date().toISOString(),
-                    _from: created_at
+                    email
                 }
             );
-            if (error) throw error;
+            const total_usage = usageData[0]?.usage_minutes;
+            const isNewUser = usageData[0]?.new_user;
 
+            console.log(total_usage, isNewUser);
             const { data: map, error: errr } = await LOCAL()
                 .from('volume_map')
                 .select('node,template')
@@ -222,12 +234,12 @@ export const userAsync = {
                     })
                 );
             }
-
             return {
                 node,
                 template,
                 total_usage: ((total_usage as number) ?? 0) / 60,
-                isExpired
+                isExpired,
+                isNewUser
             };
         }
     ),
