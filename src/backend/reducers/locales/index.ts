@@ -218,7 +218,6 @@ export enum Contents {
 
     CA_CONNECT_NOTIFY,
 
-
     //TEMPLATE APP (TA)
 
     TA_TILE,
@@ -356,9 +355,18 @@ export function language() {
     vn.set(Contents.CA_POS_QUEUED_OPENING, 'Đang mở máy');
     id.set(Contents.CA_POS_QUEUED_OPENING, 'Your PC is booting');
 
-    en.set(Contents.CA_POS_QUEUED_NOTIFY, 'The system is out of machines. It will automatically connect and notify you when a machine becomes available. Please do not close the tab.');
-    vn.set(Contents.CA_POS_QUEUED_NOTIFY, 'Đang hết máy, sẽ tự động kết nối & thông báo khi vào được máy, vui lòng không thoát ứng dụng');
-    id.set(Contents.CA_POS_QUEUED_NOTIFY, 'Sistem sedang kehabisan mesin. Sistem akan secara otomatis terhubung dan memberi tahu Anda ketika mesin tersedia. Mohon jangan keluar dari tab.');
+    en.set(
+        Contents.CA_POS_QUEUED_NOTIFY,
+        'The system is out of machines. It will automatically connect and notify you when a machine becomes available. Please do not close the tab.'
+    );
+    vn.set(
+        Contents.CA_POS_QUEUED_NOTIFY,
+        'Đang hết máy, sẽ tự động kết nối & thông báo khi vào được máy, vui lòng không thoát ứng dụng'
+    );
+    id.set(
+        Contents.CA_POS_QUEUED_NOTIFY,
+        'Sistem sedang kehabisan mesin. Sistem akan secara otomatis terhubung dan memberi tahu Anda ketika mesin tersedia. Mohon jangan keluar dari tab.'
+    );
 
     en.set(
         Contents.CA_POS_QUEUED_LAST,
@@ -397,10 +405,7 @@ export function language() {
         Contents.TA_SUBTITLE,
         'Please note that the game account is not included.'
     );
-    vn.set(
-        Contents.TA_SUBTITLE,
-        'Lưu ý: Không bao gồm tài khoản game'
-    );
+    vn.set(Contents.TA_SUBTITLE, 'Lưu ý: Không bao gồm tài khoản game');
     id.set(
         Contents.TA_SUBTITLE,
         'Perhatikan bahwa akun game tidak disertakan.'

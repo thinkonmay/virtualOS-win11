@@ -204,7 +204,7 @@ const DownPage = ({ action }) => {
                             {t[Contents.TA_SUBTITLE]}
                         </p>
                     </div>
-                    <G4MarketBtn offset='bottom' />
+                    <G4MarketBtn offset="bottom" />
                 </div>
                 <div className="appscont mt-16">
                     {games.map((game, i) => (
