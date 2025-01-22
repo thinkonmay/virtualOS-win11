@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { NodeType } from '../../../src-tauri/api';
 
 type Opts =
     | {
@@ -49,7 +48,7 @@ const initialState: Data = {
     }
 };
 
-export type MenuOption = 'desk' | NodeType;
+export type MenuOption = 'desk';
 function menu_conversion(menu: MenuOption): MenuOpt {
     switch (menu) {
         case 'desk':
@@ -81,95 +80,6 @@ function menu_conversion(menu: MenuOption): MenuOpt {
                         icon: 'info',
                         type: 'svg',
                         action: 'open_guideline'
-                    }
-                ]
-            };
-        case 'peer_worker':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Thinkmay remote desktop',
-                        action: 'peer_session_create'
-                    }
-                ]
-            };
-        case 'vm_worker':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Thinkmay remote desktop',
-                        action: 'vm_session_create'
-                    }
-                ]
-            };
-        case 'local_worker':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Thinkmay remote desktop',
-                        action: 'worker_session_create'
-                    }
-                ]
-            };
-        case 'peer_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Access session',
-                        action: 'peer_session_access'
-                    },
-                    {
-                        name: 'Close session',
-                        action: 'peer_session_close'
-                    }
-                ]
-            };
-        case 'vm_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Access session',
-                        action: 'vm_session_access'
-                    },
-                    {
-                        name: 'Close session',
-                        action: 'vm_session_close'
-                    }
-                ]
-            };
-        case 'host_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Close session',
-                        action: 'worker_session_close'
-                    }
-                ]
-            };
-        case 'local_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Access session',
-                        action: 'worker_session_access'
-                    },
-                    {
-                        name: 'Close session',
-                        action: 'worker_session_close'
                     }
                 ]
             };

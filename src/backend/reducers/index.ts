@@ -91,7 +91,7 @@ export const {
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =
     settSlice.actions;
-export const { worker_prev, worker_view, toggle_hide_vm } = workerSlice.actions;
+export const { toggle_hide_vm } = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
     sidepane_bandhide,
@@ -142,22 +142,14 @@ export const {
 export const { showQa, hideQa, toggleQa } = qaSlices.actions;
 
 export const {
-    unclaim_volume,
     fetch_local_worker,
-    worker_session_access,
-    worker_session_close,
-    worker_session_create,
     worker_refresh,
     worker_reload,
+
     wait_and_claim_volume,
+    unclaim_volume,
     app_session_toggle,
-    storage_session_toggle,
-    vm_session_create,
-    vm_session_access,
-    vm_session_close,
-    peer_session_create,
-    peer_session_access,
-    peer_session_close
+    storage_session_toggle
 } = workerAsync;
 export const {
     fetch_user,

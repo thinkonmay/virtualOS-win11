@@ -299,6 +299,13 @@ const listDesktopSettings = [
         explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
     },
     {
+        src: 'MdOutlineTvOff',
+        name: [Contents.HIDE_VM],
+        state: 'HideVM',
+        action: 'worker/toggle_hide_vm',
+        explain: [Contents.HIDE_VM_EXPLAIN]
+    },
+    {
         src: 'MdVideogameAsset',
         name: [Contents.HIDE_VM],
         state: 'HideVM',

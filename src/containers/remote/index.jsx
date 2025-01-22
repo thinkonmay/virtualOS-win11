@@ -52,11 +52,8 @@ export const Remote = () => {
     const setupWebRTC = () =>
         Assign(
             new RemoteDesktopClient(
-                new VideoWrapper(remoteVideo.current),
-                new AudioWrapper(remoteAudio.current),
-                auth.signaling,
-                auth.webrtc,
-                { scancode }
+                new VideoWrapper(remoteVideo.current, auth),
+                new AudioWrapper(remoteAudio.current, auth)
             )
         );
 

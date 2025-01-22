@@ -11,7 +11,6 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
-import { RenderNode } from '../../../../src-tauri/api';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
@@ -23,7 +22,7 @@ export const ConnectApp = () => {
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const available = useAppSelector(
-        (state) => new RenderNode(state.worker.data).data[0]?.info?.available
+        (state) => worker.data[worker.currentAddress].availability
     );
     const paid = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'

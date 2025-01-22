@@ -12,10 +12,9 @@ import {
     worker_refresh
 } from '.';
 import {
-    Computer,
     getDomainURL,
     POCKETBASE,
-    RenderNode
+    RemoteCredential
 } from '../../../src-tauri/api';
 import { EventCode, isMobile } from '../../../src-tauri/core';
 import {
@@ -32,15 +31,6 @@ import {
 } from '../../../src-tauri/singleton';
 import { BuilderHelper } from './helper';
 
-export type AuthSessionResp = {
-    id: string;
-    webrtc: RTCConfiguration;
-    signaling: {
-        audioUrl: string;
-        videoUrl: string;
-    };
-};
-
 export type Metric = {
     receivefps: number[];
     decodefps: number[];
@@ -51,7 +41,6 @@ export type Metric = {
 
 type Data = {
     tracker_id?: string;
-    log_url?: string;
     ping_status: boolean;
 
     active: boolean;
@@ -81,7 +70,7 @@ type Data = {
     realdecodetime: number;
     realdelay: number;
 
-    auth?: AuthSessionResp;
+    auth?: RemoteCredential;
     ref?: string;
 
     objectFit: 'fill' | 'contain';
@@ -131,8 +120,9 @@ export const setClipBoard = async (content: string) => {
 };
 export const remoteAsync = {
     check_worker: async () => {
-        if (!store.getState().remote.active) return;
-        else if (store.getState().remote.direct_access) return;
+        const { remote, worker } = store.getState();
+        if (!remote.active) return;
+        else if (remote.direct_access) return;
         else if (CLIENT == null) return;
         else if (
             CLIENT.Metrics.audio.status == 'connected' ||
@@ -141,12 +131,7 @@ export const remoteAsync = {
             return;
 
         await appDispatch(worker_refresh());
-        if (
-            (
-                new RenderNode(store.getState().worker.data).data[0]
-                    ?.info as Computer
-            )?.available != 'started'
-        ) {
+        if (worker.data[worker.currentAddress].availability != 'started') {
             appDispatch(
                 popup_open({
                     type: 'complete',
@@ -271,12 +256,9 @@ export const remoteAsync = {
     ),
     save_reference: createAsyncThunk(
         'save_reference',
-        async (info: {
-            audioUrl: string;
-            videoUrl: string;
-            rtc_config: RTCConfiguration;
-            volume_id?: string;
-        }): Promise<string> => {
+        async (
+            info: RemoteCredential | { volume_id?: string }
+        ): Promise<string> => {
             const token = crypto.randomUUID();
             await POCKETBASE.collection('reference').create({ ...info, token });
             return token;
@@ -292,7 +274,7 @@ export const remoteAsync = {
         // TODO
     }),
     copy_log: createAsyncThunk('copy_log', async (_: void, { getState }) => {
-        const url = (getState() as RootState).remote.log_url;
+        const url = (getState() as RootState).remote.auth.logUrl;
         if (url == undefined) throw new Error('log url is not defined');
 
         const resp = await fetch(url);
@@ -330,25 +312,9 @@ export const remoteSlice = createSlice({
     reducers: {
         remote_connect: (
             state,
-            {
-                payload: { audioUrl, videoUrl, logUrl, rtc_config }
-            }: PayloadAction<{
-                audioUrl: string;
-                videoUrl: string;
-                logUrl?: string;
-                rtc_config: RTCConfiguration;
-            }>
+            { payload: data }: PayloadAction<RemoteCredential>
         ) => {
-            state.auth = {
-                id: undefined,
-                webrtc: rtc_config,
-                signaling: {
-                    audioUrl,
-                    videoUrl
-                }
-            };
-
-            state.log_url = logUrl;
+            state.auth = data;
             state.active = true;
             state.fullscreen = true;
             state.ready = false;
