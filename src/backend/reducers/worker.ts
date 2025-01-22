@@ -243,7 +243,7 @@ export const workerAsync = {
         async (_, { getState }): Promise<any> => {
             const state = getState() as RootState;
             const storage =
-                state.worker.data[state.worker.currentAddress].storage;
+                state.worker.data[state.worker.currentAddress]?.storage;
 
             if (storage)
                 await appDispatch(workerAsync.storage_session_logout());
@@ -257,7 +257,7 @@ export const workerAsync = {
             const state = getState() as RootState;
             const bucket_name = state.user.bucket_name;
             const session =
-                state.worker.data[state.worker.currentAddress].Sessions.at(0);
+                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
             if (bucket_name == undefined)
                 throw new Error(`user dont have any associate bucket name`);
             return await MountOnVM(
@@ -272,7 +272,7 @@ export const workerAsync = {
         async (_, { getState }): Promise<any> => {
             const state = getState() as RootState;
             const session =
-                state.worker.data[state.worker.currentAddress].Sessions.at(0);
+                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
             return await UnmountOnVM(state.worker.currentAddress, session);
         }
     ),
@@ -280,7 +280,7 @@ export const workerAsync = {
         'app_session_toggle',
         async (_, { getState }): Promise<any> => {
             const state = getState() as RootState;
-            const steam = state.worker.data[state.worker.currentAddress].steam;
+            const steam = state.worker.data[state.worker.currentAddress]?.steam;
 
             if (steam) await appDispatch(workerAsync.app_session_logout());
             else await appDispatch(workerAsync.app_session_login());
@@ -292,7 +292,7 @@ export const workerAsync = {
         async (_, { getState }): Promise<any> => {
             const state = getState() as RootState;
             const session =
-                state.worker.data[state.worker.currentAddress].Sessions.at(0);
+                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
             const accounts =
                 await POCKETBASE.collection('thirdparty_account').getFullList();
             if (accounts.length == 0)
@@ -316,7 +316,7 @@ export const workerAsync = {
         async (_, { getState }): Promise<any> => {
             const state = getState() as RootState;
             const session =
-                state.worker.data[state.worker.currentAddress].Sessions.at(0);
+                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
             return await LogoutSteamOnVM(state.worker.currentAddress, session);
         }
     )

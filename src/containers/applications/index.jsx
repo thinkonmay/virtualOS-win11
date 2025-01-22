@@ -8,7 +8,6 @@ export * from './apps/guideline';
 export * from './apps/g4market';
 export * from './apps/payment';
 export * from './apps/store';
-export * from './apps/worker';
 
 export const ScreenPreview = () => {
     const tasks = useAppSelector((state) => state.taskbar);

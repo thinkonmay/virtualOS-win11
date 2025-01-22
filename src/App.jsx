@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
-import { DevEnv } from '../src-tauri/api/database';
 import { isMobile } from '../src-tauri/core';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
@@ -159,7 +158,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => {});
+        job?.catch(() => { });
 
         const handleState = () => {
             const fullscreen =
@@ -242,9 +241,7 @@ function App() {
                                 {/*<Tutorials.NewTutorial />*/}
                                 {Object.keys(Applications).map((key, idx) => {
                                     var WinApp = Applications[key];
-                                    return key != 'Worker' || DevEnv ? (
-                                        <WinApp key={idx} />
-                                    ) : null;
+                                    return <WinApp key={idx} />
                                 })}
                             </div>
                         </>

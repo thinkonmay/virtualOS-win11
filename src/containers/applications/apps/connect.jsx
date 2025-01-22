@@ -22,7 +22,7 @@ export const ConnectApp = () => {
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const available = useAppSelector(
-        (state) => worker.data[worker.currentAddress].availability
+        (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
     const paid = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'
@@ -40,9 +40,9 @@ export const ConnectApp = () => {
     const { image, name } = useAppSelector((state) =>
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.usage?.template ?? {
-                  image: null,
-                  name: null
-              }
+                image: null,
+                name: null
+            }
             : { image: null, name: null }
     );
 
@@ -95,13 +95,13 @@ export const ConnectApp = () => {
                 style={
                     image != null
                         ? {
-                              backgroundImage: `url(${image})`,
-                              backgroundSize: 'cover'
-                          }
+                            backgroundImage: `url(${image})`,
+                            backgroundSize: 'cover'
+                        }
                         : {
-                              background:
-                                  'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
-                          }
+                            background:
+                                'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
+                        }
                 }
             >
                 <LazyComponent show={!wnapp.hide}>
@@ -128,7 +128,7 @@ export const ConnectApp = () => {
                                     Login
                                 </button>
                             ) : available == 'ready' ||
-                              available == 'started' ? (
+                                available == 'started' ? (
                                 <>
                                     <button
                                         onClick={connect}

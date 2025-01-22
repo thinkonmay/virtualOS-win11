@@ -198,7 +198,6 @@ export enum Contents {
     PAYMENT_APP,
     TEMPLATE_APP,
     CONNECT_APP,
-    WORKER_APP,
     DISCORD_APP,
     FANPAGE_APP,
     G4MARKET_APP,
@@ -484,10 +483,6 @@ export function language() {
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
     vn.set(Contents.CONNECT_APP, 'Máy tính cá nhân');
     id.set(Contents.CONNECT_APP, 'Sambungkan ke PC Anda');
-
-    en.set(Contents.WORKER_APP, 'Worker');
-    vn.set(Contents.WORKER_APP, 'Worker');
-    id.set(Contents.WORKER_APP, 'Pekerja');
 
     en.set(Contents.FANPAGE_APP, 'Fanpage');
     vn.set(Contents.FANPAGE_APP, 'Fanpage');

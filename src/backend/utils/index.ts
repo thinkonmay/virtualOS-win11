@@ -24,13 +24,6 @@ export type AppData = {
 
 const apps: AppData[] = [
     {
-        name: [Contents.WORKER_APP],
-        id: 'worker',
-        action: 'apps/app_toggle',
-        image: 'connectPc',
-        payload: 'worker'
-    },
-    {
         name: [Contents.GUIDELINE_APP],
         id: 'guideline',
         action: 'apps/app_toggle',

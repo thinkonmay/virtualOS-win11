@@ -90,7 +90,7 @@ export const SidePane = () => {
     const remote = useAppSelector((state) => state.remote);
     const HideVM = useAppSelector((state) => state.worker.HideVM);
     const { steam, storage } = useAppSelector(
-        (state) => state.worker.data[state.worker.currentAddress]
+        (state) => state.worker.data[state.worker.currentAddress] ?? {}
     );
     const [pnstates, setPnstate] = useState({});
     const dispatch = appDispatch;
@@ -529,15 +529,15 @@ function MobileComponent({ pnstates }) {
     const sidepane = useAppSelector((state) => state.sidepane);
     const active = useAppSelector((state) => state.remote.active);
     const shutdownable = useAppSelector(
-        (state) => state.worker.data[state.worker.currentAddress].availability
+        (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
     const steam_available = useAppSelector(
         (state) =>
-            state.worker.data[state.worker.currentAddress].steam != undefined
+            state.worker.data[state.worker.currentAddress]?.steam != undefined
     );
     const storage_available = useAppSelector(
         (state) =>
-            state.worker.data[state.worker.currentAddress].storage != undefined
+            state.worker.data[state.worker.currentAddress]?.storage != undefined
     );
 
     let blacklist = [];
@@ -580,16 +580,16 @@ function DesktopComponent({ pnstates }) {
     const t = useAppSelector((state) => state.globals.translation);
     const sidepane = useAppSelector((state) => state.sidepane);
     const shutdownable = useAppSelector(
-        (state) => state.worker.data[state.worker.currentAddress].availability
+        (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
     const active = useAppSelector((state) => state.remote.active);
     const steam_available = useAppSelector(
         (state) =>
-            state.worker.data[state.worker.currentAddress].steam != undefined
+            state.worker.data[state.worker.currentAddress]?.steam != undefined
     );
     const storage_available = useAppSelector(
         (state) =>
-            state.worker.data[state.worker.currentAddress].storage != undefined
+            state.worker.data[state.worker.currentAddress]?.storage != undefined
     );
 
     let blacklist = [];
