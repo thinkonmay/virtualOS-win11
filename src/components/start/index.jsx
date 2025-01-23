@@ -93,20 +93,24 @@ export const SidePane = () => {
         (state) => state.worker.data[state.worker.currentAddress] ?? {}
     );
     const [pnstates, setPnstate] = useState({});
-    const dispatch = appDispatch;
-    useEffect(() => {
-        const framerateSlider = document.querySelector('.framerateSlider');
-        const bitrateSlider = document.querySelector('.bitrateSlider');
-        sliderBackground(framerateSlider, remote.framerate);
-        sliderBackground(bitrateSlider, remote.bitrate);
-    }, [remote.bitrate, remote.framerate]);
-
+    const shutdownable = useAppSelector(
+        (state) => state.worker.data[state.worker.currentAddress]?.availability
+    );
+    const active = useAppSelector((state) => state.remote.active);
+    const steam_available = useAppSelector(
+        (state) =>
+            state.worker.data[state.worker.currentAddress]?.steam != undefined
+    );
+    const storage_available = useAppSelector(
+        (state) =>
+            state.worker.data[state.worker.currentAddress]?.storage != undefined
+    );
     const setBitrate = (e) => {
-        dispatch(change_bitrate(e.target.value));
+        appDispatch(change_bitrate(e.target.value));
         localStorage.setItem('bitrate', e.target.value);
     };
     const setFramerate = (e) => {
-        dispatch(change_framerate(e.target.value));
+        appDispatch(change_framerate(e.target.value));
         localStorage.setItem('framerate', e.target.value);
     };
     function sliderBackground(elem, e) {
@@ -145,6 +149,22 @@ export const SidePane = () => {
         setPnstate(tmp);
     }, [setting, sidepane, remote, HideVM, steam]);
 
+    useEffect(() => {
+        const framerateSlider = document.querySelector('.framerateSlider');
+        const bitrateSlider = document.querySelector('.bitrateSlider');
+        sliderBackground(framerateSlider, remote.framerate);
+        sliderBackground(bitrateSlider, remote.bitrate);
+    }, [remote.bitrate, remote.framerate]);
+
+    const data = {
+        pnstates,
+        sidepane,
+        shutdownable,
+        active,
+        steam_available,
+        storage_available
+    };
+
     return (
         <>
             <div
@@ -155,9 +175,9 @@ export const SidePane = () => {
                 <div className="mainContent">
                     <div className="quickSettings ">
                         {isMobile() ? (
-                            <MobileComponent pnstates={pnstates} />
+                            <MobileComponent data={data} />
                         ) : (
-                            <DesktopComponent pnstates={pnstates} />
+                            <DesktopComponent data={data} />
                         )}
 
                         <div className="sliderCont flex flex-col items-start">
@@ -525,21 +545,16 @@ const MobileShortCutBtn = ({ qk }) => {
         </div>
     );
 };
-function MobileComponent({ pnstates }) {
-    const sidepane = useAppSelector((state) => state.sidepane);
-    const active = useAppSelector((state) => state.remote.active);
-    const shutdownable = useAppSelector(
-        (state) => state.worker.data[state.worker.currentAddress]?.availability
-    );
-    const steam_available = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.steam != undefined
-    );
-    const storage_available = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.storage != undefined
-    );
-
+function MobileComponent({
+    data: {
+        pnstates,
+        sidepane,
+        shutdownable,
+        active,
+        steam_available,
+        storage_available
+    }
+}) {
     let blacklist = [];
     if (shutdownable != 'started')
         blacklist = [
@@ -576,21 +591,17 @@ function MobileComponent({ pnstates }) {
         </>
     );
 }
-function DesktopComponent({ pnstates }) {
+function DesktopComponent({
+    data: {
+        pnstates,
+        sidepane,
+        shutdownable,
+        active,
+        steam_available,
+        storage_available
+    }
+}) {
     const t = useAppSelector((state) => state.globals.translation);
-    const sidepane = useAppSelector((state) => state.sidepane);
-    const shutdownable = useAppSelector(
-        (state) => state.worker.data[state.worker.currentAddress]?.availability
-    );
-    const active = useAppSelector((state) => state.remote.active);
-    const steam_available = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.steam != undefined
-    );
-    const storage_available = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.storage != undefined
-    );
 
     let blacklist = [];
     if (shutdownable != 'started')

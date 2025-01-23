@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice,PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
     close_remote,
@@ -10,26 +10,23 @@ import {
     RootState,
     save_reference,
     store,
-    unclaim_volume,
-    wait_and_claim_volume,
     worker_refresh
 } from '.';
 import {
     CloseSession,
     Computer,
     GetInfo,
-    KeepaliveVolume,
     LOCAL,
     LoginSteamOnVM,
     LogoutSteamOnVM,
     MountOnVM,
     ParseRequest,
-    PingSession,
     POCKETBASE,
+    Session,
     StartThinkmay,
     UnmountOnVM
 } from '../../../src-tauri/api';
-import { ready, SetPinger } from '../../../src-tauri/singleton';
+import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 import { Contents } from './locales';
@@ -81,9 +78,9 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
-            const addr = '127.0.0.1'
+            const addr = '127.0.0.1';
             await appDispatch(fetch_local_worker(addr));
-            appDispatch(workerSlice.actions.set_current_address(addr))
+            appDispatch(workerSlice.actions.set_current_address(addr));
         }
     ),
     worker_reload: createAsyncThunk(
@@ -95,71 +92,74 @@ export const workerAsync = {
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
-            const { email, volume_id } = (getState() as RootState).user;
             const { HideVM, currentAddress } = (getState() as RootState).worker;
-            const t = (getState() as RootState).globals.translation;
 
-            appDispatch(
-                popup_open({
-                    type: 'notify',
-                    data: { loading: true, title: 'Connect to PC' }
-                })
-            );
+            const showConnect = () => {
+                appDispatch(popup_close());
+                appDispatch(
+                    popup_open({
+                        type: 'notify',
+                        data: {
+                            loading: false,
+                            tips: false,
+                            title: 'Connecting video & audio',
+                            text: (getState() as RootState).globals.translation[
+                                Contents.CA_CONNECT_NOTIFY
+                            ]
+                        }
+                    })
+                );
+            };
 
-            const keepalive = KeepaliveVolume(
-                currentAddress,
-                volume_id,
-                PingSession
-            );
+            const info = await GetInfo(currentAddress);
+            if (info instanceof Error) throw info;
 
-            const start = now();
-            while (now() - start < 180) {
-                const info = await GetInfo(currentAddress);
-                if (info instanceof Error) {
-                    await new Promise((r) => setTimeout(r, 1000));
-                    continue;
-                }
-
-                const vm_session = info.Sessions.find((x) => x.vm != undefined);
-                if (vm_session != undefined) {
-                    appDispatch(popup_close());
-                    appDispatch(
-                        popup_open({
-                            type: 'notify',
-                            data: {
-                                loading: false,
-                                tips: false,
-                                title: 'Connecting video & audio',
-                                text: t[Contents.CA_CONNECT_NOTIFY]
-                            }
-                        })
-                    );
-
-                    const interval = setInterval(keepalive, 30 * 1000);
-
-                    const result = ParseRequest(currentAddress, vm_session);
-                    if (result instanceof Error) throw result;
-                    appDispatch(remote_connect(result));
-                    await appDispatch(save_reference(result));
-                    if (!(await ready())) appDispatch(close_remote());
-                    else appDispatch(remote_ready());
-
-                    clearInterval(interval);
-                    SetPinger(keepalive);
-                    appDispatch(popup_close());
-                    return;
-                } else {
+            let session: Session | undefined = undefined;
+            if (info.virtReady) {
+                info.Sessions?.forEach(
+                    (x) =>
+                        x.vm?.Sessions?.forEach(
+                            (y) =>
+                                (session =
+                                    session != undefined ||
+                                    y.thinkmay == undefined
+                                        ? session
+                                        : y)
+                        )
+                );
+                if (session == undefined) {
                     const resp = await StartThinkmay(
                         currentAddress,
                         { HideVM: HideVM },
                         workerAsync.showPosition
                     );
-                    if (!(resp instanceof Error)) {
-                        appDispatch(popup_close());
-                        return;
-                    }
+                    if (resp instanceof Error) throw resp;
+                    else
+                        session = resp.vm.Sessions?.find(
+                            (x) => x.thinkmay != undefined
+                        );
+                }
+            } else if (info.remoteReady) {
+                session = info.Sessions?.find((x) => x.thinkmay != undefined);
+                if (session == undefined) {
+                    const resp = await StartThinkmay(currentAddress);
+                    if (resp instanceof Error) throw resp;
+                    else session = resp;
                 }
             }
+
+            if (session == undefined)
+                throw new Error(
+                    `no remote capability on address ${currentAddress}`
+                );
+
+            const result = ParseRequest(currentAddress, session);
+            if (result instanceof Error) throw result;
+            await appDispatch(save_reference(result));
+            showConnect();
+            appDispatch(remote_connect(result));
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
             appDispatch(popup_close());
             return;
         }
@@ -181,9 +181,8 @@ export const workerAsync = {
 
             if (computer.remoteReady) {
                 if (computer.Sessions?.length > 0)
-                    computer.availability = 'started'
-                else
-                    computer.availability = 'ready'
+                    computer.availability = 'started';
+                else computer.availability = 'ready';
             } else if (computer.virtReady) {
                 if (
                     computer.Sessions?.find((x) => x.thinkmay != undefined) !=
@@ -329,7 +328,7 @@ export const workerSlice = createSlice({
         toggle_hide_vm: (state) => {
             state.HideVM = !state.HideVM;
         },
-        set_current_address: (state,payload: PayloadAction<string>) => {
+        set_current_address: (state, payload: PayloadAction<string>) => {
             state.currentAddress = payload.payload;
         }
     },
@@ -347,15 +346,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.worker_reload,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }
