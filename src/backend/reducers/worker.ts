@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice,PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
     close_remote,
@@ -17,7 +17,6 @@ import {
 import {
     CloseSession,
     Computer,
-    getDomain,
     GetInfo,
     KeepaliveVolume,
     LOCAL,
@@ -82,7 +81,9 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
-            await appDispatch(fetch_local_worker(getDomain()));
+            const addr = '127.0.0.1'
+            await appDispatch(fetch_local_worker(addr));
+            appDispatch(workerSlice.actions.set_current_address(addr))
         }
     ),
     worker_reload: createAsyncThunk(
@@ -178,27 +179,34 @@ export const workerAsync = {
 
             const computer = result as innerComputer;
 
-            if (
-                computer.Sessions.find((x) => x.thinkmay != undefined) !=
-                undefined
-            )
-                computer.availability = 'started';
-            else if (!computer.Volumes.includes(volume_id)) {
-                computer.availability = undefined;
-            } else {
-                const { data, error: err } = await LOCAL()
-                    .from('job')
-                    .select('result')
-                    .eq('arguments->>id', volume_id)
-                    .order('created_at', { ascending: false })
-                    .limit(1);
+            if (computer.remoteReady) {
+                if (computer.Sessions?.length > 0)
+                    computer.availability = 'started'
+                else
+                    computer.availability = 'ready'
+            } else if (computer.virtReady) {
+                if (
+                    computer.Sessions?.find((x) => x.thinkmay != undefined) !=
+                    undefined
+                )
+                    computer.availability = 'started';
+                else if (!computer.Volumes?.includes(volume_id)) {
+                    computer.availability = undefined;
+                } else {
+                    const { data, error: err } = await LOCAL()
+                        .from('job')
+                        .select('result')
+                        .eq('arguments->>id', volume_id)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
 
-                if (err) throw new Error(err.message);
-                else if (data.length == 0) computer.availability = 'ready';
-                else if (data[0].result == 'success')
-                    computer.availability = 'ready';
-                else computer.availability = 'not_ready';
-            }
+                    if (err) throw new Error(err.message);
+                    else if (data.length == 0) computer.availability = 'ready';
+                    else if (data[0].result == 'success')
+                        computer.availability = 'ready';
+                    else computer.availability = 'not_ready';
+                }
+            } else computer.availability = 'not_ready';
 
             if (accounts.length == 0) computer.steam = undefined;
             else if (
@@ -215,15 +223,7 @@ export const workerAsync = {
                 computer.storage = false;
             else computer.storage = false;
 
-            return { address: computer };
-        }
-    ),
-    retry_volume_claim: createAsyncThunk(
-        'retry_volume_claim',
-        async (_: void, {}): Promise<any> => {
-            appDispatch(close_remote());
-            await appDispatch(unclaim_volume());
-            await appDispatch(wait_and_claim_volume());
+            return { [address]: computer };
         }
     ),
     unclaim_volume: createAsyncThunk(
@@ -328,6 +328,9 @@ export const workerSlice = createSlice({
     reducers: {
         toggle_hide_vm: (state) => {
             state.HideVM = !state.HideVM;
+        },
+        set_current_address: (state,payload: PayloadAction<string>) => {
+            state.currentAddress = payload.payload;
         }
     },
     extraReducers: (build) => {
@@ -344,15 +347,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.worker_reload,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             }
         );
     }

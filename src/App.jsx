@@ -158,7 +158,7 @@ function App() {
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
-        job?.catch(() => { });
+        job?.catch(() => {});
 
         const handleState = () => {
             const fullscreen =
@@ -241,7 +241,7 @@ function App() {
                                 {/*<Tutorials.NewTutorial />*/}
                                 {Object.keys(Applications).map((key, idx) => {
                                     var WinApp = Applications[key];
-                                    return <WinApp key={idx} />
+                                    return <WinApp key={idx} />;
                                 })}
                             </div>
                         </>
