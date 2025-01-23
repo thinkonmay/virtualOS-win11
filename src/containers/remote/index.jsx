@@ -29,7 +29,7 @@ export const Remote = () => {
     const draggable = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.draggable
     );
-    const { active, auth, scancode, relative_mouse, fullscreen, objectFit } =
+    const { active, auth, relative_mouse, fullscreen, objectFit } =
         useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
@@ -52,8 +52,9 @@ export const Remote = () => {
     const setupWebRTC = () =>
         Assign(
             new RemoteDesktopClient(
-                new VideoWrapper(remoteVideo.current, auth),
-                new AudioWrapper(remoteAudio.current, auth)
+                new VideoWrapper(remoteVideo.current, auth.videoUrl),
+                new AudioWrapper(remoteAudio.current, auth.audioUrl),
+                auth.dataUrl
             )
         );
 

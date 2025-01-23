@@ -10,7 +10,8 @@ import {
     RootState,
     save_reference,
     store,
-    worker_refresh
+    worker_refresh,
+    worker_reload
 } from '.';
 import {
     CloseSession,
@@ -58,8 +59,6 @@ const initialState: WorkerType = {
 
 export const workerAsync = {
     showPosition: async (text: string) => {
-        const t = (store.getState() as RootState).globals.translation;
-
         appDispatch(popup_close());
 
         appDispatch(
@@ -161,6 +160,7 @@ export const workerAsync = {
             if (!(await ready())) appDispatch(close_remote());
             else appDispatch(remote_ready());
             appDispatch(popup_close());
+            appDispatch(worker_reload());
             return;
         }
     ),
