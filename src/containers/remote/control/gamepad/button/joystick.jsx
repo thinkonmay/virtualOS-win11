@@ -6,7 +6,6 @@ export const CustomJoyStick = React.memo(
         const { size = 100, type = 'right' } = props;
 
         const knobRef = useRef(null);
-        console.log('render joystick');
         const [position, setPosition] = useState({ x: 0, y: 0 });
         const [touching, setTouching] = useState(false);
         const knobRadius = size * 0.2;
