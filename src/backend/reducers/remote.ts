@@ -108,10 +108,10 @@ const initialState: Data = {
 export function WindowD() {
     if (CLIENT == null) return;
     CLIENT.VirtualKeyboard(
-        { code: EventCode.KeyDown, jsKey: 'lwin' },
-        { code: EventCode.KeyDown, jsKey: 'd' },
-        { code: EventCode.KeyUp, jsKey: 'd' },
-        { code: EventCode.KeyUp, jsKey: 'lwin' }
+        { code: EventCode.kd, jsKey: 'lwin' },
+        { code: EventCode.kd, jsKey: 'd' },
+        { code: EventCode.ku, jsKey: 'd' },
+        { code: EventCode.ku, jsKey: 'lwin' }
     );
 }
 
