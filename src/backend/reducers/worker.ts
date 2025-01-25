@@ -9,7 +9,6 @@ import {
     remote_ready,
     RootState,
     save_reference,
-    store,
     worker_refresh,
     worker_reload
 } from '.';
@@ -170,7 +169,7 @@ export const workerAsync = {
             address: string,
             { getState }
         ): Promise<{ [address: string]: innerComputer }> => {
-            const { volume_id, bucket_name } = (getState() as RootState).user;
+            const { bucket_name } = (getState() as RootState).user;
             const accounts =
                 await POCKETBASE.collection('thirdparty_account').getFullList();
 
@@ -189,19 +188,19 @@ export const workerAsync = {
                     undefined
                 )
                     computer.availability = 'started';
-                else if (!computer.Volumes?.includes(volume_id)) {
+                else if (computer.Volumes?.length == 0) {
                     computer.availability = undefined;
                 } else {
                     const { data, error: err } = await LOCAL()
                         .from('job')
                         .select('result')
-                        .eq('arguments->>id', volume_id)
+                        .in('arguments->>id', computer.Volumes ?? [])
                         .order('created_at', { ascending: false })
                         .limit(1);
 
                     if (err) throw new Error(err.message);
                     else if (data.length == 0) computer.availability = 'ready';
-                    else if (data[0].result == 'success')
+                    else if (data.every((x) => x.result == 'success'))
                         computer.availability = 'ready';
                     else computer.availability = 'not_ready';
                 }
