@@ -114,7 +114,15 @@ export const {
     set_status_connection,
     decrease_btn_gamepad,
     increase_btn_gamepad,
-    select_btn_gamepad
+    select_btn_gamepad,
+    add_key_gamingKeyboard,
+    delete_key_gamingKeyboard,
+    move_key_gamingKeyboard,
+    select_key_gamingKeyboard,
+    set_keyboard_edit_state,
+    toggle_gaming_keyboard,
+    set_gamingKeyboard_data,
+    save_gamingKeyboard_to_local
 } = sidepaneSlice.actions;
 
 export const {

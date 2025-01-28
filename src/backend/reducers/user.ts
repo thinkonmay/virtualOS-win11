@@ -158,7 +158,6 @@ export const userAsync = {
             const total_usage = usageData[0]?.usage_minutes;
             const isNewUser = usageData[0]?.new_user;
 
-            console.log(total_usage, isNewUser);
             const { data: map, error: errr } = await LOCAL()
                 .from('volume_map')
                 .select('node,template')

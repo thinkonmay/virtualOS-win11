@@ -19,10 +19,13 @@ import {
     appDispatch,
     change_bitrate,
     change_framerate,
+    scancode_toggle,
+    set_keyboard_edit_state,
     sidepane_panehide,
     toggle_gamepad,
     toggle_gamepad_draggable,
     toggle_gamepad_setting,
+    toggle_gaming_keyboard,
     useAppSelector
 } from '../../backend/reducers';
 import {
@@ -374,22 +377,53 @@ const GamePadSetting = () => {
                     ></MdOutlineClose>
                 </div>
 
-                <div className="flex gap-4">
-                    <button
-                        onClick={() => appDispatch(toggle_gamepad())}
-                        className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
-                    >
-                        Đóng/mở
-                    </button>
-                    <button
-                        className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
-                        onClick={() => {
-                            appDispatch(toggle_gamepad_draggable());
-                            appDispatch(sidepane_panehide());
-                        }}
-                    >
-                        Chỉnh sửa
-                    </button>
+                <div>
+                    <h2 className="text-xs mb-4">Gamepad:</h2>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => appDispatch(toggle_gamepad())}
+                            className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
+                        >
+                            Đóng/mở
+                        </button>
+                        <button
+                            className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
+                            onClick={() => {
+                                appDispatch(toggle_gamepad_draggable());
+                                appDispatch(sidepane_panehide());
+                            }}
+                        >
+                            Chỉnh sửa
+                        </button>
+                    </div>
+                </div>
+
+                <div className="mt-5">
+                    <h2 className="text-xs mb-4">Gaming Keyboard:</h2>
+
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => {
+                                appDispatch(toggle_gaming_keyboard());
+                                appDispatch(scancode_toggle());
+                            }}
+                            className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
+                        >
+                            Đóng/mở
+                        </button>
+                        <button
+                            className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
+                            onClick={() => {
+                                appDispatch(toggle_gaming_keyboard());
+                                appDispatch(
+                                    set_keyboard_edit_state('draggable')
+                                );
+                                appDispatch(sidepane_panehide());
+                            }}
+                        >
+                            Chỉnh sửa
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

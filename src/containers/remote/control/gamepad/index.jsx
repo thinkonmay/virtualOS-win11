@@ -179,7 +179,6 @@ export const ButtonGroupRight = (props) => {
     const handleDrag = (e, data) => {
         const key = data.node.id;
         const value = { x: data.x, y: data.y };
-        e, data;
         startTransition(() => {
             setPosBtn((prev) => {
                 return {
