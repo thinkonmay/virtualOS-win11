@@ -10,7 +10,7 @@ import {
     RootState,
     save_reference,
     worker_refresh,
-    worker_reload
+    worker_refresh_ui
 } from '.';
 import {
     CloseSession,
@@ -81,8 +81,8 @@ export const workerAsync = {
             appDispatch(workerSlice.actions.set_current_address(addr));
         }
     ),
-    worker_reload: createAsyncThunk(
-        'worker_reload',
+    worker_refresh_ui: createAsyncThunk(
+        'worker_refresh_ui',
         async (): Promise<void> => {
             await appDispatch(worker_refresh());
         }
@@ -118,11 +118,11 @@ export const workerAsync = {
                     (x) =>
                         x.vm?.Sessions?.forEach(
                             (y) =>
-                                (session =
-                                    session != undefined ||
+                            (session =
+                                session != undefined ||
                                     y.thinkmay == undefined
-                                        ? session
-                                        : y)
+                                    ? session
+                                    : y)
                         )
                 );
                 if (session == undefined) {
@@ -159,7 +159,7 @@ export const workerAsync = {
             if (!(await ready())) appDispatch(close_remote());
             else appDispatch(remote_ready());
             appDispatch(popup_close());
-            appDispatch(worker_reload());
+            appDispatch(worker_refresh());
             return;
         }
     ),
@@ -239,6 +239,8 @@ export const workerAsync = {
                 state.worker.currentAddress,
                 computer.Sessions.at(0)
             );
+
+            await appDispatch(worker_refresh());
         }
     ),
     storage_session_toggle: createAsyncThunk(
@@ -350,15 +352,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
-                fetch: workerAsync.worker_reload,
-                hander: (state, action) => {}
+                fetch: workerAsync.worker_refresh_ui,
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             }
         );
     }
