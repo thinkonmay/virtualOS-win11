@@ -142,10 +142,8 @@ export const {
 export const { showQa, hideQa, toggleQa } = qaSlices.actions;
 
 export const {
-    fetch_local_worker,
     worker_refresh,
     worker_refresh_ui,
-
     wait_and_claim_volume,
     unclaim_volume,
     app_session_toggle,

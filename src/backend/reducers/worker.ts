@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
     close_remote,
-    fetch_local_worker,
     popup_close,
     popup_open,
     remote_connect,
@@ -10,7 +9,6 @@ import {
     RootState,
     save_reference,
     worker_refresh,
-    worker_refresh_ui
 } from '.';
 import {
     CloseSession,
@@ -77,7 +75,7 @@ export const workerAsync = {
         'worker_refresh',
         async (): Promise<void> => {
             const addr = '127.0.0.1';
-            await appDispatch(fetch_local_worker(addr));
+            await appDispatch(workerAsync.fetch_local_worker(addr));
             appDispatch(workerSlice.actions.set_current_address(addr));
         }
     ),
