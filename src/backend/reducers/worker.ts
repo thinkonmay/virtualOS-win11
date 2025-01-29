@@ -8,7 +8,7 @@ import {
     remote_ready,
     RootState,
     save_reference,
-    worker_refresh,
+    worker_refresh
 } from '.';
 import {
     CloseSession,
@@ -116,11 +116,11 @@ export const workerAsync = {
                     (x) =>
                         x.vm?.Sessions?.forEach(
                             (y) =>
-                            (session =
-                                session != undefined ||
+                                (session =
+                                    session != undefined ||
                                     y.thinkmay == undefined
-                                    ? session
-                                    : y)
+                                        ? session
+                                        : y)
                         )
                 );
                 if (session == undefined) {
@@ -350,15 +350,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }
