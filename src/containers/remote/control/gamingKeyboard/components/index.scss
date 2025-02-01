@@ -85,6 +85,20 @@
 		display: flex;
 		gap: 16px;
 
+
+
+	}
+
+	.ctnBtns {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		.instbtn {
+			padding: 8px 12px;
+			font-weight: 600;
+		}
+
 		.ctnContent {
 			display: flex;
 			gap: 8px;
@@ -112,17 +126,7 @@
 
 			}
 		}
-	}
 
-	.ctnBtns {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-
-		.instbtn {
-			padding: 8px 12px;
-			font-weight: 600;
-		}
 	}
 }
 

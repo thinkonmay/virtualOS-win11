@@ -143,6 +143,16 @@ export const sidepaneSlice = createSlice({
             state.banhide = true;
         },
 
+        open_gaming_keyboard: (state) => {
+            state.mobileControl.gamingKeyBoard.open = true;
+            state.hide = true;
+            state.banhide = true;
+        },
+        hide_gaming_keyboard: (state) => {
+            state.mobileControl.gamingKeyBoard.open = false;
+            state.hide = true;
+            state.banhide = true;
+        },
         toggle_gaming_keyboard: (state) => {
             state.mobileControl.gamingKeyBoard.open =
                 !state.mobileControl.gamingKeyBoard.open;
@@ -217,6 +227,83 @@ export const sidepaneSlice = createSlice({
                 localStorageKey.gamingKeyboardData,
                 JSON.stringify(state.mobileControl.gamingKeyBoard.data)
             );
+        },
+        set_default_gamingKeyboard: (state, action) => {
+            state.mobileControl.gamingKeyBoard.data =
+                initialGamingKeyboard.data;
+        },
+
+        increase_key_gamingKeyboard: (state, action) => {
+            const currentSelected =
+                state.mobileControl.gamingKeyBoard.currentSelected;
+            const currentData = state.mobileControl.gamingKeyBoard.data;
+            if (currentSelected.size >= 1.9) {
+                state.mobileControl.gamingKeyBoard.data = currentData.map(
+                    (key) => {
+                        if (key.id == currentSelected.id) {
+                            return {
+                                ...key,
+                                size: 2
+                            };
+                        } else {
+                            return key;
+                        }
+                    }
+                );
+
+                state.mobileControl.gamingKeyBoard.currentSelected.size = 2;
+            } else {
+                state.mobileControl.gamingKeyBoard.data = currentData.map(
+                    (key) => {
+                        if (key.id == currentSelected.id) {
+                            return {
+                                ...key,
+                                size: currentSelected.size + 0.1
+                            };
+                        } else {
+                            return key;
+                        }
+                    }
+                );
+
+                state.mobileControl.gamingKeyBoard.currentSelected.size =
+                    currentSelected.size + 0.1;
+            }
+        },
+        decrease_key_gamingKeyboard: (state, action) => {
+            const currentSelected =
+                state.mobileControl.gamingKeyBoard.currentSelected;
+            const currentData = state.mobileControl.gamingKeyBoard.data;
+            if (currentSelected.size <= 0.1) {
+                state.mobileControl.gamingKeyBoard.data = currentData.map(
+                    (key) => {
+                        if (key.id == currentSelected.id) {
+                            return {
+                                ...key,
+                                size: 0.1
+                            };
+                        } else {
+                            return key;
+                        }
+                    }
+                );
+                state.mobileControl.gamingKeyBoard.currentSelected.size = 0.1;
+            } else {
+                state.mobileControl.gamingKeyBoard.data = currentData.map(
+                    (key) => {
+                        if (key.id == currentSelected.id) {
+                            return {
+                                ...key,
+                                size: currentSelected.size - 0.1
+                            };
+                        } else {
+                            return key;
+                        }
+                    }
+                );
+                state.mobileControl.gamingKeyBoard.currentSelected.size =
+                    currentSelected.size - 0.1;
+            }
         },
         set_gamingKeyboard_data: (state, action) => {
             const parsePayload = JSON.parse(action.payload);

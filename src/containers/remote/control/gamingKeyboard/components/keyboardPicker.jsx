@@ -21,8 +21,6 @@ export const KeyboardPicker = () => {
             return newPos;
         });
 
-        console.log(button);
-
         appDispatch(
             add_key_gamingKeyboard({
                 name: button.toUpperCase(),
@@ -53,7 +51,8 @@ export const KeyboardPicker = () => {
                     Left: '&#x2190;',
                     Down: '&#x2193;',
                     Right: '&#x2192;',
-                    Capslock: 'Caps'
+                    Capslock: 'Caps',
+                    Escape: 'Esc'
                 }}
                 layout={{
                     default: [

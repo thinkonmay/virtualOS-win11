@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import {
     appDispatch,
+    decrease_key_gamingKeyboard,
     delete_key_gamingKeyboard,
+    increase_key_gamingKeyboard,
     move_key_gamingKeyboard,
     save_gamingKeyboard_to_local,
+    set_default_gamingKeyboard,
     set_gamingKeyboard_data,
     set_keyboard_edit_state,
     useAppSelector
@@ -13,10 +16,12 @@ import { CustomJoyStick } from '../gamepad/button/joystick';
 import { GamingKeyboardButton } from './components/button';
 
 import {
+    MdAddCircleOutline,
     MdOutlineArrowBack,
     MdOutlineArrowDownward,
     MdOutlineArrowForward,
-    MdOutlineArrowUpward
+    MdOutlineArrowUpward,
+    MdOutlineRemoveCircleOutline
 } from 'react-icons/md';
 import { PiMouseLeftClickFill, PiMouseRightClickFill } from 'react-icons/pi';
 import { keyboard, virtMouse } from '../../../../../src-tauri/singleton';
@@ -88,7 +93,9 @@ function GamingKeyboard() {
 
             case 'capslock':
                 convertedName = 'Cap';
-
+                break;
+            case 'escape':
+                convertedName = 'Esc';
                 break;
 
             case 'control':
@@ -276,6 +283,9 @@ const NavDraggable = () => {
     const selected = useAppSelector(
         (state) => state.sidepane.mobileControl.gamingKeyBoard.currentSelected
     );
+
+    const text = selected ? Math.round(selected.size * 50) : 0;
+
     const handleAddKey = () => {
         appDispatch(set_keyboard_edit_state('addingKey'));
     };
@@ -288,9 +298,43 @@ const NavDraggable = () => {
         appDispatch(set_keyboard_edit_state('idle'));
         appDispatch(save_gamingKeyboard_to_local());
     };
+
     return (
         <div className="flex-1 flex justify-between ml-2">
             <div className="ctnBtns ">
+                {selected ? (
+                    <div className="ctnContent items-center">
+                        <p className="title">Kích cỡ:</p>
+
+                        <div className="btnGroup">
+                            <button
+                                onClick={() => {
+                                    appDispatch(decrease_key_gamingKeyboard());
+                                }}
+                            >
+                                <MdOutlineRemoveCircleOutline
+                                    fontSize={'1.4rem'}
+                                    color="#fff"
+                                />
+                            </button>
+
+                            <p className="px-2 py-1 bg-blue-600 rounded-md">
+                                {text}%
+                            </p>
+
+                            <button
+                                onClick={() => {
+                                    appDispatch(increase_key_gamingKeyboard());
+                                }}
+                            >
+                                <MdAddCircleOutline
+                                    fontSize={'1.4rem'}
+                                    color="#fff"
+                                />
+                            </button>
+                        </div>
+                    </div>
+                ) : null}
                 {selected?.id && selected.type == 'key' ? (
                     <button
                         onClick={handleRemoveKey}
@@ -308,18 +352,22 @@ const NavDraggable = () => {
                 </button>
             </div>
 
-            <div>
-                <p className="font-[8px] bg-slate-900 rounded-md p-2 text-gray-100">
-                    Chọn phím để chỉnh sửa!
-                </p>
-            </div>
+            {!selected ? (
+                <div>
+                    <p className="font-[8px] bg-slate-900 rounded-md p-2 text-gray-100">
+                        Chọn phím để chỉnh sửa!
+                    </p>
+                </div>
+            ) : null}
             <div className="ctnBtns ">
-                {/*<button
-					onClick={() => { }}
-					className="instbtn hover:bg-green-600 bg-green-700"
-				>
-					Về mặc định
-				</button>*/}
+                <button
+                    onClick={() => {
+                        appDispatch(set_default_gamingKeyboard());
+                    }}
+                    className="instbtn hover:bg-green-600 bg-green-700"
+                >
+                    Về mặc định
+                </button>
                 <button onClick={handleFinish} className="instbtn">
                     Xong
                 </button>

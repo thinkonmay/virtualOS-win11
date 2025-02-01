@@ -19,7 +19,8 @@ import {
     appDispatch,
     change_bitrate,
     change_framerate,
-    scancode_toggle,
+    open_gaming_keyboard,
+    scancode,
     set_keyboard_edit_state,
     sidepane_panehide,
     toggle_gamepad,
@@ -405,7 +406,7 @@ const GamePadSetting = () => {
                         <button
                             onClick={() => {
                                 appDispatch(toggle_gaming_keyboard());
-                                appDispatch(scancode_toggle());
+                                appDispatch(scancode(true));
                             }}
                             className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
                         >
@@ -414,7 +415,7 @@ const GamePadSetting = () => {
                         <button
                             className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
                             onClick={() => {
-                                appDispatch(toggle_gaming_keyboard());
+                                appDispatch(open_gaming_keyboard());
                                 appDispatch(
                                     set_keyboard_edit_state('draggable')
                                 );
