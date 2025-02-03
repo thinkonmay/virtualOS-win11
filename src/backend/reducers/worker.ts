@@ -172,12 +172,7 @@ export const workerAsync = {
                 await POCKETBASE.collection('thirdparty_account').getFullList();
 
             const result = await GetInfo(address);
-            if (result instanceof Error)
-                return {
-                    [address]: {
-                        availability: 'not_ready'
-                    }
-                };
+            if (result instanceof Error) return { [address]: {} };
 
             const computer = result as innerComputer;
 
