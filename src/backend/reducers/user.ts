@@ -260,67 +260,38 @@ export const userAsync = {
             if (errr1) throw new Error(errr1.message);
             else if (subs.length == 0) return { status: 'NO_ACTION' };
 
-            let has_pending = false;
             for (const {
                 id: subscription_id,
                 cluster: cluster_id,
                 ended_at,
                 local_metadata
             } of subs) {
-                const { data: allPaymentRequest, error: err } = await GLOBAL()
-                    .from('payment_request')
-                    .select('id,created_at,plan')
-                    .or('status.eq.PAID,status.eq.IMPORTED')
-                    .eq('subscription', subscription_id)
-                    .order('created_at', { ascending: false });
+                const {data,error} = await GLOBAL()
+                    .rpc('get_subscription_verify', {
+                        sub_id: subscription_id
+                    })
+                if (error) continue; // TODO
+                else if (data.length == 0) continue;
+                const [sub_verify_data] = data;
 
-                if (err) continue;
-                else if (allPaymentRequest.length > 0) {
-                    const [{ created_at, plan }] = allPaymentRequest;
-
-                    const {
-                        data: [{ domain: cluster }],
-                        error: errrrr
-                    } = await GLOBAL()
-                        .from('clusters')
-                        .select('domain')
-                        .eq('id', cluster_id)
-                        .eq('active', true);
-                    if (errrrr) continue;
-
-                    const {
-                        data: [{ policy }],
-                        error: errrrrr
-                    } = await GLOBAL()
-                        .from('plans')
-                        .select('policy')
-                        .eq('id', plan);
-                    if (errrrrr) continue;
-
+                if (sub_verify_data.verified_at != null){
                     const origin = new URL(window.location.href).host;
                     return {
                         status: 'PAID',
-                        cluster,
+                        cluster: sub_verify_data.domain,
                         correct_domain:
-                            origin.includes('localhost') || origin == cluster,
-                        local_metadata,
-                        policy,
-                        created_at,
-                        ended_at
+                            origin.includes('localhost') || origin == sub_verify_data.domain,
+                        local_metadata: sub_verify_data.local_metadata,
+                        policy: sub_verify_data.policy,
+                        created_at: sub_verify_data.created_at,
+                        ended_at: sub_verify_data.ended_at,
                     };
-                }
-
-                const { data: pendingsubs, error: errr } = await GLOBAL()
-                    .from('payment_request')
-                    .select('id')
-                    .gt('expire_at', new Date().toISOString())
-                    .eq('status', 'PENDING')
-                    .eq('subscription', subscription_id);
-                if (errr) continue;
-                else if (pendingsubs.length > 0) has_pending = true;
+                } else 
+                    return { status: 'PENDING' };
+                
             }
 
-            return { status: !has_pending ? 'NO_ACTION' : 'PENDING' };
+            return { status: 'NO_ACTION' };
         }
     ),
     get_plans: createAsyncThunk(
