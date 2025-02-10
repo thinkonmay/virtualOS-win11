@@ -1,0 +1,152 @@
+//.gamingKeyboard {
+//	width: 100vw;
+//	height: 100vh;
+//	position: fixed;
+
+
+.defaultGamingKeyButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
+	width: inherit;
+	height: inherit;
+	color: rgba(255, 255, 255);
+	border: 1.5px solid rgba($color: rgb(255, 255, 255), $alpha: 0.2);
+	font-size: 12px;
+	font-weight: 600;
+	background-color: rgba($color: #2d2b2b, $alpha: 0.5);
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	overflow: hidden;
+
+	//&:active {
+	//	background-color: rgba($color: #ffffff, $alpha: 0.4);
+	//}
+	&.circle {
+		border-radius: 50%;
+	}
+
+	&.rectangle {
+		border-radius: 1em;
+	}
+
+	&.hold {
+		box-shadow: rgba(2, 2, 255, 0.2) 0px 0px 2px 3px;
+		//border-color: unset;
+		//border: unset;/
+	}
+
+}
+
+.wrapperGamingKeyDraggable {
+	width: max-content;
+	position: absolute;
+	z-index: 1;
+
+	&.selected {
+		border: 1px solid rgb(175, 169, 169);
+		padding: 2px;
+		box-sizing: border-box;
+	}
+}
+
+//}
+
+.navGamingKeyBoardSetting {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 2;
+	height: 56px;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 32px;
+	transform: translateY(-100%);
+
+	background-color: black;
+	border-bottom: 1px solid rgba(143, 137, 137, 0.514);
+
+
+	&.slide-in {
+		transform: translateY(0%)
+	}
+
+	&.slide-out {
+		transform: translateY(-100%)
+	}
+
+	.wrapperLeft {
+		display: flex;
+		gap: 16px;
+
+
+
+	}
+
+	.ctnBtns {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		.instbtn {
+			padding: 8px 12px;
+			font-weight: 600;
+		}
+
+		.ctnContent {
+			display: flex;
+			gap: 8px;
+			color: white;
+			font-size: 12px;
+
+			.title {
+				font-weight: 600;
+			}
+		}
+
+		.btnGroup {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+
+			button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				background-color: transparent;
+
+				outline: none;
+
+			}
+		}
+
+	}
+}
+
+.keyboardPicker {
+	position: fixed;
+	z-index: 6;
+
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transition: all ease-in-out 0.5s;
+	transform: translateY(100%);
+
+	&.slide-in {
+		transform: translateY(0%)
+	}
+
+	&.slide-out {
+		transform: translateY(100%)
+	}
+
+
+}

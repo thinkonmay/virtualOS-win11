@@ -49,7 +49,8 @@ export const VirtKeyboard = () => {
                 display={{
                     Control: 'Ctrl',
                     Backspace: 'Del',
-                    Close: '&#x2715;'
+                    Close: '&#x2715;',
+                    Shift: 'A@#!'
                 }}
                 layout={{
                     default: [

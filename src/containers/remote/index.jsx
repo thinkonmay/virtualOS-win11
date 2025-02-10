@@ -16,12 +16,16 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import { VirtualGamepad } from './control/gamepad';
+import GamingKeyboard from './control/gamingKeyboard';
 import { VirtKeyboard } from './control/keyboard';
 import './remote.scss';
 
 export const Remote = () => {
     const keyboard = useAppSelector(
         (state) => !state.sidepane.mobileControl.keyboardHide
+    );
+    const gamingKeyboard = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamingKeyBoard.open
     );
     const gamepad = useAppSelector(
         (state) => !state.sidepane.mobileControl.gamePadHide
@@ -76,6 +80,8 @@ export const Remote = () => {
                     <VirtKeyboard />
                 ) : gamepad || draggable ? (
                     <VirtualGamepad />
+                ) : gamingKeyboard ? (
+                    <GamingKeyboard />
                 ) : (
                     <>
                         <div

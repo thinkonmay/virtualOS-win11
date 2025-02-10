@@ -41,7 +41,8 @@ const apps: AppData[] = [
         name: [Contents.TEMPLATE_APP],
         id: 'store',
         action: 'apps/app_toggle',
-        payload: 'store'
+        payload: 'store',
+        size: 'mini'
     },
     {
         name: [Contents.CONNECT_APP],

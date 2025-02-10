@@ -23,6 +23,7 @@ type Usage = {
         name: string;
     };
     isExpired?: boolean;
+    isNewUser: boolean;
 };
 
 export type PaymentStatus =
@@ -122,7 +123,8 @@ export const userAsync = {
     fetch_usage: createAsyncThunk(
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
-            const { volume_id, subscription } = (getState() as RootState).user;
+            const { volume_id, subscription, email } = (getState() as RootState)
+                .user;
             if (!isUUID(volume_id)) return null;
             else if (subscription.status != 'PAID') return;
             const { created_at, ended_at, policy } = subscription;
@@ -137,15 +139,26 @@ export const userAsync = {
             ) {
                 limit_hour = 150;
             }
-            const { data: total_usage, error } = await LOCAL().rpc(
+
+            const { data: usageData, error: usageErr } = await GLOBAL().rpc(
+                'get_subscription',
+                {
+                    email
+                }
+            );
+
+            const { data: get_volume_usage, error } = await LOCAL().rpc(
                 'get_volume_usage',
                 {
-                    volume_id,
-                    _to: new Date().toISOString(),
-                    _from: created_at
+                    volume_id: usageData[0].volume_id,
+                    _to: usageData[0].ended_at,
+                    _from: usageData[0].created_at
                 }
             );
             if (error) throw error;
+
+            const total_usage = get_volume_usage ?? 0;
+            const isNewUser = usageData[0]?.new_user;
 
             const { data: map, error: errr } = await LOCAL()
                 .from('volume_map')
@@ -222,12 +235,12 @@ export const userAsync = {
                     })
                 );
             }
-
             return {
                 node,
                 template,
                 total_usage: ((total_usage as number) ?? 0) / 60,
-                isExpired
+                isExpired,
+                isNewUser
             };
         }
     ),
