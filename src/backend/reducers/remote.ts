@@ -144,39 +144,6 @@ export const remoteAsync = {
             appDispatch(close_remote());
         }
     },
-    ping_session: async () => {
-        const { active, ping_status } = store.getState().remote;
-        const data_stack = store.getState().popup.data_stack;
-        if (!active || CLIENT == null) return;
-
-        const lastactive = () =>
-            Math.min(CLIENT?.hid?.last_active(), CLIENT?.touch?.last_active());
-
-        if (lastactive() > 5 * 60) {
-            if (data_stack.length > 0) return;
-
-            appDispatch(
-                popup_open({
-                    type: 'notify',
-                    data: {
-                        loading: false,
-                        tips: false,
-                        title: 'Please move your mouse!'
-                    }
-                })
-            );
-
-            while (lastactive() > 2)
-                await new Promise((r) => setTimeout(r, 1000));
-
-            appDispatch(popup_close());
-        }
-
-        if ((await PINGER()) > 5 && ping_status)
-            appDispatch(remoteSlice.actions.ping_status(false));
-        else if (!ping_status)
-            appDispatch(remoteSlice.actions.ping_status(true));
-    },
     sync: () => {
         const {
             active,

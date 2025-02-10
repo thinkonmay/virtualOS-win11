@@ -159,7 +159,6 @@ export const {
 } = userAsync;
 export const {
     check_worker,
-    ping_session,
     sync,
     direct_access,
     save_reference,

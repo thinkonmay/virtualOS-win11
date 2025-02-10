@@ -18,7 +18,6 @@ import {
     get_plans,
     have_focus,
     loose_focus,
-    ping_session,
     popup_open,
     setting_theme,
     show_tutorial,
@@ -209,5 +208,4 @@ export const PreloadBackground = async (update_ui?: boolean) => {
     setInterval(check_worker, 10 * 1000);
     setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 1000);
-    setInterval(ping_session, 1000 * 30);
 };
