@@ -266,29 +266,30 @@ export const userAsync = {
                 ended_at,
                 local_metadata
             } of subs) {
-                const {data,error} = await GLOBAL()
-                    .rpc('get_subscription_verify', {
+                const { data, error } = await GLOBAL().rpc(
+                    'get_subscription_verify',
+                    {
                         sub_id: subscription_id
-                    })
-                if (error) continue; // TODO
+                    }
+                );
+                if (error) continue;
                 else if (data.length == 0) continue;
                 const [sub_verify_data] = data;
 
-                if (sub_verify_data.verified_at != null){
+                if (sub_verify_data.verified_at != null) {
                     const origin = new URL(window.location.href).host;
                     return {
                         status: 'PAID',
                         cluster: sub_verify_data.domain,
                         correct_domain:
-                            origin.includes('localhost') || origin == sub_verify_data.domain,
+                            origin.includes('localhost') ||
+                            origin == sub_verify_data.domain,
                         local_metadata: sub_verify_data.local_metadata,
                         policy: sub_verify_data.policy,
                         created_at: sub_verify_data.created_at,
-                        ended_at: sub_verify_data.ended_at,
+                        ended_at: sub_verify_data.ended_at
                     };
-                } else 
-                    return { status: 'PENDING' };
-                
+                } else return { status: 'PENDING' };
             }
 
             return { status: 'NO_ACTION' };
