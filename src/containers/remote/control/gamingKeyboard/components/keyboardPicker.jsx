@@ -33,7 +33,7 @@ export const KeyboardPicker = () => {
         );
     };
 
-    const handleKeyReleased = (button) => { };
+    const handleKeyReleased = (button) => {};
     return (
         <div
             id="keyboard"
