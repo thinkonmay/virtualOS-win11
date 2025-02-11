@@ -16,6 +16,35 @@
 		transform: translateY(100%)
 	}
 
+	.history {
+		position: absolute;
+		top: -24px;
+		right: 0;
+		left: 0;
+
+
+		.content {
+
+			margin: 0 auto;
+			max-width: 320px;
+			min-width: 120px;
+
+			padding: 8px 12px;
+			border-radius: 8px;
+			background: #fff;
+			min-height: 34px;
+
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: auto;
+			max-height: max-content;
+			text-align: center;
+			word-wrap: break-word;
+			text-overflow: ellipsis;
+		}
+
+
+	}
 
 	.hg-theme-default {
 		background-color: rgb(28 28 28 / 70%);
@@ -73,6 +102,10 @@
 			background-color: #ececec00;
 		}
 
+		+.hg-activeButton {
+			background-color: rgba(0, 0, 0, 0.5);
 
+		}
 	}
+
 }
