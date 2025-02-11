@@ -71,7 +71,6 @@ export const VirtKeyboard = () => {
     };
 
 
-    console.log(writing);
     const handleKeyReleased = (button) => { };
     return (
         <div id="keyboard" className={'virtKeyBoard slide-in'}>
