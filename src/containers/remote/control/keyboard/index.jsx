@@ -4,7 +4,11 @@ import 'react-simple-keyboard/build/css/index.css';
 import useSound from 'use-sound';
 import { useShift } from '../../../../../src-tauri/core';
 import { keyboard } from '../../../../../src-tauri/singleton';
-import { appDispatch, toggle_keyboard, useAppSelector } from '../../../../backend/reducers';
+import {
+    appDispatch,
+    toggle_keyboard,
+    useAppSelector
+} from '../../../../backend/reducers';
 import './index.scss';
 import ringSound from '/audio/keyboard.mp3';
 
@@ -14,32 +18,32 @@ export const VirtKeyboard = () => {
 
     const keyboardShow = useAppSelector(
         (state) => !state.sidepane.mobileControl.keyboardHide
-    ); const [writing, setWriting] = useState([])
+    );
+    const [writing, setWriting] = useState([]);
     const handleKeyPress = async (button) => {
         if (button == '') {
             appDispatch(toggle_keyboard());
-            setWriting([])
-            return
-
+            setWriting([]);
+            return;
         }
         if (button === 'Close') {
             appDispatch(toggle_keyboard());
-            setWriting([])
+            setWriting([]);
 
             return;
         }
         keyboard(
             ...(useShift(button)
                 ? [
-                    { val: 'Shift', action: 'down' },
-                    { val: button, action: 'down' },
-                    { val: button, action: 'up' },
-                    { val: 'Shift', action: 'up' }
-                ]
+                      { val: 'Shift', action: 'down' },
+                      { val: button, action: 'down' },
+                      { val: button, action: 'up' },
+                      { val: 'Shift', action: 'up' }
+                  ]
                 : [
-                    { val: button, action: 'down' },
-                    { val: button, action: 'up' }
-                ])
+                      { val: button, action: 'down' },
+                      { val: button, action: 'up' }
+                  ])
         );
 
         play();
@@ -47,45 +51,41 @@ export const VirtKeyboard = () => {
             setLayoutName(layoutName === 'default' ? 'shift' : 'default');
 
         if (!blacklist.includes(button) && button !== 'Space') {
-
-            setWriting(prev => {
-                const oldPrev = [...prev]
-                oldPrev.push(button)
-                return oldPrev
-            })
+            setWriting((prev) => {
+                const oldPrev = [...prev];
+                oldPrev.push(button);
+                return oldPrev;
+            });
         }
         if (button == 'Backspace') {
-            setWriting(prev => {
-                const oldPrev = [...prev]
-                oldPrev.pop()
-                return oldPrev
-            })
-        }
-        else if (button == 'Space') {
-            setWriting(prev => {
-                const oldPrev = [...prev]
-                oldPrev.push(<>&nbsp;</>)
-                return oldPrev
-            })
+            setWriting((prev) => {
+                const oldPrev = [...prev];
+                oldPrev.pop();
+                return oldPrev;
+            });
+        } else if (button == 'Space') {
+            setWriting((prev) => {
+                const oldPrev = [...prev];
+                oldPrev.push(<>&nbsp;</>);
+                return oldPrev;
+            });
         }
     };
 
-
-    const handleKeyReleased = (button) => { };
+    const handleKeyReleased = (button) => {};
     return (
         <div id="keyboard" className={'virtKeyBoard slide-in'}>
             <audio src={ringSound}></audio>
 
-            {
-                writing.length > 0 ? <div
-                    className='history'
-
-                >
-                    <p className='content '>
-                        {writing.map(t => <>{t}</>)}
+            {writing.length > 0 ? (
+                <div className="history">
+                    <p className="content ">
+                        {writing.map((t) => (
+                            <>{t}</>
+                        ))}
                     </p>
-                </div> : null
-            }
+                </div>
+            ) : null}
 
             <Keyboard
                 layoutName={layoutName}
@@ -121,7 +121,23 @@ export const VirtKeyboard = () => {
     );
 };
 
-
-const blacklist = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-    'Backspace', 'Shift', 'Enter', 'Alt', 'Close', 'Control'
-]
+const blacklist = [
+    'F1',
+    'F2',
+    'F3',
+    'F4',
+    'F5',
+    'F6',
+    'F7',
+    'F8',
+    'F9',
+    'F10',
+    'F11',
+    'F12',
+    'Backspace',
+    'Shift',
+    'Enter',
+    'Alt',
+    'Close',
+    'Control'
+];

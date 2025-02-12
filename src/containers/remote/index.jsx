@@ -6,7 +6,7 @@ import {
     VideoWrapper,
     isMobile
 } from '../../../src-tauri/core';
-import { Assign, CLIENT } from '../../../src-tauri/singleton';
+import { Assign, CLIENT, virtMouseWheel } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     set_fullscreen,
@@ -15,6 +15,7 @@ import {
     toggle_objectfit,
     useAppSelector
 } from '../../backend/reducers';
+import { Icon } from '../../components/shared/general';
 import { VirtualGamepad } from './control/gamepad';
 import GamingKeyboard from './control/gamingKeyboard';
 import { VirtKeyboard } from './control/keyboard';
@@ -85,24 +86,7 @@ export const Remote = () => {
                 ) : gamingKeyboard ? (
                     <GamingKeyboard />
                 ) : (
-                    <>
-                        <div
-                            onClick={() => {
-                                appDispatch(toggle_keyboard());
-                            }}
-                            className="z-10 absolute bottom-5 right-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
-                        >
-                            <MdOutlineKeyboard fontSize={'1.4rem'} />
-                        </div>
-                        <div
-                            onClick={() => {
-                                appDispatch(toggle_gamepad());
-                            }}
-                            className="z-10 absolute bottom-5 left-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
-                        >
-                            <MdOutlineSportsEsports fontSize={'1.4rem'} />
-                        </div>
-                    </>
+                    <Plugin></Plugin>
                 )
             ) : null}
 
@@ -128,5 +112,48 @@ export const Remote = () => {
                 style={{ zIndex: -5, opacity: 0 }}
             ></audio>
         </div>
+    );
+};
+
+const Plugin = () => {
+    return (
+        <>
+            <div
+                onClick={() => {
+                    appDispatch(toggle_keyboard());
+                }}
+                className="z-10 absolute bottom-5 right-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+            >
+                <MdOutlineKeyboard fontSize={'1.4rem'} />
+            </div>
+            <div
+                onClick={() => {
+                    appDispatch(toggle_gamepad());
+                }}
+                className="z-10 absolute bottom-5 left-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+            >
+                <MdOutlineSportsEsports fontSize={'1.4rem'} />
+            </div>
+
+            <div className="z-10 absolute bottom-[40%]  right-4 flex flex-col gap-4">
+                <button
+                    className="py-2 rounded-md bg-[#212121c4]"
+                    onClick={() => {
+                        virtMouseWheel(-150);
+                    }}
+                >
+                    <Icon src="mouseUp" width={32} />
+                </button>
+
+                <button
+                    className="py-2 rounded-md bg-[#212121c4]"
+                    onClick={() => {
+                        virtMouseWheel(150);
+                    }}
+                >
+                    <Icon src="mouseDown" width={32} />
+                </button>
+            </div>
+        </>
     );
 };
