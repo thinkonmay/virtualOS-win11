@@ -208,6 +208,89 @@
 			}
 		}
 	}
+
+	.depositPage {
+		flex: 1;
+		height: 100%;
+
+		.subtitle {
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		.depositBox {
+			margin-top: 32px;
+
+			.wrapperDeposit {
+				display: flex;
+				height: 50px;
+				gap: 16px;
+				margin-top: 12px;
+
+				.depositInput {
+					border-radius: 6px;
+					padding: 0 14px;
+					width: 320px;
+					font-size: 16px;
+					font-weight: 600;
+				}
+
+				.depositBtn {
+					padding-left: 24px;
+					padding-right: 24px;
+					font-weight: bold;
+					font-size: 18px;
+				}
+			}
+		}
+
+		.optionsBox {
+			display: flex;
+			gap: 8px;
+			margin-top: 8px;
+
+			.option {
+				border-radius: 99px;
+				background-color: var(--bg1);
+				padding: 6px 8px;
+				font-size: 14px;
+			}
+
+
+		}
+
+		.noticesBox {
+			margin-top: 12px;
+
+			.title {
+				font-size: 14px;
+				font-weight: 600;
+				margin-bottom: 4px;
+
+			}
+
+			ul {
+				font-size: 14px;
+				padding-left: 18px;
+			}
+		}
+
+		.cardDepositBox {
+			margin-top: 40px;
+			margin-bottom: 20px;
+		}
+
+		.toggleContentBtn {
+			display: flex;
+			gap: 4px;
+			align-items: center;
+
+			span {
+				font-size: 20px;
+				font-weight: 600;
+			}
+		}
+	}
 }
 
 

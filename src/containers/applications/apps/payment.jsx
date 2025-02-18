@@ -2,7 +2,9 @@ import { useState } from 'react';
 import {
     MdArrowDropDown,
     MdArrowForwardIos,
-    MdArrowRight
+    MdArrowRight,
+    MdKeyboardArrowDown,
+    MdKeyboardArrowRight
 } from 'react-icons/md';
 import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
@@ -92,7 +94,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [page, setPage] = useState('sub'); //sub - refund - storage
+    const [page, setPage] = useState('deposit'); //sub - refund - storage
 
     const handleChangePage = (input) => {
         setPage(input);
@@ -119,11 +121,19 @@ export const PaymentApp = () => {
                 <div className="navPayment">
                     <div
                         className={
+                            page == 'deposit' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('deposit')}
+                    >
+                        Nạp tiền
+                    </div>
+                    <div
+                        className={
                             page == 'storage' ? 'item subActive' : 'item'
                         }
                         onClick={() => handleChangePage('storage')}
                     >
-                        Giá dung lượng
+                        Thuê dung lượng
                     </div>
                     <div
                         className={
@@ -131,7 +141,7 @@ export const PaymentApp = () => {
                         }
                         onClick={() => handleChangePage('sub')}
                     >
-                        Bảng giá
+                        Thuê CloudPC
                     </div>
                     <div
                         className={
@@ -149,9 +159,11 @@ export const PaymentApp = () => {
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
                             <RefundPage />
-                        ) : (
-                            <StoragePage />
-                        )}
+                        ) : page == 'deposit' ?
+                            <DepositPage />
+                            : (
+                                <StoragePage />
+                            )}
                     </div>
                 </LazyComponent>
             </div>
@@ -526,3 +538,113 @@ const StoragePage = () => {
         </div>
     );
 };
+
+
+const DepositPage = () => {
+
+
+    return (
+        <div className="depositPage">
+            <h2 className="title">Chuyển khoản ngân hàng</h2>
+
+
+            <div className="depositBox">
+                <p className='subtitle'>Số tiền muốn nạp</p>
+
+                <div className="wrapperDeposit">
+                    <input type="number" className='depositInput' placeholder='Nhập số tiền (VNĐ)' />
+                    <button className="instbtn depositBtn">
+                        Nạp tiền
+                    </button>
+                </div>
+
+
+
+
+            </div>
+
+            <div className='optionsBox'>
+                <div className='option'>
+                    Tuỳ chọn
+                </div>
+                <div className='option'>
+                    Gia hạn gói hiện tại
+                </div>
+            </div>
+            <div className="noticesBox">
+                <p className='title'>Lưu ý:</p>
+                <ul className=''>
+                    <li>
+                        Số tiền nạp tối thiểu là 50,000 VNĐ
+
+                    </li>
+                    <li>
+                        Tiền đã nạp không thể rút ra thành tiền mặt
+                    </li>
+                    <li>
+                        Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên hệ Fanpage để được hỗ trợ
+                    </li>
+                </ul>
+            </div>
+
+            <CardDepositBox />
+            <OthersDepositBox />
+        </div>
+    )
+}
+
+const CardDepositBox = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <div className="cardDepositBox ">
+
+            <div
+                onClick={() => { setOpen(old => !old) }}
+                className="toggleContentBtn">
+                {
+                    open ?
+                        <MdKeyboardArrowDown fontSize={'1.5rem'} />
+                        : <MdKeyboardArrowRight fontSize={'1.5rem'} />
+                }
+                <span>Thanh toán bằng card</span>
+            </div>
+
+
+            {
+                open ? <div className='bg-slate-600 w-[480px] h-[240px] rounded-lg  mt-4'></div> : null
+            }
+
+
+        </div>
+    )
+}
+const OthersDepositBox = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <div className="othersDepositBox">
+
+            <div
+                onClick={() => { setOpen(old => !old) }}
+                className="toggleContentBtn">
+                {
+                    open ?
+                        <MdKeyboardArrowDown fontSize={'1.5rem'} />
+                        : <MdKeyboardArrowRight fontSize={'1.5rem'} />
+                }
+                <span>Các hình thức thanh toán khác: Paypal, vv</span>
+            </div>
+
+
+            {
+                open ? <p className='text-lg'>
+
+                    Vui lòng liên hệ Fanpage để được hỗ trợ thanh toán thủ công.
+                </p> : null
+            }
+
+
+        </div>
+    )
+}
