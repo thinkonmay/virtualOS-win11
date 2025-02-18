@@ -91,7 +91,7 @@ export const {
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =
     settSlice.actions;
-export const { toggle_hide_vm } = workerSlice.actions;
+export const { toggle_hide_vm, set_current_address } = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
     sidepane_bandhide,

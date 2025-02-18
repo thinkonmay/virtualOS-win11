@@ -49,7 +49,7 @@ type WorkerType = {
 const initialState: WorkerType = {
     data: {},
 
-    currentAddress: '',
+    currentAddress: '127.0.0.1',
     HideVM: true
 };
 
@@ -72,11 +72,9 @@ export const workerAsync = {
     },
     worker_refresh: createAsyncThunk(
         'worker_refresh',
-        async (): Promise<void> => {
-            const addr = '10.20.20.230';
-            // const addr = '127.0.0.1';
+        async (_: void, { getState }): Promise<void> => {
+            const addr = (getState() as RootState).worker.currentAddress
             await appDispatch(workerAsync.fetch_local_worker(addr));
-            appDispatch(workerSlice.actions.set_current_address(addr));
         }
     ),
     worker_refresh_ui: createAsyncThunk(
