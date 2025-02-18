@@ -118,6 +118,7 @@ export async function CacheRequest<T>(
     return cache;
 }
 const filterActions = [
+    'update_local_worker',
     'fetch_local_worker',
     'fetch_user',
     'fetch_usage',

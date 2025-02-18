@@ -24,7 +24,6 @@ import {
     MAX_FRAMERATE,
     MIN_BITRATE,
     MIN_FRAMERATE,
-    PINGER,
     ready,
     set_hq,
     SIZE
@@ -120,17 +119,16 @@ export const setClipBoard = async (content: string) => {
 };
 export const remoteAsync = {
     check_worker: async () => {
-        const { remote, worker } = store.getState();
-        if (!remote.active) return;
-        else if (remote.direct_access) return;
+        const {
+            remote: { active, direct_access }
+        } = store.getState();
+        if (!active) return;
+        else if (direct_access) return;
         else if (CLIENT == null) return;
-        else if (
-            CLIENT.Metrics.audio.status == 'connected' ||
-            CLIENT.Metrics.video.status == 'connected'
-        )
-            return;
+        else if (CLIENT.Metrics.video.status == 'connected') return;
 
         await appDispatch(worker_refresh());
+        const { worker } = store.getState();
         if (worker.data[worker.currentAddress].availability != 'started') {
             appDispatch(
                 popup_open({

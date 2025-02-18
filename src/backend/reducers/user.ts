@@ -519,11 +519,11 @@ export const userAsync = {
                     );
 
                     await new Promise((r) => setTimeout(r, 5000));
-                    await appDispatch(popup_close());
+                    appDispatch(popup_close());
 
                     await appDispatch(worker_refresh());
                     await appDispatch(fetch_subscription());
-                    await appDispatch(app_toggle('connectPc'));
+                    appDispatch(app_toggle('connectPc'));
                     return;
                 }
 

@@ -14,13 +14,12 @@ import {
     CloseSession,
     Computer,
     GetInfo,
-    LOCAL,
+    getRemoteSession,
     LoginSteamOnVM,
     LogoutSteamOnVM,
     MountOnVM,
     ParseRequest,
     POCKETBASE,
-    Session,
     StartThinkmay,
     UnmountOnVM
 } from '../../../src-tauri/api';
@@ -74,7 +73,8 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (): Promise<void> => {
-            const addr = '127.0.0.1';
+            const addr = '10.20.20.230';
+            // const addr = '127.0.0.1';
             await appDispatch(workerAsync.fetch_local_worker(addr));
             appDispatch(workerSlice.actions.set_current_address(addr));
         }
@@ -109,104 +109,71 @@ export const workerAsync = {
 
             const info = await GetInfo(currentAddress);
             if (info instanceof Error) throw info;
+            else if (!info.virtReady && !info.remoteReady)
+                throw new Error(`no remote capability on ${currentAddress}`);
 
-            let session: Session | undefined = undefined;
-            if (info.virtReady) {
-                info.Sessions?.forEach(
-                    (x) =>
-                        x.vm?.Sessions?.forEach(
-                            (y) =>
-                                (session =
-                                    session != undefined ||
-                                    y.thinkmay == undefined
-                                        ? session
-                                        : y)
-                        )
+            let session = getRemoteSession(info);
+            if (session == undefined) {
+                const resp = await StartThinkmay(
+                    currentAddress,
+                    info.virtReady ? { HideVM: HideVM } : undefined,
+                    info.virtReady ? workerAsync.showPosition : undefined
                 );
-                if (session == undefined) {
-                    const resp = await StartThinkmay(
+                if (resp instanceof Error) throw resp;
+                appDispatch(
+                    workerAsync.update_local_worker({
                         currentAddress,
-                        { HideVM: HideVM },
-                        workerAsync.showPosition
-                    );
-                    if (resp instanceof Error) throw resp;
-                    else
-                        session = resp.vm.Sessions?.find(
-                            (x) => x.thinkmay != undefined
-                        );
-                }
-            } else if (info.remoteReady) {
-                session = info.Sessions?.find((x) => x.thinkmay != undefined);
-                if (session == undefined) {
-                    const resp = await StartThinkmay(currentAddress);
-                    if (resp instanceof Error) throw resp;
-                    else session = resp;
-                }
-            }
-
-            if (session == undefined)
-                throw new Error(
-                    `no remote capability on address ${currentAddress}`
+                        info: resp
+                    })
                 );
+                session = getRemoteSession(resp);
+            }
 
             const result = ParseRequest(currentAddress, session);
             if (result instanceof Error) throw result;
             await appDispatch(save_reference(result));
+
             showConnect();
             appDispatch(remote_connect(result));
             if (!(await ready())) appDispatch(close_remote());
             else appDispatch(remote_ready());
             appDispatch(popup_close());
-            appDispatch(worker_refresh());
-            return;
         }
     ),
-    fetch_local_worker: createAsyncThunk(
-        'fetch_local_worker',
+    update_local_worker: createAsyncThunk(
+        'update_local_worker',
         async (
-            address: string,
+            {
+                info,
+                currentAddress
+            }: {
+                info: Computer;
+                currentAddress: string;
+            },
+
             { getState }
         ): Promise<{ [address: string]: innerComputer }> => {
             const { bucket_name } = (getState() as RootState).user;
             const accounts =
                 await POCKETBASE.collection('thirdparty_account').getFullList();
 
-            const result = await GetInfo(address);
-            if (result instanceof Error) return { [address]: {} };
-
-            const computer = result as innerComputer;
+            const computer = info as innerComputer;
 
             if (computer.remoteReady) {
                 if (computer.Sessions?.length > 0)
                     computer.availability = 'started';
                 else computer.availability = 'ready';
             } else if (computer.virtReady) {
-                if (
-                    computer.Sessions?.find((x) => x.thinkmay != undefined) !=
-                    undefined
-                )
-                    computer.availability = 'started';
-                else if (computer.Volumes?.length == 0) {
+                if (computer.Volumes?.length == 0)
                     computer.availability = undefined;
-                } else {
-                    const { data, error: err } = await LOCAL()
-                        .from('job')
-                        .select('result')
-                        .in('arguments->>id', computer.Volumes ?? [])
-                        .order('created_at', { ascending: false })
-                        .limit(1);
-
-                    if (err) throw new Error(err.message);
-                    else if (data.length == 0) computer.availability = 'ready';
-                    else if (data.every((x) => x.result == 'success'))
-                        computer.availability = 'ready';
-                    else computer.availability = 'not_ready';
-                }
+                else if (computer.Volumes.find((x) => x.inuse) != undefined)
+                    computer.availability = 'started';
+                else computer.availability = 'ready';
             } else computer.availability = 'not_ready';
 
             if (accounts.length == 0) computer.steam = undefined;
             else if (
-                computer.Sessions.find((x) => x.app?.Type == 'steam') !=
+                computer.Sessions?.find((x) => x.app?.Type == 'steam') !=
                 undefined
             )
                 computer.steam = false;
@@ -214,26 +181,53 @@ export const workerAsync = {
 
             if (bucket_name == undefined) computer.storage = undefined;
             else if (
-                computer.Sessions.find((x) => x.app != undefined) != undefined
+                computer.Sessions?.find((x) => x.app != undefined) != undefined
             )
                 computer.storage = false;
             else computer.storage = false;
 
-            return { [address]: computer };
+            return { [currentAddress]: computer };
+        }
+    ),
+    fetch_local_worker: createAsyncThunk(
+        'fetch_local_worker',
+        async (address: string): Promise<void> => {
+            const result = await GetInfo(address);
+            if (result instanceof Error) throw result;
+
+            await appDispatch(
+                workerAsync.update_local_worker({
+                    info: result,
+                    currentAddress: address
+                })
+            );
         }
     ),
     unclaim_volume: createAsyncThunk(
         'unclaim_volume',
         async (_: void, { getState }): Promise<any> => {
-            const state = getState() as RootState;
-            const computer = state.worker.data[state.worker.currentAddress];
+            const {
+                worker: { data, currentAddress }
+            } = getState() as RootState;
+            const computer = data[currentAddress];
 
-            await CloseSession(
-                state.worker.currentAddress,
-                computer.Sessions.at(0)
+            let session = undefined;
+            if (computer.remoteReady)
+                session = computer.Sessions.find(
+                    (x) => x.thinkmay != undefined
+                );
+            else if (computer.virtReady)
+                session = computer.Sessions.find((x) => x.vm != undefined);
+            if (session == undefined)
+                throw new Error(`no session available on ${currentAddress}`);
+            const info = await CloseSession(currentAddress, session);
+            if (info instanceof Error) throw info;
+            await appDispatch(
+                workerAsync.update_local_worker({
+                    info,
+                    currentAddress: currentAddress
+                })
             );
-
-            await appDispatch(worker_refresh());
         }
     ),
     storage_session_toggle: createAsyncThunk(
@@ -246,7 +240,6 @@ export const workerAsync = {
             if (storage)
                 await appDispatch(workerAsync.storage_session_logout());
             else await appDispatch(workerAsync.storage_session_login());
-            await appDispatch(worker_refresh());
         }
     ),
     storage_session_login: createAsyncThunk(
@@ -258,10 +251,17 @@ export const workerAsync = {
                 state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
             if (bucket_name == undefined)
                 throw new Error(`user dont have any associate bucket name`);
-            return await MountOnVM(
+            const info = await MountOnVM(
                 state.worker.currentAddress,
                 session.id,
                 bucket_name
+            );
+            if (info instanceof Error) throw info;
+            appDispatch(
+                workerAsync.update_local_worker({
+                    info,
+                    currentAddress: state.worker.currentAddress
+                })
             );
         }
     ),
@@ -282,12 +282,11 @@ export const workerAsync = {
 
             if (steam) await appDispatch(workerAsync.app_session_logout());
             else await appDispatch(workerAsync.app_session_login());
-            await appDispatch(worker_refresh());
         }
     ),
     app_session_login: createAsyncThunk(
         'app_session_login',
-        async (_, { getState }): Promise<any> => {
+        async (_, { getState }): Promise<void> => {
             const state = getState() as RootState;
             const session =
                 state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
@@ -301,11 +300,18 @@ export const workerAsync = {
                 }
             ] = accounts;
 
-            return await LoginSteamOnVM(
+            const info = await LoginSteamOnVM(
                 state.worker.currentAddress,
                 session.id,
                 username ?? '',
                 password ?? ''
+            );
+            if (info instanceof Error) throw info;
+            appDispatch(
+                workerAsync.update_local_worker({
+                    info,
+                    currentAddress: state.worker.currentAddress
+                })
             );
         }
     ),
@@ -335,7 +341,7 @@ export const workerSlice = createSlice({
         BuilderHelper<WorkerType, any, any>(
             build,
             {
-                fetch: workerAsync.fetch_local_worker,
+                fetch: workerAsync.update_local_worker,
                 hander: (state, action) => {
                     state.data = {
                         ...state.data,
