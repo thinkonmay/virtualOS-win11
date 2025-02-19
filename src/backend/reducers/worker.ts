@@ -49,7 +49,7 @@ type WorkerType = {
 const initialState: WorkerType = {
     data: {},
 
-    currentAddress: '127.0.0.1',
+    currentAddress: 'play.2.thinkmay.net',
     HideVM: true
 };
 
