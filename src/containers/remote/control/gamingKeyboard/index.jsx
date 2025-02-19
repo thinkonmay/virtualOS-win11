@@ -65,7 +65,7 @@ function GamingKeyboard() {
         });
     };
 
-    const handleDrag = (e, data) => { };
+    const handleDrag = (e, data) => {};
 
     const handleStop = (e, data) => {
         const id = data.node.id;
@@ -234,8 +234,9 @@ const NavSettings = () => {
 
     return (
         <div
-            className={`${true ? 'slide-in' : 'slide-out'
-                } navGamingKeyBoardSetting`}
+            className={`${
+                true ? 'slide-in' : 'slide-out'
+            } navGamingKeyBoardSetting`}
         >
             {/*<div className="wrapperLeft">
 				<div className="ctnContent items-center">

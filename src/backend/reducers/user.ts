@@ -10,7 +10,7 @@ import {
     RootState,
     worker_refresh
 } from '.';
-import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
+import { GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
 import { BuilderHelper } from './helper';
@@ -347,6 +347,7 @@ export const userAsync = {
                 new Date().getTime() + 1000 * 60 * 10 * 1
             ).toISOString();
             const { email, volume_id } = (getState() as RootState).user;
+            const currentAddr = (getState() as RootState).worker.currentAddress;
 
             const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
@@ -427,7 +428,7 @@ export const userAsync = {
                         'Error when create payment link' + error.message
                     );
 
-                if (domain != getDomain()) await remotelogin(domain, email);
+                if (domain != currentAddr) await remotelogin(domain, email);
 
                 if (create_payment_link != null) {
                     return create_payment_link;

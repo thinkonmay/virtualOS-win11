@@ -73,7 +73,7 @@ export const workerAsync = {
     worker_refresh: createAsyncThunk(
         'worker_refresh',
         async (_: void, { getState }): Promise<void> => {
-            const addr = (getState() as RootState).worker.currentAddress
+            const addr = (getState() as RootState).worker.currentAddress;
             await appDispatch(workerAsync.fetch_local_worker(addr));
         }
     ),

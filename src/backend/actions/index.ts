@@ -1,5 +1,5 @@
 import 'sweetalert2/src/sweetalert2.scss';
-import { getDomainURL, POCKETBASE } from '../../../src-tauri/api';
+import { POCKETBASE } from '../../../src-tauri/api';
 import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
@@ -199,12 +199,12 @@ export const clickShortCut = (keys = []) => {
 };
 
 export const showLinkShare = () => {
-    let token = store.getState().remote?.ref;
-
-    let link = `${getDomainURL()}/?ref=${token}`;
-    if (token == undefined) {
-        link = getDomainURL();
-    }
+    // TODO
+    let link = 'this feature has been temporary disabled';
+    // let link = `${getDomainURL()}/?ref=${token}`;
+    // if (token == undefined) {
+    //     link = getDomainURL();
+    // }
     appDispatch(
         popup_open({
             type: 'shareLink',
@@ -213,24 +213,4 @@ export const showLinkShare = () => {
             }
         })
     );
-};
-
-export const bindStoreId = async (email: string, store_id: number) => {
-    try {
-        const data = await fetch(`${getDomainURL()}/access_store_volume`, {
-            method: 'POST',
-            headers: {
-                Authorization: POCKETBASE.authStore.token
-            },
-            body: JSON.stringify({
-                store_id,
-                email
-            })
-        });
-        if (data.ok === false) throw await data.text();
-
-        return data;
-    } catch (error) {
-        throw error;
-    }
 };

@@ -4,18 +4,12 @@ import {
     close_remote,
     popup_close,
     popup_open,
-    remote_connect,
-    remote_ready,
     RootState,
     store,
     toggle_remote,
     worker_refresh
 } from '.';
-import {
-    getDomainURL,
-    POCKETBASE,
-    RemoteCredential
-} from '../../../src-tauri/api';
+import { POCKETBASE, RemoteCredential } from '../../../src-tauri/api';
 import { EventCode, isMobile } from '../../../src-tauri/core';
 import {
     Assign,
@@ -184,39 +178,24 @@ export const remoteAsync = {
         )
             appDispatch(remoteSlice.actions.internal_sync());
     },
+    // TODO
     direct_access: createAsyncThunk(
         'direct_access',
         async ({ ref }: { ref: string }) => {
-            const resp = await fetch(
-                `${getDomainURL()}/api/collections/reference/records?page=1&perPage=1&filter=token="${ref}"&skipTotal=1`,
-                {
-                    method: 'GET',
-                    headers: {
-                        Authorization: POCKETBASE.authStore.token,
-                        'Content-type': 'application/json'
-                    }
-                }
-            );
-
-            const data = await resp.json();
-
-            // TODO
-            // const isUUID = (uuid?: string) =>
-            //     uuid?.match(
-            //         '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-            //     ) != null;
-            // if (data.items.length == 0) throw new Error('not found any query');
-            // else if (isUUID(data.items[0].volume_id))
-            //     SetPinger(
-            //         KeepaliveVolume(
-            //             { address: getDomain() } as Computer,
-            //             data.items[0].volume_id
-            //         )
-            //     );
-
-            appDispatch(remote_connect({ ...(data.items[0] as any) }));
-            if (!(await ready())) appDispatch(close_remote());
-            else appDispatch(remote_ready());
+            //         const resp = await fetch(
+            //             `${getDomainURL()}/api/collections/reference/records?page=1&perPage=1&filter=token="${ref}"&skipTotal=1`,
+            //             {
+            //                 method: 'GET',
+            //                 headers: {
+            //                     Authorization: POCKETBASE.authStore.token,
+            //                     'Content-type': 'application/json'
+            //                 }
+            //             }
+            //         );
+            //         const data = await resp.json();
+            //         appDispatch(remote_connect({ ...(data.items[0] as any) }));
+            //         if (!(await ready())) appDispatch(close_remote());
+            //         else appDispatch(remote_ready());
         }
     ),
     save_reference: createAsyncThunk(
@@ -294,8 +273,7 @@ export const remoteSlice = createSlice({
         share_reference: (state) => {
             const token = state.ref;
             if (token == undefined) return;
-
-            navigator.clipboard.writeText(`${getDomainURL()}/?ref=${token}`);
+            // navigator.clipboard.writeText(`${getDomainURL()}/?ref=${token}`);
         },
         loose_focus: (state) => {
             state.focus = false;
