@@ -86,6 +86,21 @@ const listSubs = [
             '250GB dung lượng riêng, cloud-save',
             'Không giới hạn thời gian mỗi session'
         ]
+    },
+    {
+        active: true,
+        highlight: false,
+        title: 'Nâng 20gb ram và 20gb vcpu',
+        price_in_vnd: 50000,
+        total_time: 9999,
+        total_days: 30,
+        name: 'ramcpu20',
+        period: 'tháng',
+        bonus: [
+            "Cấu hình khỏe hơn để chiến các game AAA như God Of War Ragnarok, Monster Hunter, Dragon's Dogma 2",
+            '20gb ram',
+            '20gb vcpu'
+        ]
     }
 ];
 export const PaymentApp = () => {
@@ -237,8 +252,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                     </div>
                                     <p className="-mt-2">
                                         <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                            Giới hạn {sub.total_time}h sử dụng
-                                            trong {sub.total_days} ngày
+                                            {sub.name == 'ramcpu20'
+                                                ? sub.title
+                                                : `Giới hạn ${sub.total_time}h sử dụng trong ${sub.total_days} ngày`}
                                         </span>
                                     </p>
                                 </div>

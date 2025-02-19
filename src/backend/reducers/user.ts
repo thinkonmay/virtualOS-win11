@@ -260,67 +260,39 @@ export const userAsync = {
             if (errr1) throw new Error(errr1.message);
             else if (subs.length == 0) return { status: 'NO_ACTION' };
 
-            let has_pending = false;
             for (const {
                 id: subscription_id,
                 cluster: cluster_id,
                 ended_at,
                 local_metadata
             } of subs) {
-                const { data: allPaymentRequest, error: err } = await GLOBAL()
-                    .from('payment_request')
-                    .select('id,created_at,plan')
-                    .or('status.eq.PAID,status.eq.IMPORTED')
-                    .eq('subscription', subscription_id)
-                    .order('created_at', { ascending: false });
+                const { data, error } = await GLOBAL().rpc(
+                    'get_subscription_verify',
+                    {
+                        sub_id: subscription_id
+                    }
+                );
+                if (error) continue;
+                else if (data.length == 0) continue;
+                const [sub_verify_data] = data;
 
-                if (err) continue;
-                else if (allPaymentRequest.length > 0) {
-                    const [{ created_at, plan }] = allPaymentRequest;
-
-                    const {
-                        data: [{ domain: cluster }],
-                        error: errrrr
-                    } = await GLOBAL()
-                        .from('clusters')
-                        .select('domain')
-                        .eq('id', cluster_id)
-                        .eq('active', true);
-                    if (errrrr) continue;
-
-                    const {
-                        data: [{ policy }],
-                        error: errrrrr
-                    } = await GLOBAL()
-                        .from('plans')
-                        .select('policy')
-                        .eq('id', plan);
-                    if (errrrrr) continue;
-
+                if (sub_verify_data.verified_at != null) {
                     const origin = new URL(window.location.href).host;
                     return {
                         status: 'PAID',
-                        cluster,
+                        cluster: sub_verify_data.domain,
                         correct_domain:
-                            origin.includes('localhost') || origin == cluster,
-                        local_metadata,
-                        policy,
-                        created_at,
-                        ended_at
+                            origin.includes('localhost') ||
+                            origin == sub_verify_data.domain,
+                        local_metadata: sub_verify_data.local_metadata,
+                        policy: sub_verify_data.policy,
+                        created_at: sub_verify_data.created_at,
+                        ended_at: sub_verify_data.ended_at
                     };
-                }
-
-                const { data: pendingsubs, error: errr } = await GLOBAL()
-                    .from('payment_request')
-                    .select('id')
-                    .gt('expire_at', new Date().toISOString())
-                    .eq('status', 'PENDING')
-                    .eq('subscription', subscription_id);
-                if (errr) continue;
-                else if (pendingsubs.length > 0) has_pending = true;
+                } else return { status: 'PENDING' };
             }
 
-            return { status: !has_pending ? 'NO_ACTION' : 'PENDING' };
+            return { status: 'NO_ACTION' };
         }
     ),
     get_plans: createAsyncThunk(
@@ -385,50 +357,41 @@ export const userAsync = {
                 .order('created_at', { ascending: false });
             if (errr) throw new Error(errr.message);
             else if (existSub.length > 0) {
-                for (const { id } of existSub) {
-                    const { data, error: err } = await GLOBAL()
-                        .from('payment_request')
-                        .select('id')
-                        .or('status.eq.PAID,status.eq.IMPORTED')
-                        .eq('subscription', id);
-                    if (err) continue;
-                    else if (data.length > 0) {
-                        const {
-                            data: [{ checkoutUrl }],
-                            error: err
-                        } = await GLOBAL()
-                            .from('payment_request')
-                            .insert({ subscription: id, expire_at, plan })
-                            .select('result->data->>checkoutUrl');
-                        if (err) continue;
-                        else return checkoutUrl;
+                const { data: get_payment_link, error } = await GLOBAL().rpc(
+                    'get_payment_link',
+                    {
+                        email
                     }
+                );
+
+                if (error)
+                    throw new Error(
+                        'Error when get payment link' + error.message
+                    );
+
+                if (get_payment_link != null) {
+                    return get_payment_link;
                 }
 
-                for (const { id } of existSub) {
-                    const { data, error: errr } = await GLOBAL()
-                        .from('payment_request')
-                        .select('result->data->>checkoutUrl')
-                        .gt('expire_at', new Date().toISOString())
-                        .eq('status', 'PENDING')
-                        .eq('subscription', id);
-                    if (errr) continue;
-                    else if (data.length != 0) return data[0].checkoutUrl;
-                }
+                const { data: create_payment_link, error: err } =
+                    await GLOBAL().rpc('create_payment_link', {
+                        email,
+                        plan,
+                        provider: 'PAYOS',
+                        currency: 'VND'
+                    });
 
-                const subscription =
-                    existSub.find((x) => x.volume_id == volume_id)?.id ??
-                    existSub[0].id;
-                const {
-                    data: [{ checkoutUrl }],
-                    error: err
-                } = await GLOBAL()
-                    .from('payment_request')
-                    .insert({ subscription, expire_at, plan })
-                    .select('result->data->>checkoutUrl');
-                if (err) throw new Error(err.message);
-                return checkoutUrl;
+                if (err)
+                    throw new Error(
+                        'Error when create payment link' + error.message
+                    );
+
+                if (create_payment_link != null) {
+                    return create_payment_link;
+                }
             } else if (input.domain != undefined) {
+                // new users
+
                 const { domain } = input;
 
                 const {
@@ -445,26 +408,32 @@ export const userAsync = {
                     throw new Error('dịch vụ hiện chưa triển khai trên domain');
 
                 const { id: cluster } = cluster_ele;
-                const {
-                    data: [{ id: subscription }],
-                    error
-                } = await GLOBAL()
+                const { data, error } = await GLOBAL()
                     .from('subscriptions')
                     .insert({ user: email, cluster })
                     .select('id');
                 if (error) throw new Error(error.message);
 
-                const {
-                    data: [{ checkoutUrl }],
-                    error: err
-                } = await GLOBAL()
-                    .from('payment_request')
-                    .insert({ expire_at, subscription, plan })
-                    .select('result->data->>checkoutUrl');
-                if (err) throw new Error(err.message);
+                const { data: create_payment_link, error: err } =
+                    await GLOBAL().rpc('create_payment_link', {
+                        email,
+                        plan,
+                        provider: 'PAYOS',
+                        currency: 'VND'
+                    });
+
+                if (err)
+                    throw new Error(
+                        'Error when create payment link' + error.message
+                    );
 
                 if (domain != getDomain()) await remotelogin(domain, email);
-                return checkoutUrl;
+
+                if (create_payment_link != null) {
+                    return create_payment_link;
+                }
+
+                throw new Error('Failed to create payment link');
             } else throw new Error('Bạn đã đăng kí dịch vụ');
         }
     ),

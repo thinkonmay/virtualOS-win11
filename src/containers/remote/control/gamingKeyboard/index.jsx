@@ -7,6 +7,7 @@ import {
     increase_key_gamingKeyboard,
     move_key_gamingKeyboard,
     save_gamingKeyboard_to_local,
+    scancode,
     set_default_gamingKeyboard,
     set_gamingKeyboard_data,
     set_keyboard_edit_state,
@@ -64,7 +65,7 @@ function GamingKeyboard() {
         });
     };
 
-    const handleDrag = (e, data) => {};
+    const handleDrag = (e, data) => { };
 
     const handleStop = (e, data) => {
         const id = data.node.id;
@@ -233,9 +234,8 @@ const NavSettings = () => {
 
     return (
         <div
-            className={`${
-                true ? 'slide-in' : 'slide-out'
-            } navGamingKeyBoardSetting`}
+            className={`${true ? 'slide-in' : 'slide-out'
+                } navGamingKeyBoardSetting`}
         >
             {/*<div className="wrapperLeft">
 				<div className="ctnContent items-center">
@@ -297,6 +297,7 @@ const NavDraggable = () => {
     const handleFinish = () => {
         appDispatch(set_keyboard_edit_state('idle'));
         appDispatch(save_gamingKeyboard_to_local());
+        appDispatch(scancode(true));
     };
 
     return (
