@@ -170,11 +170,11 @@ export const login = async (
         urlCallback: (url) => {
             console.log(url.replace(
                 'https%3A%2F%2Fplay.2.thinkmay.net',
-                'https%3A%2F%win11.thinkmay.net'
+                'https%3A%2F%2Fwin11.thinkmay.net'
             ));
             w.location.href = url.replace(
                 'https%3A%2F%2Fplay.2.thinkmay.net',
-                'https%3A%2F%win11.thinkmay.net'
+                'https%3A%2F%2Fwin11.thinkmay.net'
             );
         }
     });
