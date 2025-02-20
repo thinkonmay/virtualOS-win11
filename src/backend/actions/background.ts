@@ -11,7 +11,6 @@ import {
     fetch_domain,
     fetch_store,
     fetch_subscription,
-    fetch_under_maintenance,
     fetch_usage,
     fetch_user,
     get_plans,
@@ -101,9 +100,6 @@ const fetchDomains = async () => {
 const fetchUser = async () => {
     await appDispatch(fetch_user());
 };
-const checkMaintain = async () => {
-    await appDispatch(fetch_under_maintenance());
-};
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
 };
@@ -176,7 +172,6 @@ export const preload = async (update_ui?: boolean) => {
         await Promise.all([
             startAnalytics(),
             loadSettings(),
-            checkMaintain(),
             fetchApp(),
             fetchSubscription(),
             fetchSetting(),

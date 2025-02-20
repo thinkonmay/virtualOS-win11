@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { store } from '.';
-import { GLOBAL, LOCAL, UserEvents } from '../../../src-tauri/api';
+import { GLOBAL, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -316,45 +316,12 @@ export const globalAsync = {
     ),
     fetch_store: createAsyncThunk('fetch_store', async () => {
         const sub = store.getState().user.subscription;
-
-        const { data, error } = await LOCAL().rpc('get_store_availability');
+        const { data, error } = await GLOBAL()
+            .from('stores')
+            .select('code_name,name,metadata,type');
         if (error) throw new Error(error.message);
-        if (sub.status == 'PAID' && sub.usage?.node != undefined)
-            return (data as IGame[]).filter((x) => x.node == sub.usage.node);
-        else {
-            const res: IGame[] = [];
-            (data as IGame[]).forEach((x) =>
-                res.push(
-                    ...(res.find((y) => y.code_name == x.code_name) ? [] : [x])
-                )
-            );
-            return res;
-        }
-    }),
-    fetch_under_maintenance: createAsyncThunk(
-        'fetch_under_maintenance',
-        async () => {
-            const {
-                data: [_data],
-                error
-            } = await LOCAL()
-                .from('constant')
-                .select('value')
-                .eq('name', 'mantainance');
-            if (error) throw new Error(error.message);
-            else if (_data == undefined) return {};
-
-            const { value: info } = _data;
-            return info != undefined &&
-                new Date() > new Date(info.created_at) &&
-                new Date() < new Date(info.ended_at)
-                ? {
-                      ...info,
-                      isMaintaining: true
-                  }
-                : {};
-        }
-    )
+        return [];
+    })
 };
 
 export const globalSlice = createSlice({
@@ -390,12 +357,6 @@ export const globalSlice = createSlice({
                 fetch: globalAsync.fetch_domain,
                 hander: (state, action: PayloadAction<Domain[]>) => {
                     state.domains = action.payload;
-                }
-            },
-            {
-                fetch: globalAsync.fetch_under_maintenance,
-                hander: (state, action: PayloadAction<Maintain>) => {
-                    state.maintenance = action.payload;
                 }
             }
         );

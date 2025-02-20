@@ -5,7 +5,6 @@ import {
     app_toggle,
     appDispatch,
     fetch_subscription,
-    popup_close,
     popup_open,
     RootState,
     worker_refresh
@@ -123,11 +122,18 @@ export const userAsync = {
     fetch_usage: createAsyncThunk(
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
-            const { volume_id, subscription, email } = (getState() as RootState)
-                .user;
+            const {
+                user: { volume_id, subscription, email },
+                worker: { data, currentAddress }
+            } = getState() as RootState;
             if (!isUUID(volume_id)) return null;
             else if (subscription.status != 'PAID') return;
-            const { created_at, ended_at, policy } = subscription;
+            const {
+                created_at,
+                ended_at,
+                policy,
+                local_metadata: {}
+            } = subscription;
             let { limit_hour } = policy ?? { limit_hour: Infinity };
 
             // Adjust sub after 30-12
@@ -146,19 +152,11 @@ export const userAsync = {
                     email
                 }
             );
-
-            const { data: get_volume_usage, error } = await LOCAL().rpc(
-                'get_volume_usage',
-                {
-                    volume_id: usageData[0].volume_id,
-                    _to: usageData[0].ended_at,
-                    _from: usageData[0].created_at
-                }
-            );
-            if (error) throw error;
-
-            const total_usage = get_volume_usage ?? 0;
+            if (usageErr) throw usageErr;
             const isNewUser = usageData[0]?.new_user;
+
+            // TODO : volume
+            const total_usage = 0;
 
             const { data: map, error: errr } = await LOCAL()
                 .from('volume_map')
@@ -168,7 +166,8 @@ export const userAsync = {
             if (errr) throw errr;
             else if (map.length == 0) return null;
             const [{ node, template: tpl }] = map;
-            const { data: stores, error: err } = await LOCAL()
+
+            const { data: stores, error: err } = await GLOBAL()
                 .from('stores')
                 .select('metadata->screenshots,name')
                 .eq('code_name', tpl)
@@ -443,15 +442,7 @@ export const userAsync = {
         async ({ size }: { size: string }, { getState }): Promise<void> => {
             const { volume_id, subscription } = (getState() as RootState).user;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
-                const { error } = await LOCAL()
-                    .from('volume_map')
-                    .update({ size })
-                    .eq('id', volume_id);
-                if (error) throw new Error(error.message);
-
-                await appDispatch(worker_refresh());
-                await appDispatch(fetch_subscription());
-                appDispatch(app_toggle('connectPc'));
+                // TODO implement installation job inside pocketbase
             } else throw new Error('no volume available');
         }
     ),
@@ -463,91 +454,7 @@ export const userAsync = {
         ): Promise<void> => {
             const { volume_id, subscription } = (getState() as RootState).user;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
-                const { data, error: failed } = await LOCAL()
-                    .from('job')
-                    .select('result,command,created_at,arguments->base')
-                    .eq('arguments->>id', volume_id)
-                    .order('created_at', { ascending: false })
-                    .limit(1);
-                if (failed) throw new Error(failed.message);
-                else if (data.length > 0 && data[0].result != 'success') {
-                    appDispatch(
-                        popup_open({
-                            type: 'notify',
-                            data: {
-                                loading: true,
-                                timeProcessing: 2,
-                                tips: false,
-                                title: `Đang cài đặt game ${
-                                    data[0].base
-                                } vào lúc ${new Date(
-                                    data[0].created_at
-                                ).toLocaleTimeString()}`,
-                                text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
-                            }
-                        })
-                    );
-
-                    await new Promise((r) => setTimeout(r, 5000));
-                    appDispatch(popup_close());
-
-                    await appDispatch(worker_refresh());
-                    await appDispatch(fetch_subscription());
-                    appDispatch(app_toggle('connectPc'));
-                    return;
-                }
-
-                const { error } = await LOCAL()
-                    .from('volume_map')
-                    .update({ template, size: '300' })
-                    .eq('id', volume_id);
-                if (error) throw new Error(error.message);
-
-                appDispatch(
-                    popup_open({
-                        type: 'notify',
-                        data: {
-                            loading: true,
-                            tips: false,
-                            timeProcessing: 2,
-                            title: `Đang cài đặt game ${template} vào lúc ${new Date().toLocaleTimeString()}`,
-                            text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
-                        }
-                    })
-                );
-
-                while (true) {
-                    const { data, error: failed } = await LOCAL()
-                        .from('job')
-                        .select('result,command,created_at,arguments->base')
-                        .eq('arguments->>id', volume_id)
-                        .is('result', null)
-                        .order('created_at', { ascending: false })
-                        .limit(1);
-                    if (failed) throw new Error(failed.message);
-
-                    if (data.length == 0) {
-                        appDispatch(popup_close());
-                        break;
-                    }
-                    await new Promise((r) => setTimeout(r, 20000));
-                }
-
-                appDispatch(
-                    popup_open({
-                        type: 'complete',
-                        data: {
-                            content: `Cài đặt hoàn tất, máy của bạn đã có sẵn ${template}!`,
-                            success: true
-                        }
-                    })
-                );
-                await new Promise((r) => setTimeout(r, 5000));
-                await appDispatch(popup_close());
-
-                await appDispatch(worker_refresh());
-                await appDispatch(fetch_subscription());
-                await appDispatch(app_toggle('connectPc'));
+                // TODO implement installation job inside pocketbase
             } else
                 throw new Error(
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
