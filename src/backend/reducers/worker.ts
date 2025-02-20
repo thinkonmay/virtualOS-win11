@@ -191,13 +191,18 @@ export const workerAsync = {
         'fetch_local_worker',
         async (address: string): Promise<void> => {
             const result = await GetInfo(address);
-            if (result instanceof Error) throw result;
-
             await appDispatch(
-                workerAsync.update_local_worker({
-                    info: result,
-                    currentAddress: address
-                })
+                workerAsync.update_local_worker(
+                    result instanceof Error
+                        ? {
+                              info: {},
+                              currentAddress: address
+                          }
+                        : {
+                              info: result,
+                              currentAddress: address
+                          }
+                )
             );
         }
     ),
