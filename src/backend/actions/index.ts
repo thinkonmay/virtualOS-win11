@@ -168,19 +168,13 @@ export const login = async (
     await POCKETBASE.collection('users').authWithOAuth2({
         provider,
         urlCallback: (url) => {
-            console.log(url.replace(
-                'https%3A%2F%2Fplay.2.thinkmay.net',
-                'https%3A%2F%2Fwin11.thinkmay.net'
-            ));
-            w.location.href = url.replace(
-                'https%3A%2F%2Fplay.2.thinkmay.net',
-                'https%3A%2F%2Fwin11.thinkmay.net'
-            );
+            w.location.href = url
         }
     });
     await POCKETBASE.collection('users').update(POCKETBASE.authStore.model.id, {
         emailVisibility: true
     });
+
     await preload(update_ui);
 };
 export const remotelogin = async (domain: string, email: string) => {
