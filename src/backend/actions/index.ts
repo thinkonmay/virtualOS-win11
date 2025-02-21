@@ -168,7 +168,7 @@ export const login = async (
     await POCKETBASE.collection('users').authWithOAuth2({
         provider,
         urlCallback: (url) => {
-            w.location.href = url
+            w.location.href = url;
         }
     });
     await POCKETBASE.collection('users').update(POCKETBASE.authStore.model.id, {

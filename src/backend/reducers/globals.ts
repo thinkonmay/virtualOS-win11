@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { store } from '.';
-import { GLOBAL, LOCAL, UserEvents } from '../../../src-tauri/api';
+import { GLOBAL, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -13,7 +13,6 @@ export type TranslationResult = {
 type IGame = {
     name: string;
     code_name: string;
-    node: string;
     metadata: {
         name: string;
         type: string;
@@ -58,33 +57,6 @@ type IGame = {
     };
 };
 
-const example_game: IGame = {
-    name: 'windows',
-    code_name: '150',
-    node: 'follobuntu',
-    metadata: {
-        name: 'Windows',
-        type: 'windows',
-        genres: [],
-        screenshots: [],
-        movies: [],
-        website: '',
-        background: '',
-        categories: [],
-        developers: [],
-        drm_notice: 'false',
-        publishers: [],
-        header_image: '',
-        release_date: {
-            date: new Date().toUTCString()
-        },
-        capsule_image: '',
-        about_the_game: '',
-        background_raw: '',
-        capsule_imagev5: '',
-        short_description: ''
-    }
-};
 interface Maintain {
     created_at: string;
     ended_at: string;
@@ -274,10 +246,15 @@ const initialState = {
     opening: null as IGame | null
 };
 
+type Data = {
+    games: IGame[];
+    domains: Domain[];
+};
+
 export const globalAsync = {
     fetch_domain: createAsyncThunk(
         'fetch_domain',
-        async (): Promise<{ domain: string; free: string }[]> => {
+        async (): Promise<Domain[]> => {
             const { data: domains, error } = await GLOBAL().rpc(
                 'get_domains_availability'
             );
@@ -288,9 +265,10 @@ export const globalAsync = {
                     domains.map(
                         async (dom: { domain: string; free: string }) => {
                             let signal: AbortSignal = undefined;
+                            let timeout: any = undefined;
                             try {
                                 const controller = new AbortController();
-                                setTimeout(controller.abort, 2000);
+                                timeout = setTimeout(controller.abort, 2000);
                                 signal = controller.signal;
                             } catch {}
 
@@ -307,6 +285,9 @@ export const globalAsync = {
                                 });
                                 return null;
                             }
+
+                            if (timeout != undefined) clearTimeout(timeout);
+
                             return dom;
                         }
                     )
@@ -314,47 +295,23 @@ export const globalAsync = {
             ).filter((dom) => dom != null);
         }
     ),
-    fetch_store: createAsyncThunk('fetch_store', async () => {
-        const sub = store.getState().user.subscription;
-
-        const { data, error } = await LOCAL().rpc('get_store_availability');
+    fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
+        const volume_id = store.getState().user.volume_id;
+        const { data: tree, currentAddress } = store.getState().worker;
+        const node = tree[currentAddress].Volumes.find(
+            (x) => x.name == volume_id
+        ).node;
+        const samenodes = tree[currentAddress].Volumes.filter(
+            (x) => x.node == node
+        ).map((x) => x.name.replaceAll('.template', ''));
+        const { data, error } = await GLOBAL()
+            .from('stores')
+            .select('code_name,name,metadata')
+            .in('code_name', samenodes);
         if (error) throw new Error(error.message);
-        if (sub.status == 'PAID' && sub.usage?.node != undefined)
-            return (data as IGame[]).filter((x) => x.node == sub.usage.node);
-        else {
-            const res: IGame[] = [];
-            (data as IGame[]).forEach((x) =>
-                res.push(
-                    ...(res.find((y) => y.code_name == x.code_name) ? [] : [x])
-                )
-            );
-            return res;
-        }
-    }),
-    fetch_under_maintenance: createAsyncThunk(
-        'fetch_under_maintenance',
-        async () => {
-            const {
-                data: [_data],
-                error
-            } = await LOCAL()
-                .from('constant')
-                .select('value')
-                .eq('name', 'mantainance');
-            if (error) throw new Error(error.message);
-            else if (_data == undefined) return {};
 
-            const { value: info } = _data;
-            return info != undefined &&
-                new Date() > new Date(info.created_at) &&
-                new Date() < new Date(info.ended_at)
-                ? {
-                      ...info,
-                      isMaintaining: true
-                  }
-                : {};
-        }
-    )
+        return data;
+    })
 };
 
 export const globalSlice = createSlice({
@@ -378,7 +335,7 @@ export const globalSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        BuilderHelper(
+        BuilderHelper<Data, any, any>(
             builder,
             {
                 fetch: globalAsync.fetch_store,
@@ -390,12 +347,6 @@ export const globalSlice = createSlice({
                 fetch: globalAsync.fetch_domain,
                 hander: (state, action: PayloadAction<Domain[]>) => {
                     state.domains = action.payload;
-                }
-            },
-            {
-                fetch: globalAsync.fetch_under_maintenance,
-                hander: (state, action: PayloadAction<Maintain>) => {
-                    state.maintenance = action.payload;
                 }
             }
         );

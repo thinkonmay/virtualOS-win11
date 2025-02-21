@@ -19,7 +19,6 @@ import {
     LogoutSteamOnVM,
     MountOnVM,
     ParseRequest,
-    POCKETBASE,
     StartThinkmay,
     UnmountOnVM
 } from '../../../src-tauri/api';
@@ -151,10 +150,7 @@ export const workerAsync = {
 
             { getState }
         ): Promise<{ [address: string]: innerComputer }> => {
-            const { bucket_name } = (getState() as RootState).user;
-            const accounts =
-                await POCKETBASE.collection('thirdparty_account').getFullList();
-
+            const { bucket_name, accounts } = (getState() as RootState).user;
             const computer = info as innerComputer;
 
             if (computer.remoteReady) {
@@ -248,14 +244,15 @@ export const workerAsync = {
     storage_session_login: createAsyncThunk(
         'storage_session_login',
         async (_, { getState }): Promise<any> => {
-            const state = getState() as RootState;
-            const bucket_name = state.user.bucket_name;
-            const session =
-                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
+            const {
+                user: { bucket_name },
+                worker: { data, currentAddress }
+            } = getState() as RootState;
+            const session = data[currentAddress]?.Sessions?.[0];
             if (bucket_name == undefined)
                 throw new Error(`user dont have any associate bucket name`);
             const info = await MountOnVM(
-                state.worker.currentAddress,
+                currentAddress,
                 session.id,
                 bucket_name
             );
@@ -263,7 +260,7 @@ export const workerAsync = {
             appDispatch(
                 workerAsync.update_local_worker({
                     info,
-                    currentAddress: state.worker.currentAddress
+                    currentAddress
                 })
             );
         }
@@ -271,17 +268,22 @@ export const workerAsync = {
     storage_session_logout: createAsyncThunk(
         'storage_session_logout',
         async (_, { getState }): Promise<any> => {
-            const state = getState() as RootState;
-            const session =
-                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
-            return await UnmountOnVM(state.worker.currentAddress, session);
+            const {
+                worker: { data, currentAddress }
+            } = getState() as RootState;
+            const session = data[
+                currentAddress
+            ]?.Sessions?.[0]?.vm?.Sessions.find((x) => x.s3bucket != undefined);
+            return await UnmountOnVM(currentAddress, session);
         }
     ),
     app_session_toggle: createAsyncThunk(
         'app_session_toggle',
         async (_, { getState }): Promise<any> => {
-            const state = getState() as RootState;
-            const steam = state.worker.data[state.worker.currentAddress]?.steam;
+            const {
+                worker: { data, currentAddress }
+            } = getState() as RootState;
+            const steam = data[currentAddress]?.steam;
 
             if (steam) await appDispatch(workerAsync.app_session_logout());
             else await appDispatch(workerAsync.app_session_login());
@@ -290,11 +292,11 @@ export const workerAsync = {
     app_session_login: createAsyncThunk(
         'app_session_login',
         async (_, { getState }): Promise<void> => {
-            const state = getState() as RootState;
-            const session =
-                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
-            const accounts =
-                await POCKETBASE.collection('thirdparty_account').getFullList();
+            const {
+                worker: { data, currentAddress },
+                user: { accounts }
+            } = getState() as RootState;
+            const session = data[currentAddress]?.Sessions?.[0];
             if (accounts.length == 0)
                 throw new Error(`You have not link any steam account`);
             const [
@@ -304,7 +306,7 @@ export const workerAsync = {
             ] = accounts;
 
             const info = await LoginSteamOnVM(
-                state.worker.currentAddress,
+                currentAddress,
                 session.id,
                 username ?? '',
                 password ?? ''
@@ -313,7 +315,7 @@ export const workerAsync = {
             appDispatch(
                 workerAsync.update_local_worker({
                     info,
-                    currentAddress: state.worker.currentAddress
+                    currentAddress
                 })
             );
         }
@@ -321,10 +323,13 @@ export const workerAsync = {
     app_session_logout: createAsyncThunk(
         'app_session_logout',
         async (_, { getState }): Promise<any> => {
-            const state = getState() as RootState;
-            const session =
-                state.worker.data[state.worker.currentAddress]?.Sessions?.[0];
-            return await LogoutSteamOnVM(state.worker.currentAddress, session);
+            const {
+                worker: { data, currentAddress }
+            } = getState() as RootState;
+            const session = data[
+                currentAddress
+            ]?.Sessions?.[0]?.vm?.Sessions.find((x) => x.app != undefined);
+            return await LogoutSteamOnVM(currentAddress, session);
         }
     )
 };

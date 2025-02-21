@@ -182,8 +182,7 @@ export const {
     hard_reset_async
 } = remoteAsync;
 
-export const { fetch_store, fetch_under_maintenance, fetch_domain } =
-    globalAsync;
+export const { fetch_store, fetch_domain } = globalAsync;
 
 export const dispatch_generic = async ({
     type,
