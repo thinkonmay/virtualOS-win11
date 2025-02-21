@@ -316,9 +316,6 @@ export const remoteSlice = createSlice({
         framedrop: (state, action: PayloadAction<boolean>) => {
             if (state.active) state.frame_drop = action.payload;
         },
-        homescreen: () => {
-            WindowD();
-        },
         set_fullscreen: (state, action: PayloadAction<boolean>) => {
             state.fullscreen = action.payload;
         },

@@ -191,12 +191,11 @@ export const shutDownVm = async () => {
     appDispatch(close_remote());
 };
 export const clickShortCut = (keys = []) => {
-    keys.forEach((k, i) => {
+    for (const k of keys) {
         keyboard({ val: k, action: 'down' });
-    });
-    keys.forEach((k, i) => {
-        keyboard({ val: k, action: 'up' });
-    });
+    }
+    for (let index = 0; index < keys.length; index++)
+        keyboard({ val: keys[keys.length - 1 - index], action: 'up' });
 };
 
 export const showLinkShare = () => {
