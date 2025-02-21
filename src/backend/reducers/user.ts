@@ -9,7 +9,7 @@ import {
     RootState,
     worker_refresh
 } from '.';
-import { GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
+import { GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
 import { BuilderHelper } from './helper';
@@ -65,6 +65,9 @@ type Data = RecordModel & {
     volume_id: string;
     bucket_name?: string;
     plans: Plan[];
+    accounts: {
+        metadata: { username: string; password: string };
+    }[];
 };
 
 const notexpired = () =>
@@ -85,14 +88,19 @@ const initialState: Data = {
     subscription: {
         status: 'NO_ACTION'
     },
-    plans: []
+    plans: [],
+    accounts: []
 };
 
 export const userAsync = {
     fetch_user: createAsyncThunk(
         'fetch_user',
         async (): Promise<
-            RecordModel & { volume_id: string; bucket_name?: string }
+            RecordModel & {
+                volume_id: string;
+                bucket_name?: string;
+                accounts: any[];
+            }
         > => {
             const {
                 items: [result]
@@ -105,18 +113,24 @@ export const userAsync = {
             ).getFullList<{
                 bucket_name: string;
             }>();
+            const accounts =
+                await POCKETBASE.collection('thirdparty_account').getFullList();
 
-            return result != undefined
-                ? vol != undefined
-                    ? bucket != undefined
-                        ? {
-                              ...result,
-                              volume_id: vol.local_id,
-                              bucket_name: bucket.bucket_name
-                          }
-                        : { ...result, volume_id: vol.local_id }
-                    : { ...result, volume_id: '' }
-                : initialState;
+            const res =
+                result != undefined
+                    ? vol != undefined
+                        ? bucket != undefined
+                            ? {
+                                  ...result,
+                                  volume_id: vol.local_id,
+                                  bucket_name: bucket.bucket_name,
+                                  accounts
+                              }
+                            : { ...result, volume_id: vol.local_id, accounts }
+                        : { ...result, volume_id: '', accounts }
+                    : initialState;
+
+            return res;
         }
     ),
     fetch_usage: createAsyncThunk(
@@ -129,12 +143,14 @@ export const userAsync = {
             if (!isUUID(volume_id)) return null;
             else if (subscription.status != 'PAID') return;
             const {
-                created_at,
                 ended_at,
                 policy,
                 local_metadata: {}
             } = subscription;
             let { limit_hour } = policy ?? { limit_hour: Infinity };
+            const node = data[currentAddress].Volumes.find(
+                (x) => x.name == volume_id
+            )?.node;
 
             // Adjust sub after 30-12
             const oldPaidUser = dayjs('2024-12-30');
@@ -153,20 +169,10 @@ export const userAsync = {
                 }
             );
             if (usageErr) throw usageErr;
-            const isNewUser = usageData[0]?.new_user;
 
-            // TODO : volume
+            // TODO : fetch user usage and template
             const total_usage = 0;
-
-            const { data: map, error: errr } = await LOCAL()
-                .from('volume_map')
-                .select('node,template')
-                .eq('id', volume_id)
-                .limit(1);
-            if (errr) throw errr;
-            else if (map.length == 0) return null;
-            const [{ node, template: tpl }] = map;
-
+            const tpl = '';
             const { data: stores, error: err } = await GLOBAL()
                 .from('stores')
                 .select('metadata->screenshots,name')
@@ -222,7 +228,6 @@ export const userAsync = {
             const isExpired =
                 targetDate.isBefore(currentDate, 'day') ||
                 ((total_usage as number) ?? 0) / 60 > +limit_hour;
-
             if (isExpired) {
                 appDispatch(
                     popup_open({
@@ -239,7 +244,7 @@ export const userAsync = {
                 template,
                 total_usage: ((total_usage as number) ?? 0) / 60,
                 isExpired,
-                isNewUser
+                isNewUser: usageData[0]?.new_user
             };
         }
     ),

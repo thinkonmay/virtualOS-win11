@@ -122,8 +122,10 @@ export const remoteAsync = {
         else if (CLIENT.Metrics.video.status == 'connected') return;
 
         await appDispatch(worker_refresh());
-        const { worker } = store.getState();
-        if (worker.data[worker.currentAddress].availability != 'started') {
+        const {
+            worker: { data, currentAddress }
+        } = store.getState();
+        if (data[currentAddress].availability != 'started') {
             appDispatch(
                 popup_open({
                     type: 'complete',

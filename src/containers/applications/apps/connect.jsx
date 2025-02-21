@@ -15,8 +15,6 @@ import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
-    const user = useAppSelector((state) => state.user);
-
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
