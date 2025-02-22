@@ -1,15 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import { RecordModel } from 'pocketbase';
-import {
-    app_toggle,
-    appDispatch,
-    fetch_subscription,
-    popup_open,
-    RootState,
-    worker_refresh
-} from '.';
-import { GLOBAL, POCKETBASE } from '../../../src-tauri/api';
+import { appDispatch, popup_open, RootState } from '.';
+import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
 import { BuilderHelper } from './helper';
@@ -457,9 +450,17 @@ export const userAsync = {
             { template }: { template: string },
             { getState }
         ): Promise<void> => {
-            const { volume_id, subscription } = (getState() as RootState).user;
+            const {
+                user: { volume_id, subscription },
+                worker: { currentAddress }
+            } = getState() as RootState;
             if (isUUID(volume_id) && subscription.status == 'PAID') {
-                // TODO implement installation job inside pocketbase
+                const resp = await ChangeTemplate(
+                    currentAddress,
+                    template,
+                    volume_id
+                );
+                if (resp instanceof Error) throw resp;
             } else
                 throw new Error(
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
