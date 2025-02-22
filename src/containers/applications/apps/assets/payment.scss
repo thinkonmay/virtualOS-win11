@@ -35,7 +35,7 @@
 
 		align-items: center;
 		width: 100%;
-		height: calc(100% - 80px);
+		height: calc(100% - 40px);
 
 		color: var(--dark-txt);
 		overflow-y: auto;
@@ -156,6 +156,8 @@
 	}
 
 	.storagePage {
+		align-items: start;
+
 		.wrapperTableStorage {
 			color: white;
 			background-color: #002447;
@@ -170,13 +172,16 @@
 
 			.rowContent {
 				display: grid;
-				grid-template-columns: repeat(3, 1fr);
+				grid-template-columns: repeat(4, 1fr);
 				border-top: 1px solid var(--Neutral-500, #667085);
 				font-size: 16px;
 				min-height: 60px;
 
 
 				.columnContent {
+					display: flex;
+					flex-direction: column;
+
 					min-width: 200px;
 					text-align: center;
 					font-weight: 500;
@@ -187,6 +192,20 @@
 					display: flex;
 					justify-content: center;
 					align-items: center;
+
+					.title {
+						font-weight: bold;
+					}
+
+					.subtitle {
+						font-size: 12px;
+						font-style: italic;
+					}
+
+					.buyBtn {
+						padding: 12px 24px;
+						font-weight: bold;
+					}
 
 					&:nth-child(1) {
 						text-align: left;

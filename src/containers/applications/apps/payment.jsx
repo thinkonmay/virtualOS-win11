@@ -510,29 +510,100 @@ const RefundPage = () => {
 
 const StoragePage = () => {
     return (
-        <div className="storagePage h-full pt-[5%] overflow-x-auto">
-            <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
-            <div className="wrapperTableStorage">
-                <div className="rowContent" style={{ borderTop: 'unset' }}>
-                    <div className="columnContent">Dung lượng</div>
-                    <div className="columnContent">Mua lần đầu</div>
-                    <div className="columnContent">Gia hạn</div>
+        <div className="storagePage pt-[1%] ">
+            <div className=''>
+                <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
+                <div className="wrapperTableStorage">
+                    <div className="rowContent" style={{ borderTop: 'unset' }}>
+                        <div className="columnContent">Dung lượng</div>
+                        <div className="columnContent ">
+                            <p className='title'>Đăng ký ngay</p>
+                            <p className='subtitle'>tới 26/01</p>
+                        </div>
+                        <div className="columnContent">
+                            <p className='title'>
+                                Gia hạn
+                            </p>
+                            <p className='subtitle'>hẵng tháng</p>
+                        </div>
+                        <div className="columnContent"></div>
+                    </div>
+
+                    <div className="rowContent">
+                        <div className="columnContent">50GB</div>
+                        <div className="columnContent">60k/tháng</div>
+                        <div className="columnContent">40k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">100GB</div>
+                        <div className="columnContent">110k/tháng</div>
+                        <div className="columnContent">80k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">200GB</div>
+                        <div className="columnContent">190k/tháng</div>
+                        <div className="columnContent">150k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div className="rowContent">
-                    <div className="columnContent">50GB</div>
-                    <div className="columnContent">60k/tháng</div>
-                    <div className="columnContent">40k/tháng</div>
-                </div>
-                <div className="rowContent">
-                    <div className="columnContent">100GB</div>
-                    <div className="columnContent">110k/tháng</div>
-                    <div className="columnContent">80k/tháng</div>
-                </div>
-                <div className="rowContent">
-                    <div className="columnContent">200GB</div>
-                    <div className="columnContent">190k/tháng</div>
-                    <div className="columnContent">150k/tháng</div>
+                <h2 className="text-center mb-8 mt-10 ">Bảng giá Ram & Cpu</h2>
+                <div className="wrapperTableStorage">
+                    <div className="rowContent" style={{ borderTop: 'unset' }}>
+                        <div className="columnContent">Ram & cpu</div>
+                        <div className="columnContent ">
+                            <p className='title'>Đăng ký ngay</p>
+                            <p className='subtitle'>tới 26/01</p>
+                        </div>
+                        <div className="columnContent">
+                            <p className='title'>
+                                Gia hạn
+                            </p>
+                            <p className='subtitle'>hẵng tháng</p>
+                        </div>
+                        <div className="columnContent"></div>
+                    </div>
+
+                    <div className="rowContent">
+                        <div className="columnContent">20GB & 10cores</div>
+                        <div className="columnContent">60k/tháng</div>
+                        <div className="columnContent">40k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">24GB & 12cores</div>
+                        <div className="columnContent">110k/tháng</div>
+                        <div className="columnContent">80k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">28GB & 16cores</div>
+                        <div className="columnContent">190k/tháng</div>
+                        <div className="columnContent">150k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
