@@ -108,14 +108,9 @@ const fetchPlans = async () => {
 };
 
 const updateUI = async () => {
-    //store
-    //    .getState()
-    //    .apps.apps.filter((x) => !x.hide)
-    //    .forEach((x) => appDispatch(app_close(x.id)));
     appDispatch(show_tutorial('close'));
 
     const subscription = store.getState().user.subscription as PaymentStatus;
-    let isNewUser = false;
     const { status } = subscription;
     if (status == 'PAID' && !subscription.correct_domain) {
         appDispatch(
