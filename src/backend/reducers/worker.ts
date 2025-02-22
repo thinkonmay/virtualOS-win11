@@ -160,7 +160,7 @@ export const workerAsync = {
             } else if (computer.virtReady) {
                 if (computer.Volumes?.length == 0)
                     computer.availability = undefined;
-                else if (computer.Volumes.find((x) => x.inuse) != undefined)
+                else if (computer.Sessions.length > 0)
                     computer.availability = 'started';
                 else computer.availability = 'ready';
             } else computer.availability = 'not_ready';
