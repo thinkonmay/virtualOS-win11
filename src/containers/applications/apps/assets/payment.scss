@@ -122,10 +122,11 @@
 		width: 100%;
 		height: 100%;
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
 		gap: 12px;
 		column-gap: 10px;
 		row-gap: 48px;
-		justify-content: space-between;
 		align-items: center;
 		width: 100%;
 	}
@@ -170,6 +171,9 @@
 
 	.storagePage {
 		align-items: start;
+		justify-content: center;
+		width: 100%;
+		flex: 1;
 
 		.wrapperTableStorage {
 			color: white;
@@ -454,7 +458,7 @@
 
 		.paymentContent {
 			padding: 16px;
-			padding-top: 50px;
+			padding-top: 24px;
 			display: flex;
 			flex-wrap: wrap;
 			column-gap: 10px;
