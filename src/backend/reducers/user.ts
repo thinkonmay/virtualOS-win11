@@ -451,20 +451,25 @@ export const userAsync = {
             { getState }
         ): Promise<void> => {
             const {
-                user: { volume_id, subscription },
-                worker: { currentAddress }
+                user: { volume_id },
+                worker: { currentAddress, data }
             } = getState() as RootState;
-            if (isUUID(volume_id) && subscription.status == 'PAID') {
+            const inuse = data[currentAddress]?.Volumes?.find(
+                (x) => x.name == volume_id
+            )?.inuse;
+            if (inuse == undefined) throw new Error('volume is not available');
+            else if (inuse)
+                throw new Error(
+                    'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
+                );
+            else {
                 const resp = await ChangeTemplate(
                     currentAddress,
                     template,
                     volume_id
                 );
                 if (resp instanceof Error) throw resp;
-            } else
-                throw new Error(
-                    'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
-                );
+            }
         }
     )
 };
