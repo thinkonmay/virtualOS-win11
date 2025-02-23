@@ -94,7 +94,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [page, setPage] = useState('deposit'); //sub - refund - storage
+    const [page, setPage] = useState('history'); //sub - refund - storage -history
 
     const handleChangePage = (input) => {
         setPage(input);
@@ -133,7 +133,7 @@ export const PaymentApp = () => {
                         }
                         onClick={() => handleChangePage('storage')}
                     >
-                        Thuê dung lượng
+                        Nâng cấp
                     </div>
                     <div
                         className={
@@ -142,6 +142,14 @@ export const PaymentApp = () => {
                         onClick={() => handleChangePage('sub')}
                     >
                         Thuê CloudPC
+                    </div>
+                    <div
+                        className={
+                            page == 'history' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('history')}
+                    >
+                        Lịch sử
                     </div>
                     <div
                         className={
@@ -154,16 +162,20 @@ export const PaymentApp = () => {
                 </div>
                 <LazyComponent show={!wnapp.hide}>
 
-                    <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
+                    <div className="paymentContent win11Scroll">
                         {page == 'sub' ? (
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
                             <RefundPage />
                         ) : page == 'deposit' ?
                             <DepositPage />
-                            : (
-                                <StoragePage />
-                            )}
+                            :
+                            page == 'history' ?
+                                <TransactionHistoryPage />
+                                :
+                                (
+                                    <StoragePage />
+                                )}
                     </div>
                 </LazyComponent>
             </div>
@@ -439,11 +451,11 @@ const SubscriptionPage = () => {
         e.total_days = plan.total_days;
     });
     return (
-        <>
+        <div className='subscriptionPage md:!justify-evenly px-0 '>
             {listSubs.map((sub, index) => (
                 <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
             ))}
-        </>
+        </div>
     );
 };
 
@@ -511,8 +523,8 @@ const RefundPage = () => {
 const StoragePage = () => {
     return (
         <div className="storagePage pt-[1%] ">
-            <div className=''>
-                <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
+            <div className='flex flex-col items-center'>
+                <h2 className="text-center mb-4 lg:mb-8 ">Bảng giá dung lượng</h2>
                 <div className="wrapperTableStorage">
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
                         <div className="columnContent">Dung lượng</div>
@@ -559,7 +571,7 @@ const StoragePage = () => {
 
                 </div>
 
-                <h2 className="text-center mb-8 mt-10 ">Bảng giá Ram & Cpu</h2>
+                <h2 className="text-center mb-4 lg:mb-8 mt-10 ">Bảng giá Ram & Cpu</h2>
                 <div className="wrapperTableStorage">
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
                         <div className="columnContent">Ram & cpu</div>
@@ -716,6 +728,92 @@ const OthersDepositBox = () => {
             }
 
 
+        </div>
+    )
+}
+
+
+const listHistoryNav = [
+    {
+        name: 'Tất cả',
+        id: 'all'
+    },
+    {
+        name: 'Nạp tiền',
+        id: 'deposit'
+    },
+    {
+        name: 'Thuê CloudPC',
+        id: 'buy'
+    },
+    {
+        name: 'Nâng cấp',
+        id: 'upgrade'
+    }
+
+]
+const TransactionHistoryPage = () => {
+
+    const [currentNav, setNav] = useState('all') //all-deposit-upgrade-buy
+
+
+
+    const handleChangeNav = (nav) => {
+        setNav(nav)
+    }
+
+    return (
+        <div className="historyPage">
+
+            <h2 className="title">
+                Lịch sử giao dịch
+            </h2>
+
+
+            <ul className="historyNav">
+                {
+                    listHistoryNav.map((nav => (
+                        <li
+                            onClick={() => handleChangeNav(nav.id)}
+                            className={`nav ${currentNav == nav.id ? 'navActive' : ''}`}>{nav.name}</li>
+                    )))
+                }
+
+            </ul>
+
+            <div className="wrapperTableHistory">
+                <div className="rowContent" style={{ borderTop: 'unset' }}>
+                    <div className="columnContent">Thời gian</div>
+                    <div className="columnContent ">
+                        Số tiền
+                    </div>
+                    <div className="columnContent">
+                        Chi tiết
+                    </div>
+                </div>
+
+                <div className="rowContent">
+                    <div className="columnContent">24/12/2024, 11:29:07</div>
+                    <div className="columnContent">-50k</div>
+                    <div className="columnContent">Mua dung lượng</div>
+
+
+                </div>
+                <div className="rowContent">
+                    <div className="columnContent">24/12/2024, 13:29:07</div>
+                    <div className="columnContent">-299k</div>
+                    <div className="columnContent">Gia hạn gói tháng</div>
+
+
+                </div>
+                <div className="rowContent">
+                    <div className="columnContent">24/12/2024, 20:29:07</div>
+                    <div className="columnContent">-60k</div>
+                    <div className="columnContent">Nâng cấp ram & cpu</div>
+
+                </div>
+
+            </div>
         </div>
     )
 }

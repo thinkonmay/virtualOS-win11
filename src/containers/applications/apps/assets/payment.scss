@@ -117,6 +117,19 @@
 		z-index: -1 !important;
 	}
 
+	.subscriptionPage {
+		flex: 1;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		gap: 12px;
+		column-gap: 10px;
+		row-gap: 48px;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+	}
+
 	.refundPage {
 		height: 100%;
 
@@ -231,6 +244,7 @@
 	.depositPage {
 		flex: 1;
 		height: 100%;
+		width: 100%;
 
 		.subtitle {
 			font-size: 18px;
@@ -310,7 +324,104 @@
 			}
 		}
 	}
+
+	.historyPage {
+		flex: 1;
+		height: 100%;
+
+		.historyNav {
+			display: flex;
+			gap: 16px;
+			list-style: none;
+
+			margin-top: 24px;
+			margin-bottom: 12px;
+
+			.nav {
+				padding: 12px 24px;
+				font-size: 18px;
+				font-weight: bold;
+
+
+				&.navActive {
+					text-decoration: underline;
+					color: #06c;
+				}
+			}
+		}
+
+		.wrapperTableHistory {
+			color: white;
+			background-color: #002447;
+			width: max-content;
+			border-radius: 12px;
+			border: 1px solid var(--Neutral-500, #667085);
+			overflow: hidden;
+
+			&:first-child {
+				border-bottom: 1px solid var(--Neutral-500, #667085);
+			}
+
+			.rowContent {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				border-top: 1px solid var(--Neutral-500, #667085);
+				font-size: 16px;
+				min-height: 60px;
+
+
+				.columnContent {
+					display: flex;
+					flex-direction: column;
+
+					min-width: 200px;
+					text-align: center;
+					font-weight: 500;
+					line-height: 24px;
+					font-size: var(--font-size-md);
+					padding: 1rem;
+					border-left: 1px solid #667085;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					.title {
+						font-weight: bold;
+					}
+
+					.subtitle {
+						font-size: 12px;
+						font-style: italic;
+					}
+
+					.buyBtn {
+						padding: 12px 24px;
+						font-weight: bold;
+					}
+
+					&:nth-child(1) {
+						text-align: left;
+						justify-content: start;
+						text-align: start;
+						display: flex;
+						align-items: center;
+						font-size: var(--font-size-md);
+						font-style: normal;
+						font-weight: 700;
+						line-height: 24px;
+						border-left: unset;
+						padding-left: 1.6rem;
+
+						/* 150% */
+					}
+
+				}
+			}
+		}
+	}
 }
+
+
 
 
 @media (1px < width < 1024px) {
@@ -335,6 +446,10 @@
 			left: 8%;
 			width: 320px;
 			height: 500px;
+		}
+
+		&[data-hide="true"] {
+			z-index: -1 !important;
 		}
 
 		.paymentContent {
@@ -371,9 +486,152 @@
 			}
 		}
 
-		&[data-hide="true"] {
-			z-index: -1 !important;
+
+		.storagePage {
+
+			.wrapperTableStorage {
+
+
+				&:first-child {
+					border-bottom: 1px solid var(--Neutral-500, #667085);
+				}
+
+				.rowContent {
+					display: grid;
+					grid-template-columns: repeat(4, 1fr);
+					border-top: 1px solid var(--Neutral-500, #667085);
+					font-size: 14px;
+					min-height: 40px;
+
+
+					.columnContent {
+						display: flex;
+						flex-direction: column;
+
+						min-width: 120px;
+						text-align: center;
+						font-weight: 500;
+						line-height: 24px;
+						font-size: var(--font-size-md);
+						padding: 0.5rem;
+						border-left: 1px solid #667085;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						.title {
+							font-weight: bold;
+							font-size: 14px;
+						}
+
+						.subtitle {
+							font-size: 10px;
+							font-style: italic;
+							margin-top: -4px;
+						}
+
+						.buyBtn {
+							padding: 8px 20px;
+							font-weight: bold;
+						}
+
+						&:nth-child(1) {
+							text-align: left;
+							justify-content: start;
+							text-align: start;
+							display: flex;
+							align-items: center;
+							font-size: var(--font-size-md);
+							font-style: normal;
+							font-weight: 700;
+							line-height: 24px;
+							border-left: unset;
+							padding-left: 0.8rem;
+
+							/* 150% */
+						}
+
+					}
+				}
+			}
 		}
+
+		.historyPage {
+			.historyNav {
+				.nav {
+					font-size: 16px;
+					padding: 8px 16px;
+
+				}
+			}
+
+			.wrapperTableHistory {
+
+
+				&:first-child {
+					border-bottom: 1px solid var(--Neutral-500, #667085);
+				}
+
+				.rowContent {
+					display: grid;
+					grid-template-columns: repeat(3, 1fr);
+					border-top: 1px solid var(--Neutral-500, #667085);
+					font-size: 14px;
+					min-height: 40px;
+
+
+					.columnContent {
+						display: flex;
+						flex-direction: column;
+
+						min-width: 120px;
+						text-align: center;
+						font-weight: 500;
+						line-height: 24px;
+						font-size: var(--font-size-md);
+						padding: 0.5rem;
+						border-left: 1px solid #667085;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						.title {
+							font-weight: bold;
+							font-size: 14px;
+						}
+
+						.subtitle {
+							font-size: 10px;
+							font-style: italic;
+							margin-top: -4px;
+						}
+
+						.buyBtn {
+							padding: 8px 20px;
+							font-weight: bold;
+						}
+
+						&:nth-child(1) {
+							text-align: left;
+							justify-content: start;
+							text-align: start;
+							display: flex;
+							align-items: center;
+							font-size: var(--font-size-md);
+							font-style: normal;
+							font-weight: 700;
+							line-height: 24px;
+							border-left: unset;
+							padding-left: 0.8rem;
+
+							/* 150% */
+						}
+
+					}
+				}
+			}
+		}
+
 	}
 
 }
