@@ -28,6 +28,7 @@ import { PaymentStatus } from '../reducers/user.ts';
 import { localStorageKey } from '../utils/constant';
 import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
+import md5 from 'md5';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -70,11 +71,12 @@ const handleClipboard = async () => {
         if (CLIENT == null || !CLIENT?.ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
+        const clipboardHash = md5(clipboard);
         if (!(store.getState() as RootState).remote.focus)
             appDispatch(have_focus());
-        if (clipboard == old_clipboard) return;
+        if (clipboardHash == old_clipboard) return;
 
-        old_clipboard = clipboard;
+        old_clipboard = clipboardHash;
         CLIENT?.SetClipboard(clipboard);
     } catch {
         if ((store.getState() as RootState).remote.focus)
@@ -199,5 +201,5 @@ export const PreloadBackground = async (update_ui?: boolean) => {
     await preload(update_ui);
     setInterval(check_worker, 10 * 1000);
     setInterval(sync, 2 * 1000);
-    setInterval(handleClipboard, 1000);
+    setInterval(handleClipboard, 300);
 };
