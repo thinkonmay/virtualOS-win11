@@ -1,3 +1,4 @@
+import md5 from 'md5';
 import { UserEvents, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
@@ -17,6 +18,7 @@ import {
     have_focus,
     loose_focus,
     popup_open,
+    set_current_address,
     setting_theme,
     show_tutorial,
     sidepane_panethem,
@@ -28,7 +30,6 @@ import { PaymentStatus } from '../reducers/user.ts';
 import { localStorageKey } from '../utils/constant';
 import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
-import md5 from 'md5';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -84,6 +85,14 @@ const handleClipboard = async () => {
     }
 };
 
+const setDomain = async () => {
+    const defaultDomain = 'play.2.thinkmay.net';
+    const address = localStorage.getItem('thinkmay_domain');
+    if (address == null) {
+        localStorage.setItem('thinkmay_domain', defaultDomain);
+        appDispatch(set_current_address(defaultDomain));
+    } else appDispatch(set_current_address(address));
+};
 const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
@@ -153,6 +162,7 @@ const updateUI = async () => {
 
 export const preload = async (update_ui?: boolean) => {
     try {
+        await setDomain();
         await fetchUser();
         await Promise.all([
             startAnalytics(),

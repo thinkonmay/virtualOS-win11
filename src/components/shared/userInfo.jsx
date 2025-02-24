@@ -9,6 +9,7 @@ import {
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
 import { formatDate } from '../../backend/utils/date';
+import DomainSwitch from '../../containers/applications/apps/assets/DomainSwitch';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
@@ -19,7 +20,7 @@ function UserInfo() {
         volume_id,
         subscription: { status, cluster, created_at, ended_at, usage, policy }
     } = useAppSelector((state) => state.user);
-    const { node, total_usage } = usage ?? {};
+    const { node } = usage ?? {};
     let { limit_hour } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
     const endedAtFormat = dayjs(ended_at);
@@ -108,6 +109,10 @@ function UserInfo() {
                     <div className="w-full flex gap-4 justify-between my-[8px] ">
                         <span>Language</span>
                         <LangSwitch />
+                    </div>
+                    <div className="w-full flex gap-4 justify-between my-[8px] ">
+                        <span>Domain</span>
+                        <DomainSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between mt-[1rem]">
                         <span>Volume ID</span>
