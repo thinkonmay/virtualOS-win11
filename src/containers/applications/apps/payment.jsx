@@ -626,6 +626,42 @@ const StoragePage = () => {
 
 const DepositPage = () => {
 
+    const [depositNumber, setDepositNumber] = useState('')
+    const [isErr, setErr] = useState('')
+
+    const handleDeposit = () => {
+
+        if (isErr) return
+
+        /// show thanh toán.
+
+    }
+
+    function numberFormat(num) {
+        let fmt = new Intl.NumberFormat()
+        return fmt.format(num)
+    }
+
+    const handleChangeDepositNumber = (e) => {
+        //setDepositNumber(e.target.value)
+
+        setDepositNumber(numberFormat(e.target.value));
+        //console.log(numberFormat(e.target.value));
+
+        if (e.target.value < 50000) {
+            setErr(' Số tiền nạp phải >= 50k Vnđ')
+        }
+        else if (e.target.value < 1000000000) {
+            setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn')
+        }
+        else {
+            setErr('')
+        }
+
+
+
+    }
+
 
     return (
         <div className="depositPage">
@@ -636,8 +672,18 @@ const DepositPage = () => {
                 <p className='subtitle'>Số tiền muốn nạp</p>
 
                 <div className="wrapperDeposit">
-                    <input type="number" className='depositInput' placeholder='Nhập số tiền (VNĐ)' />
-                    <button className="instbtn depositBtn">
+                    <input
+                        value={depositNumber}
+                        onChange={handleChangeDepositNumber}
+                        type="string"
+                        className='depositInput'
+
+                        placeholder='Nhập số tiền (VNĐ)'
+                    />
+                    <button
+                        onClick={handleDeposit}
+
+                        className="instbtn depositBtn">
                         Nạp tiền
                     </button>
                 </div>
@@ -646,7 +692,11 @@ const DepositPage = () => {
 
 
             </div>
-
+            {isErr ?
+                <p className='text-red-500 text-base mt-2 font-bold'>
+                    {isErr}
+                </p>
+                : null}
             <div className='optionsBox'>
                 <div className='option'>
                     Tuỳ chọn
@@ -655,6 +705,7 @@ const DepositPage = () => {
                     Gia hạn gói hiện tại
                 </div>
             </div>
+
             <div className="noticesBox">
                 <p className='title'>Lưu ý:</p>
                 <ul className=''>
