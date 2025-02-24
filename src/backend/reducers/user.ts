@@ -64,7 +64,7 @@ type Data = RecordModel & {
 
 const notexpired = () =>
     `ended_at.gt.${new Date().toISOString()},ended_at.is.${null}`;
-const isUUID = (uuid) =>
+export const isUUID = (uuid) =>
     uuid.match(
         '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
     ) != null;

@@ -18,16 +18,12 @@ export const Status = () => {
 
     const sidePaneOpen = useAppSelector((state) => !state.sidepane.hide);
 
-    const pinging = useAppSelector((state) => state.remote.ping_status);
-
     const userCreatedAt = useAppSelector(
         (state) => state.user.subscription?.created_at
     );
 
     const createDate = dayjs(userCreatedAt);
     const targetDate = dayjs('2024-12-01 00:18');
-
-    const isAfter = createDate > targetDate;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -46,11 +42,10 @@ export const Status = () => {
         appDispatch(
             set_status_connection(
                 videoConnectivity == 'connecting' ||
-                    videoConnectivity == 'close' ||
-                    !pinging
+                    videoConnectivity == 'close'
             )
         );
-    }, [audioConnectivity, videoConnectivity, pinging]);
+    }, [audioConnectivity, videoConnectivity]);
 
     const toggleStats = () => {
         appDispatch(toggle_status_connection());
@@ -67,19 +62,7 @@ export const Status = () => {
                         Video: <b>{videoConnectivity}</b>
                         <br />
                         Audio: <b>{audioConnectivity}</b>
-                        <br />
-                        Ping: <b>{pinging ? 'TRUE' : 'FALSE'}</b>
                     </p>
-                    {/*<button
-                        className="btn-show"
-                        onClick={toggleStats}
-                    >
-                        {isOpenStats ? (
-                            <MdArrowBackIos style={{ fontSize: '1.1rem' }} />
-                        ) : (
-                            <MdArrowForwardIos style={{ fontSize: '1.1rem' }} />
-                        )}
-                    </button>*/}
                 </div>
             </div>
         </>

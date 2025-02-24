@@ -26,6 +26,7 @@ import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 import { Contents } from './locales';
+import { isUUID } from './user';
 
 const now = () => new Date().getTime() / 1000 / 60;
 
@@ -85,7 +86,9 @@ export const workerAsync = {
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
-            const { HideVM, currentAddress } = (getState() as RootState).worker;
+            const {
+                worker: { HideVM, currentAddress }
+            } = getState() as RootState;
 
             const showConnect = () => {
                 appDispatch(popup_close());
@@ -111,6 +114,13 @@ export const workerAsync = {
 
             let session = getRemoteSession(info);
             if (session == undefined) {
+                if (
+                    info.Volumes.filter(
+                        (x) => x.pool == 'user_data' && isUUID(x.name)
+                    ).length == 0
+                )
+                    throw new Error(`you don't have any volume available`);
+
                 const resp = await StartThinkmay(
                     currentAddress,
                     info.virtReady ? { HideVM: HideVM } : undefined,

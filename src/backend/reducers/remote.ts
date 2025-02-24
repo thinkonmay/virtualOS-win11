@@ -34,7 +34,6 @@ export type Metric = {
 
 type Data = {
     tracker_id?: string;
-    ping_status: boolean;
 
     active: boolean;
     ready: boolean;
@@ -70,7 +69,6 @@ type Data = {
 };
 
 const initialState: Data = {
-    ping_status: true,
     hq: false,
     prev_hq: false,
     direct_access: false,
@@ -283,9 +281,6 @@ export const remoteSlice = createSlice({
         },
         have_focus: (state) => {
             state.focus = true;
-        },
-        ping_status: (state, action: PayloadAction<boolean>) => {
-            state.ping_status = action.payload;
         },
         close_remote: (state) => {
             state.active = false;
