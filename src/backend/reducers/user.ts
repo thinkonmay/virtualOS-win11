@@ -449,11 +449,12 @@ export const userAsync = {
                 user: { volume_id },
                 worker: { currentAddress, data }
             } = getState() as RootState;
-            const inuse = data[currentAddress]?.Volumes?.find(
+            const vol = data[currentAddress]?.Volumes?.find(
                 (x) => x.name == volume_id
-            )?.inuse;
-            if (inuse == undefined) throw new Error('volume is not available');
-            else if (inuse)
+            );
+
+            if (vol == undefined) throw new Error('volume is not available');
+            else if (vol.inuse)
                 throw new Error(
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
                 );
