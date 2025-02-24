@@ -69,7 +69,7 @@ function UserInfo() {
                     <span>{cluster}</span>
                 </div>
             ) : null}
-            {node && correctsite ? (
+            {node ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">Node</span>
                     <span>{node}</span>
