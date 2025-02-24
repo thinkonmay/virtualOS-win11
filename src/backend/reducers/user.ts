@@ -22,7 +22,6 @@ export type PaymentStatus =
     | {
           status: 'PAID';
           cluster: string;
-          correct_domain: boolean;
           created_at: string;
           ended_at?: string;
           policy?: {
@@ -273,20 +272,16 @@ export const userAsync = {
                 else if (data.length == 0) continue;
                 const [sub_verify_data] = data;
 
-                if (sub_verify_data.verified_at != null) {
-                    const origin = new URL(window.location.href).host;
+                if (sub_verify_data.verified_at != null)
                     return {
                         status: 'PAID',
                         cluster: sub_verify_data.domain,
-                        correct_domain:
-                            origin.includes('localhost') ||
-                            origin == sub_verify_data.domain,
                         local_metadata: sub_verify_data.local_metadata,
                         policy: sub_verify_data.policy,
                         created_at: sub_verify_data.created_at,
                         ended_at: sub_verify_data.ended_at
                     };
-                } else return { status: 'PENDING' };
+                else return { status: 'PENDING' };
             }
 
             return { status: 'NO_ACTION' };

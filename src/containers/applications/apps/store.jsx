@@ -75,8 +75,8 @@ const DetailPage = ({ app }) => {
     const subscribed = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'
     );
-    const volume_id = useAppSelector(state => state.user.volume_id);
-    const { currentAddress, data } = useAppSelector(state => state.worker);
+    const volume_id = useAppSelector((state) => state.user.volume_id);
+    const { currentAddress, data } = useAppSelector((state) => state.worker);
 
     const inuse = data[currentAddress]?.Volumes?.find(
         (x) => x.name == volume_id
@@ -125,14 +125,13 @@ const DetailPage = ({ app }) => {
                     <div className="text-sm font-thin ">Release {date}</div>
 
                     {subscribed ? (
-                        volume_id != ''
-                            ? inuse
-                                ?  <button
-                                    className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
-                                >
+                        volume_id != '' ? (
+                            inuse ? (
+                                <button className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]">
                                     volume is in use
                                 </button>
-                                : <>
+                            ) : (
+                                <>
                                     <div className="flex mt-5 items-center justify-between gap-2">
                                         <button
                                             onClick={handleDownload}
@@ -147,12 +146,12 @@ const DetailPage = ({ app }) => {
                                         {t[Contents.TA_CRATE_NEW_PC_NOTIFY]}
                                     </div>
                                 </>
-                            : <button
-                                className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
-                            >
+                            )
+                        ) : (
+                            <button className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]">
                                 volume not available in pb
                             </button>
-
+                        )
                     ) : !not_logged_in ? (
                         <>
                             <button

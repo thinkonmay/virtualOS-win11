@@ -24,11 +24,6 @@ export const ConnectApp = () => {
     const paid = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'
     );
-    const wrongsite = useAppSelector(
-        (state) =>
-            state.user.subscription.status == 'PAID' &&
-            !state.user.subscription.correct_domain
-    );
     const cluster = useAppSelector((state) =>
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.cluster
@@ -136,22 +131,12 @@ export const ConnectApp = () => {
                                     {t[Contents.CA_INITIALIZING]}
                                 </button>
                             ) : paid ? (
-                                wrongsite ? (
-                                    <a
-                                        href={`https://${cluster}`}
-                                        target="_self"
-                                        className="instbtn connectBtn12 connectBtn"
-                                    >
-                                        {cluster}
-                                    </a>
-                                ) : (
-                                    <button
-                                        onClick={reload}
-                                        className="instbtn connectBtn12 connectBtn"
-                                    >
-                                        {t[Contents.CA_RELOAD_TRY_AGAIN]}
-                                    </button>
-                                )
+                                <button
+                                    onClick={reload}
+                                    className="instbtn connectBtn12 connectBtn"
+                                >
+                                    {t[Contents.CA_RELOAD_TRY_AGAIN]}
+                                </button>
                             ) : (
                                 <button
                                     onClick={pay}

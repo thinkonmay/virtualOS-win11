@@ -114,18 +114,6 @@ const updateUI = async () => {
 
     const subscription = store.getState().user.subscription as PaymentStatus;
     const { status } = subscription;
-    if (status == 'PAID' && !subscription.correct_domain) {
-        appDispatch(
-            popup_open({
-                type: 'redirectDomain',
-                data: {
-                    domain: subscription.cluster,
-                    from: origin
-                }
-            })
-        );
-    }
-
     const rms = [];
     const ops = [];
     if (status == 'PENDING') ops.push('payment');

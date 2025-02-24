@@ -14,11 +14,6 @@ import { Icon } from './general';
 import './index.scss';
 
 function UserInfo() {
-    const correctsite = useAppSelector(
-        (state) =>
-            state.user.subscription.status == 'PAID' &&
-            state.user.subscription.correct_domain
-    );
     const {
         email,
         volume_id,
@@ -66,14 +61,6 @@ function UserInfo() {
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">{t[Contents.ENDAT]}</span>
                     <span>{formatDate(ended_at)}</span>
-                </div>
-            ) : null}
-            {correctsite ? (
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>
-                        {total_usage?.toFixed(1)} / {limit_hour}h
-                    </span>
                 </div>
             ) : null}
             {cluster ? (
