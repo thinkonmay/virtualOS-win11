@@ -9,11 +9,13 @@ import {
     check_worker,
     desk_remove,
     fetch_domain,
+    fetch_payment_history,
     fetch_store,
     fetch_subscription,
     fetch_under_maintenance,
     fetch_usage,
     fetch_user,
+    fetch_wallet,
     get_plans,
     have_focus,
     loose_focus,
@@ -101,6 +103,8 @@ const fetchDomains = async () => {
 };
 const fetchUser = async () => {
     await appDispatch(fetch_user());
+    await appDispatch(fetch_wallet());
+    await appDispatch(fetch_payment_history());
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());

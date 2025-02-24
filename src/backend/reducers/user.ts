@@ -61,11 +61,24 @@ type Plan = {
     allow_payment: boolean;
 };
 
+interface Deposit {
+    amount: number;
+    created_at: string;
+    id: number;
+    plan_name: 'month1' | 'month2' | 'week1' | 'week2';
+}
+
+interface Wallet {
+    money: number;
+    historyDeposit: Deposit[];
+    historyPayment: Deposit[];
+}
 type Data = RecordModel & {
     subscription: PaymentStatus;
     volume_id: string;
     bucket_name?: string;
     plans: Plan[];
+    wallet: Wallet;
 };
 
 const notexpired = () =>
@@ -86,7 +99,13 @@ const initialState: Data = {
     subscription: {
         status: 'NO_ACTION'
     },
-    plans: []
+    plans: [],
+
+    wallet: {
+        historyPayment: [],
+        historyDeposit: [],
+        money: 0
+    }
 };
 
 export const userAsync = {
@@ -120,6 +139,57 @@ export const userAsync = {
                 : initialState;
         }
     ),
+
+    fetch_wallet: createAsyncThunk(
+        'fetch_wallet',
+        async (): Promise<{
+            money;
+        }> => {
+            const result = await GLOBAL()
+                .from('pockets')
+                .select('id, user, created_at, amount')
+                .eq('user', 'marketing.thinkmay@gmail.com');
+
+            console.log(result, '=============');
+
+            return {
+                money: 1
+            };
+        }
+    ),
+
+    fetch_payment_history: createAsyncThunk(
+        'fetch_payment_history',
+        async (
+            _,
+            { getState }
+        ): Promise<{
+            paymentData: Deposit[];
+            depositData: Deposit[];
+        }> => {
+            const { email } = (getState() as RootState).user;
+            const { error: depositErr, data: depositData } = await GLOBAL().rpc(
+                'get_deposit_history',
+                {
+                    email: email
+                }
+            );
+            const { error: paymentErr, data: paymentData } = await GLOBAL().rpc(
+                'get_payment_history',
+                {
+                    email: email
+                }
+            );
+
+            if (paymentErr) throw paymentErr;
+
+            return {
+                paymentData,
+                depositData
+            };
+        }
+    ),
+
     fetch_usage: createAsyncThunk(
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
@@ -599,6 +669,18 @@ export const userSlice = createSlice({
                     state.expand = action.payload.expand;
                     state.email = action.payload.email;
                     state.stat = action.payload.stat;
+                }
+            },
+            {
+                fetch: userAsync.fetch_wallet,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: userAsync.fetch_payment_history,
+                hander: (state, action) => {
+                    console.log(action.payload);
+                    state.wallet.historyDeposit = action.payload.depositData;
+                    state.wallet.historyPayment = action.payload.paymentData;
                 }
             },
             {

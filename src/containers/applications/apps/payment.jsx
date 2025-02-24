@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import {
     MdArrowDropDown,
@@ -759,13 +760,57 @@ const listHistoryNav = [
         id: 'upgrade'
     }
 ];
+
+const renderNameDeteils = (name) => {
+    let nameFormat = '';
+    switch (name) {
+        case 'month1':
+            nameFormat = 'Mua gói tháng';
+            break;
+
+        default:
+            break;
+    }
+
+    return nameFormat;
+};
 const TransactionHistoryPage = () => {
+    const historyDeposit = useAppSelector(
+        (state) => state.user.wallet.historyDeposit
+    );
+    const historyPayment = useAppSelector(
+        (state) => state.user.wallet.historyPayment
+    );
     const [currentNav, setNav] = useState('all'); //all-deposit-upgrade-buy
+    const [currentData, setCurrentData] = useState([
+        ...historyPayment,
+        ...historyDeposit
+    ]);
 
     const handleChangeNav = (nav) => {
         setNav(nav);
+
+        switch (nav) {
+            case 'all':
+                setCurrentData([...historyPayment, ...historyDeposit]);
+                break;
+            case 'deposit':
+                setCurrentData([...historyDeposit]);
+                break;
+
+            case 'buy':
+                setCurrentData([...historyPayment]);
+                break;
+            case 'upgrade':
+                setCurrentData([]);
+                break;
+
+            default:
+                break;
+        }
     };
 
+    console.log(historyPayment, historyDeposit);
     return (
         <div className="historyPage">
             <h2 className="title">Lịch sử giao dịch</h2>
@@ -785,26 +830,34 @@ const TransactionHistoryPage = () => {
 
             <div className="wrapperTableHistory">
                 <div className="rowContent" style={{ borderTop: 'unset' }}>
-                    <div className="columnContent">Thời gian</div>
                     <div className="columnContent ">Số tiền</div>
                     <div className="columnContent">Chi tiết</div>
+                    <div className="columnContent">Thời gian</div>
                 </div>
 
-                <div className="rowContent">
-                    <div className="columnContent">24/12/2024, 11:29:07</div>
-                    <div className="columnContent">-50k</div>
-                    <div className="columnContent">Mua dung lượng</div>
-                </div>
-                <div className="rowContent">
-                    <div className="columnContent">24/12/2024, 13:29:07</div>
-                    <div className="columnContent">-299k</div>
-                    <div className="columnContent">Gia hạn gói tháng</div>
-                </div>
-                <div className="rowContent">
-                    <div className="columnContent">24/12/2024, 20:29:07</div>
-                    <div className="columnContent">-60k</div>
-                    <div className="columnContent">Nâng cấp ram & cpu</div>
-                </div>
+                {currentData.length > 0 ? (
+                    currentData.map((item) => (
+                        <div className="rowContent" key={item.id}>
+                            <div className="columnContent">-{item.amount}k</div>
+                            <div className="columnContent">
+                                {renderNameDeteils(item.plan_name)}
+                            </div>
+                            <div className="columnContent">
+                                {dayjs(item.created_at).format(
+                                    'HH:mm DD/MM/YYYY'
+                                )}
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="rowContent">
+                        <p></p>
+                        <p className="my-auto font-bold">
+                            Hiện chưa có dự liệu
+                        </p>
+                        <p></p>
+                    </div>
+                )}
             </div>
         </div>
     );
