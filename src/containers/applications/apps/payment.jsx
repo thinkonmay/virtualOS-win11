@@ -137,9 +137,7 @@ export const PaymentApp = () => {
                         Nâng cấp
                     </div>
                     <div
-                        className={
-                            page == 'sub' ? 'item subActive' : 'item'
-                        }
+                        className={page == 'sub' ? 'item subActive' : 'item'}
                         onClick={() => handleChangePage('sub')}
                     >
                         Thuê CloudPC
@@ -153,30 +151,25 @@ export const PaymentApp = () => {
                         Lịch sử
                     </div>
                     <div
-                        className={
-                            page == 'refund' ? 'item subActive' : 'item'
-                        }
+                        className={page == 'refund' ? 'item subActive' : 'item'}
                         onClick={() => handleChangePage('refund')}
                     >
                         Hoàn tiền
                     </div>
                 </div>
                 <LazyComponent show={!wnapp.hide}>
-
                     <div className="paymentContent win11Scroll">
                         {page == 'sub' ? (
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
                             <RefundPage />
-                        ) : page == 'deposit' ?
+                        ) : page == 'deposit' ? (
                             <DepositPage />
-                            :
-                            page == 'history' ?
-                                <TransactionHistoryPage />
-                                :
-                                (
-                                    <StoragePage />
-                                )}
+                        ) : page == 'history' ? (
+                            <TransactionHistoryPage />
+                        ) : (
+                            <StoragePage />
+                        )}
                     </div>
                 </LazyComponent>
             </div>
@@ -202,13 +195,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-                ? appDispatch(
+              ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-                : appDispatch(
+              : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -403,21 +396,22 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${!sub.active
-                                    ? sub.name ==
-                                        'week2'
-                                        ? 'bg-red-500'
-                                        : 'bg-[#0067c0]'
-                                    : 'bg-[#0067c0]'
-                                }  `}
+                                                            ${
+                                                                !sub.active
+                                                                    ? sub.name ==
+                                                                      'week2'
+                                                                        ? 'bg-red-500'
+                                                                        : 'bg-[#0067c0]'
+                                                                    : 'bg-[#0067c0]'
+                                                            }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week2'
                                     ? 'Đang đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                    ? 'Gia hạn'
-                                    : 'Mua Ngay'}
+                                  ? 'Gia hạn'
+                                  : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
@@ -452,7 +446,7 @@ const SubscriptionPage = () => {
         e.total_days = plan.total_days;
     });
     return (
-        <div className='subscriptionPage md:!justify-evenly px-0 '>
+        <div className="subscriptionPage md:!justify-evenly px-0 ">
             {listSubs.map((sub, index) => (
                 <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
             ))}
@@ -524,20 +518,20 @@ const RefundPage = () => {
 const StoragePage = () => {
     return (
         <div className="storagePage pt-[1%] ">
-            <div className='flex flex-col items-center justify-center'>
-                <h2 className="text-center mb-4 lg:mb-8 ">Bảng giá dung lượng</h2>
+            <div className="flex flex-col items-center justify-center">
+                <h2 className="text-center mb-4 lg:mb-8 ">
+                    Bảng giá dung lượng
+                </h2>
                 <div className="wrapperTableStorage">
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
                         <div className="columnContent">Dung lượng</div>
                         <div className="columnContent ">
-                            <p className='title'>Đăng ký ngay</p>
-                            <p className='subtitle'>tới 26/01</p>
+                            <p className="title">Đăng ký ngay</p>
+                            <p className="subtitle">tới 26/01</p>
                         </div>
                         <div className="columnContent">
-                            <p className='title'>
-                                Gia hạn
-                            </p>
-                            <p className='subtitle'>hẵng tháng</p>
+                            <p className="title">Gia hạn</p>
+                            <p className="subtitle">hẵng tháng</p>
                         </div>
                         <div className="columnContent"></div>
                     </div>
@@ -549,7 +543,6 @@ const StoragePage = () => {
                         <div className="columnContent">
                             <button className="instbtn buyBtn">Đăng ký</button>
                         </div>
-
                     </div>
                     <div className="rowContent">
                         <div className="columnContent">100GB</div>
@@ -558,7 +551,6 @@ const StoragePage = () => {
                         <div className="columnContent">
                             <button className="instbtn buyBtn">Đăng ký</button>
                         </div>
-
                     </div>
                     <div className="rowContent">
                         <div className="columnContent">200GB</div>
@@ -567,24 +559,22 @@ const StoragePage = () => {
                         <div className="columnContent">
                             <button className="instbtn buyBtn">Đăng ký</button>
                         </div>
-
                     </div>
-
                 </div>
 
-                <h2 className="text-center mb-4 lg:mb-8 mt-10 ">Bảng giá Ram & Cpu</h2>
+                <h2 className="text-center mb-4 lg:mb-8 mt-10 ">
+                    Bảng giá Ram & Cpu
+                </h2>
                 <div className="wrapperTableStorage">
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
                         <div className="columnContent">Ram & cpu</div>
                         <div className="columnContent ">
-                            <p className='title'>Đăng ký ngay</p>
-                            <p className='subtitle'>tới 26/01</p>
+                            <p className="title">Đăng ký ngay</p>
+                            <p className="subtitle">tới 26/01</p>
                         </div>
                         <div className="columnContent">
-                            <p className='title'>
-                                Gia hạn
-                            </p>
-                            <p className='subtitle'>hẵng tháng</p>
+                            <p className="title">Gia hạn</p>
+                            <p className="subtitle">hẵng tháng</p>
                         </div>
                         <div className="columnContent"></div>
                     </div>
@@ -596,7 +586,6 @@ const StoragePage = () => {
                         <div className="columnContent">
                             <button className="instbtn buyBtn">Đăng ký</button>
                         </div>
-
                     </div>
                     <div className="rowContent">
                         <div className="columnContent">24GB & 12cores</div>
@@ -605,7 +594,6 @@ const StoragePage = () => {
                         <div className="columnContent">
                             <button className="instbtn buyBtn">Đăng ký</button>
                         </div>
-
                     </div>
                     <div className="rowContent">
                         <div className="columnContent">28GB & 16cores</div>
@@ -614,32 +602,26 @@ const StoragePage = () => {
                         <div className="columnContent">
                             <button className="instbtn buyBtn">Đăng ký</button>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
     );
 };
 
-
 const DepositPage = () => {
-
-    const [depositNumber, setDepositNumber] = useState('')
-    const [isErr, setErr] = useState('')
+    const [depositNumber, setDepositNumber] = useState('');
+    const [isErr, setErr] = useState('');
 
     const handleDeposit = () => {
-
-        if (isErr) return
+        if (isErr) return;
 
         /// show thanh toán.
-
-    }
+    };
 
     function numberFormat(num) {
-        let fmt = new Intl.NumberFormat()
-        return fmt.format(num)
+        let fmt = new Intl.NumberFormat();
+        return fmt.format(num);
     }
 
     const handleChangeDepositNumber = (e) => {
@@ -649,75 +631,53 @@ const DepositPage = () => {
         //console.log(numberFormat(e.target.value));
 
         if (e.target.value < 50000) {
-            setErr(' Số tiền nạp phải >= 50k Vnđ')
+            setErr(' Số tiền nạp phải >= 50k Vnđ');
+        } else if (e.target.value < 1000000000) {
+            setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
+        } else {
+            setErr('');
         }
-        else if (e.target.value < 1000000000) {
-            setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn')
-        }
-        else {
-            setErr('')
-        }
-
-
-
-    }
-
+    };
 
     return (
         <div className="depositPage">
             <h2 className="title">Chuyển khoản ngân hàng</h2>
 
-
             <div className="depositBox">
-                <p className='subtitle'>Số tiền muốn nạp</p>
+                <p className="subtitle">Số tiền muốn nạp</p>
 
                 <div className="wrapperDeposit">
                     <input
                         value={depositNumber}
                         onChange={handleChangeDepositNumber}
                         type="string"
-                        className='depositInput'
-
-                        placeholder='Nhập số tiền (VNĐ)'
+                        className="depositInput"
+                        placeholder="Nhập số tiền (VNĐ)"
                     />
                     <button
                         onClick={handleDeposit}
-
-                        className="instbtn depositBtn">
+                        className="instbtn depositBtn"
+                    >
                         Nạp tiền
                     </button>
                 </div>
-
-
-
-
             </div>
-            {isErr ?
-                <p className='text-red-500 text-base mt-2 font-bold'>
-                    {isErr}
-                </p>
-                : null}
-            <div className='optionsBox'>
-                <div className='option'>
-                    Tuỳ chọn
-                </div>
-                <div className='option'>
-                    Gia hạn gói hiện tại
-                </div>
+            {isErr ? (
+                <p className="text-red-500 text-base mt-2 font-bold">{isErr}</p>
+            ) : null}
+            <div className="optionsBox">
+                <div className="option">Tuỳ chọn</div>
+                <div className="option">Gia hạn gói hiện tại</div>
             </div>
 
             <div className="noticesBox">
-                <p className='title'>Lưu ý:</p>
-                <ul className=''>
+                <p className="title">Lưu ý:</p>
+                <ul className="">
+                    <li>Số tiền nạp tối thiểu là 50,000 VNĐ</li>
+                    <li>Tiền đã nạp không thể rút ra thành tiền mặt</li>
                     <li>
-                        Số tiền nạp tối thiểu là 50,000 VNĐ
-
-                    </li>
-                    <li>
-                        Tiền đã nạp không thể rút ra thành tiền mặt
-                    </li>
-                    <li>
-                        Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên hệ Fanpage để được hỗ trợ
+                        Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên
+                        hệ Fanpage để được hỗ trợ
                     </li>
                 </ul>
             </div>
@@ -725,65 +685,61 @@ const DepositPage = () => {
             <CardDepositBox />
             <OthersDepositBox />
         </div>
-    )
-}
+    );
+};
 
 const CardDepositBox = () => {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
 
     return (
         <div className="cardDepositBox ">
-
             <div
-                onClick={() => { setOpen(old => !old) }}
-                className="toggleContentBtn">
-                {
-                    open ?
-                        <MdKeyboardArrowDown fontSize={'1.5rem'} />
-                        : <MdKeyboardArrowRight fontSize={'1.5rem'} />
-                }
+                onClick={() => {
+                    setOpen((old) => !old);
+                }}
+                className="toggleContentBtn"
+            >
+                {open ? (
+                    <MdKeyboardArrowDown fontSize={'1.5rem'} />
+                ) : (
+                    <MdKeyboardArrowRight fontSize={'1.5rem'} />
+                )}
                 <span>Thanh toán bằng card</span>
             </div>
 
-
-            {
-                open ? <div className='bg-slate-600 w-[480px] h-[240px] rounded-lg  mt-4'></div> : null
-            }
-
-
+            {open ? (
+                <div className="bg-slate-600 w-[480px] h-[240px] rounded-lg  mt-4"></div>
+            ) : null}
         </div>
-    )
-}
+    );
+};
 const OthersDepositBox = () => {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
 
     return (
         <div className="othersDepositBox">
-
             <div
-                onClick={() => { setOpen(old => !old) }}
-                className="toggleContentBtn">
-                {
-                    open ?
-                        <MdKeyboardArrowDown fontSize={'1.5rem'} />
-                        : <MdKeyboardArrowRight fontSize={'1.5rem'} />
-                }
+                onClick={() => {
+                    setOpen((old) => !old);
+                }}
+                className="toggleContentBtn"
+            >
+                {open ? (
+                    <MdKeyboardArrowDown fontSize={'1.5rem'} />
+                ) : (
+                    <MdKeyboardArrowRight fontSize={'1.5rem'} />
+                )}
                 <span>Các hình thức thanh toán khác: Paypal, vv</span>
             </div>
 
-
-            {
-                open ? <p className='text-lg'>
-
+            {open ? (
+                <p className="text-lg">
                     Vui lòng liên hệ Fanpage để được hỗ trợ thanh toán thủ công.
-                </p> : null
-            }
-
-
+                </p>
+            ) : null}
         </div>
-    )
-}
-
+    );
+};
 
 const listHistoryNav = [
     {
@@ -802,70 +758,54 @@ const listHistoryNav = [
         name: 'Nâng cấp',
         id: 'upgrade'
     }
-
-]
+];
 const TransactionHistoryPage = () => {
-
-    const [currentNav, setNav] = useState('all') //all-deposit-upgrade-buy
-
-
+    const [currentNav, setNav] = useState('all'); //all-deposit-upgrade-buy
 
     const handleChangeNav = (nav) => {
-        setNav(nav)
-    }
+        setNav(nav);
+    };
 
     return (
         <div className="historyPage">
-
-            <h2 className="title">
-                Lịch sử giao dịch
-            </h2>
-
+            <h2 className="title">Lịch sử giao dịch</h2>
 
             <ul className="historyNav">
-                {
-                    listHistoryNav.map((nav => (
-                        <li
-                            onClick={() => handleChangeNav(nav.id)}
-                            className={`nav ${currentNav == nav.id ? 'navActive' : ''}`}>{nav.name}</li>
-                    )))
-                }
-
+                {listHistoryNav.map((nav) => (
+                    <li
+                        onClick={() => handleChangeNav(nav.id)}
+                        className={`nav ${
+                            currentNav == nav.id ? 'navActive' : ''
+                        }`}
+                    >
+                        {nav.name}
+                    </li>
+                ))}
             </ul>
 
             <div className="wrapperTableHistory">
                 <div className="rowContent" style={{ borderTop: 'unset' }}>
                     <div className="columnContent">Thời gian</div>
-                    <div className="columnContent ">
-                        Số tiền
-                    </div>
-                    <div className="columnContent">
-                        Chi tiết
-                    </div>
+                    <div className="columnContent ">Số tiền</div>
+                    <div className="columnContent">Chi tiết</div>
                 </div>
 
                 <div className="rowContent">
                     <div className="columnContent">24/12/2024, 11:29:07</div>
                     <div className="columnContent">-50k</div>
                     <div className="columnContent">Mua dung lượng</div>
-
-
                 </div>
                 <div className="rowContent">
                     <div className="columnContent">24/12/2024, 13:29:07</div>
                     <div className="columnContent">-299k</div>
                     <div className="columnContent">Gia hạn gói tháng</div>
-
-
                 </div>
                 <div className="rowContent">
                     <div className="columnContent">24/12/2024, 20:29:07</div>
                     <div className="columnContent">-60k</div>
                     <div className="columnContent">Nâng cấp ram & cpu</div>
-
                 </div>
-
             </div>
         </div>
-    )
-}
+    );
+};
