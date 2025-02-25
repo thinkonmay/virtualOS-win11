@@ -142,18 +142,22 @@ export const userAsync = {
 
     fetch_wallet: createAsyncThunk(
         'fetch_wallet',
-        async (): Promise<{
-            money;
+        async (
+            _,
+            { getState }
+        ): Promise<{
+            amount;
         }> => {
-            const result = await GLOBAL()
-                .from('pockets')
-                .select('id, user, created_at, amount')
-                .eq('user', 'marketing.thinkmay@gmail.com');
+            const { email } = (getState() as RootState).user;
 
-            console.log(result, '=============');
+            const { error, data } = await GLOBAL().rpc('get_pocket_balance', {
+                email
+            });
 
+            console.log(data.at(0), '=============');
+            const { amount } = data[0];
             return {
-                money: 1
+                amount
             };
         }
     ),
@@ -673,7 +677,9 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.fetch_wallet,
-                hander: (state, action) => {}
+                hander: (state, action) => {
+                    state.wallet.money = action.payload.amount;
+                }
             },
             {
                 fetch: userAsync.fetch_payment_history,

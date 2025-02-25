@@ -196,13 +196,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-              ? appDispatch(
+                ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-              : appDispatch(
+                : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -397,22 +397,21 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${
-                                                                !sub.active
-                                                                    ? sub.name ==
-                                                                      'week2'
-                                                                        ? 'bg-red-500'
-                                                                        : 'bg-[#0067c0]'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
+                                                            ${!sub.active
+                                    ? sub.name ==
+                                        'week2'
+                                        ? 'bg-red-500'
+                                        : 'bg-[#0067c0]'
+                                    : 'bg-[#0067c0]'
+                                }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week2'
-                                    ? 'Đang đóng'
+                                    ? 'Tạm đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
+                                    ? 'Gia hạn'
+                                    : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
@@ -810,7 +809,6 @@ const TransactionHistoryPage = () => {
         }
     };
 
-    console.log(historyPayment, historyDeposit);
     return (
         <div className="historyPage">
             <h2 className="title">Lịch sử giao dịch</h2>
@@ -819,9 +817,8 @@ const TransactionHistoryPage = () => {
                 {listHistoryNav.map((nav) => (
                     <li
                         onClick={() => handleChangeNav(nav.id)}
-                        className={`nav ${
-                            currentNav == nav.id ? 'navActive' : ''
-                        }`}
+                        className={`nav ${currentNav == nav.id ? 'navActive' : ''
+                            }`}
                     >
                         {nav.name}
                     </li>

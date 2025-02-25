@@ -38,6 +38,7 @@ const Taskbar = () => {
     const apps = useAppSelector((state) => state.apps);
     //const open = useAppSelector((state) => !state.sidepane.hide);
     const tutorialState = useAppSelector((state) => state.globals.tutorial);
+    const wallet = useAppSelector((state) => state.user.wallet);
     const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
@@ -164,7 +165,7 @@ const Taskbar = () => {
                         <div className="wrapperWallet">
                             <div className="flex items-center gap-[2px] text-xs font-semibold lg:text-sm">
                                 <MdOutlineMonetizationOn fontSize={'1.2rem'} />
-                                500,000
+                                {wallet.money}
                             </div>
                             <button
                                 onClick={() => {
