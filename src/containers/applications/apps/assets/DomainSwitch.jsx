@@ -1,12 +1,12 @@
 import { useAppSelector } from '../../../../backend/reducers';
 
 function DomainSwitch() {
-    const domain = useAppSelector(state => state.worker.currentAddress)
+    const domain = useAppSelector((state) => state.worker.currentAddress);
 
     const updateLanguage = (e) => {
         localStorage.setItem('thinkmay_domain', e.target.value);
-        window.location.reload()
-    }
+        window.location.reload();
+    };
 
     return (
         <div className="langSwitcher langSwitcherTile">

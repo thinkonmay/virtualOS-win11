@@ -2,7 +2,6 @@ export { complete } from './complete';
 export { extendService } from './extend';
 export { guidance } from './guidance';
 export { info } from './info';
-export { linkSteam } from './linkSteam';
 export { maintain } from './maintain';
 export { notify } from './notify';
 export { showQa } from './qa';

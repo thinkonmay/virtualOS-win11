@@ -101,14 +101,6 @@ export const SidePane = () => {
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
     const active = useAppSelector((state) => state.remote.active);
-    const steam_available = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.steam != undefined
-    );
-    const storage_available = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.storage != undefined
-    );
     const setBitrate = (e) => {
         appDispatch(change_bitrate(e.target.value));
         localStorage.setItem('bitrate', e.target.value);
@@ -164,9 +156,7 @@ export const SidePane = () => {
         pnstates,
         sidepane,
         shutdownable,
-        active,
-        steam_available,
-        storage_available
+        active
     };
 
     return (
@@ -581,31 +571,11 @@ const MobileShortCutBtn = ({ qk }) => {
     );
 };
 function MobileComponent({
-    data: {
-        pnstates,
-        sidepane,
-        shutdownable,
-        active,
-        steam_available,
-        storage_available
-    }
+    data: { pnstates, sidepane, shutdownable, active }
 }) {
     let blacklist = [];
     if (shutdownable != 'started')
-        blacklist = [
-            ...blacklist,
-            'shutDownVm',
-            'copy_log',
-            'showLinkShare',
-            'app_session_toggle',
-            'storage_session_toggle',
-            'app_session_toggle'
-        ];
-    else {
-        if (!steam_available) blacklist = [...blacklist, 'app_session_toggle'];
-        if (!storage_available)
-            blacklist = [...blacklist, 'storage_session_toggle'];
-    }
+        blacklist = ['shutDownVm', 'copy_log', 'showLinkShare'];
 
     const renderList = sidepane.mobileControl.buttons.filter(
         (x) => !blacklist.includes(x.action)
@@ -627,33 +597,13 @@ function MobileComponent({
     );
 }
 function DesktopComponent({
-    data: {
-        pnstates,
-        sidepane,
-        shutdownable,
-        active,
-        steam_available,
-        storage_available
-    }
+    data: { pnstates, sidepane, shutdownable, active }
 }) {
     const t = useAppSelector((state) => state.globals.translation);
 
     let blacklist = [];
     if (shutdownable != 'started')
-        blacklist = [
-            ...blacklist,
-            'shutDownVm',
-            'copy_log',
-            'showLinkShare',
-            'app_session_toggle',
-            'storage_session_toggle',
-            'app_session_toggle'
-        ];
-    else {
-        if (!steam_available) blacklist = [...blacklist, 'app_session_toggle'];
-        if (!storage_available)
-            blacklist = [...blacklist, 'storage_session_toggle'];
-    }
+        blacklist = ['shutDownVm', 'copy_log', 'showLinkShare'];
 
     const renderList = sidepane.desktopControl.buttons.filter(
         (x) => !blacklist.includes(x.action)

@@ -57,9 +57,6 @@ type Data = RecordModel & {
     volume_id: string;
     bucket_name?: string;
     plans: Plan[];
-    accounts: {
-        metadata: { username: string; password: string };
-    }[];
 };
 
 const notexpired = () =>
@@ -80,8 +77,7 @@ const initialState: Data = {
     subscription: {
         status: 'NO_ACTION'
     },
-    plans: [],
-    accounts: []
+    plans: []
 };
 
 export const userAsync = {
@@ -90,8 +86,6 @@ export const userAsync = {
         async (): Promise<
             RecordModel & {
                 volume_id: string;
-                bucket_name?: string;
-                accounts: any[];
             }
         > => {
             const {
@@ -100,29 +94,12 @@ export const userAsync = {
             const [vol] = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;
             }>();
-            const [bucket] = await POCKETBASE.collection(
-                'buckets'
-            ).getFullList<{
-                bucket_name: string;
-            }>();
-            const accounts =
-                await POCKETBASE.collection('thirdparty_account').getFullList();
 
-            const res =
-                result != undefined
-                    ? vol != undefined
-                        ? bucket != undefined
-                            ? {
-                                  ...result,
-                                  volume_id: vol.local_id,
-                                  bucket_name: bucket.bucket_name,
-                                  accounts
-                              }
-                            : { ...result, volume_id: vol.local_id, accounts }
-                        : { ...result, volume_id: '', accounts }
-                    : initialState;
-
-            return res;
+            return result != undefined
+                ? vol != undefined
+                    ? { ...result, volume_id: vol.local_id }
+                    : { ...result, volume_id: '' }
+                : initialState;
         }
     ),
     fetch_usage: createAsyncThunk(

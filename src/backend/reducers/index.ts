@@ -157,9 +157,7 @@ export const {
     worker_refresh,
     worker_refresh_ui,
     wait_and_claim_volume,
-    unclaim_volume,
-    app_session_toggle,
-    storage_session_toggle
+    unclaim_volume
 } = workerAsync;
 export const {
     fetch_user,

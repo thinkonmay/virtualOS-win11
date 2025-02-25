@@ -15,12 +15,8 @@ import {
     Computer,
     GetInfo,
     getRemoteSession,
-    LoginSteamOnVM,
-    LogoutSteamOnVM,
-    MountOnVM,
     ParseRequest,
-    StartThinkmay,
-    UnmountOnVM
+    StartThinkmay
 } from '../../../src-tauri/api';
 import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
@@ -28,13 +24,8 @@ import { BuilderHelper } from './helper';
 import { Contents } from './locales';
 import { isUUID } from './user';
 
-const now = () => new Date().getTime() / 1000 / 60;
-
 type innerComputer = Computer & {
-    address?: string; // private
     availability?: 'not_ready' | 'ready' | 'started'; // private
-    steam?: boolean; // private
-    storage?: boolean; // private
 };
 
 type WorkerType = {
@@ -149,48 +140,24 @@ export const workerAsync = {
     ),
     update_local_worker: createAsyncThunk(
         'update_local_worker',
-        async (
-            {
-                info,
-                currentAddress
-            }: {
-                info: Computer;
-                currentAddress: string;
-            },
+        async ({
+            info,
+            currentAddress
+        }: {
+            info: Computer;
+            currentAddress: string;
+        }): Promise<{ [address: string]: innerComputer }> => {
+            let availability = undefined;
+            if (info.remoteReady) {
+                if (info.Sessions?.length > 0) availability = 'started';
+                else availability = 'ready';
+            } else if (info.virtReady) {
+                if (info.Volumes?.length == 0) availability = undefined;
+                else if (info.Sessions?.length > 0) availability = 'started';
+                else availability = 'ready';
+            } else availability = 'not_ready';
 
-            { getState }
-        ): Promise<{ [address: string]: innerComputer }> => {
-            const { bucket_name, accounts } = (getState() as RootState).user;
-            const computer = info as innerComputer;
-
-            if (computer.remoteReady) {
-                if (computer.Sessions?.length > 0)
-                    computer.availability = 'started';
-                else computer.availability = 'ready';
-            } else if (computer.virtReady) {
-                if (computer.Volumes?.length == 0)
-                    computer.availability = undefined;
-                else if (computer.Sessions?.length > 0)
-                    computer.availability = 'started';
-                else computer.availability = 'ready';
-            } else computer.availability = 'not_ready';
-
-            if (accounts.length == 0) computer.steam = undefined;
-            else if (
-                computer.Sessions?.find((x) => x.app?.Type == 'steam') !=
-                undefined
-            )
-                computer.steam = false;
-            else computer.steam = false;
-
-            if (bucket_name == undefined) computer.storage = undefined;
-            else if (
-                computer.Sessions?.find((x) => x.app != undefined) != undefined
-            )
-                computer.storage = false;
-            else computer.storage = false;
-
-            return { [currentAddress]: computer };
+            return { [currentAddress]: { ...info, availability } };
         }
     ),
     fetch_local_worker: createAsyncThunk(
@@ -237,109 +204,6 @@ export const workerAsync = {
                     currentAddress: currentAddress
                 })
             );
-        }
-    ),
-    storage_session_toggle: createAsyncThunk(
-        'storage_session_toggle',
-        async (_, { getState }): Promise<any> => {
-            const state = getState() as RootState;
-            const storage =
-                state.worker.data[state.worker.currentAddress]?.storage;
-
-            if (storage)
-                await appDispatch(workerAsync.storage_session_logout());
-            else await appDispatch(workerAsync.storage_session_login());
-        }
-    ),
-    storage_session_login: createAsyncThunk(
-        'storage_session_login',
-        async (_, { getState }): Promise<any> => {
-            const {
-                user: { bucket_name },
-                worker: { data, currentAddress }
-            } = getState() as RootState;
-            const session = data[currentAddress]?.Sessions?.[0];
-            if (bucket_name == undefined)
-                throw new Error(`user dont have any associate bucket name`);
-            const info = await MountOnVM(
-                currentAddress,
-                session.id,
-                bucket_name
-            );
-            if (info instanceof Error) throw info;
-            appDispatch(
-                workerAsync.update_local_worker({
-                    info,
-                    currentAddress
-                })
-            );
-        }
-    ),
-    storage_session_logout: createAsyncThunk(
-        'storage_session_logout',
-        async (_, { getState }): Promise<any> => {
-            const {
-                worker: { data, currentAddress }
-            } = getState() as RootState;
-            const session = data[
-                currentAddress
-            ]?.Sessions?.[0]?.vm?.Sessions.find((x) => x.s3bucket != undefined);
-            return await UnmountOnVM(currentAddress, session);
-        }
-    ),
-    app_session_toggle: createAsyncThunk(
-        'app_session_toggle',
-        async (_, { getState }): Promise<any> => {
-            const {
-                worker: { data, currentAddress }
-            } = getState() as RootState;
-            const steam = data[currentAddress]?.steam;
-
-            if (steam) await appDispatch(workerAsync.app_session_logout());
-            else await appDispatch(workerAsync.app_session_login());
-        }
-    ),
-    app_session_login: createAsyncThunk(
-        'app_session_login',
-        async (_, { getState }): Promise<void> => {
-            const {
-                worker: { data, currentAddress },
-                user: { accounts }
-            } = getState() as RootState;
-            const session = data[currentAddress]?.Sessions?.[0];
-            if (accounts.length == 0)
-                throw new Error(`You have not link any steam account`);
-            const [
-                {
-                    metadata: { username, password }
-                }
-            ] = accounts;
-
-            const info = await LoginSteamOnVM(
-                currentAddress,
-                session.id,
-                username ?? '',
-                password ?? ''
-            );
-            if (info instanceof Error) throw info;
-            appDispatch(
-                workerAsync.update_local_worker({
-                    info,
-                    currentAddress
-                })
-            );
-        }
-    ),
-    app_session_logout: createAsyncThunk(
-        'app_session_logout',
-        async (_, { getState }): Promise<any> => {
-            const {
-                worker: { data, currentAddress }
-            } = getState() as RootState;
-            const session = data[
-                currentAddress
-            ]?.Sessions?.[0]?.vm?.Sessions.find((x) => x.app != undefined);
-            return await LogoutSteamOnVM(currentAddress, session);
         }
     )
 };

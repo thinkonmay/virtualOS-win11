@@ -51,10 +51,6 @@ type PopupData =
           };
       }
     | {
-          type: 'linkSteam';
-          data: {};
-      }
-    | {
           type: 'info';
           data: {
               title: string;

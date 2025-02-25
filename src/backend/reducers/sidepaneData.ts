@@ -132,20 +132,6 @@ export const listMobileSettings = [
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
-        src: 'FaSteam',
-        name: [Contents.STEAM_LOGIN],
-        state: 'steam',
-        action: 'app_session_toggle',
-        explain: [Contents.STEAM_LOGIN_EXPlAIN]
-    },
-    {
-        src: 'MdCloudUpload',
-        name: [Contents.MOUNT_STORAGE],
-        state: 'storage',
-        action: 'storage_session_toggle',
-        explain: [Contents.MOUNT_STORAGE_EXPlAIN]
-    },
-    {
         ui: true,
         id: 'shutdownBtn',
 
@@ -234,20 +220,6 @@ export const listDesktopSettings = [
         state: 'share_reference',
         action: 'showLinkShare',
         explain: [Contents.EXTERNAL_TAB_EXPlAIN]
-    },
-    {
-        src: 'FaSteam',
-        name: [Contents.STEAM_LOGIN],
-        state: 'steam',
-        action: 'app_session_toggle',
-        explain: [Contents.STEAM_LOGIN_EXPlAIN]
-    },
-    {
-        src: 'MdCloudUpload',
-        name: [Contents.MOUNT_STORAGE],
-        state: 'storage',
-        action: 'storage_session_toggle',
-        explain: [Contents.MOUNT_STORAGE_EXPlAIN]
     },
     {
         ui: true,
