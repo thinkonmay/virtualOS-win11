@@ -186,22 +186,35 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             ) ?? -1
     );
 
-    const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
-    const onChooseSub = (plan_name) =>
-        not_logged_in
-            ? login('google', false)
-            : status != 'PAID'
-              ? appDispatch(
-                    get_payment({
-                        plan_name,
-                        domain
-                    })
-                )
-              : appDispatch(
-                    get_payment({
-                        plan_name
-                    })
-                );
+    const [domain, setDomain] = useState(null);
+
+    const onChooseSub = (plan_name) => {
+        if (not_logged_in) {
+            return login('google', false);
+        }
+        if (status === 'PAID') {
+            return appDispatch(get_payment({ plan_name }));
+        }
+
+        if (status !== 'PENDING' && domains.length > 0 && domain === null) {
+            return appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        content: 'Please choose your server!',
+                        success: false
+                    }
+                })
+            );
+        }
+
+        return appDispatch(
+            get_payment({
+                plan_name,
+                domain
+            })
+        );
+    };
 
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
     const clickDetail = () => {
@@ -326,9 +339,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                 htmlFor="server1"
                                             >
                                                 <input
-                                                    defaultChecked={
-                                                        index == max
-                                                    }
+                                                    // defaultChecked={
+                                                    //     index == max
+                                                    // }
                                                     onChange={(e) =>
                                                         e.target.checked
                                                             ? setDomain(domain)

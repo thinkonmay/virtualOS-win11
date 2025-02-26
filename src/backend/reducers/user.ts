@@ -68,8 +68,6 @@ type Data = RecordModel & {
     plans: Plan[];
 };
 
-const notexpired = () =>
-    `ended_at.gt.${new Date().toISOString()},ended_at.is.${null}`;
 const isUUID = (uuid) =>
     uuid.match(
         '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
@@ -253,7 +251,7 @@ export const userAsync = {
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,cluster,local_metadata,ended_at')
-                .or(notexpired())
+                .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
@@ -343,15 +341,12 @@ export const userAsync = {
                 throw new Error('gói dịch vụ hiện đang tạm đóng');
             const { id: plan } = _plans;
 
-            const expire_at = new Date(
-                new Date().getTime() + 1000 * 60 * 10 * 1
-            ).toISOString();
             const { email, volume_id } = (getState() as RootState).user;
 
             const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,local_metadata->>volume_id')
-                .or(notexpired())
+                .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
