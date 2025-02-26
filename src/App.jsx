@@ -61,18 +61,14 @@ function App() {
 
     useEffect(() => {
         const url = new URL(window.location.href);
-        const ref = url.searchParams.get('ref');
         const game = url.searchParams.get('game');
-
-        if (ref != null) {
-            appDispatch(direct_access({ ref }));
-            window.onbeforeunload = (e) => {
-                const text = 'Are you sure (｡◕‿‿◕｡)';
-                e = e || window.event;
-                if (e) e.returnValue = text;
-                return text;
-            };
-        }
+        appDispatch(direct_access(url));
+        window.onbeforeunload = (e) => {
+            const text = 'Are you sure (｡◕‿‿◕｡)';
+            e = e || window.event;
+            if (e) e.returnValue = text;
+            return text;
+        };
 
         const waitForPhoneRotation = async () => {
             const finish_fetch = now();

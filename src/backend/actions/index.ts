@@ -14,6 +14,7 @@ import {
     dispatch_generic,
     menu_chng,
     menu_hide,
+    popup_close,
     popup_open,
     setting_theme,
     sidepane_panethem,
@@ -22,6 +23,7 @@ import {
     worker_refresh
 } from '../reducers/index';
 import { preload } from './background';
+import { Contents } from '../reducers/locales';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -198,18 +200,28 @@ export const clickShortCut = (keys = []) => {
         keyboard({ val: keys[keys.length - 1 - index], action: 'up' });
 };
 
-export const showLinkShare = () => {
-    // TODO
-    let link = 'this feature has been temporary disabled';
-    // let link = `${getDomainURL()}/?ref=${token}`;
-    // if (token == undefined) {
-    //     link = getDomainURL();
-    // }
+export const showLinkShare = () =>
     appDispatch(
         popup_open({
             type: 'shareLink',
             data: {
-                link: link
+                link: store.getState().remote.ref
+            }
+        })
+    );
+
+export const showConnect = () => {
+    appDispatch(popup_close());
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: {
+                loading: false,
+                tips: false,
+                title: 'Connecting video & audio',
+                text: store.getState().globals.translation[
+                    Contents.CA_CONNECT_NOTIFY
+                ]
             }
         })
     );

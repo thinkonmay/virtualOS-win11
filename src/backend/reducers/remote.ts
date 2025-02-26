@@ -4,12 +4,13 @@ import {
     close_remote,
     popup_close,
     popup_open,
-    RootState,
+    remote_connect,
+    remote_ready,
     store,
     toggle_remote,
     worker_refresh
 } from '.';
-import { POCKETBASE, RemoteCredential } from '../../../src-tauri/api';
+import { RemoteCredential } from '../../../src-tauri/api';
 import { EventCode, isMobile } from '../../../src-tauri/core';
 import {
     Assign,
@@ -22,6 +23,7 @@ import {
     set_hq,
     SIZE
 } from '../../../src-tauri/singleton';
+import { showConnect } from '../actions';
 import { BuilderHelper } from './helper';
 
 export type Metric = {
@@ -178,34 +180,39 @@ export const remoteAsync = {
         )
             appDispatch(remoteSlice.actions.internal_sync());
     },
-    // TODO
-    direct_access: createAsyncThunk(
-        'direct_access',
-        async ({ ref }: { ref: string }) => {
-            //         const resp = await fetch(
-            //             `${getDomainURL()}/api/collections/reference/records?page=1&perPage=1&filter=token="${ref}"&skipTotal=1`,
-            //             {
-            //                 method: 'GET',
-            //                 headers: {
-            //                     Authorization: POCKETBASE.authStore.token,
-            //                     'Content-type': 'application/json'
-            //                 }
-            //             }
-            //         );
-            //         const data = await resp.json();
-            //         appDispatch(remote_connect({ ...(data.items[0] as any) }));
-            //         if (!(await ready())) appDispatch(close_remote());
-            //         else appDispatch(remote_ready());
-        }
-    ),
+    direct_access: createAsyncThunk('direct_access', async (url: URL) => {
+        const address = url.searchParams.get('host');
+        const audio = url.searchParams.get('audio');
+        const video = url.searchParams.get('video');
+        const data = url.searchParams.get('data');
+        if (address == null || audio == null || video == null || data == null)
+            return;
+
+        showConnect();
+        appDispatch(
+            remote_connect({
+                videoUrl: `wss://${address}/broadcasters/webrtc?token=${video}`,
+                audioUrl: `wss://${address}/broadcasters/webrtc?token=${audio}`,
+                dataUrl: `wss://${address}/broadcasters/websocket?token=${data}`
+            })
+        );
+        if (!(await ready())) appDispatch(close_remote());
+        else appDispatch(remote_ready());
+        appDispatch(popup_close());
+    }),
     save_reference: createAsyncThunk(
         'save_reference',
-        async (
-            info: RemoteCredential | { volume_id?: string }
-        ): Promise<string> => {
-            const token = crypto.randomUUID();
-            await POCKETBASE.collection('reference').create({ ...info, token });
-            return token;
+        async (info: RemoteCredential): Promise<string> => {
+            const audio = new URL(info.audioUrl).searchParams.get('token');
+            const video = new URL(info.videoUrl).searchParams.get('token');
+            const data = new URL(info.dataUrl).searchParams.get('token');
+            const host = new URL(info.dataUrl).host;
+            const url = new URL(window.location.href);
+            url.searchParams.set('audio', audio);
+            url.searchParams.set('video', video);
+            url.searchParams.set('data', data);
+            url.searchParams.set('host', host);
+            return url.toString();
         }
     ),
     cache_setting: createAsyncThunk(
@@ -216,14 +223,6 @@ export const remoteAsync = {
     ),
     load_setting: createAsyncThunk('load_setting', async (_: void) => {
         // TODO
-    }),
-    copy_log: createAsyncThunk('copy_log', async (_: void, { getState }) => {
-        const url = (getState() as RootState).remote.auth.logUrl;
-        if (url == undefined) throw new Error('log url is not defined');
-
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(await resp.text());
-        else navigator.clipboard.writeText(await resp.text());
     }),
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',

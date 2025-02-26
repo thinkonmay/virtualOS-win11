@@ -172,7 +172,6 @@ export const {
     sync,
     direct_access,
     save_reference,
-    copy_log,
     load_setting,
     cache_setting,
     toggle_remote_async,

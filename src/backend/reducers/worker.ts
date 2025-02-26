@@ -21,8 +21,8 @@ import {
 import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
-import { Contents } from './locales';
 import { isUUID } from './user';
+import { showConnect } from '../actions';
 
 type innerComputer = Computer & {
     availability?: 'not_ready' | 'ready' | 'started'; // private
@@ -80,23 +80,6 @@ export const workerAsync = {
             const {
                 worker: { HideVM, currentAddress }
             } = getState() as RootState;
-
-            const showConnect = () => {
-                appDispatch(popup_close());
-                appDispatch(
-                    popup_open({
-                        type: 'notify',
-                        data: {
-                            loading: false,
-                            tips: false,
-                            title: 'Connecting video & audio',
-                            text: (getState() as RootState).globals.translation[
-                                Contents.CA_CONNECT_NOTIFY
-                            ]
-                        }
-                    })
-                );
-            };
 
             const info = await GetInfo(currentAddress);
             if (info instanceof Error) throw info;
