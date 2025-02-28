@@ -196,13 +196,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-                ? appDispatch(
+              ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-                : appDispatch(
+              : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -397,21 +397,22 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${!sub.active
-                                    ? sub.name ==
-                                        'week2'
-                                        ? 'bg-red-500'
-                                        : 'bg-[#0067c0]'
-                                    : 'bg-[#0067c0]'
-                                }  `}
+                                                            ${
+                                                                !sub.active
+                                                                    ? sub.name ==
+                                                                      'week2'
+                                                                        ? 'bg-red-500'
+                                                                        : 'bg-[#0067c0]'
+                                                                    : 'bg-[#0067c0]'
+                                                            }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week2'
                                     ? 'Tạm đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                    ? 'Gia hạn'
-                                    : 'Mua Ngay'}
+                                  ? 'Gia hạn'
+                                  : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
@@ -578,29 +579,22 @@ const StoragePage = () => {
                         </div>
                         <div className="columnContent"></div>
                     </div>
-
                     <div className="rowContent">
-                        <div className="columnContent">20GB & 10cores</div>
+                        <div className="columnContent">{'20GB & 10cores'}</div>
                         <div className="columnContent">60k/tháng</div>
                         <div className="columnContent">40k/tháng</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
+                            <button className="instbtn buyBtn">Nâng cấp</button>
                         </div>
                     </div>
                     <div className="rowContent">
-                        <div className="columnContent">24GB & 12cores</div>
-                        <div className="columnContent">110k/tháng</div>
-                        <div className="columnContent">80k/tháng</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
+                            {'> 20GB & >10cores'}
                         </div>
-                    </div>
-                    <div className="rowContent">
-                        <div className="columnContent">28GB & 16cores</div>
-                        <div className="columnContent">190k/tháng</div>
-                        <div className="columnContent">150k/tháng</div>
+                        <div className="columnContent">Liên hệ</div>
+                        <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
+                            <button className="instbtn buyBtn">Liên hệ</button>
                         </div>
                     </div>
                 </div>
@@ -817,8 +811,9 @@ const TransactionHistoryPage = () => {
                 {listHistoryNav.map((nav) => (
                     <li
                         onClick={() => handleChangeNav(nav.id)}
-                        className={`nav ${currentNav == nav.id ? 'navActive' : ''
-                            }`}
+                        className={`nav ${
+                            currentNav == nav.id ? 'navActive' : ''
+                        }`}
                     >
                         {nav.name}
                     </li>
