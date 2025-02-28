@@ -13,7 +13,8 @@
 		//background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
 		background: var(--page-bg);
 		border: 1px solid var(--page-bd-col);
-
+		display: flex;
+		gap: 1px;
 	}
 
 	&[data-size="mini"] {
@@ -34,7 +35,7 @@
 
 		align-items: center;
 		width: 100%;
-		height: calc(100% - 80px);
+		height: calc(100% - 40px);
 
 		color: var(--dark-txt);
 		overflow-y: auto;
@@ -86,13 +87,15 @@
 	}
 
 	.navPayment {
+		width: 240px;
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
+		justify-content: start;
 		align-items: center;
+		padding-top: 24px;
 		gap: 24px;
 		background-color: var(--bg1);
 		border-bottom: 1px solid var(--bg2);
-		height: 56px;
 		color: var(--dark-txt);
 
 		font-size: 20px;
@@ -100,9 +103,7 @@
 
 		.item {
 			cursor: pointer;
-
-
-
+			text-align: center;
 		}
 
 		.subActive {
@@ -114,6 +115,20 @@
 
 	&[data-hide="true"] {
 		z-index: -1 !important;
+	}
+
+	.subscriptionPage {
+		flex: 1;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+		gap: 12px;
+		column-gap: 10px;
+		row-gap: 48px;
+		align-items: center;
+		width: 100%;
 	}
 
 	.refundPage {
@@ -155,7 +170,191 @@
 	}
 
 	.storagePage {
+		align-items: start;
+		justify-content: center;
+		width: 100%;
+		flex: 1;
+
 		.wrapperTableStorage {
+			color: white;
+			background-color: #002447;
+			width: max-content;
+			border-radius: 12px;
+			border: 1px solid var(--Neutral-500, #667085);
+			overflow: hidden;
+
+			&:first-child {
+				border-bottom: 1px solid var(--Neutral-500, #667085);
+			}
+
+			.rowContent {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				border-top: 1px solid var(--Neutral-500, #667085);
+				font-size: 16px;
+				min-height: 60px;
+
+
+				.columnContent {
+					display: flex;
+					flex-direction: column;
+
+					min-width: 200px;
+					text-align: center;
+					font-weight: 500;
+					line-height: 24px;
+					font-size: var(--font-size-md);
+					padding: 1rem;
+					border-left: 1px solid #667085;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					.title {
+						font-weight: bold;
+					}
+
+					.subtitle {
+						font-size: 12px;
+						font-style: italic;
+					}
+
+					.buyBtn {
+						padding: 12px 24px;
+						font-weight: bold;
+					}
+
+					&:nth-child(1) {
+						text-align: left;
+						justify-content: start;
+						text-align: start;
+						display: flex;
+						align-items: center;
+						font-size: var(--font-size-md);
+						font-style: normal;
+						font-weight: 700;
+						line-height: 24px;
+						border-left: unset;
+						padding-left: 1.6rem;
+
+						/* 150% */
+					}
+
+				}
+			}
+		}
+	}
+
+	.depositPage {
+		flex: 1;
+		height: 100%;
+		width: 100%;
+
+		.subtitle {
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		.depositBox {
+			margin-top: 32px;
+
+			.wrapperDeposit {
+				display: flex;
+				height: 50px;
+				gap: 16px;
+				margin-top: 12px;
+
+				.depositInput {
+					border-radius: 6px;
+					padding: 0 14px;
+					width: 320px;
+					font-size: 16px;
+					font-weight: 600;
+				}
+
+				.depositBtn {
+					padding-left: 24px;
+					padding-right: 24px;
+					font-weight: bold;
+					font-size: 18px;
+				}
+			}
+		}
+
+		.optionsBox {
+			display: flex;
+			gap: 8px;
+			margin-top: 8px;
+
+			.option {
+				border-radius: 99px;
+				background-color: var(--bg1);
+				padding: 6px 8px;
+				font-size: 14px;
+			}
+
+
+		}
+
+		.noticesBox {
+			margin-top: 12px;
+
+			.title {
+				font-size: 14px;
+				font-weight: 600;
+				margin-bottom: 4px;
+
+			}
+
+			ul {
+				font-size: 14px;
+				padding-left: 18px;
+			}
+		}
+
+		.cardDepositBox {
+			margin-top: 40px;
+			margin-bottom: 20px;
+		}
+
+		.toggleContentBtn {
+			display: flex;
+			gap: 4px;
+			align-items: center;
+
+			span {
+				font-size: 20px;
+				font-weight: 600;
+			}
+		}
+	}
+
+	.historyPage {
+		flex: 1;
+		height: 100%;
+
+		.historyNav {
+			display: flex;
+			gap: 16px;
+			list-style: none;
+
+			margin-top: 24px;
+			margin-bottom: 12px;
+
+			.nav {
+				padding: 12px 24px;
+				font-size: 18px;
+				font-weight: bold;
+
+
+				&.navActive {
+					text-decoration: underline;
+					color: #06c;
+				}
+			}
+		}
+
+		.wrapperTableHistory {
 			color: white;
 			background-color: #002447;
 			width: max-content;
@@ -176,6 +375,9 @@
 
 
 				.columnContent {
+					display: flex;
+					flex-direction: column;
+
 					min-width: 200px;
 					text-align: center;
 					font-weight: 500;
@@ -186,6 +388,20 @@
 					display: flex;
 					justify-content: center;
 					align-items: center;
+
+					.title {
+						font-weight: bold;
+					}
+
+					.subtitle {
+						font-size: 12px;
+						font-style: italic;
+					}
+
+					.buyBtn {
+						padding: 12px 24px;
+						font-weight: bold;
+					}
 
 					&:nth-child(1) {
 						text-align: left;
@@ -208,6 +424,8 @@
 		}
 	}
 }
+
+
 
 
 @media (1px < width < 1024px) {
@@ -234,9 +452,13 @@
 			height: 500px;
 		}
 
+		&[data-hide="true"] {
+			z-index: -1 !important;
+		}
+
 		.paymentContent {
 			padding: 16px;
-			padding-top: 50px;
+			padding-top: 24px;
 			display: flex;
 			flex-wrap: wrap;
 			column-gap: 10px;
@@ -268,9 +490,152 @@
 			}
 		}
 
-		&[data-hide="true"] {
-			z-index: -1 !important;
+
+		.storagePage {
+
+			.wrapperTableStorage {
+
+
+				&:first-child {
+					border-bottom: 1px solid var(--Neutral-500, #667085);
+				}
+
+				.rowContent {
+					display: grid;
+					grid-template-columns: repeat(4, 1fr);
+					border-top: 1px solid var(--Neutral-500, #667085);
+					font-size: 14px;
+					min-height: 40px;
+
+
+					.columnContent {
+						display: flex;
+						flex-direction: column;
+
+						min-width: 120px;
+						text-align: center;
+						font-weight: 500;
+						line-height: 24px;
+						font-size: var(--font-size-md);
+						padding: 0.5rem;
+						border-left: 1px solid #667085;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						.title {
+							font-weight: bold;
+							font-size: 14px;
+						}
+
+						.subtitle {
+							font-size: 10px;
+							font-style: italic;
+							margin-top: -4px;
+						}
+
+						.buyBtn {
+							padding: 8px 20px;
+							font-weight: bold;
+						}
+
+						&:nth-child(1) {
+							text-align: left;
+							justify-content: start;
+							text-align: start;
+							display: flex;
+							align-items: center;
+							font-size: var(--font-size-md);
+							font-style: normal;
+							font-weight: 700;
+							line-height: 24px;
+							border-left: unset;
+							padding-left: 0.8rem;
+
+							/* 150% */
+						}
+
+					}
+				}
+			}
 		}
+
+		.historyPage {
+			.historyNav {
+				.nav {
+					font-size: 16px;
+					padding: 8px 16px;
+
+				}
+			}
+
+			.wrapperTableHistory {
+
+
+				&:first-child {
+					border-bottom: 1px solid var(--Neutral-500, #667085);
+				}
+
+				.rowContent {
+					display: grid;
+					grid-template-columns: repeat(3, 1fr);
+					border-top: 1px solid var(--Neutral-500, #667085);
+					font-size: 14px;
+					min-height: 40px;
+
+
+					.columnContent {
+						display: flex;
+						flex-direction: column;
+
+						min-width: 120px;
+						text-align: center;
+						font-weight: 500;
+						line-height: 24px;
+						font-size: var(--font-size-md);
+						padding: 0.5rem;
+						border-left: 1px solid #667085;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						.title {
+							font-weight: bold;
+							font-size: 14px;
+						}
+
+						.subtitle {
+							font-size: 10px;
+							font-style: italic;
+							margin-top: -4px;
+						}
+
+						.buyBtn {
+							padding: 8px 20px;
+							font-weight: bold;
+						}
+
+						&:nth-child(1) {
+							text-align: left;
+							justify-content: start;
+							text-align: start;
+							display: flex;
+							align-items: center;
+							font-size: var(--font-size-md);
+							font-style: normal;
+							font-weight: 700;
+							line-height: 24px;
+							border-left: unset;
+							padding-left: 0.8rem;
+
+							/* 150% */
+						}
+
+					}
+				}
+			}
+		}
+
 	}
 
 }

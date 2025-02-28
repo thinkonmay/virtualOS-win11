@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BiSupport } from 'react-icons/bi';
+import { MdOutlineMonetizationOn } from 'react-icons/md';
 import { RiBookLine } from 'react-icons/ri';
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
@@ -12,6 +13,7 @@ import {
 
 import { afterMath } from '../../backend/actions';
 import {
+    app_toggle,
     appDispatch,
     startogg,
     task_hide,
@@ -36,6 +38,7 @@ const Taskbar = () => {
     const apps = useAppSelector((state) => state.apps);
     //const open = useAppSelector((state) => !state.sidepane.hide);
     const tutorialState = useAppSelector((state) => state.globals.tutorial);
+    const wallet = useAppSelector((state) => state.user.wallet);
     const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
@@ -158,6 +161,22 @@ const Taskbar = () => {
                     style={{ '--prefix': 'TASK' }}
                 >
                     <audio src={ringSound}></audio>
+                    <div className="containerWalletInfo">
+                        <div className="wrapperWallet">
+                            <div className="flex items-center gap-[2px] text-xs font-semibold lg:text-sm">
+                                <MdOutlineMonetizationOn fontSize={'1.2rem'} />
+                                {wallet.money}
+                            </div>
+                            <button
+                                onClick={() => {
+                                    appDispatch(app_toggle('payment'));
+                                }}
+                                className="depositBtn"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
                     <div className="tasksCont" data-side={tasks.align}>
                         <div className="tsbar" onMouseOut={hidePrev}>
                             <div

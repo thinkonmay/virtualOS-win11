@@ -161,6 +161,8 @@ export const {
 } = workerAsync;
 export const {
     fetch_user,
+    fetch_wallet,
+    fetch_payment_history,
     fetch_subscription,
     fetch_usage,
     get_payment,

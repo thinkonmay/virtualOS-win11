@@ -76,7 +76,6 @@ function GamingKeyboard() {
             y: positionDrag.y / deviceResolution.deviceHeight
         };
 
-        console.log(positionDrag, 'stop');
         appDispatch(
             move_key_gamingKeyboard({
                 id,

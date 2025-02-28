@@ -1,8 +1,11 @@
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import {
     MdArrowDropDown,
     MdArrowForwardIos,
-    MdArrowRight
+    MdArrowRight,
+    MdKeyboardArrowDown,
+    MdKeyboardArrowRight
 } from 'react-icons/md';
 import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
@@ -37,23 +40,6 @@ const listSubs = [
     },
     {
         active: false,
-        highlight: false,
-        title: 'Gói 1 tuần',
-        price_in_vnd: 99000,
-        total_time: 25,
-        total_days: 7,
-        name: 'week2',
-        period: 'tuần',
-        bonus: [
-            'RTX 3060TI',
-            '16GB ram',
-            '150GB dung lượng riêng, Cloud-save',
-            'Không giới hạn thời gian mỗi session',
-            'Có hàng chờ'
-        ]
-    },
-    {
-        active: false,
         highlight: true,
         title: 'Gói tháng',
         price_in_vnd: 299000,
@@ -70,6 +56,24 @@ const listSubs = [
         ],
         storage: ['50GB: 60k/tháng', '100GB: 110k/tháng']
     },
+    {
+        active: false,
+        highlight: false,
+        title: 'Gói 1 tuần',
+        price_in_vnd: 99000,
+        total_time: 25,
+        total_days: 7,
+        name: 'week2',
+        period: 'tuần',
+        bonus: [
+            'RTX 3060TI',
+            '16GB ram',
+            '150GB dung lượng riêng, Cloud-save',
+            'Không giới hạn thời gian mỗi session',
+            'Có hàng chờ'
+        ]
+    },
+
     {
         active: true,
         highlight: false,
@@ -107,7 +111,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [page, setPage] = useState('sub'); //sub - refund - storage
+    const [page, setPage] = useState('history'); //sub - refund - storage -history
 
     const handleChangePage = (input) => {
         setPage(input);
@@ -131,38 +135,54 @@ export const PaymentApp = () => {
                 name="Payment"
             />
             <div className="windowScreen wrapperPayment">
-                <LazyComponent show={!wnapp.hide}>
-                    <div className="navPayment">
-                        <div
-                            className={
-                                page == 'storage' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('storage')}
-                        >
-                            Giá dung lượng
-                        </div>
-                        <div
-                            className={
-                                page == 'sub' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('sub')}
-                        >
-                            Bảng giá
-                        </div>
-                        <div
-                            className={
-                                page == 'refund' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('refund')}
-                        >
-                            Hoàn tiền
-                        </div>
+                <div className="navPayment">
+                    <div
+                        className={
+                            page == 'deposit' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('deposit')}
+                    >
+                        Nạp tiền
                     </div>
-                    <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
+                    <div
+                        className={
+                            page == 'storage' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('storage')}
+                    >
+                        Nâng cấp
+                    </div>
+                    <div
+                        className={page == 'sub' ? 'item subActive' : 'item'}
+                        onClick={() => handleChangePage('sub')}
+                    >
+                        Thuê CloudPC
+                    </div>
+                    <div
+                        className={
+                            page == 'history' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('history')}
+                    >
+                        Lịch sử
+                    </div>
+                    <div
+                        className={page == 'refund' ? 'item subActive' : 'item'}
+                        onClick={() => handleChangePage('refund')}
+                    >
+                        Hoàn tiền
+                    </div>
+                </div>
+                <LazyComponent show={!wnapp.hide}>
+                    <div className="paymentContent win11Scroll">
                         {page == 'sub' ? (
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
                             <RefundPage />
+                        ) : page == 'deposit' ? (
+                            <DepositPage />
+                        ) : page == 'history' ? (
+                            <TransactionHistoryPage />
                         ) : (
                             <StoragePage />
                         )}
@@ -191,13 +211,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-              ? appDispatch(
+                ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-              : appDispatch(
+                : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -393,22 +413,21 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${
-                                                                !sub.active
-                                                                    ? sub.name ==
-                                                                      'week2'
-                                                                        ? 'bg-red-500'
-                                                                        : 'bg-[#0067c0]'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
+                                                            ${!sub.active
+                                    ? sub.name ==
+                                        'week2'
+                                        ? 'bg-red-500'
+                                        : 'bg-[#0067c0]'
+                                    : 'bg-[#0067c0]'
+                                }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week2'
-                                    ? 'Đang đóng'
+                                    ? 'Tạm đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
+                                    ? 'Gia hạn'
+                                    : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
@@ -443,11 +462,11 @@ const SubscriptionPage = () => {
         e.total_days = plan.total_days;
     });
     return (
-        <>
+        <div className="subscriptionPage md:!justify-evenly px-0 ">
             {listSubs.map((sub, index) => (
                 <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
             ))}
-        </>
+        </div>
     );
 };
 
@@ -514,30 +533,340 @@ const RefundPage = () => {
 
 const StoragePage = () => {
     return (
-        <div className="storagePage h-full pt-[5%] overflow-x-auto">
-            <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
-            <div className="wrapperTableStorage">
-                <div className="rowContent" style={{ borderTop: 'unset' }}>
-                    <div className="columnContent">Dung lượng</div>
-                    <div className="columnContent">Mua lần đầu</div>
-                    <div className="columnContent">Gia hạn</div>
+        <div className="storagePage pt-[1%] ">
+            <div className="flex flex-col items-center justify-center">
+                <h2 className="text-center mb-4 lg:mb-8 ">
+                    Bảng giá dung lượng
+                </h2>
+                <div className="wrapperTableStorage">
+                    <div className="rowContent" style={{ borderTop: 'unset' }}>
+                        <div className="columnContent">Dung lượng</div>
+                        <div className="columnContent ">
+                            <p className="title">Đăng ký ngay</p>
+                            <p className="subtitle">tới 26/01</p>
+                        </div>
+                        <div className="columnContent">
+                            <p className="title">Gia hạn</p>
+                            <p className="subtitle">hẵng tháng</p>
+                        </div>
+                        <div className="columnContent"></div>
+                    </div>
+
+                    <div className="rowContent">
+                        <div className="columnContent">50GB</div>
+                        <div className="columnContent">60k/tháng</div>
+                        <div className="columnContent">40k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">100GB</div>
+                        <div className="columnContent">110k/tháng</div>
+                        <div className="columnContent">80k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">200GB</div>
+                        <div className="columnContent">190k/tháng</div>
+                        <div className="columnContent">150k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="rowContent">
-                    <div className="columnContent">50GB</div>
-                    <div className="columnContent">60k/tháng</div>
-                    <div className="columnContent">40k/tháng</div>
+                <h2 className="text-center mb-4 lg:mb-8 mt-10 ">
+                    Bảng giá Ram & Cpu
+                </h2>
+                <div className="wrapperTableStorage">
+                    <div className="rowContent" style={{ borderTop: 'unset' }}>
+                        <div className="columnContent">Ram & cpu</div>
+                        <div className="columnContent ">
+                            <p className="title">Đăng ký ngay</p>
+                            <p className="subtitle">tới 26/01</p>
+                        </div>
+                        <div className="columnContent">
+                            <p className="title">Gia hạn</p>
+                            <p className="subtitle">hẵng tháng</p>
+                        </div>
+                        <div className="columnContent"></div>
+                    </div>
+
+                    <div className="rowContent">
+                        <div className="columnContent">20GB & 10cores</div>
+                        <div className="columnContent">60k/tháng</div>
+                        <div className="columnContent">40k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">24GB & 12cores</div>
+                        <div className="columnContent">110k/tháng</div>
+                        <div className="columnContent">80k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+                    </div>
+                    <div className="rowContent">
+                        <div className="columnContent">28GB & 16cores</div>
+                        <div className="columnContent">190k/tháng</div>
+                        <div className="columnContent">150k/tháng</div>
+                        <div className="columnContent">
+                            <button className="instbtn buyBtn">Đăng ký</button>
+                        </div>
+                    </div>
                 </div>
-                <div className="rowContent">
-                    <div className="columnContent">100GB</div>
-                    <div className="columnContent">110k/tháng</div>
-                    <div className="columnContent">80k/tháng</div>
+            </div>
+        </div>
+    );
+};
+
+const DepositPage = () => {
+    const [depositNumber, setDepositNumber] = useState('');
+    const [isErr, setErr] = useState('');
+
+    const handleDeposit = () => {
+        if (isErr) return;
+
+        /// show thanh toán.
+    };
+
+    function numberFormat(num) {
+        let fmt = new Intl.NumberFormat();
+        return fmt.format(num);
+    }
+
+    const handleChangeDepositNumber = (e) => {
+        setDepositNumber(numberFormat(e.target.value));
+        if (e.target.value < 50000) {
+            setErr(' Số tiền nạp phải >= 50k Vnđ');
+        } else if (e.target.value < 1000000000) {
+            setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
+        } else {
+            setErr('');
+        }
+    };
+
+    return (
+        <div className="depositPage">
+            <h2 className="title">Chuyển khoản ngân hàng</h2>
+
+            <div className="depositBox">
+                <p className="subtitle">Số tiền muốn nạp</p>
+
+                <div className="wrapperDeposit">
+                    <input
+                        value={depositNumber}
+                        onChange={handleChangeDepositNumber}
+                        type="string"
+                        className="depositInput"
+                        placeholder="Nhập số tiền (VNĐ)"
+                    />
+                    <button
+                        onClick={handleDeposit}
+                        className="instbtn depositBtn"
+                    >
+                        Nạp tiền
+                    </button>
                 </div>
-                <div className="rowContent">
-                    <div className="columnContent">200GB</div>
-                    <div className="columnContent">190k/tháng</div>
-                    <div className="columnContent">150k/tháng</div>
+            </div>
+            {isErr ? (
+                <p className="text-red-500 text-base mt-2 font-bold">{isErr}</p>
+            ) : null}
+            <div className="optionsBox">
+                <div className="option">Tuỳ chọn</div>
+                <div className="option">Gia hạn gói hiện tại</div>
+            </div>
+
+            <div className="noticesBox">
+                <p className="title">Lưu ý:</p>
+                <ul className="">
+                    <li>Số tiền nạp tối thiểu là 50,000 VNĐ</li>
+                    <li>Tiền đã nạp không thể rút ra thành tiền mặt</li>
+                    <li>
+                        Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên
+                        hệ Fanpage để được hỗ trợ
+                    </li>
+                </ul>
+            </div>
+
+            <CardDepositBox />
+            <OthersDepositBox />
+        </div>
+    );
+};
+
+const CardDepositBox = () => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div className="cardDepositBox ">
+            <div
+                onClick={() => {
+                    setOpen((old) => !old);
+                }}
+                className="toggleContentBtn"
+            >
+                {open ? (
+                    <MdKeyboardArrowDown fontSize={'1.5rem'} />
+                ) : (
+                    <MdKeyboardArrowRight fontSize={'1.5rem'} />
+                )}
+                <span>Thanh toán bằng card</span>
+            </div>
+
+            {open ? (
+                <div className="bg-slate-600 w-[480px] h-[240px] rounded-lg  mt-4"></div>
+            ) : null}
+        </div>
+    );
+};
+const OthersDepositBox = () => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div className="othersDepositBox">
+            <div
+                onClick={() => {
+                    setOpen((old) => !old);
+                }}
+                className="toggleContentBtn"
+            >
+                {open ? (
+                    <MdKeyboardArrowDown fontSize={'1.5rem'} />
+                ) : (
+                    <MdKeyboardArrowRight fontSize={'1.5rem'} />
+                )}
+                <span>Các hình thức thanh toán khác: Paypal, vv</span>
+            </div>
+
+            {open ? (
+                <p className="text-lg">
+                    Vui lòng liên hệ Fanpage để được hỗ trợ thanh toán thủ công.
+                </p>
+            ) : null}
+        </div>
+    );
+};
+
+const listHistoryNav = [
+    {
+        name: 'Tất cả',
+        id: 'all'
+    },
+    {
+        name: 'Nạp tiền',
+        id: 'deposit'
+    },
+    {
+        name: 'Thuê CloudPC',
+        id: 'buy'
+    },
+    {
+        name: 'Nâng cấp',
+        id: 'upgrade'
+    }
+];
+
+const renderNameDeteils = (name) => {
+    let nameFormat = '';
+    switch (name) {
+        case 'month1':
+            nameFormat = 'Mua gói tháng';
+            break;
+
+        default:
+            break;
+    }
+
+    return nameFormat;
+};
+const TransactionHistoryPage = () => {
+    const historyDeposit = useAppSelector(
+        (state) => state.user.wallet.historyDeposit
+    );
+    const historyPayment = useAppSelector(
+        (state) => state.user.wallet.historyPayment
+    );
+    const [currentNav, setNav] = useState('all'); //all-deposit-upgrade-buy
+    const [currentData, setCurrentData] = useState([
+        ...historyPayment,
+        ...historyDeposit
+    ]);
+
+    const handleChangeNav = (nav) => {
+        setNav(nav);
+
+        switch (nav) {
+            case 'all':
+                setCurrentData([...historyPayment, ...historyDeposit]);
+                break;
+            case 'deposit':
+                setCurrentData([...historyDeposit]);
+                break;
+
+            case 'buy':
+                setCurrentData([...historyPayment]);
+                break;
+            case 'upgrade':
+                setCurrentData([]);
+                break;
+
+            default:
+                break;
+        }
+    };
+
+    return (
+        <div className="historyPage">
+            <h2 className="title">Lịch sử giao dịch</h2>
+
+            <ul className="historyNav">
+                {listHistoryNav.map((nav) => (
+                    <li
+                        onClick={() => handleChangeNav(nav.id)}
+                        className={`nav ${currentNav == nav.id ? 'navActive' : ''
+                            }`}
+                    >
+                        {nav.name}
+                    </li>
+                ))}
+            </ul>
+
+            <div className="wrapperTableHistory">
+                <div className="rowContent" style={{ borderTop: 'unset' }}>
+                    <div className="columnContent ">Số tiền</div>
+                    <div className="columnContent">Chi tiết</div>
+                    <div className="columnContent">Thời gian</div>
                 </div>
+
+                {currentData.length > 0 ? (
+                    currentData.map((item) => (
+                        <div className="rowContent" key={item.id}>
+                            <div className="columnContent">-{item.amount}k</div>
+                            <div className="columnContent">
+                                {renderNameDeteils(item.plan_name)}
+                            </div>
+                            <div className="columnContent">
+                                {dayjs(item.created_at).format(
+                                    'HH:mm DD/MM/YYYY'
+                                )}
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="rowContent">
+                        <p></p>
+                        <p className="my-auto font-bold">
+                            Hiện chưa có dự liệu
+                        </p>
+                        <p></p>
+                    </div>
+                )}
             </div>
         </div>
     );
