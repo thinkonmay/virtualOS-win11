@@ -7,10 +7,12 @@ import {
     MdKeyboardArrowDown,
     MdKeyboardArrowRight
 } from 'react-icons/md';
+import { NumericFormat } from 'react-number-format';
 import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
 import {
     appDispatch,
+    create_payment_link,
     get_payment,
     popup_open,
     useAppSelector
@@ -605,28 +607,36 @@ const StoragePage = () => {
 
 const DepositPage = () => {
     const [depositNumber, setDepositNumber] = useState('');
+    const [option, setOption] = useState('customize'); //Customize - current pay
     const [isErr, setErr] = useState('');
 
     const handleDeposit = () => {
         if (isErr) return;
 
+        appDispatch(
+            create_payment_link({
+                amount: removeCommasAndCurrency(depositNumber)
+            })
+        );
+
         /// show thanh toán.
     };
 
-    function numberFormat(num) {
-        let fmt = new Intl.NumberFormat();
-        return fmt.format(num);
+    function removeCommasAndCurrency(str) {
+        // Extract just the numeric part with commas
+        const numericPart = str.match(/[\d,]+/)[0];
+
+        // Remove commas
+        return numericPart.replace(/,/g, '');
     }
 
     const handleChangeDepositNumber = (e) => {
-        //setDepositNumber(e.target.value)
+        setDepositNumber(e.target.value);
 
-        setDepositNumber(numberFormat(e.target.value));
-        //console.log(numberFormat(e.target.value));
-
-        if (e.target.value < 50000) {
+        if (!e.target.value) return;
+        if (removeCommasAndCurrency(e.target.value) < 50000) {
             setErr(' Số tiền nạp phải >= 50k Vnđ');
-        } else if (e.target.value < 1000000000) {
+        } else if (removeCommasAndCurrency(e.target.value) > 1000000000) {
             setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
         } else {
             setErr('');
@@ -641,13 +651,16 @@ const DepositPage = () => {
                 <p className="subtitle">Số tiền muốn nạp</p>
 
                 <div className="wrapperDeposit">
-                    <input
-                        value={depositNumber}
-                        onChange={handleChangeDepositNumber}
-                        type="string"
+                    <NumericFormat
                         className="depositInput"
                         placeholder="Nhập số tiền (VNĐ)"
+                        onChange={handleChangeDepositNumber}
+                        value={depositNumber}
+                        //allowLeadingZeros
+                        suffix={' VNĐ'}
+                        thousandSeparator=","
                     />
+
                     <button
                         onClick={handleDeposit}
                         className="instbtn depositBtn"
@@ -660,8 +673,14 @@ const DepositPage = () => {
                 <p className="text-red-500 text-base mt-2 font-bold">{isErr}</p>
             ) : null}
             <div className="optionsBox">
-                <div className="option">Tuỳ chọn</div>
-                <div className="option">Gia hạn gói hiện tại</div>
+                <div
+                    className={`option ${
+                        option == 'customize' ? 'selected' : ''
+                    }`}
+                >
+                    Tuỳ chọn
+                </div>
+                {/*<div className={`option ${option == 'any' ? 'selected' : ''}`}>Gia hạn gói hiện tại</div>*/}
             </div>
 
             <div className="noticesBox">

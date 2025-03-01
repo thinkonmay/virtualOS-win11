@@ -291,6 +291,10 @@
 				background-color: var(--bg1);
 				padding: 6px 8px;
 				font-size: 14px;
+
+				&.selected {
+					border: 1.5px solid;
+				}
 			}
 
 

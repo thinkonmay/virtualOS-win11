@@ -511,6 +511,28 @@ export const userAsync = {
             } else throw new Error('Bạn đã đăng kí dịch vụ');
         }
     ),
+    create_payment_link: createAsyncThunk(
+        'create_payment_link',
+        async (input: any, { getState }) => {
+            const { email } = (getState() as RootState).user;
+            const { amount } = input;
+
+            const { data: create_payment_link, error: err } =
+                await GLOBAL().rpc('create_pocket_deposit', {
+                    email,
+                    amount: +amount,
+                    provider: 'PAYOS',
+                    currency: 'VND'
+                });
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (create_payment_link != null) {
+                return create_payment_link;
+            }
+        }
+    ),
     change_size: createAsyncThunk(
         'change_size',
         async ({ size }: { size: string }, { getState }): Promise<void> => {
@@ -714,6 +736,13 @@ export const userSlice = createSlice({
                     window.open(action.payload, '_self');
                 }
             },
+            {
+                fetch: userAsync.create_payment_link,
+                hander: (state, action) => {
+                    window.open(action.payload, '_self');
+                }
+            },
+
             {
                 fetch: userAsync.change_template,
                 hander: (state, action) => {}
