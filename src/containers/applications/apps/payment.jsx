@@ -7,10 +7,12 @@ import {
     MdKeyboardArrowDown,
     MdKeyboardArrowRight
 } from 'react-icons/md';
+import { NumericFormat } from 'react-number-format';
 import { UserEvents } from '../../../../src-tauri/api';
 import { login } from '../../../backend/actions';
 import {
     appDispatch,
+    create_payment_link,
     get_payment,
     popup_open,
     useAppSelector
@@ -211,13 +213,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         not_logged_in
             ? login('google', false)
             : status != 'PAID'
-                ? appDispatch(
+              ? appDispatch(
                     get_payment({
                         plan_name,
                         domain
                     })
                 )
-                : appDispatch(
+              : appDispatch(
                     get_payment({
                         plan_name
                     })
@@ -413,21 +415,22 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                             justify-center text-[1.125rem] 
                                                             leading-4 px-3 py-2
                                                             mt-6
-                                                            ${!sub.active
-                                    ? sub.name ==
-                                        'week2'
-                                        ? 'bg-red-500'
-                                        : 'bg-[#0067c0]'
-                                    : 'bg-[#0067c0]'
-                                }  `}
+                                                            ${
+                                                                !sub.active
+                                                                    ? sub.name ==
+                                                                      'week2'
+                                                                        ? 'bg-red-500'
+                                                                        : 'bg-[#0067c0]'
+                                                                    : 'bg-[#0067c0]'
+                                                            }  `}
                         >
                             {status == 'NO_ACTION' && !sub.active
                                 ? sub.name == 'week2'
                                     ? 'Tạm đóng'
                                     : 'Đặt trước'
                                 : status != 'NO_ACTION'
-                                    ? 'Gia hạn'
-                                    : 'Mua Ngay'}
+                                  ? 'Gia hạn'
+                                  : 'Mua Ngay'}
                         </button>
                     </div>
                 </div>
@@ -594,29 +597,22 @@ const StoragePage = () => {
                         </div>
                         <div className="columnContent"></div>
                     </div>
-
                     <div className="rowContent">
-                        <div className="columnContent">20GB & 10cores</div>
+                        <div className="columnContent">{'20GB & 10cores'}</div>
                         <div className="columnContent">60k/tháng</div>
                         <div className="columnContent">40k/tháng</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
+                            <button className="instbtn buyBtn">Nâng cấp</button>
                         </div>
                     </div>
                     <div className="rowContent">
-                        <div className="columnContent">24GB & 12cores</div>
-                        <div className="columnContent">110k/tháng</div>
-                        <div className="columnContent">80k/tháng</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
+                            {'> 20GB & >10cores'}
                         </div>
-                    </div>
-                    <div className="rowContent">
-                        <div className="columnContent">28GB & 16cores</div>
-                        <div className="columnContent">190k/tháng</div>
-                        <div className="columnContent">150k/tháng</div>
+                        <div className="columnContent">Liên hệ</div>
+                        <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
+                            <button className="instbtn buyBtn">Liên hệ</button>
                         </div>
                     </div>
                 </div>
@@ -627,24 +623,36 @@ const StoragePage = () => {
 
 const DepositPage = () => {
     const [depositNumber, setDepositNumber] = useState('');
+    const [option, setOption] = useState('customize'); //Customize - current pay
     const [isErr, setErr] = useState('');
 
     const handleDeposit = () => {
         if (isErr) return;
 
+        appDispatch(
+            create_payment_link({
+                amount: removeCommasAndCurrency(depositNumber)
+            })
+        );
+
         /// show thanh toán.
     };
 
-    function numberFormat(num) {
-        let fmt = new Intl.NumberFormat();
-        return fmt.format(num);
+    function removeCommasAndCurrency(str) {
+        // Extract just the numeric part with commas
+        const numericPart = str.match(/[\d,]+/)[0];
+
+        // Remove commas
+        return numericPart.replace(/,/g, '');
     }
 
     const handleChangeDepositNumber = (e) => {
-        setDepositNumber(numberFormat(e.target.value));
-        if (e.target.value < 50000) {
+        setDepositNumber(e.target.value);
+
+        if (!e.target.value) return;
+        if (removeCommasAndCurrency(e.target.value) < 50000) {
             setErr(' Số tiền nạp phải >= 50k Vnđ');
-        } else if (e.target.value < 1000000000) {
+        } else if (removeCommasAndCurrency(e.target.value) > 1000000000) {
             setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
         } else {
             setErr('');
@@ -659,13 +667,16 @@ const DepositPage = () => {
                 <p className="subtitle">Số tiền muốn nạp</p>
 
                 <div className="wrapperDeposit">
-                    <input
-                        value={depositNumber}
-                        onChange={handleChangeDepositNumber}
-                        type="string"
+                    <NumericFormat
                         className="depositInput"
                         placeholder="Nhập số tiền (VNĐ)"
+                        onChange={handleChangeDepositNumber}
+                        value={depositNumber}
+                        //allowLeadingZeros
+                        suffix={' VNĐ'}
+                        thousandSeparator=","
                     />
+
                     <button
                         onClick={handleDeposit}
                         className="instbtn depositBtn"
@@ -678,8 +689,14 @@ const DepositPage = () => {
                 <p className="text-red-500 text-base mt-2 font-bold">{isErr}</p>
             ) : null}
             <div className="optionsBox">
-                <div className="option">Tuỳ chọn</div>
-                <div className="option">Gia hạn gói hiện tại</div>
+                <div
+                    className={`option ${
+                        option == 'customize' ? 'selected' : ''
+                    }`}
+                >
+                    Tuỳ chọn
+                </div>
+                {/*<div className={`option ${option == 'any' ? 'selected' : ''}`}>Gia hạn gói hiện tại</div>*/}
             </div>
 
             <div className="noticesBox">
@@ -829,8 +846,9 @@ const TransactionHistoryPage = () => {
                 {listHistoryNav.map((nav) => (
                     <li
                         onClick={() => handleChangeNav(nav.id)}
-                        className={`nav ${currentNav == nav.id ? 'navActive' : ''
-                            }`}
+                        className={`nav ${
+                            currentNav == nav.id ? 'navActive' : ''
+                        }`}
                     >
                         {nav.name}
                     </li>
