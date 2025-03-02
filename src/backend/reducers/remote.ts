@@ -186,7 +186,7 @@ export const remoteAsync = {
         const video = url.searchParams.get('video');
         const data = url.searchParams.get('data');
         if (address == null || audio == null || video == null || data == null)
-            return;
+            return false;
 
         showConnect();
         appDispatch(
@@ -199,6 +199,7 @@ export const remoteAsync = {
         if (!(await ready())) appDispatch(close_remote());
         else appDispatch(remote_ready());
         appDispatch(popup_close());
+        return true
     }),
     save_reference: createAsyncThunk(
         'save_reference',
@@ -414,8 +415,8 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.direct_access,
-                hander: (state, action: PayloadAction<void>) => {
-                    state.direct_access = true;
+                hander: (state, action: PayloadAction<boolean>) => {
+                    state.direct_access = action.payload;
                 }
             }
         );
