@@ -76,6 +76,20 @@ type PopupData =
     | {
           type: 'serversInfo';
           data: {};
+      }
+    | {
+          type: 'pocketBuyConfirm';
+          data: {
+              plan_name: string;
+              cluster_domain: string;
+          };
+      }
+    | {
+          type: 'pocketNotEnoughMoney';
+          data: {
+              plan_name: string;
+              plan_price: number;
+          };
       };
 
 type Data = {
@@ -83,14 +97,7 @@ type Data = {
 };
 
 const initialState: Data = {
-    data_stack: [
-        //{
-        //    type: 'serversInfo',
-        //    data: {
-        //        key: 'cloudPc'
-        //    }
-        //}
-    ]
+    data_stack: []
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
