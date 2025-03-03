@@ -170,12 +170,11 @@ export const preload = async (update_ui?: boolean) => {
     try {
         await setDomain();
         await fetchUser();
-        await fetchSubscription();
+        await Promise.all([fetchSubscription(), fetchApp()]);
         await Promise.all([
             startAnalytics(),
             loadSettings(),
             fetchPayment(),
-            fetchApp(),
             fetchSetting(),
             fetchDomains(),
             fetchUsage(),

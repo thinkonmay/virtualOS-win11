@@ -89,7 +89,7 @@ export const workerAsync = {
             let session = getRemoteSession(info);
             if (session == undefined) {
                 if (
-                    info.Volumes.filter(
+                    info?.Volumes?.filter(
                         (x) => x.pool == 'user_data' && isUUID(x.name)
                     ).length == 0
                 )

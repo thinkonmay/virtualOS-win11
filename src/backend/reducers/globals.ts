@@ -298,16 +298,16 @@ export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
         const volume_id = store.getState().user.volume_id;
         const { data: tree, currentAddress } = store.getState().worker;
-        const node = tree[currentAddress].Volumes.find(
+        const node = tree[currentAddress]?.Volumes?.find(
             (x) => x.name == volume_id
         ).node;
-        const samenodes = tree[currentAddress].Volumes.filter(
+        const samenodes = tree[currentAddress]?.Volumes?.filter(
             (x) => x.node == node
-        ).map((x) => x.name.replaceAll('.template', ''));
+        )?.map((x) => x.name.replaceAll('.template', ''));
         const { data, error } = await GLOBAL()
             .from('stores')
             .select('code_name,name,metadata')
-            .in('code_name', samenodes);
+            .in('code_name', samenodes ?? []);
         if (error) throw new Error(error.message);
 
         return data;

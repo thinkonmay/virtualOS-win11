@@ -199,7 +199,7 @@ export const remoteAsync = {
         if (!(await ready())) appDispatch(close_remote());
         else appDispatch(remote_ready());
         appDispatch(popup_close());
-        return true
+        return true;
     }),
     save_reference: createAsyncThunk(
         'save_reference',
