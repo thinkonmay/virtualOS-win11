@@ -17,6 +17,10 @@
 		gap: 1px;
 	}
 
+	.title {
+		font-size: 1.8rem;
+	}
+
 	&[data-size="mini"] {
 		top: 4%;
 		left: 8%;
@@ -53,7 +57,7 @@
 
 			flex-direction: column;
 			border-radius: 20px;
-			padding: 16px 12px;
+			padding: 20px 24px;
 			background: var(--rib2-bg);
 			-webkit-transform-origin: center;
 			transform-origin: center;
@@ -78,6 +82,116 @@
 				letter-spacing: 0;
 				text-align: center;
 				transform: rotate(40deg);
+
+				.content {
+					// 
+					line-height: 1rem;
+					font-size: 16px;
+					font-weight: bold;
+					text-align: center;
+					padding-top: 8px;
+					padding-bottom: 8px;
+				}
+			}
+
+			.wrapperMainContent {
+				//flex flex-col flex-1 overflow-hidden border h-full rounded-[4px]
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+				height: 100%;
+				border-radius: 4px;
+
+				.wrapperTop {
+					//px-4 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] 
+					padding-left: 8px;
+					padding-right: 8px;
+					padding-top: 12px;
+					border-top-left-radius: 4px;
+					border-top-right-radius: 4px;
+
+
+				}
+
+				.wrapperBottom {
+					//flex h-full flex-1 flex-col px-4 2xl:px-8 py-6 
+					flex: 1;
+					display: flex;
+					height: 100%;
+					flex-direction: column;
+					padding-left: 8px;
+					padding-right: 8px;
+					margin-top: 20px;
+
+
+					.toggleDeteil {
+						//fl text-[13px] mt-2 mb-2 hover:underline
+						display: flex;
+						align-items: center;
+						font-size: 14px;
+						margin-top: 4px;
+						margin-bottom: 12px;
+						cursor: pointer;
+
+						:hover {
+							text-decoration: underline;
+
+						}
+
+					}
+				}
+
+				.containerDetails {
+					font-size: 13px;
+					padding-left: 8px;
+					padding-right: 8px;
+
+					.detail {
+						display: flex;
+						align-items: center;
+						padding-bottom: 8px;
+
+						span {
+							margin-left: 6px;
+							font-size: 0.8rem;
+						}
+					}
+				}
+
+				.containerTitle {
+					display: flex;
+					align-items: center;
+					gap: 4px;
+
+					p {
+						text-transform: uppercase;
+						text-align: center;
+					}
+				}
+
+				.containerPrice {
+					display: flex;
+					align-items: flex-start;
+					font-size: 18px;
+					min-height: 116px;
+					justify-content: center;
+					flex-direction: column;
+				}
+			}
+
+			.buyButton {
+				border: none;
+				outline: none;
+				//background-color: #0067c0;
+				height: 48px;
+				border-radius: 8px;
+				margin-top: 24px;
+				cursor: pointer;
+				font-size: 1.125rem;
+				padding: 4px 6px;
+				text-align: center;
+				color: white;
 			}
 
 			hr {
@@ -210,7 +324,7 @@
 					justify-content: center;
 					align-items: center;
 
-					.title {
+					p {
 						font-weight: bold;
 					}
 
@@ -393,7 +507,7 @@
 					justify-content: center;
 					align-items: center;
 
-					.title {
+					p {
 						font-weight: bold;
 					}
 
@@ -449,6 +563,10 @@
 			border: 1px solid var(--page-bd-col);
 		}
 
+		.title {
+			font-size: 1.4rem;
+		}
+
 		&[data-size="mini"] {
 			top: 4%;
 			left: 8%;
@@ -458,6 +576,26 @@
 
 		&[data-hide="true"] {
 			z-index: -1 !important;
+		}
+
+		.navPayment {
+			width: 160px;
+
+			padding-top: 24px;
+			gap: 20px;
+
+			font-size: 16px;
+
+			.item {
+				cursor: pointer;
+				text-align: center;
+			}
+
+			.subActive {
+				text-decoration: underline;
+
+				color: #06c;
+			}
 		}
 
 		.paymentContent {
@@ -506,7 +644,7 @@
 
 				.rowContent {
 					display: grid;
-					grid-template-columns: repeat(4, 1fr);
+					grid-template-columns: repeat(4, 1re);
 					border-top: 1px solid var(--Neutral-500, #667085);
 					font-size: 14px;
 					min-height: 40px;
@@ -516,18 +654,18 @@
 						display: flex;
 						flex-direction: column;
 
-						min-width: 120px;
+						min-width: 100px;
 						text-align: center;
 						font-weight: 500;
 						line-height: 24px;
-						font-size: var(--font-size-md);
+						font-size: 0.8rem;
 						padding: 0.5rem;
 						border-left: 1px solid #667085;
 						display: flex;
 						justify-content: center;
 						align-items: center;
 
-						.title {
+						p {
 							font-weight: bold;
 							font-size: 14px;
 						}
@@ -549,7 +687,7 @@
 							text-align: start;
 							display: flex;
 							align-items: center;
-							font-size: var(--font-size-md);
+							font-size: 0.8rem;
 							font-style: normal;
 							font-weight: 700;
 							line-height: 24px;
@@ -603,7 +741,7 @@
 						justify-content: center;
 						align-items: center;
 
-						.title {
+						p {
 							font-weight: bold;
 							font-size: 14px;
 						}
@@ -640,6 +778,93 @@
 			}
 		}
 
+		.depositPage {
+			flex: 1;
+			height: 100%;
+			width: 100%;
+
+			.subtitle {
+				font-size: 16px;
+				font-weight: bold;
+			}
+
+			.depositBox {
+				margin-top: 20px;
+
+				.wrapperDeposit {
+					display: flex;
+					height: 44px;
+					gap: 16px;
+					margin-top: 12px;
+
+					.depositInput {
+						border-radius: 6px;
+						padding: 0 14px;
+						width: 320px;
+						font-size: 16px;
+						font-weight: 600;
+					}
+
+					.depositBtn {
+						padding-left: 20px;
+						padding-right: 20px;
+						font-weight: bold;
+						font-size: 14px;
+					}
+				}
+			}
+
+			.optionsBox {
+				display: flex;
+				gap: 8px;
+				margin-top: 8px;
+
+				.option {
+					border-radius: 99px;
+					background-color: var(--bg1);
+					padding: 6px 8px;
+					font-size: 14px;
+
+					&.selected {
+						border: 1.5px solid;
+					}
+				}
+
+
+			}
+
+			.noticesBox {
+				margin-top: 12px;
+
+				.title {
+					font-size: 14px;
+					font-weight: 600;
+					margin-bottom: 4px;
+
+				}
+
+				ul {
+					font-size: 14px;
+					padding-left: 18px;
+				}
+			}
+
+			.cardDepositBox {
+				margin-top: 40px;
+				margin-bottom: 20px;
+			}
+
+			.toggleContentBtn {
+				display: flex;
+				gap: 4px;
+				align-items: center;
+
+				span {
+					font-size: 20px;
+					font-weight: 600;
+				}
+			}
+		}
 	}
 
 }

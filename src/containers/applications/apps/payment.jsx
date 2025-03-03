@@ -4,6 +4,7 @@ import {
     MdArrowDropDown,
     MdArrowForwardIos,
     MdArrowRight,
+    MdCheck,
     MdKeyboardArrowDown,
     MdKeyboardArrowRight
 } from 'react-icons/md';
@@ -180,9 +181,37 @@ export const PaymentApp = () => {
     );
 };
 
+const renderCurrentSub = (limit_hour) => {
+    let currentSub = '';
+
+    switch (limit_hour) {
+        case 120:
+            currentSub = 'month1';
+            break;
+        case 50:
+            currentSub = 'week1';
+            break;
+        case 25:
+            currentSub = 'week2';
+            break;
+        case 9999:
+            currentSub = 'month2';
+            break;
+
+        default:
+            break;
+    }
+
+    return currentSub;
+};
+
 const SubscriptionCard = ({ subInfo: sub }) => {
     const status = useAppSelector((state) => state.user.subscription.status);
     const domains = useAppSelector((state) => state.globals.domains);
+    const user = useAppSelector((state) => state.user);
+
+    console.log(sub);
+    const currentSub = renderCurrentSub(user?.subscription?.policy.limit_hour);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const max = useAppSelector(
         (state) =>
@@ -223,57 +252,41 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         <div className="sub ltShad relative">
             {sub.highlight ? (
                 <div className="banner">
-                    <p className="text-[16px] font-bold leading-4 text-center py-2 text-background">
-                        Phổ biến
-                    </p>
+                    <p className="content">Phổ biến</p>
                 </div>
             ) : null}
 
-            <div className="flex flex-col flex-1 overflow-hidden border h-full rounded-[4px]">
-                <div className="bg-surface-100 px-4 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <p className=" uppercase flex items-center gap-4 font-mono">
-                                {sub.title}
-                            </p>
-                        </div>
+            <div className="wrapperMainContent">
+                <div className="wrapperTop">
+                    <div className="containerTitle">
+                        <p className="font-mono">{sub.title}</p>
                     </div>
 
                     <hr />
-                    <div className=" text-foreground flex items-center text-lg min-h-[116px]">
-                        <div className="flex flex-col gap-1">
-                            <div className="flex items-end gap-2">
-                                <div>
-                                    <div className="flex items-end">
-                                        {
-                                            <>
-                                                <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
-                                                    {sub.price_in_vnd / 1000}k
-                                                    VND
-                                                </h3>
-                                                {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
+                    <div className="containerPrice">
+                        <div className="flex items-end">
+                            {
+                                <>
+                                    <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
+                                        {sub.price_in_vnd / 1000}k VND
+                                    </h3>
+                                    {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                     / {sub.period}{' '}
                                                 </p>*/}
-                                            </>
-                                        }
-                                    </div>
-                                    <p className="-mt-2">
-                                        <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                            Giới hạn {sub.total_time}h sử dụng
-                                            trong {sub.total_days} ngày
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
+                                </>
+                            }
                         </div>
+                        <p className="-mt-2">
+                            <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
+                                Giới hạn {sub.total_time}h sử dụng trong{' '}
+                                {sub.total_days} ngày
+                            </span>
+                        </p>
                     </div>
                     <hr />
                 </div>
-                <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-4 2xl:px-8 py-6 ">
-                    <div
-                        onClick={clickDetail}
-                        className="flex cursor-pointer items-center text-foreground-light text-[13px] mt-2 mb-2 hover:underline"
-                    >
+                <div className=" wrapperBottom">
+                    <div onClick={clickDetail} className="toggleDeteil">
                         {isShowDetail ? (
                             <MdArrowDropDown style={{ fontSize: '1.6rem' }} />
                         ) : (
@@ -282,40 +295,17 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         Chi tiết:
                     </div>
 
-                    {isShowDetail &&
-                        sub.bonus.map((x, i) => (
-                            <ul
-                                key={i}
-                                role="list"
-                                className="text-[13px] px-4 text-foreground-lighter"
-                            >
-                                <li className="flex items-center py-[8px] first:mt-0">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="18"
-                                        height="18"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="3"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="sbui-icon text-brand h-4 w-4"
-                                        aria-hidden="true"
-                                    >
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
-                                        {x}
-                                    </span>
-                                </li>
-                            </ul>
-                        ))}
+                    <ul role="list" className="containerDetails">
+                        {isShowDetail &&
+                            sub.bonus.map((x, i) => (
+                                <li key={i} className="detail">
+                                    <MdCheck />
 
-                    <div className="flex flex-col gap-2 mt-auto prose">
-                        <div className="space-y-2">
-                            <p className="text-[13px] whitespace-pre-wrap"></p>
-                        </div>
+                                    <span className="">{x}</span>
+                                </li>
+                            ))}
+                    </ul>
+                    <div className="flex flex-col gap-2 mt-auto">
                         {sub.active && status == 'NO_ACTION' ? (
                             <>
                                 <div className="flex flex-col">
@@ -388,33 +378,22 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 onChooseSub(sub.name);
                             }}
                             type="button"
-                            className={`border-none h-[48px] relative cursor-pointer 
-                                                            space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
-                                                            outline-none transition-all outline-0 focus-visible:outline-4 
-                                                            focus-visible:outline-offset-1 border bg-brand-button 
-                                                            hover:bg-brand-button/80 
-                                                            text-white border-brand 
-                                                            focus-visible:outline-brand-600 
-                                                            shadow-sm w-full flex items-center 
-                                                            justify-center text-[1.125rem] 
-                                                            leading-4 px-3 py-2
-                                                            mt-6
-                                                            ${
-                                                                !sub.active
-                                                                    ? sub.name ==
-                                                                      'week2'
-                                                                        ? 'bg-red-500'
-                                                                        : 'bg-[#0067c0]'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
+                            className={`buyButton
+                            ${
+                                currentSub == sub.name
+                                    ? 'bg-red-700'
+                                    : 'bg-[#0067c0]'
+                            }
+                            
+                            `}
                         >
-                            {status == 'NO_ACTION' && !sub.active
+                            {!sub.active
                                 ? sub.name == 'week2'
                                     ? 'Tạm đóng'
                                     : 'Đặt trước'
-                                : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
+                                : currentSub == sub.name
+                                  ? 'Huỷ Gia hạn'
+                                  : 'Đăng ký'}
                         </button>
                     </div>
                 </div>
@@ -462,7 +441,7 @@ const RefundPage = () => {
         <div className="refundPage">
             <div className="title">
                 <h2 className="title">Chính sách hoàn 80% tiền</h2>
-                <p className="md:max-w-[80% md:text-xs lg:max-w-[60%] lg:text-base">
+                <p className="m d:max-w-[80% text-xs lg:max-w-[60%] lg:text-base">
                     Do tính chất đặc thù của dịch vụ CloudPC là có độ trễ về
                     đường truyền và mong muốn mọi người có trải nghiệm tốt nhất
                     khi sử dụng, Thinkmay khuyến khích bạn liên hệ qua Fanpage
@@ -529,11 +508,11 @@ const StoragePage = () => {
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
                         <div className="columnContent">Dung lượng</div>
                         <div className="columnContent ">
-                            <p className="title">Đăng ký ngay</p>
+                            <p className="">Đăng ký ngay</p>
                             <p className="subtitle">tới 26/01</p>
                         </div>
                         <div className="columnContent">
-                            <p className="title">Gia hạn</p>
+                            <p className="">Gia hạn</p>
                             <p className="subtitle">hẵng tháng</p>
                         </div>
                         <div className="columnContent"></div>
@@ -572,11 +551,11 @@ const StoragePage = () => {
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
                         <div className="columnContent">Ram & cpu</div>
                         <div className="columnContent ">
-                            <p className="title">Đăng ký ngay</p>
+                            <p className="">Đăng ký ngay</p>
                             <p className="subtitle">tới 26/01</p>
                         </div>
                         <div className="columnContent">
-                            <p className="title">Gia hạn</p>
+                            <p className="">Gia hạn</p>
                             <p className="subtitle">hẵng tháng</p>
                         </div>
                         <div className="columnContent"></div>
@@ -590,9 +569,7 @@ const StoragePage = () => {
                         </div>
                     </div>
                     <div className="rowContent">
-                        <div className="columnContent">
-                            {'> 20GB & >10cores'}
-                        </div>
+                        <div className="columnContent">{'Khác'}</div>
                         <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">
