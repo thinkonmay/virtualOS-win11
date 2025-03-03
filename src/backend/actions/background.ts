@@ -112,6 +112,8 @@ const fetchDomains = async () => {
 };
 const fetchUser = async () => {
     await appDispatch(fetch_user());
+};
+const fetchPayment = async () => {
     await appDispatch(fetch_wallet());
     await appDispatch(fetch_payment_history());
 };
@@ -168,17 +170,18 @@ export const preload = async (update_ui?: boolean) => {
     try {
         await setDomain();
         await fetchUser();
+        await fetchSubscription();
         await Promise.all([
             startAnalytics(),
             loadSettings(),
+            fetchPayment(),
             fetchApp(),
-            fetchSubscription(),
             fetchSetting(),
             fetchDomains(),
+            fetchUsage(),
+            fetchStore(),
             fetchPlans()
         ]);
-        await fetchUsage();
-        await fetchStore();
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',

@@ -211,10 +211,17 @@ export const userAsync = {
                 }
             );
             if (usageErr) throw usageErr;
+            const {data:total_usage,error}= await GLOBAL().rpc('query_user_usage_v3',{
+                email,
+                start: usageData[0]?.created_at,
+                stop: usageData[0]?.ended_at
+            })
+            if (error) throw error;
 
-            // TODO : fetch user usage and template
-            const total_usage = 0;
+
+            // TODO : fetch template
             const tpl = '';
+
             const { data: stores, error: err } = await GLOBAL()
                 .from('stores')
                 .select('metadata->screenshots,name')
@@ -308,9 +315,6 @@ export const userAsync = {
 
             for (const {
                 id: subscription_id,
-                cluster: cluster_id,
-                ended_at,
-                local_metadata
             } of subs) {
                 const { data, error } = await GLOBAL().rpc(
                     'get_subscription_verify',
