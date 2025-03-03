@@ -261,7 +261,13 @@ export const userAsync = {
                 };
             }
 
-            const available = limit_hour - (total_usage as number) / 60;
+            const available = limit_hour - total_usage;
+            const targetDate = dayjs(ended_at);
+            const currentDate = dayjs();
+            const isExpired =
+                targetDate.isBefore(currentDate, 'day') ||
+                total_usage > limit_hour;
+
             if (available < 20 && available >= 0)
                 appDispatch(
                     popup_open({
@@ -273,13 +279,7 @@ export const userAsync = {
                         }
                     })
                 );
-
-            const targetDate = dayjs(ended_at);
-            const currentDate = dayjs();
-            const isExpired =
-                targetDate.isBefore(currentDate, 'day') ||
-                ((total_usage as number) ?? 0) / 60 > +limit_hour;
-            if (isExpired) {
+            if (isExpired)
                 appDispatch(
                     popup_open({
                         type: 'extendService',
@@ -289,11 +289,11 @@ export const userAsync = {
                         }
                     })
                 );
-            }
+
             return {
                 node,
                 template,
-                total_usage: ((total_usage as number) ?? 0) / 60,
+                total_usage,
                 isExpired,
                 isNewUser: usageData[0]?.new_user
             };

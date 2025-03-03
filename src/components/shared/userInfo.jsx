@@ -20,7 +20,7 @@ function UserInfo() {
         volume_id,
         subscription: { status, cluster, created_at, ended_at, usage, policy }
     } = useAppSelector((state) => state.user);
-    const { node } = usage ?? {};
+    const { node, total_usage } = usage ?? {};
     let { limit_hour } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
     const endedAtFormat = dayjs(ended_at);
@@ -66,6 +66,12 @@ function UserInfo() {
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">Node</span>
                     <span>{node}</span>
+                </div>
+            ) : null}
+            {total_usage ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">Usage</span>
+                    <span>{total_usage} hour</span>
                 </div>
             ) : null}
         </div>
