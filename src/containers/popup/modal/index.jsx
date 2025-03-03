@@ -5,6 +5,8 @@ export { info } from './info';
 export { linkSteam } from './linkSteam';
 export { maintain } from './maintain';
 export { notify } from './notify';
+export { pocketBuyConfirm } from './pocketBuyConfirm';
+export { pocketNotEnoughMoney } from './pocketNotEnoughMoney';
 export { showQa } from './qa';
 export { redirectDomain } from './redirect';
 export { serversInfo } from './serversInfo';
