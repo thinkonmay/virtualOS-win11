@@ -181,7 +181,9 @@ export const {
     get_payment,
     create_payment_link,
     get_plans,
-    change_template
+    change_template,
+    create_payment_pocket,
+    get_payment_pocket
 } = userAsync;
 export const {
     check_worker,

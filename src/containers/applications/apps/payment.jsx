@@ -14,11 +14,11 @@ import { login } from '../../../backend/actions';
 import {
     appDispatch,
     create_payment_link,
-    get_payment,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
+import { numberFormat } from '../../../backend/utils/format';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
@@ -99,7 +99,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [page, setPage] = useState('history'); //sub - refund - storage -history
+    const [page, setPage] = useState('sub'); //sub - refund - storage -history
 
     const handleChangePage = (input) => {
         setPage(input);
@@ -209,9 +209,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     const status = useAppSelector((state) => state.user.subscription.status);
     const domains = useAppSelector((state) => state.globals.domains);
     const user = useAppSelector((state) => state.user);
-
-    console.log(sub);
-    const currentSub = renderCurrentSub(user?.subscription?.policy.limit_hour);
+    const wallet = user.wallet;
+    const currentSub = renderCurrentSub(user?.subscription?.policy?.limit_hour);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const max = useAppSelector(
         (state) =>
@@ -223,21 +222,45 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     );
 
     const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
-    const onChooseSub = (plan_name) =>
-        not_logged_in
-            ? login('google', false)
-            : status != 'PAID'
-              ? appDispatch(
-                    get_payment({
+    const onChooseSub = (plan_name) => {
+        if (not_logged_in) {
+            login('google', false);
+            return;
+        }
+
+        if (wallet.money < sub.price_in_vnd) {
+            appDispatch(
+                popup_open({
+                    type: 'pocketNotEnoughMoney',
+                    data: {
+                        plan_name: sub.title,
+                        plan_price: sub.price_in_vnd
+                    }
+                })
+            );
+            return;
+        }
+        if (status != 'PAID') {
+            appDispatch(
+                popup_open({
+                    type: 'pocketBuyConfirm',
+                    data: {
                         plan_name,
-                        domain
-                    })
-                )
-              : appDispatch(
-                    get_payment({
+                        cluster_domain: domain
+                    }
+                })
+            );
+        } else {
+            appDispatch(
+                popup_open({
+                    type: 'pocketBuyConfirm',
+                    data: {
                         plan_name
-                    })
-                );
+                    }
+                })
+            );
+        }
+    };
 
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
     const clickDetail = () => {
@@ -369,7 +392,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         <button
                             onClick={() => {
                                 if (status == 'NO_ACTION' && !sub.active) {
-                                    if (sub.name == 'week1') return;
+                                    if (sub.name == 'week2') return;
                                     return window.open(
                                         externalLink.MESSAGE_LINK,
                                         '_blank'
@@ -826,7 +849,9 @@ const TransactionHistoryPage = () => {
                 {currentData.length > 0 ? (
                     currentData.map((item) => (
                         <div className="rowContent" key={item.id}>
-                            <div className="columnContent">-{item.amount}k</div>
+                            <div className="columnContent">
+                                {numberFormat(+item.amount)} Vnđ
+                            </div>
                             <div className="columnContent">
                                 {renderNameDeteils(item.plan_name)}
                             </div>

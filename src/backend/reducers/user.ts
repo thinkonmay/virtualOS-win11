@@ -533,6 +533,60 @@ export const userAsync = {
             }
         }
     ),
+    create_payment_pocket: createAsyncThunk(
+        'create_payment_pocket',
+        async (
+            input: {
+                plan_name: string;
+                cluster_domain?: string;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { plan_name, cluster_domain = 'play.thinkmay.net' } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'create_payment_pocket',
+                {
+                    email,
+                    plan_name,
+                    cluster_domain: cluster_domain
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when create_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
+    get_payment_pocket: createAsyncThunk(
+        'get_payment_pocket',
+        async (_, { getState }): Promise<string> => {
+            const { email } = (getState() as RootState).user;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'get_payment_pocket',
+                {
+                    email
+                }
+            );
+
+            console.log(data);
+            if (err)
+                throw new Error(
+                    'Error when create_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
     change_size: createAsyncThunk(
         'change_size',
         async ({ size }: { size: string }, { getState }): Promise<void> => {
@@ -740,6 +794,21 @@ export const userSlice = createSlice({
                 fetch: userAsync.create_payment_link,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
+                }
+            },
+            {
+                fetch: userAsync.create_payment_pocket,
+                hander: (state, action) => {
+                    if (action.payload) {
+                        location.reload();
+                    }
+                    //reload
+                }
+            },
+            {
+                fetch: userAsync.get_payment_pocket,
+                hander: (state, action) => {
+                    console.log(action.payload);
                 }
             },
 
