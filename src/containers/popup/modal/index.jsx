@@ -4,6 +4,8 @@ export { guidance } from './guidance';
 export { info } from './info';
 export { maintain } from './maintain';
 export { notify } from './notify';
+export { pocketBuyConfirm } from './pocketBuyConfirm';
+export { pocketNotEnoughMoney } from './pocketNotEnoughMoney';
 export { showQa } from './qa';
 export { redirectDomain } from './redirect';
 export { serversInfo } from './serversInfo';
