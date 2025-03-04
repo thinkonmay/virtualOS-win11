@@ -865,7 +865,7 @@ export const userSlice = createSlice({
                 fetch: userAsync.create_payment_pocket,
                 hander: (state, action) => {
                     if (action.payload) {
-                        location.reload();
+                        //location.reload();
                     }
                     //reload
                 }

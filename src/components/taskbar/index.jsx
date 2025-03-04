@@ -199,8 +199,8 @@ const Taskbar = () => {
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={28}
-                                //click="startmenu/startogg"
-                                //style={{ '--prefix': 'START' }}
+                                    //click="startmenu/startogg"
+                                    //style={{ '--prefix': 'START' }}
                                 />{' '}
                                 <p className="text-xm font-semibold">
                                     Tài khoản
@@ -258,8 +258,9 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${open ? 'slide-in' : 'slide-out'
-                            } taskright`}
+                        className={`${
+                            open ? 'slide-in' : 'slide-out'
+                        } taskright`}
                         data-remote={remote.active}
                     >
                         <div

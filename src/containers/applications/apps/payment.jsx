@@ -106,7 +106,9 @@ export const PaymentApp = () => {
     //    setPage(wnapp.page);
     //}, [wnapp.page]);
     const handleChangePage = (input) => {
-        appDispatch(app_metadata_change({ id: 'payment', key: 'page', value: input }))
+        appDispatch(
+            app_metadata_change({ id: 'payment', key: 'page', value: input })
+        );
     };
     return (
         <div
@@ -407,10 +409,11 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 }}
                                 type="button"
                                 className={`buyButton
-                                flex-1 bg-[#0067c0] ${!sub.active && sub.name == 'week2'
+                                flex-1 bg-[#0067c0] ${
+                                    !sub.active && sub.name == 'week2'
                                         ? 'bg-red-700'
                                         : ''
-                                    }`}
+                                }`}
                             >
                                 {!sub.active
                                     ? sub.name == 'week2'
@@ -490,8 +493,9 @@ const SelectDropdown = () => {
             >
                 <span>{selectedOption || 'Select an option'}</span>
                 <svg
-                    className={`ml-2 h-5 w-5 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''
-                        }`}
+                    className={`ml-2 h-5 w-5 transition-transform duration-200 ${
+                        isOpen ? 'transform rotate-180' : ''
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
