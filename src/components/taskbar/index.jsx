@@ -26,6 +26,7 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
+import { numberFormat } from '../../backend/utils/format';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
 
@@ -168,7 +169,7 @@ const Taskbar = () => {
                                     src="vnd"
                                     width={24}
                                 />
-                                {wallet.money}
+                                {numberFormat(wallet.money)}
                             </div>
                             <button
                                 onClick={() => {
