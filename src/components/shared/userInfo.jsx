@@ -57,7 +57,25 @@ function UserInfo() {
     const t = useAppSelector((state) => state.globals.translation);
 
     const Paid = () => (
-        <div className="restWindow w-full  flex flex-col ">
+        <div className="restWindow w-full  flex flex-col mt-4">
+            {correctsite ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">{t[Contents.TIME]}</span>
+                    <span>
+                        {total_usage?.toFixed(1)} / {limit_hour}h
+                    </span>
+                </div>
+            ) : null}
+
+            <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                <span className="text-left">Gói</span>
+                <span>Gói M1</span>
+            </div>
+
+            <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                <span className="text-left">Dung lượng</span>
+                <span>150GB</span>
+            </div>
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">{t[Contents.STARTAT]}</span>
                 <span>{formatDate(created_at)}</span>
@@ -68,14 +86,7 @@ function UserInfo() {
                     <span>{formatDate(ended_at)}</span>
                 </div>
             ) : null}
-            {correctsite ? (
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">{t[Contents.TIME]}</span>
-                    <span>
-                        {total_usage?.toFixed(1)} / {limit_hour}h
-                    </span>
-                </div>
-            ) : null}
+
             {cluster ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">Server</span>
@@ -117,12 +128,15 @@ function UserInfo() {
                         />
                     </div>
                 </div>
-                <div className="h-full flex flex-col p-2" data-dock="true">
-                    <div className="w-full flex gap-4 justify-between my-[8px] ">
+                <div
+                    className="h-full flex flex-col gap-2 p-2 mt-2"
+                    data-dock="true"
+                >
+                    <div className="w-full flex gap-4 justify-between ">
                         <span>Language</span>
                         <LangSwitch />
                     </div>
-                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
+                    <div className="w-full flex gap-4 justify-between">
                         <span>Volume ID</span>
                         <div
                             className="strBtn handcr prtclk"
@@ -131,7 +145,7 @@ function UserInfo() {
                             <MdOutlineLink width={14} />
                         </div>
                     </div>
-                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
+                    <div className="w-full flex gap-4 justify-between">
                         <span>Steam account</span>
                         <div
                             className="strBtn handcr prtclk"
@@ -140,7 +154,7 @@ function UserInfo() {
                             <MdOutlineLink width={14} />
                         </div>
                     </div>
-                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
+                    <div className="w-full flex gap-4 justify-between">
                         <span>Theme</span>
                         <div
                             className="strBtn handcr prtclk"
