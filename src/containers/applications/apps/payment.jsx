@@ -284,7 +284,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         <div className="flex items-end">
                             {
                                 <>
-                                    <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
+                                    <h3 className="gradient-text-500 text-lg lg:text-3xl pb-1 uppercase font-mono text-brand-600">
                                         {sub.price_in_vnd / 1000}k VND
                                     </h3>
                                     {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
@@ -294,7 +294,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             }
                         </div>
                         <p className="-mt-2">
-                            <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
+                            <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[12px]  lg:text-[13px] lg:leading-4">
                                 Giới hạn {sub.total_time}h sử dụng trong{' '}
                                 {sub.total_days} ngày
                             </span>
