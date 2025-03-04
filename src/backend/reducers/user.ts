@@ -13,6 +13,7 @@ import {
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
+import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
 type Usage = {
     node: string;
@@ -65,13 +66,19 @@ interface Deposit {
     amount: number;
     created_at: string;
     id: number;
-    plan_name: 'month1' | 'month2' | 'week1' | 'week2';
+    plan_name: PlanName;
+}
+interface Order {
+    id: string;
+    pay_at: string;
+    plan_name: PlanName;
 }
 
 interface Wallet {
     money: number;
     historyDeposit: Deposit[];
     historyPayment: Deposit[];
+    currentOrders?: Order[];
 }
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -564,6 +571,64 @@ export const userAsync = {
             }
         }
     ),
+    modify_payment_pocket: createAsyncThunk(
+        'modify_payment_pocket',
+        async (
+            input: {
+                id: string;
+                plan_name: PlanName;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { id, plan_name } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'modify_payment_pocket',
+                {
+                    id,
+                    plan_name
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when modify_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
+    cancel_payment_pocket: createAsyncThunk(
+        'cancel_payment_pocket',
+        async (
+            input: {
+                id: string;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { id } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'cancel_payment_pocket',
+                {
+                    id
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when cancel_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
     get_payment_pocket: createAsyncThunk(
         'get_payment_pocket',
         async (_, { getState }): Promise<string> => {
@@ -808,7 +873,7 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.get_payment_pocket,
                 hander: (state, action) => {
-                    console.log(action.payload);
+                    state.wallet.currentOrders = action.payload;
                 }
             },
 
