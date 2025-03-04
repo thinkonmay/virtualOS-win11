@@ -45,6 +45,8 @@ const DepositPage = () => {
         <div className="depositPage">
             <h2 className="title">Chuyển khoản ngân hàng</h2>
 
+            <p className="subtitle mt-3">*Tiền sẽ chuyển vào ví sau 2-5 phút, mong bạn thông cảm</p>
+
             <div className="depositBox">
                 <p className="subtitle">Số tiền muốn nạp</p>
 
@@ -72,9 +74,8 @@ const DepositPage = () => {
             ) : null}
             <div className="optionsBox">
                 <div
-                    className={`option ${
-                        option == 'customize' ? 'selected' : ''
-                    }`}
+                    className={`option ${option == 'customize' ? 'selected' : ''
+                        }`}
                 >
                     Tuỳ chọn
                 </div>
