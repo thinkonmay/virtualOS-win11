@@ -13,7 +13,7 @@ import {
 
 import { afterMath } from '../../backend/actions';
 import {
-    app_toggle,
+    app_full,
     appDispatch,
     startogg,
     task_hide,
@@ -169,7 +169,12 @@ const Taskbar = () => {
                             </div>
                             <button
                                 onClick={() => {
-                                    appDispatch(app_toggle('payment'));
+                                    appDispatch(
+                                        app_full({
+                                            id: 'payment',
+                                            page: 'deposit'
+                                        })
+                                    );
                                 }}
                                 className="depositBtn"
                             >
