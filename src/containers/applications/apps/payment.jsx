@@ -1,24 +1,23 @@
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     MdArrowDropDown,
     MdArrowForwardIos,
     MdArrowRight,
-    MdCheck,
-    MdKeyboardArrowDown,
-    MdKeyboardArrowRight
+    MdCheck
 } from 'react-icons/md';
-import { NumericFormat } from 'react-number-format';
 import { UserEvents } from '../../../../src-tauri/api';
-import { login } from '../../../backend/actions';
+import { createPaymentPocket, login } from '../../../backend/actions';
 import {
     appDispatch,
-    create_payment_link,
+    cancel_payment_pocket,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
-import { numberFormat } from '../../../backend/utils/format';
+import DepositPage from '../../../components/payment/depositPage';
+import { TransactionHistoryPage } from '../../../components/payment/historyPage';
+import { RefundPage } from '../../../components/payment/refundPage';
+import { StoragePage } from '../../../components/payment/storagePage';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
@@ -102,9 +101,9 @@ export const PaymentApp = () => {
 
     const [page, setPage] = useState('sub'); //deposit-sub - refund - storage -history
 
-    useEffect(() => {
-        setPage(wnapp.page);
-    }, [wnapp.page]);
+    //useEffect(() => {
+    //    setPage(wnapp.page);
+    //}, [wnapp.page]);
     const handleChangePage = (input) => {
         setPage(input);
     };
@@ -226,46 +225,34 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     );
 
     const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
+
+    const isActivePlan = (plan) => {
+        let check = wallet?.currentOrders.find((o) => o.plan_name == plan);
+        return check;
+    };
+
     const onChooseSub = (plan_name) => {
         if (not_logged_in) {
             login('google', false);
             return;
         }
 
-        if (wallet.money < sub.price_in_vnd) {
-            appDispatch(
-                popup_open({
-                    type: 'pocketNotEnoughMoney',
-                    data: {
-                        plan_name: sub.title,
-                        plan_price: sub.price_in_vnd
-                    }
-                })
-            );
-            return;
-        }
-        if (status != 'PAID') {
-            appDispatch(
-                popup_open({
-                    type: 'pocketBuyConfirm',
-                    data: {
-                        plan_name,
-                        cluster_domain: domain
-                    }
-                })
-            );
-        } else {
-            appDispatch(
-                popup_open({
-                    type: 'pocketBuyConfirm',
-                    data: {
-                        plan_name
-                    }
-                })
-            );
-        }
+        createPaymentPocket({
+            plan_name: sub.name,
+            cluster_domain: domain,
+            plan_price: sub.price_in_vnd,
+            plan_title: sub.title
+        });
     };
 
+    const handleCancelSub = (plan_name) => {
+        const planFound = wallet?.currentOrders.find(
+            (o) => o.plan_name == plan_name
+        );
+
+        if (!planFound) return;
+        appDispatch(cancel_payment_pocket({ id: planFound.id }));
+    };
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
     const clickDetail = () => {
         setShowDetail((old) => !old);
@@ -393,38 +380,45 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 </div>
                             </>
                         ) : null}
-                        <button
-                            onClick={() => {
-                                if (!sub.active) {
-                                    if (sub.name == 'week2') {
-                                        console.log('hihi');
-                                        return;
+                        <div className="flex gap-2">
+                            {isActivePlan(sub.name) ? (
+                                <button
+                                    onClick={() => handleCancelSub(sub.name)}
+                                    className="buyButton bg-red-700 flex-1"
+                                >
+                                    Huỷ gia hạn
+                                </button>
+                            ) : null}
+
+                            <button
+                                onClick={() => {
+                                    if (!sub.active) {
+                                        if (sub.name == 'week2') {
+                                            console.log('hihi');
+                                            return;
+                                        }
+                                        return window.open(
+                                            externalLink.MESSAGE_LINK,
+                                            '_blank'
+                                        );
                                     }
-                                    return window.open(
-                                        externalLink.MESSAGE_LINK,
-                                        '_blank'
-                                    );
-                                }
-                                onChooseSub(sub.name);
-                            }}
-                            type="button"
-                            className={`buyButton
-                            ${
-                                currentSub == sub.name
-                                    ? 'bg-red-700'
-                                    : 'bg-[#0067c0]'
-                            }
-                            
-                            `}
-                        >
-                            {!sub.active
-                                ? sub.name == 'week2'
-                                    ? 'Tạm đóng'
-                                    : 'Đặt trước'
-                                : currentSub == sub.name
-                                  ? 'Huỷ Gia hạn'
-                                  : 'Đăng ký'}
-                        </button>
+                                    onChooseSub(sub.name);
+                                }}
+                                type="button"
+                                className={`buyButton
+                                flex-1 bg-[#0067c0] ${
+                                    !sub.active && sub.name == 'week2'
+                                        ? 'bg-red-700'
+                                        : ''
+                                }`}
+                            >
+                                {!sub.active
+                                    ? sub.name == 'week2'
+                                        ? 'Tạm đóng'
+                                        : 'Đặt trước'
+                                    : 'Đăng ký'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -448,6 +442,9 @@ const GreenLight = () => {
 
 const SubscriptionPage = () => {
     const plans = useAppSelector((state) => state.user.plans);
+    const wallet = useAppSelector((state) => state.user.wallet);
+
+    console.log(wallet.currentOrders);
 
     listSubs.forEach((e) => {
         const plan = plans.find((x) => x.name == e.name);
@@ -466,419 +463,65 @@ const SubscriptionPage = () => {
     );
 };
 
-const RefundPage = () => {
-    return (
-        <div className="refundPage">
-            <div className="title">
-                <h2 className="title">Chính sách hoàn 80% tiền</h2>
-                <p className="m d:max-w-[80% text-xs lg:max-w-[60%] lg:text-base">
-                    Do tính chất đặc thù của dịch vụ CloudPC là có độ trễ về
-                    đường truyền và mong muốn mọi người có trải nghiệm tốt nhất
-                    khi sử dụng, Thinkmay khuyến khích bạn liên hệ qua Fanpage
-                    để được hỗ trợ xử lý hoặc hoàn tiền nếu sau khi sử dụng, bạn
-                    cảm thấy không hài lòng vì bất kỳ lý do nào.
-                </p>
-            </div>
+const SelectDropdown = () => {
+    const [selectedOption, setSelectedOption] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
 
-            <div className="pl-2 lg:pl-20">
-                <h3>Điều kiện áp dụng</h3>
+    // Sample options array
+    const options = [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+        { value: 'option3', label: 'Option 3' },
+        { value: 'option4', label: 'Option 4' }
+    ];
 
-                <div className="flex gap-16 mb-5">
-                    <div>
-                        <h4>Với gói tháng:</h4>
-                        <ul>
-                            <li>Thời gian: 5 ngày kể từ khi được cấp máy.</li>
-                            <li>Số giờ sử dụng: không quá 12h.</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4>Với gói tuần:</h4>
-                        <ul>
-                            <li>Thời gian: 2 ngày kể từ khi được cấp máy.</li>
-                            <li>Số giờ sử dụng: không quá 3h.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <h3 className="mt-8">Quy trình yêu cầu hoàn tiền:</h3>
-                <ul className="list-decimal">
-                    <li> Liên hệ qua Fanpage chính thức của Thinkmay.</li>
-                    <li>
-                        {' '}
-                        Cung cấp thông tin tài khoản, lý do yêu cầu hoàn tiền
-                    </li>
-                    <li> Yêu cầu sẽ được xử lý trong vòng 1 ngày làm việc.</li>
-                </ul>
-
-                <h3 className="mt-8">Lưu ý:</h3>
-                <ul className="list-decimal">
-                    <li>
-                        Chính sách không áp dụng cho các trường hợp vi phạm điều
-                        khoản sử dụng dịch vụ hoặc cố ý gây lỗi.
-                    </li>
-                    <li>
-                        Hãy trải nghiệm dịch vụ miễn phí trước khi đưa ra quyết
-                        định mua!
-                    </li>
-                </ul>
-            </div>
-        </div>
-    );
-};
-
-const StoragePage = () => {
-    return (
-        <div className="storagePage pt-[1%] ">
-            <div className="flex flex-col items-center justify-center">
-                <h2 className="text-center mb-4 lg:mb-8 ">
-                    Bảng giá dung lượng
-                </h2>
-                <div className="wrapperTableStorage">
-                    <div className="rowContent" style={{ borderTop: 'unset' }}>
-                        <div className="columnContent">Dung lượng</div>
-                        <div className="columnContent ">
-                            <p className="">Đăng ký ngay</p>
-                            <p className="subtitle">tới 26/01</p>
-                        </div>
-                        <div className="columnContent">
-                            <p className="">Gia hạn</p>
-                            <p className="subtitle">hẵng tháng</p>
-                        </div>
-                        <div className="columnContent"></div>
-                    </div>
-
-                    <div className="rowContent">
-                        <div className="columnContent">50GB</div>
-                        <div className="columnContent">60k/tháng</div>
-                        <div className="columnContent">40k/tháng</div>
-                        <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
-                        </div>
-                    </div>
-                    <div className="rowContent">
-                        <div className="columnContent">100GB</div>
-                        <div className="columnContent">110k/tháng</div>
-                        <div className="columnContent">80k/tháng</div>
-                        <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
-                        </div>
-                    </div>
-                    <div className="rowContent">
-                        <div className="columnContent">200GB</div>
-                        <div className="columnContent">190k/tháng</div>
-                        <div className="columnContent">150k/tháng</div>
-                        <div className="columnContent">
-                            <button className="instbtn buyBtn">Đăng ký</button>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 className="text-center mb-4 lg:mb-8 mt-10 ">
-                    Bảng giá Ram & Cpu
-                </h2>
-                <div className="wrapperTableStorage">
-                    <div className="rowContent" style={{ borderTop: 'unset' }}>
-                        <div className="columnContent">Ram & cpu</div>
-                        <div className="columnContent ">
-                            <p className="">Đăng ký ngay</p>
-                            <p className="subtitle">tới 26/01</p>
-                        </div>
-                        <div className="columnContent">
-                            <p className="">Gia hạn</p>
-                            <p className="subtitle">hẵng tháng</p>
-                        </div>
-                        <div className="columnContent"></div>
-                    </div>
-                    <div className="rowContent">
-                        <div className="columnContent">{'20GB & 10cores'}</div>
-                        <div className="columnContent">60k/tháng</div>
-                        <div className="columnContent">40k/tháng</div>
-                        <div className="columnContent">
-                            <button className="instbtn buyBtn">Nâng cấp</button>
-                        </div>
-                    </div>
-                    <div className="rowContent">
-                        <div className="columnContent">{'Khác'}</div>
-                        <div className="columnContent">Liên hệ</div>
-                        <div className="columnContent">Liên hệ</div>
-                        <div className="columnContent">
-                            <button className="instbtn buyBtn">Liên hệ</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const DepositPage = () => {
-    const [depositNumber, setDepositNumber] = useState('');
-    const [option, setOption] = useState('customize'); //Customize - current pay
-    const [isErr, setErr] = useState('');
-
-    const handleDeposit = () => {
-        if (isErr) return;
-
-        appDispatch(
-            create_payment_link({
-                amount: removeCommasAndCurrency(depositNumber)
-            })
-        );
-
-        /// show thanh toán.
-    };
-
-    function removeCommasAndCurrency(str) {
-        // Extract just the numeric part with commas
-        const numericPart = str.match(/[\d,]+/)[0];
-
-        // Remove commas
-        return numericPart.replace(/,/g, '');
-    }
-
-    const handleChangeDepositNumber = (e) => {
-        setDepositNumber(e.target.value);
-
-        if (!e.target.value) return;
-        if (removeCommasAndCurrency(e.target.value) < 50000) {
-            setErr(' Số tiền nạp phải >= 50k Vnđ');
-        } else if (removeCommasAndCurrency(e.target.value) > 1000000000) {
-            setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
-        } else {
-            setErr('');
-        }
+    const handleSelect = (value, label) => {
+        setSelectedOption(label);
+        setIsOpen(false);
     };
 
     return (
-        <div className="depositPage">
-            <h2 className="title">Chuyển khoản ngân hàng</h2>
-
-            <div className="depositBox">
-                <p className="subtitle">Số tiền muốn nạp</p>
-
-                <div className="wrapperDeposit">
-                    <NumericFormat
-                        className="depositInput"
-                        placeholder="Nhập số tiền (VNĐ)"
-                        onChange={handleChangeDepositNumber}
-                        value={depositNumber}
-                        //allowLeadingZeros
-                        suffix={' VNĐ'}
-                        thousandSeparator=","
-                    />
-
-                    <button
-                        onClick={handleDeposit}
-                        className="instbtn depositBtn"
-                    >
-                        Nạp tiền
-                    </button>
-                </div>
-            </div>
-            {isErr ? (
-                <p className="text-red-500 text-base mt-2 font-bold">{isErr}</p>
-            ) : null}
-            <div className="optionsBox">
-                <div
-                    className={`option ${
-                        option == 'customize' ? 'selected' : ''
+        <div className="relative inline-block w-64">
+            {/* Select button */}
+            <button
+                className="w-full flex items-center justify-between bg-white border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onClick={() => setIsOpen((old) => !old)}
+                type="button"
+            >
+                <span>{selectedOption || 'Select an option'}</span>
+                <svg
+                    className={`ml-2 h-5 w-5 transition-transform duration-200 ${
+                        isOpen ? 'transform rotate-180' : ''
                     }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                 >
-                    Tuỳ chọn
-                </div>
-                {/*<div className={`option ${option == 'any' ? 'selected' : ''}`}>Gia hạn gói hiện tại</div>*/}
-            </div>
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                    />
+                </svg>
+            </button>
 
-            <div className="noticesBox">
-                <p className="title">Lưu ý:</p>
-                <ul className="">
-                    <li>Số tiền nạp tối thiểu là 50,000 VNĐ</li>
-                    <li>Tiền đã nạp không thể rút ra thành tiền mặt</li>
-                    <li>
-                        Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên
-                        hệ Fanpage để được hỗ trợ
-                    </li>
-                </ul>
-            </div>
-
-            <CardDepositBox />
-            <OthersDepositBox />
-        </div>
-    );
-};
-
-const CardDepositBox = () => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <div className="cardDepositBox ">
-            <div
-                onClick={() => {
-                    setOpen((old) => !old);
-                }}
-                className="toggleContentBtn"
-            >
-                {open ? (
-                    <MdKeyboardArrowDown fontSize={'1.5rem'} />
-                ) : (
-                    <MdKeyboardArrowRight fontSize={'1.5rem'} />
-                )}
-                <span>Thanh toán bằng card</span>
-            </div>
-
-            {open ? (
-                <div className="bg-slate-600 w-[480px] h-[240px] rounded-lg  mt-4"></div>
-            ) : null}
-        </div>
-    );
-};
-const OthersDepositBox = () => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <div className="othersDepositBox">
-            <div
-                onClick={() => {
-                    setOpen((old) => !old);
-                }}
-                className="toggleContentBtn"
-            >
-                {open ? (
-                    <MdKeyboardArrowDown fontSize={'1.5rem'} />
-                ) : (
-                    <MdKeyboardArrowRight fontSize={'1.5rem'} />
-                )}
-                <span>Các hình thức thanh toán khác: Paypal, vv</span>
-            </div>
-
-            {open ? (
-                <p className="text-lg">
-                    Vui lòng liên hệ Fanpage để được hỗ trợ thanh toán thủ công.
-                </p>
-            ) : null}
-        </div>
-    );
-};
-
-const listHistoryNav = [
-    {
-        name: 'Tất cả',
-        id: 'all'
-    },
-    {
-        name: 'Nạp tiền',
-        id: 'deposit'
-    },
-    {
-        name: 'Thuê CloudPC',
-        id: 'buy'
-    },
-    {
-        name: 'Nâng cấp',
-        id: 'upgrade'
-    }
-];
-
-const renderNameDeteils = (name) => {
-    let nameFormat = '';
-    switch (name) {
-        case 'month1':
-            nameFormat = 'Mua gói tháng';
-            break;
-
-        default:
-            break;
-    }
-
-    return nameFormat;
-};
-const TransactionHistoryPage = () => {
-    const historyDeposit = useAppSelector(
-        (state) => state.user.wallet.historyDeposit
-    );
-    const historyPayment = useAppSelector(
-        (state) => state.user.wallet.historyPayment
-    );
-    const [currentNav, setNav] = useState('all'); //all-deposit-upgrade-buy
-    const [currentData, setCurrentData] = useState([
-        ...historyPayment,
-        ...historyDeposit
-    ]);
-
-    const handleChangeNav = (nav) => {
-        setNav(nav);
-
-        switch (nav) {
-            case 'all':
-                setCurrentData([...historyPayment, ...historyDeposit]);
-                break;
-            case 'deposit':
-                setCurrentData([...historyDeposit]);
-                break;
-
-            case 'buy':
-                setCurrentData([...historyPayment]);
-                break;
-            case 'upgrade':
-                setCurrentData([]);
-                break;
-
-            default:
-                break;
-        }
-    };
-
-    return (
-        <div className="historyPage">
-            <h2 className="title">Lịch sử giao dịch</h2>
-
-            <ul className="historyNav">
-                {listHistoryNav.map((nav) => (
-                    <li
-                        onClick={() => handleChangeNav(nav.id)}
-                        className={`nav ${
-                            currentNav == nav.id ? 'navActive' : ''
-                        }`}
-                    >
-                        {nav.name}
-                    </li>
-                ))}
-            </ul>
-
-            <div className="wrapperTableHistory">
-                <div className="rowContent" style={{ borderTop: 'unset' }}>
-                    <div className="columnContent ">Số tiền</div>
-                    <div className="columnContent">Chi tiết</div>
-                    <div className="columnContent">Thời gian</div>
-                </div>
-
-                {currentData.length > 0 ? (
-                    currentData.map((item) => (
-                        <div className="rowContent" key={item.id}>
-                            <div className="columnContent">
-                                {numberFormat(+item.amount)} Vnđ
-                            </div>
-                            <div className="columnContent">
-                                {renderNameDeteils(item.plan_name)}
-                            </div>
-                            <div className="columnContent">
-                                {dayjs(item.created_at).format(
-                                    'HH:mm DD/MM/YYYY'
-                                )}
-                            </div>
+            {/* Dropdown menu */}
+            {isOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-black shadow-lg rounded-md py-1 text-sm">
+                    {options.map((option) => (
+                        <div
+                            key={option.value}
+                            className="px-4 py-2 hover:bg-black-200 cursor-pointer"
+                            onClick={() =>
+                                handleSelect(option.value, option.label)
+                            }
+                        >
+                            {option.label}
                         </div>
-                    ))
-                ) : (
-                    <div className="rowContent">
-                        <p></p>
-                        <p className="my-auto font-bold">
-                            Hiện chưa có dự liệu
-                        </p>
-                        <p></p>
-                    </div>
-                )}
-            </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
