@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     MdArrowDropDown,
     MdArrowForwardIos,
@@ -99,8 +99,12 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [page, setPage] = useState('sub'); //sub - refund - storage -history
 
+    const [page, setPage] = useState('sub'); //deposit-sub - refund - storage -history
+
+    useEffect(() => {
+        setPage(wnapp.page);
+    }, [wnapp.page]);
     const handleChangePage = (input) => {
         setPage(input);
     };
@@ -391,8 +395,11 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         ) : null}
                         <button
                             onClick={() => {
-                                if (status == 'NO_ACTION' && !sub.active) {
-                                    if (sub.name == 'week2') return;
+                                if (!sub.active) {
+                                    if (sub.name == 'week2') {
+                                        console.log('hihi');
+                                        return;
+                                    }
                                     return window.open(
                                         externalLink.MESSAGE_LINK,
                                         '_blank'
