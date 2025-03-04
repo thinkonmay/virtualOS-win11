@@ -81,6 +81,7 @@ export const {
 } = menuSlice.actions;
 export const {
     app_toggle,
+    app_full,
     app_add,
     app_close,
     app_external,
@@ -183,7 +184,9 @@ export const {
     get_plans,
     change_template,
     create_payment_pocket,
-    get_payment_pocket
+    get_payment_pocket,
+    cancel_payment_pocket,
+    modify_payment_pocket
 } = userAsync;
 export const {
     check_worker,

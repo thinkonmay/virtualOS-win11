@@ -9,6 +9,7 @@ export type AppData = {
     action: string;
     payload?: any;
 
+    page?: string; //sub - refund - storage -history;
     menu?: MenuOption;
     size?: string;
     hide?: boolean;

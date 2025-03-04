@@ -1,5 +1,6 @@
 import { MdOutlineAddCard } from 'react-icons/md';
 import {
+    app_full,
     appDispatch,
     popup_close,
     useAppSelector
@@ -14,6 +15,7 @@ export function pocketNotEnoughMoney({ data: { plan_name, plan_price } }) {
 
     const handleContinue = () => {
         appDispatch(popup_close());
+        appDispatch(app_full({ id: 'payment', page: 'deposit' }));
     };
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
