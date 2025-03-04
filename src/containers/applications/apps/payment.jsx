@@ -10,7 +10,6 @@ import { createPaymentPocket, login } from '../../../backend/actions';
 import {
     app_metadata_change,
     appDispatch,
-    cancel_payment_pocket,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
@@ -249,12 +248,14 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     };
 
     const handleCancelSub = (plan_name) => {
-        const planFound = wallet?.currentOrders.find(
-            (o) => o.plan_name == plan_name
+        appDispatch(
+            popup_open({
+                type: 'pocketCancelPlan',
+                data: {
+                    plan_name
+                }
+            })
         );
-
-        if (!planFound) return;
-        appDispatch(cancel_payment_pocket({ id: planFound.id }));
     };
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
     const clickDetail = () => {
