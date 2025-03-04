@@ -22,6 +22,11 @@
     backdrop-filter: none;
   }
 
+  .vndIcon {
+    img {
+      filter: unset;
+    }
+  }
 
   .containerWalletInfo {
     display: flex;
@@ -42,6 +47,8 @@
         justify-content: center;
         align-items: center;
       }
+
+
     }
   }
 }
@@ -51,10 +58,18 @@ body[data-theme="dark"] {
     --bg1: rgba(32, 32, 32, 0.75);
     --bg2: rgba(255, 255, 255, 0.1);
 
+    .vndIcon {
+      img {
+        filter: invert(1);
+      }
+    }
+
     .taskright {
       .btn-show {
         //filter: invert(1);
       }
+
+
 
     }
   }

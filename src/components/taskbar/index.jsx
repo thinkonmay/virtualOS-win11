@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { BiSupport } from 'react-icons/bi';
-import { MdOutlineMonetizationOn } from 'react-icons/md';
 import { RiBookLine } from 'react-icons/ri';
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
@@ -163,8 +162,12 @@ const Taskbar = () => {
                     <audio src={ringSound}></audio>
                     <div className="containerWalletInfo">
                         <div className="wrapperWallet">
-                            <div className="flex items-center gap-[2px] text-xs font-semibold lg:text-sm">
-                                <MdOutlineMonetizationOn fontSize={'1.2rem'} />
+                            <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">
+                                <Icon
+                                    className="vndIcon"
+                                    src="vnd"
+                                    width={24}
+                                />
                                 {wallet.money}
                             </div>
                             <button
@@ -195,8 +198,8 @@ const Taskbar = () => {
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={28}
-                                    //click="startmenu/startogg"
-                                    //style={{ '--prefix': 'START' }}
+                                //click="startmenu/startogg"
+                                //style={{ '--prefix': 'START' }}
                                 />{' '}
                                 <p className="text-xm font-semibold">
                                     Tài khoản
@@ -254,9 +257,8 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div
-                        className={`${
-                            open ? 'slide-in' : 'slide-out'
-                        } taskright`}
+                        className={`${open ? 'slide-in' : 'slide-out'
+                            } taskright`}
                         data-remote={remote.active}
                     >
                         <div
