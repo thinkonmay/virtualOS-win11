@@ -57,10 +57,33 @@ export const TransactionHistoryPage = () => {
         }
     };
     const renderNameDeteils = (name) => {
-        let nameFormat = '';
+        let nameFormat = 'Nạp tiền';
         switch (name) {
             case 'month1':
                 nameFormat = 'Mua gói tháng';
+                break;
+
+            case 'month2':
+                nameFormat = 'Mua gói cao cấp';
+                break;
+
+            case 'week1':
+                nameFormat = 'Mua gói 2 tuần';
+                break;
+            case 'week2':
+                nameFormat = 'Mua gói 1 tuần';
+                break;
+            case 'ramcpu20':
+                nameFormat = 'Nâng lên 20GB RAM & 10cores cpu';
+                break;
+            case '50GB':
+                nameFormat = 'Nâng lên 50GB';
+                break;
+            case '100GB':
+                nameFormat = 'Nâng lên 100GB';
+                break;
+            case '200GB':
+                nameFormat = 'Nâng lên 200GB';
                 break;
 
             default:
