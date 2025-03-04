@@ -50,7 +50,10 @@ export const StoragePage = () => {
                             <p className="">Đăng ký ngay</p>
                             <p className="subtitle">
                                 {ended_at ? (
-                                    <>tới {dayjs(ended_at).format('DD/MM')}</>
+                                    <>
+                                        tới{' '}
+                                        {dayjs(ended_at).format('DD/MM/YYYY')}
+                                    </>
                                 ) : (
                                     '30 ngày'
                                 )}
@@ -58,7 +61,7 @@ export const StoragePage = () => {
                         </div>
                         <div className="columnContent">
                             <p className="">Gia hạn</p>
-                            <p className="subtitle">hẵng tháng</p>
+                            <p className="subtitle">hằng tháng</p>
                         </div>
                         <div className="columnContent"></div>
                     </div>
@@ -126,7 +129,7 @@ export const StoragePage = () => {
                 </div>
 
                 <h2 className="text-center mb-4 lg:mb-8 mt-10 ">
-                    Bảng giá Ram & Cpu
+                    Bảng giá RAM & CPU
                 </h2>
                 <div className="wrapperTableStorage">
                     <div className="rowContent" style={{ borderTop: 'unset' }}>
@@ -135,7 +138,10 @@ export const StoragePage = () => {
                             <p className="">Đăng ký ngay</p>
                             <p className="subtitle">
                                 {ended_at ? (
-                                    <>tới {dayjs(ended_at).format('DD/MM')}</>
+                                    <>
+                                        tới{' '}
+                                        {dayjs(ended_at).format('DD/MM/YYYY')}
+                                    </>
                                 ) : (
                                     '30 ngày'
                                 )}
@@ -180,7 +186,10 @@ export const StoragePage = () => {
                                         '_blank'
                                     );
                                 }}
-                                className="instbtn buyBtn">Liên hệ</button>
+                                className="instbtn buyBtn"
+                            >
+                                Liên hệ
+                            </button>
                         </div>
                     </div>
                 </div>
