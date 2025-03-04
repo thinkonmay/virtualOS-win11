@@ -34,7 +34,15 @@ export const localStorageKey = {
     gamingKeyboardData: 'GAMING_KEYBOARD_DATA'
 };
 
-export type PlanName = 'month1' | 'month2' | 'week1' | 'week2' | 'ramcpu20' | '50GB' | '100GB' | '200GB';
+export type PlanName =
+    | 'month1'
+    | 'month2'
+    | 'week1'
+    | 'week2'
+    | 'ramcpu20'
+    | '50GB'
+    | '100GB'
+    | '200GB';
 
 export const pathNames = {
     VERIFY_PAYMENT: 'success'
