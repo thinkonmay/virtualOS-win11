@@ -6,6 +6,8 @@ export { linkSteam } from './linkSteam';
 export { maintain } from './maintain';
 export { notify } from './notify';
 export { pocketBuyConfirm } from './pocketBuyConfirm';
+export { pocketCancelPlan } from './pocketCancelPlan';
+export { pocketChangePlan } from './pocketChangePlan';
 export { pocketNotEnoughMoney } from './pocketNotEnoughMoney';
 export { showQa } from './qa';
 export { redirectDomain } from './redirect';

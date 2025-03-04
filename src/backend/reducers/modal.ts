@@ -80,12 +80,25 @@ type PopupData =
     | {
           type: 'pocketBuyConfirm';
           data: {
-              plan_name: string;
+              plan_name: PlanName;
               cluster_domain: string;
           };
       }
     | {
           type: 'pocketNotEnoughMoney';
+          data: {
+              plan_name: PlanName;
+              plan_price: number;
+          };
+      }
+    | {
+          type: 'pocketCancelPlan';
+          data: {
+              plan_name: PlanName;
+          };
+      }
+    | {
+          type: 'pocketChangePlan';
           data: {
               plan_name: string;
               plan_price: number;
@@ -101,6 +114,7 @@ const initialState: Data = {
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PlanName } from '../utils/constant';
 import { Contents } from './locales';
 export const modalSlice = createSlice({
     name: 'popup',
