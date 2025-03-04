@@ -144,7 +144,15 @@ export const appSlice = createSlice({
                 state.hz += 1;
                 obj.z = state.hz;
             }
-        }
+        },
+        app_metadata_change: (state, action: PayloadAction<{ id, key, value }>) => {
+            const obj = state.apps.find((x) => x.id == action.payload.id);
+            if (obj == undefined) return;
+
+            obj[action.payload.key] = action.payload.value
+        },
+
+
     },
     extraReducers: (builder) => {
         BuilderHelper<Data, any, any>(builder);

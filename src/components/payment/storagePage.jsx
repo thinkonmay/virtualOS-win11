@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { createPaymentPocket } from '../../backend/actions';
 import { useAppSelector } from '../../backend/reducers';
+import { externalLink } from '../../backend/utils/constant';
 
 export const StoragePage = () => {
     const wallet = useAppSelector((state) => state.user.wallet);
@@ -172,7 +173,14 @@ export const StoragePage = () => {
                         <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">
-                            <button className="instbtn buyBtn">Liên hệ</button>
+                            <button
+                                onClick={() => {
+                                    window.open(
+                                        externalLink.MESSAGE_LINK,
+                                        '_blank'
+                                    );
+                                }}
+                                className="instbtn buyBtn">Liên hệ</button>
                         </div>
                     </div>
                 </div>
