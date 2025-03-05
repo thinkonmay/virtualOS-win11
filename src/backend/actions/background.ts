@@ -16,6 +16,7 @@ import {
     fetch_usage,
     fetch_user,
     fetch_wallet,
+    get_deposit_status,
     get_payment_pocket,
     get_plans,
     have_focus,
@@ -107,6 +108,7 @@ const fetchUser = async () => {
     await appDispatch(fetch_wallet());
     await appDispatch(fetch_payment_history());
     await appDispatch(get_payment_pocket());
+    await appDispatch(get_deposit_status());
 };
 const checkMaintain = async () => {
     await appDispatch(fetch_under_maintenance());

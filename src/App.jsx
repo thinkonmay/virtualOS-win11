@@ -30,6 +30,7 @@ import { Background, BootScreen, LockScreen } from './containers/background';
 import Popup from './containers/popup';
 import { Remote } from './containers/remote';
 import { Status } from './containers/status';
+import PaymentStatus from './containers/status/paymentStatus';
 import { ErrorFallback } from './error';
 import './index.css';
 
@@ -220,6 +221,7 @@ function App() {
                             <ListQAs></ListQAs>
                             <Popup />
                             <PaidTutorial />
+                            <PaymentStatus />
                         </>
                     )}
                     {remote.active && !pointerLock ? <Status /> : null}

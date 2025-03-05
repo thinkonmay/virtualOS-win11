@@ -74,11 +74,17 @@ interface Order {
     plan_name: PlanName;
 }
 
+interface DepositStatus {
+    created_at: string;
+    amount: number;
+    status: string;
+}
 interface Wallet {
     money: number;
     historyDeposit: Deposit[];
     historyPayment: Deposit[];
     currentOrders?: Order[];
+    depositStatus?: DepositStatus[];
 }
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -109,7 +115,9 @@ const initialState: Data = {
     wallet: {
         historyPayment: [],
         historyDeposit: [],
-        money: 0
+        money: 0,
+        currentOrders: [],
+        depositStatus: []
     }
 };
 
@@ -534,6 +542,26 @@ export const userAsync = {
             }
         }
     ),
+    get_deposit_status: createAsyncThunk(
+        'get_deposit_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_deposit_status, error: err } = await GLOBAL().rpc(
+                'get_deposit_status',
+                {
+                    email
+                }
+            );
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_deposit_status != null) {
+                return get_deposit_status;
+            }
+        }
+    ),
     create_payment_pocket: createAsyncThunk(
         'create_payment_pocket',
         async (
@@ -841,6 +869,13 @@ export const userSlice = createSlice({
                 fetch: userAsync.get_plans,
                 hander: (state, action) => {
                     state.plans = action.payload;
+                }
+            },
+            {
+                fetch: userAsync.get_deposit_status,
+                hander: (state, action) => {
+                    console.log(action.payload);
+                    state.wallet.depositStatus = action.payload;
                 }
             },
             {
