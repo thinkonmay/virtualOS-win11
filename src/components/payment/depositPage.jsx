@@ -45,7 +45,7 @@ const DepositPage = () => {
         <div className="depositPage">
             <h2 className="title">Chuyển khoản ngân hàng</h2>
 
-            <p className="subtitle mt-3">
+            <p className="subtitle mt-2">
                 *Tiền sẽ chuyển vào ví sau 2-5 phút, mong bạn thông cảm
             </p>
 
@@ -97,8 +97,8 @@ const DepositPage = () => {
                 </ul>
             </div>
 
-            <CardDepositBox />
-            <OthersDepositBox />
+            {/*<CardDepositBox />*/}
+            {/*<OthersDepositBox />*/}
         </div>
     );
 };
@@ -144,11 +144,11 @@ const OthersDepositBox = () => {
                 ) : (
                     <MdKeyboardArrowRight fontSize={'1.5rem'} />
                 )}
-                <span>Các hình thức thanh toán khác: Paypal, vv</span>
+                <span>Các hình thức thanh toán khác: Thẻ cào, Paypal</span>
             </div>
 
             {open ? (
-                <p className="text-lg">
+                <p className="text-lg mt-3 ml-2">
                     Vui lòng liên hệ Fanpage để được hỗ trợ thanh toán thủ công.
                 </p>
             ) : null}
