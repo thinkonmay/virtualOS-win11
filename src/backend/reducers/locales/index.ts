@@ -642,10 +642,6 @@ export function language() {
     vn.set(Contents.ENDAT, 'Ngày hết hạn');
     id.set(Contents.ENDAT, 'Berakhir pada');
 
-    en.set(Contents.TIME, 'Total usage');
-    vn.set(Contents.TIME, 'Số giờ chơi');
-    id.set(Contents.TIME, 'Total penggunaan');
-
     en.set(Contents.GUIDELINE, 'Guideline');
     vn.set(Contents.GUIDELINE, 'Hướng dẫn');
     id.set(Contents.GUIDELINE, 'Panduan');
@@ -807,7 +803,7 @@ export function language() {
     id.set(Contents.ENDAT, 'Berakhir pada');
 
     en.set(Contents.TIME, 'Total usage');
-    vn.set(Contents.TIME, 'Số giờ chơi');
+    vn.set(Contents.TIME, 'Số giờ đã chơi');
     id.set(Contents.TIME, 'Total penggunaan');
 
     en.set(Contents.SIGN_IN, 'Sign In');

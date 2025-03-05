@@ -3,6 +3,7 @@
   --bg2: rgba(255, 255, 255, 0.67);
 
   display: flex;
+  align-items: center;
   position: absolute;
   overflow: hidden;
   width: 100vw;
@@ -21,6 +22,35 @@
     backdrop-filter: none;
   }
 
+  .vndIcon {
+    img {
+      filter: unset;
+    }
+  }
+
+  .containerWalletInfo {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+
+    .wrapperWallet {
+      display: flex;
+      gap: 8px;
+
+      .depositBtn {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        background-color: #70FE63;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+
+    }
+  }
 }
 
 body[data-theme="dark"] {
@@ -28,10 +58,18 @@ body[data-theme="dark"] {
     --bg1: rgba(32, 32, 32, 0.75);
     --bg2: rgba(255, 255, 255, 0.1);
 
+    .vndIcon {
+      img {
+        filter: invert(1);
+      }
+    }
+
     .taskright {
       .btn-show {
         //filter: invert(1);
       }
+
+
 
     }
   }
@@ -199,6 +237,8 @@ body[data-theme="dark"] {
   &[data-side="left"] {
     align-items: flex-start;
   }
+
+
 }
 
 .tsbar {

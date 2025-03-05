@@ -76,6 +76,33 @@ type PopupData =
     | {
           type: 'serversInfo';
           data: {};
+      }
+    | {
+          type: 'pocketBuyConfirm';
+          data: {
+              plan_name: PlanName;
+              cluster_domain: string;
+          };
+      }
+    | {
+          type: 'pocketNotEnoughMoney';
+          data: {
+              plan_name: PlanName;
+              plan_price: number;
+          };
+      }
+    | {
+          type: 'pocketCancelPlan';
+          data: {
+              plan_name: PlanName;
+          };
+      }
+    | {
+          type: 'pocketChangePlan';
+          data: {
+              plan_name: string;
+              plan_price: number;
+          };
       };
 
 type Data = {
@@ -83,17 +110,11 @@ type Data = {
 };
 
 const initialState: Data = {
-    data_stack: [
-        //{
-        //    type: 'serversInfo',
-        //    data: {
-        //        key: 'cloudPc'
-        //    }
-        //}
-    ]
+    data_stack: []
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PlanName } from '../utils/constant';
 import { Contents } from './locales';
 export const modalSlice = createSlice({
     name: 'popup',

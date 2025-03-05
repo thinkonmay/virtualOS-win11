@@ -40,13 +40,18 @@ export const appSlice = createSlice({
 
             state.apps = [...initialState.apps, ...app];
         },
-        app_full: (state, action: PayloadAction<string>) => {
-            const obj = state.apps.find((x) => action.payload == x.id);
+        app_full: (
+            state,
+            action: PayloadAction<{ id: string; page: string }>
+        ) => {
+            const { id, page = '' } = action.payload;
+            const obj = state.apps.find((x) => id == x.id);
             if (obj == undefined) return;
 
             obj.size = 'full';
             obj.hide = false;
             obj.max = true;
+            obj.page = page;
             state.hz += 1;
             obj.z = state.hz;
         },
@@ -139,6 +144,15 @@ export const appSlice = createSlice({
                 state.hz += 1;
                 obj.z = state.hz;
             }
+        },
+        app_metadata_change: (
+            state,
+            action: PayloadAction<{ id; key; value }>
+        ) => {
+            const obj = state.apps.find((x) => x.id == action.payload.id);
+            if (obj == undefined) return;
+
+            obj[action.payload.key] = action.payload.value;
         }
     },
     extraReducers: (builder) => {
