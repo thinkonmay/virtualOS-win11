@@ -846,7 +846,6 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.fetch_payment_history,
                 hander: (state, action) => {
-                    console.log(action.payload);
                     state.wallet.historyDeposit = action.payload.depositData;
                     state.wallet.historyPayment = action.payload.paymentData;
                 }
@@ -873,7 +872,6 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.get_deposit_status,
                 hander: (state, action) => {
-                    console.log(action.payload);
                     state.wallet.depositStatus = action.payload;
                 }
             },
