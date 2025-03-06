@@ -268,7 +268,7 @@ export const globalAsync = {
             return (
                 await Promise.all(
                     [...domains, ...domains_v3].map(
-                        async (dom: { domain: string; free: string }) => {
+                        async (dom: { domain: string; free: number }) => {
                             let signal: AbortSignal = undefined;
                             let timeout: any = undefined;
                             try {
