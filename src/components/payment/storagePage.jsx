@@ -9,6 +9,7 @@ export const StoragePage = () => {
 
     const calculateMoney = (planBasePrice) => {
         let result = planBasePrice;
+        return result;
 
         const planBasePricePerDay = planBasePrice / 30;
         //calculate by the end_at of subscription
@@ -82,7 +83,7 @@ export const StoragePage = () => {
                                 }}
                                 className="instbtn buyBtn"
                             >
-                                Đăng ký
+                                Nâng cấp
                             </button>
                         </div>
                     </div>
@@ -102,7 +103,7 @@ export const StoragePage = () => {
                                 }}
                                 className="instbtn buyBtn"
                             >
-                                Đăng ký
+                                Nâng cấp
                             </button>
                         </div>
                     </div>
@@ -122,7 +123,7 @@ export const StoragePage = () => {
                                 }}
                                 className="instbtn buyBtn"
                             >
-                                Đăng ký
+                                Nâng cấp
                             </button>
                         </div>
                     </div>
