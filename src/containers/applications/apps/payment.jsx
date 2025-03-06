@@ -229,6 +229,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     const status = useAppSelector((state) => state.user.subscription.status);
     const domains = useAppSelector((state) => state.globals.domains);
     const user = useAppSelector((state) => state.user);
+    const { ended_at } = useAppSelector((state) => state.user.subscription);
+
     const wallet = user.wallet;
     const currentSub = renderCurrentSub(user?.subscription?.policy?.limit_hour);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
@@ -243,10 +245,23 @@ const SubscriptionCard = ({ subInfo: sub }) => {
 
     const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
 
+    const listPlan = {
+        week1: true,
+        week2: true,
+        month1: true,
+        month2: true
+    };
     const isActivePlan = (plan) => {
         let check = wallet?.currentOrders.find((o) => o.plan_name == plan);
         return check;
     };
+
+    const isHavingPlan = (plan) => {
+        let check = wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
+        return check;
+    };
+
+    console.log(isHavingPlan());
 
     const onChooseSub = (plan_name) => {
         if (not_logged_in) {
@@ -262,6 +277,22 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         });
     };
 
+    const handleChangePlan = (plan_name) => {
+        if (isHavingPlan()?.id) {
+            appDispatch(
+                popup_open({
+                    type: 'pocketChangePlan',
+                    data: {
+                        plan_name,
+                        plan_price: sub.price_in_vnd,
+                        plan_title: sub.title,
+                        oldPlanId: isHavingPlan().id
+                    }
+                })
+            );
+            return;
+        }
+    };
     const handleCancelSub = (plan_name) => {
         appDispatch(
             popup_open({
@@ -400,7 +431,90 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             </>
                         ) : null}
                         <div className="flex gap-2">
-                            {isActivePlan(sub.name) ? (
+                            {
+                                //new user
+                                !ended_at ? (
+                                    <button
+                                        onClick={() => {
+                                            if (!sub.active) {
+                                                if (sub.name == 'week2') {
+                                                    return;
+                                                }
+                                                return window.open(
+                                                    externalLink.MESSAGE_LINK,
+                                                    '_blank'
+                                                );
+                                            }
+                                            onChooseSub(sub.name);
+                                        }}
+                                        type="button"
+                                        className={`buyButton
+                                flex-1 bg-[#0067c0] ${
+                                    !sub.active && sub.name == 'week2'
+                                        ? 'bg-red-500'
+                                        : ''
+                                }`}
+                                    >
+                                        {!sub.active
+                                            ? sub.name == 'week2'
+                                                ? 'Tạm đóng'
+                                                : 'Đặt trước'
+                                            : 'Đăng ký'}
+                                    </button>
+                                ) : (
+                                    <>
+                                        {isActivePlan(sub.name) ? (
+                                            <button
+                                                onClick={() =>
+                                                    handleCancelSub(sub.name)
+                                                }
+                                                className="buyButton bg-red-700 flex-1"
+                                            >
+                                                Huỷ gia hạn
+                                            </button>
+                                        ) : sub.active ? (
+                                            <button
+                                                onClick={() =>
+                                                    handleChangePlan(sub.name)
+                                                }
+                                                className="buyButton bg-green-700 flex-1"
+                                            >
+                                                Đổi gói
+                                            </button>
+                                        ) : null}
+
+                                        <button
+                                            onClick={() => {
+                                                if (!sub.active) {
+                                                    if (sub.name == 'week2') {
+                                                        return;
+                                                    }
+                                                    return window.open(
+                                                        externalLink.MESSAGE_LINK,
+                                                        '_blank'
+                                                    );
+                                                }
+                                                onChooseSub(sub.name);
+                                            }}
+                                            type="button"
+                                            className={`buyButton
+                                flex-1 bg-[#0067c0] ${
+                                    !sub.active && sub.name == 'week2'
+                                        ? 'bg-red-500'
+                                        : ''
+                                }`}
+                                        >
+                                            {!sub.active
+                                                ? sub.name == 'week2'
+                                                    ? 'Tạm đóng'
+                                                    : 'Đặt trước'
+                                                : 'Mua ngay'}
+                                        </button>
+                                    </>
+                                )
+                            }
+
+                            {/*{isActivePlan(sub.name) ? (
                                 <button
                                     onClick={() => handleCancelSub(sub.name)}
                                     className="buyButton bg-red-700 flex-1"
@@ -424,18 +538,17 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 }}
                                 type="button"
                                 className={`buyButton
-                                flex-1 bg-[#0067c0] ${
-                                    !sub.active && sub.name == 'week2'
+                                flex-1 bg-[#0067c0] ${!sub.active && sub.name == 'week2'
                                         ? 'bg-red-700'
                                         : ''
-                                }`}
+                                    }`}
                             >
                                 {!sub.active
                                     ? sub.name == 'week2'
                                         ? 'Tạm đóng'
                                         : 'Đặt trước'
                                     : 'Đăng ký'}
-                            </button>
+                            </button>*/}
                         </div>
                     </div>
                 </div>
@@ -475,69 +588,6 @@ const SubscriptionPage = () => {
             {listSubs.map((sub, index) => (
                 <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
             ))}
-        </div>
-    );
-};
-
-const SelectDropdown = () => {
-    const [selectedOption, setSelectedOption] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Sample options array
-    const options = [
-        { value: 'option1', label: 'Option 1' },
-        { value: 'option2', label: 'Option 2' },
-        { value: 'option3', label: 'Option 3' },
-        { value: 'option4', label: 'Option 4' }
-    ];
-
-    const handleSelect = (value, label) => {
-        setSelectedOption(label);
-        setIsOpen(false);
-    };
-
-    return (
-        <div className="relative inline-block w-64">
-            {/* Select button */}
-            <button
-                className="w-full flex items-center justify-between bg-white border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onClick={() => setIsOpen((old) => !old)}
-                type="button"
-            >
-                <span>{selectedOption || 'Select an option'}</span>
-                <svg
-                    className={`ml-2 h-5 w-5 transition-transform duration-200 ${
-                        isOpen ? 'transform rotate-180' : ''
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 9l-7 7-7-7"
-                    />
-                </svg>
-            </button>
-
-            {/* Dropdown menu */}
-            {isOpen && (
-                <div className="absolute z-10 mt-1 w-full bg-black shadow-lg rounded-md py-1 text-sm">
-                    {options.map((option) => (
-                        <div
-                            key={option.value}
-                            className="px-4 py-2 hover:bg-black-200 cursor-pointer"
-                            onClick={() =>
-                                handleSelect(option.value, option.label)
-                            }
-                        >
-                            {option.label}
-                        </div>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };
