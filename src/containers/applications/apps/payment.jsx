@@ -2,17 +2,22 @@ import { useState } from 'react';
 import {
     MdArrowDropDown,
     MdArrowForwardIos,
-    MdArrowRight
+    MdArrowRight,
+    MdCheck
 } from 'react-icons/md';
 import { UserEvents } from '../../../../src-tauri/api';
-import { login } from '../../../backend/actions';
+import { createPaymentPocket, login } from '../../../backend/actions';
 import {
+    app_metadata_change,
     appDispatch,
-    get_payment,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
+import DepositPage from '../../../components/payment/depositPage';
+import { TransactionHistoryPage } from '../../../components/payment/historyPage';
+import { RefundPage } from '../../../components/payment/refundPage';
+import { StoragePage } from '../../../components/payment/storagePage';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
@@ -26,23 +31,6 @@ const listSubs = [
         total_time: 50,
         total_days: 14,
         name: 'week1',
-        period: 'tuần',
-        bonus: [
-            'RTX 3060TI',
-            '16GB ram',
-            '150GB dung lượng riêng, Cloud-save',
-            'Không giới hạn thời gian mỗi session',
-            'Có hàng chờ'
-        ]
-    },
-    {
-        active: false,
-        highlight: false,
-        title: 'Gói 1 tuần',
-        price_in_vnd: 99000,
-        total_time: 25,
-        total_days: 7,
-        name: 'week2',
         period: 'tuần',
         bonus: [
             'RTX 3060TI',
@@ -70,6 +58,24 @@ const listSubs = [
         ],
         storage: ['50GB: 60k/tháng', '100GB: 110k/tháng']
     },
+    {
+        active: false,
+        highlight: false,
+        title: 'Gói 1 tuần',
+        price_in_vnd: 99000,
+        total_time: 25,
+        total_days: 7,
+        name: 'week2',
+        period: 'tuần',
+        bonus: [
+            'RTX 3060TI',
+            '16GB ram',
+            '150GB dung lượng riêng, Cloud-save',
+            'Không giới hạn thời gian mỗi session',
+            'Có hàng chờ'
+        ]
+    },
+
     {
         active: true,
         highlight: false,
@@ -107,10 +113,16 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-    const [page, setPage] = useState('sub'); //sub - refund - storage
 
+    const page = wnapp.page; //deposit-sub - refund - storage -history
+
+    //useEffect(() => {
+    //    setPage(wnapp.page);
+    //}, [wnapp.page]);
     const handleChangePage = (input) => {
-        setPage(input);
+        appDispatch(
+            app_metadata_change({ id: 'payment', key: 'page', value: input })
+        );
     };
     return (
         <div
@@ -131,38 +143,54 @@ export const PaymentApp = () => {
                 name="Payment"
             />
             <div className="windowScreen wrapperPayment">
-                <LazyComponent show={!wnapp.hide}>
-                    <div className="navPayment">
-                        <div
-                            className={
-                                page == 'storage' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('storage')}
-                        >
-                            Giá dung lượng
-                        </div>
-                        <div
-                            className={
-                                page == 'sub' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('sub')}
-                        >
-                            Bảng giá
-                        </div>
-                        <div
-                            className={
-                                page == 'refund' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('refund')}
-                        >
-                            Hoàn tiền
-                        </div>
+                <div className="navPayment">
+                    <div
+                        className={
+                            page == 'deposit' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('deposit')}
+                    >
+                        Nạp tiền
                     </div>
-                    <div className=" md:!justify-evenly px-0 paymentContent win11Scroll">
+                    <div
+                        className={
+                            page == 'storage' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('storage')}
+                    >
+                        Nâng cấp
+                    </div>
+                    <div
+                        className={page == 'sub' ? 'item subActive' : 'item'}
+                        onClick={() => handleChangePage('sub')}
+                    >
+                        Thuê CloudPC
+                    </div>
+                    <div
+                        className={
+                            page == 'history' ? 'item subActive' : 'item'
+                        }
+                        onClick={() => handleChangePage('history')}
+                    >
+                        Lịch sử
+                    </div>
+                    <div
+                        className={page == 'refund' ? 'item subActive' : 'item'}
+                        onClick={() => handleChangePage('refund')}
+                    >
+                        Hoàn tiền
+                    </div>
+                </div>
+                <LazyComponent show={!wnapp.hide}>
+                    <div className="paymentContent win11Scroll">
                         {page == 'sub' ? (
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
                             <RefundPage />
+                        ) : page == 'deposit' ? (
+                            <DepositPage />
+                        ) : page == 'history' ? (
+                            <TransactionHistoryPage />
                         ) : (
                             <StoragePage />
                         )}
@@ -173,9 +201,36 @@ export const PaymentApp = () => {
     );
 };
 
+const renderCurrentSub = (limit_hour) => {
+    let currentSub = '';
+
+    switch (limit_hour) {
+        case 120:
+            currentSub = 'month1';
+            break;
+        case 50:
+            currentSub = 'week1';
+            break;
+        case 25:
+            currentSub = 'week2';
+            break;
+        case 9999:
+            currentSub = 'month2';
+            break;
+
+        default:
+            break;
+    }
+
+    return currentSub;
+};
+
 const SubscriptionCard = ({ subInfo: sub }) => {
     const status = useAppSelector((state) => state.user.subscription.status);
     const domains = useAppSelector((state) => state.globals.domains);
+    const user = useAppSelector((state) => state.user);
+    const wallet = user.wallet;
+    const currentSub = renderCurrentSub(user?.subscription?.policy?.limit_hour);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const max = useAppSelector(
         (state) =>
@@ -186,36 +241,37 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             ) ?? -1
     );
 
-    const [domain, setDomain] = useState(null);
+    const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
+
+    const isActivePlan = (plan) => {
+        let check = wallet?.currentOrders.find((o) => o.plan_name == plan);
+        return check;
+    };
 
     const onChooseSub = (plan_name) => {
         if (not_logged_in) {
-            return login('google', false);
-        }
-        if (status === 'PAID') {
-            return appDispatch(get_payment({ plan_name }));
+            login('google', false);
+            return;
         }
 
-        if (status !== 'PENDING' && domains.length > 0 && domain === null) {
-            return appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        content: 'Please choose your server!',
-                        success: false
-                    }
-                })
-            );
-        }
+        createPaymentPocket({
+            plan_name: sub.name,
+            cluster_domain: domain,
+            plan_price: sub.price_in_vnd,
+            plan_title: sub.title
+        });
+    };
 
-        return appDispatch(
-            get_payment({
-                plan_name,
-                domain
+    const handleCancelSub = (plan_name) => {
+        appDispatch(
+            popup_open({
+                type: 'pocketCancelPlan',
+                data: {
+                    plan_name
+                }
             })
         );
     };
-
     const [isShowDetail, setShowDetail] = useState(sub.highlight);
     const clickDetail = () => {
         setShowDetail((old) => !old);
@@ -229,58 +285,41 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         <div className="sub ltShad relative">
             {sub.highlight ? (
                 <div className="banner">
-                    <p className="text-[16px] font-bold leading-4 text-center py-2 text-background">
-                        Phổ biến
-                    </p>
+                    <p className="content">Phổ biến</p>
                 </div>
             ) : null}
 
-            <div className="flex flex-col flex-1 overflow-hidden border h-full rounded-[4px]">
-                <div className="bg-surface-100 px-4 xl:px-4 2xl:px-8 pt-6 rounded-tr-[4px] rounded-tl-[4px] ">
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <p className=" uppercase flex items-center gap-4 font-mono">
-                                {sub.title}
-                            </p>
-                        </div>
+            <div className="wrapperMainContent">
+                <div className="wrapperTop">
+                    <div className="containerTitle">
+                        <p className="font-mono">{sub.title}</p>
                     </div>
 
                     <hr />
-                    <div className=" text-foreground flex items-center text-lg min-h-[116px]">
-                        <div className="flex flex-col gap-1">
-                            <div className="flex items-end gap-2">
-                                <div>
-                                    <div className="flex items-end">
-                                        {
-                                            <>
-                                                <h3 className="mt-2 gradient-text-500 text-3xl pb-1 uppercase font-mono text-brand-600">
-                                                    {sub.price_in_vnd / 1000}k
-                                                    VND
-                                                </h3>
-                                                {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
+                    <div className="containerPrice">
+                        <div className="flex items-end">
+                            {
+                                <>
+                                    <h3 className="gradient-text-500 text-lg lg:text-3xl pb-1 uppercase font-mono text-brand-600">
+                                        {sub.price_in_vnd / 1000}k VND
+                                    </h3>
+                                    {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                     / {sub.period}{' '}
                                                 </p>*/}
-                                            </>
-                                        }
-                                    </div>
-                                    <p className="-mt-2">
-                                        <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[13px] leading-4">
-                                            {sub.name == 'ramcpu20'
-                                                ? sub.title
-                                                : `Giới hạn ${sub.total_time}h sử dụng trong ${sub.total_days} ngày`}
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
+                                </>
+                            }
                         </div>
+                        <p className="-mt-2">
+                            <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[12px]  lg:text-[13px] lg:leading-4">
+                                Giới hạn {sub.total_time}h sử dụng trong{' '}
+                                {sub.total_days} ngày
+                            </span>
+                        </p>
                     </div>
                     <hr />
                 </div>
-                <div className="border-default bg-surface-100 flex h-full rounded-bl-[4px] rounded-br-[4px] flex-1 flex-col px-4 2xl:px-8 py-6 ">
-                    <div
-                        onClick={clickDetail}
-                        className="flex cursor-pointer items-center text-foreground-light text-[13px] mt-2 mb-2 hover:underline"
-                    >
+                <div className=" wrapperBottom">
+                    <div onClick={clickDetail} className="toggleDeteil">
                         {isShowDetail ? (
                             <MdArrowDropDown style={{ fontSize: '1.6rem' }} />
                         ) : (
@@ -289,40 +328,17 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         Chi tiết:
                     </div>
 
-                    {isShowDetail &&
-                        sub.bonus.map((x, i) => (
-                            <ul
-                                key={i}
-                                role="list"
-                                className="text-[13px] px-4 text-foreground-lighter"
-                            >
-                                <li className="flex items-center py-[8px] first:mt-0">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="18"
-                                        height="18"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="3"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="sbui-icon text-brand h-4 w-4"
-                                        aria-hidden="true"
-                                    >
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    <span className="text-foreground mb-0 ml-3 text-[0.8rem] ">
-                                        {x}
-                                    </span>
-                                </li>
-                            </ul>
-                        ))}
+                    <ul role="list" className="containerDetails">
+                        {isShowDetail &&
+                            sub.bonus.map((x, i) => (
+                                <li key={i} className="detail">
+                                    <MdCheck />
 
-                    <div className="flex flex-col gap-2 mt-auto prose">
-                        <div className="space-y-2">
-                            <p className="text-[13px] whitespace-pre-wrap"></p>
-                        </div>
+                                    <span className="">{x}</span>
+                                </li>
+                            ))}
+                    </ul>
+                    <div className="flex flex-col gap-2 mt-auto">
                         {sub.active && status == 'NO_ACTION' ? (
                             <>
                                 <div className="flex flex-col">
@@ -383,46 +399,44 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 </div>
                             </>
                         ) : null}
-                        <button
-                            onClick={() => {
-                                if (status == 'NO_ACTION' && !sub.active) {
-                                    if (sub.name == 'week1') return;
-                                    return window.open(
-                                        externalLink.MESSAGE_LINK,
-                                        '_blank'
-                                    );
-                                }
-                                onChooseSub(sub.name);
-                            }}
-                            type="button"
-                            className={`border-none h-[48px] relative cursor-pointer 
-                                                            space-x-2 text-center font-regular ease-out duration-200 rounded-[8px] 
-                                                            outline-none transition-all outline-0 focus-visible:outline-4 
-                                                            focus-visible:outline-offset-1 border bg-brand-button 
-                                                            hover:bg-brand-button/80 
-                                                            text-white border-brand 
-                                                            focus-visible:outline-brand-600 
-                                                            shadow-sm w-full flex items-center 
-                                                            justify-center text-[1.125rem] 
-                                                            leading-4 px-3 py-2
-                                                            mt-6
-                                                            ${
-                                                                !sub.active
-                                                                    ? sub.name ==
-                                                                      'week2'
-                                                                        ? 'bg-red-500'
-                                                                        : 'bg-[#0067c0]'
-                                                                    : 'bg-[#0067c0]'
-                                                            }  `}
-                        >
-                            {status == 'NO_ACTION' && !sub.active
-                                ? sub.name == 'week2'
-                                    ? 'Đang đóng'
-                                    : 'Đặt trước'
-                                : status != 'NO_ACTION'
-                                  ? 'Gia hạn'
-                                  : 'Mua Ngay'}
-                        </button>
+                        <div className="flex gap-2">
+                            {isActivePlan(sub.name) ? (
+                                <button
+                                    onClick={() => handleCancelSub(sub.name)}
+                                    className="buyButton bg-red-700 flex-1"
+                                >
+                                    Huỷ gia hạn
+                                </button>
+                            ) : null}
+
+                            <button
+                                onClick={() => {
+                                    if (!sub.active) {
+                                        if (sub.name == 'week2') {
+                                            return;
+                                        }
+                                        return window.open(
+                                            externalLink.MESSAGE_LINK,
+                                            '_blank'
+                                        );
+                                    }
+                                    onChooseSub(sub.name);
+                                }}
+                                type="button"
+                                className={`buyButton
+                                flex-1 bg-[#0067c0] ${
+                                    !sub.active && sub.name == 'week2'
+                                        ? 'bg-red-700'
+                                        : ''
+                                }`}
+                            >
+                                {!sub.active
+                                    ? sub.name == 'week2'
+                                        ? 'Tạm đóng'
+                                        : 'Đặt trước'
+                                    : 'Đăng ký'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -446,6 +460,7 @@ const GreenLight = () => {
 
 const SubscriptionPage = () => {
     const plans = useAppSelector((state) => state.user.plans);
+    const wallet = useAppSelector((state) => state.user.wallet);
 
     listSubs.forEach((e) => {
         const plan = plans.find((x) => x.name == e.name);
@@ -456,102 +471,73 @@ const SubscriptionPage = () => {
         e.total_days = plan.total_days;
     });
     return (
-        <>
+        <div className="subscriptionPage md:!justify-evenly px-0 ">
             {listSubs.map((sub, index) => (
                 <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
             ))}
-        </>
-    );
-};
-
-const RefundPage = () => {
-    return (
-        <div className="refundPage">
-            <div className="title">
-                <h2 className="title">Chính sách hoàn 80% tiền</h2>
-                <p className="md:max-w-[80% md:text-xs lg:max-w-[60%] lg:text-base">
-                    Do tính chất đặc thù của dịch vụ CloudPC là có độ trễ về
-                    đường truyền và mong muốn mọi người có trải nghiệm tốt nhất
-                    khi sử dụng, Thinkmay khuyến khích bạn liên hệ qua Fanpage
-                    để được hỗ trợ xử lý hoặc hoàn tiền nếu sau khi sử dụng, bạn
-                    cảm thấy không hài lòng vì bất kỳ lý do nào.
-                </p>
-            </div>
-
-            <div className="pl-2 lg:pl-20">
-                <h3>Điều kiện áp dụng</h3>
-
-                <div className="flex gap-16 mb-5">
-                    <div>
-                        <h4>Với gói tháng:</h4>
-                        <ul>
-                            <li>Thời gian: 5 ngày kể từ khi được cấp máy.</li>
-                            <li>Số giờ sử dụng: không quá 12h.</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4>Với gói tuần:</h4>
-                        <ul>
-                            <li>Thời gian: 2 ngày kể từ khi được cấp máy.</li>
-                            <li>Số giờ sử dụng: không quá 3h.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <h3 className="mt-8">Quy trình yêu cầu hoàn tiền:</h3>
-                <ul className="list-decimal">
-                    <li> Liên hệ qua Fanpage chính thức của Thinkmay.</li>
-                    <li>
-                        {' '}
-                        Cung cấp thông tin tài khoản, lý do yêu cầu hoàn tiền
-                    </li>
-                    <li> Yêu cầu sẽ được xử lý trong vòng 1 ngày làm việc.</li>
-                </ul>
-
-                <h3 className="mt-8">Lưu ý:</h3>
-                <ul className="list-decimal">
-                    <li>
-                        Chính sách không áp dụng cho các trường hợp vi phạm điều
-                        khoản sử dụng dịch vụ hoặc cố ý gây lỗi.
-                    </li>
-                    <li>
-                        Hãy trải nghiệm dịch vụ miễn phí trước khi đưa ra quyết
-                        định mua!
-                    </li>
-                </ul>
-            </div>
         </div>
     );
 };
 
-const StoragePage = () => {
-    return (
-        <div className="storagePage h-full pt-[5%] overflow-x-auto">
-            <h2 className="text-center mb-8 ">Bảng giá dung lượng</h2>
-            <div className="wrapperTableStorage">
-                <div className="rowContent" style={{ borderTop: 'unset' }}>
-                    <div className="columnContent">Dung lượng</div>
-                    <div className="columnContent">Mua lần đầu</div>
-                    <div className="columnContent">Gia hạn</div>
-                </div>
+const SelectDropdown = () => {
+    const [selectedOption, setSelectedOption] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
 
-                <div className="rowContent">
-                    <div className="columnContent">50GB</div>
-                    <div className="columnContent">60k/tháng</div>
-                    <div className="columnContent">40k/tháng</div>
+    // Sample options array
+    const options = [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+        { value: 'option3', label: 'Option 3' },
+        { value: 'option4', label: 'Option 4' }
+    ];
+
+    const handleSelect = (value, label) => {
+        setSelectedOption(label);
+        setIsOpen(false);
+    };
+
+    return (
+        <div className="relative inline-block w-64">
+            {/* Select button */}
+            <button
+                className="w-full flex items-center justify-between bg-white border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onClick={() => setIsOpen((old) => !old)}
+                type="button"
+            >
+                <span>{selectedOption || 'Select an option'}</span>
+                <svg
+                    className={`ml-2 h-5 w-5 transition-transform duration-200 ${
+                        isOpen ? 'transform rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                    />
+                </svg>
+            </button>
+
+            {/* Dropdown menu */}
+            {isOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-black shadow-lg rounded-md py-1 text-sm">
+                    {options.map((option) => (
+                        <div
+                            key={option.value}
+                            className="px-4 py-2 hover:bg-black-200 cursor-pointer"
+                            onClick={() =>
+                                handleSelect(option.value, option.label)
+                            }
+                        >
+                            {option.label}
+                        </div>
+                    ))}
                 </div>
-                <div className="rowContent">
-                    <div className="columnContent">100GB</div>
-                    <div className="columnContent">110k/tháng</div>
-                    <div className="columnContent">80k/tháng</div>
-                </div>
-                <div className="rowContent">
-                    <div className="columnContent">200GB</div>
-                    <div className="columnContent">190k/tháng</div>
-                    <div className="columnContent">150k/tháng</div>
-                </div>
-            </div>
+            )}
         </div>
     );
 };

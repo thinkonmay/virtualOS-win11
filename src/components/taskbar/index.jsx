@@ -12,6 +12,7 @@ import {
 
 import { afterMath } from '../../backend/actions';
 import {
+    app_full,
     appDispatch,
     startogg,
     task_hide,
@@ -25,6 +26,7 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
+import { numberFormat } from '../../backend/utils/format';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
 
@@ -36,6 +38,7 @@ const Taskbar = () => {
     const apps = useAppSelector((state) => state.apps);
     //const open = useAppSelector((state) => !state.sidepane.hide);
     const tutorialState = useAppSelector((state) => state.globals.tutorial);
+    const wallet = useAppSelector((state) => state.user.wallet);
     const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
@@ -158,6 +161,31 @@ const Taskbar = () => {
                     style={{ '--prefix': 'TASK' }}
                 >
                     <audio src={ringSound}></audio>
+                    <div className="containerWalletInfo">
+                        <div className="wrapperWallet">
+                            <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">
+                                <Icon
+                                    className="vndIcon"
+                                    src="vnd"
+                                    width={24}
+                                />
+                                {numberFormat(wallet.money)}
+                            </div>
+                            <button
+                                onClick={() => {
+                                    appDispatch(
+                                        app_full({
+                                            id: 'payment',
+                                            page: 'deposit'
+                                        })
+                                    );
+                                }}
+                                className="depositBtn"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
                     <div className="tasksCont" data-side={tasks.align}>
                         <div className="tsbar" onMouseOut={hidePrev}>
                             <div

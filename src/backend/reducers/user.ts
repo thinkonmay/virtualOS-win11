@@ -13,6 +13,7 @@ import {
 import { getDomain, GLOBAL, LOCAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
+import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
 type Usage = {
     node: string;
@@ -61,11 +62,36 @@ type Plan = {
     allow_payment: boolean;
 };
 
+interface Deposit {
+    amount: number;
+    created_at: string;
+    id: number;
+    plan_name: PlanName;
+}
+interface Order {
+    id: string;
+    pay_at: string;
+    plan_name: PlanName;
+}
+
+interface DepositStatus {
+    created_at: string;
+    amount: number;
+    status: string;
+}
+interface Wallet {
+    money: number;
+    historyDeposit: Deposit[];
+    historyPayment: Deposit[];
+    currentOrders?: Order[];
+    depositStatus?: DepositStatus[];
+}
 type Data = RecordModel & {
     subscription: PaymentStatus;
     volume_id: string;
     bucket_name?: string;
     plans: Plan[];
+    wallet: Wallet;
 };
 
 const isUUID = (uuid) =>
@@ -84,7 +110,15 @@ const initialState: Data = {
     subscription: {
         status: 'NO_ACTION'
     },
-    plans: []
+    plans: [],
+
+    wallet: {
+        historyPayment: [],
+        historyDeposit: [],
+        money: 0,
+        currentOrders: [],
+        depositStatus: []
+    }
 };
 
 export const userAsync = {
@@ -118,6 +152,60 @@ export const userAsync = {
                 : initialState;
         }
     ),
+
+    fetch_wallet: createAsyncThunk(
+        'fetch_wallet',
+        async (
+            _,
+            { getState }
+        ): Promise<{
+            amount;
+        }> => {
+            const { email } = (getState() as RootState).user;
+
+            const { error, data } = await GLOBAL().rpc('get_pocket_balance', {
+                email
+            });
+
+            const { amount } = data[0];
+            return {
+                amount
+            };
+        }
+    ),
+
+    fetch_payment_history: createAsyncThunk(
+        'fetch_payment_history',
+        async (
+            _,
+            { getState }
+        ): Promise<{
+            paymentData: Deposit[];
+            depositData: Deposit[];
+        }> => {
+            const { email } = (getState() as RootState).user;
+            const { error: depositErr, data: depositData } = await GLOBAL().rpc(
+                'get_deposit_history',
+                {
+                    email: email
+                }
+            );
+            const { error: paymentErr, data: paymentData } = await GLOBAL().rpc(
+                'get_payment_history',
+                {
+                    email: email
+                }
+            );
+
+            if (paymentErr) throw paymentErr;
+
+            return {
+                paymentData,
+                depositData
+            };
+        }
+    ),
+
     fetch_usage: createAsyncThunk(
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
@@ -432,6 +520,160 @@ export const userAsync = {
             } else throw new Error('Bạn đã đăng kí dịch vụ');
         }
     ),
+    create_payment_link: createAsyncThunk(
+        'create_payment_link',
+        async (input: any, { getState }) => {
+            const { email } = (getState() as RootState).user;
+            const { amount } = input;
+
+            const { data: create_payment_link, error: err } =
+                await GLOBAL().rpc('create_pocket_deposit', {
+                    email,
+                    amount: +amount,
+                    provider: 'PAYOS',
+                    currency: 'VND'
+                });
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (create_payment_link != null) {
+                return create_payment_link;
+            }
+        }
+    ),
+    get_deposit_status: createAsyncThunk(
+        'get_deposit_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_deposit_status, error: err } = await GLOBAL().rpc(
+                'get_deposit_status',
+                {
+                    email
+                }
+            );
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_deposit_status != null) {
+                return get_deposit_status;
+            }
+        }
+    ),
+    create_payment_pocket: createAsyncThunk(
+        'create_payment_pocket',
+        async (
+            input: {
+                plan_name: string;
+                cluster_domain?: string;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { plan_name, cluster_domain = 'play.thinkmay.net' } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'create_payment_pocket',
+                {
+                    email,
+                    plan_name,
+                    cluster_domain: cluster_domain
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when create_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
+    modify_payment_pocket: createAsyncThunk(
+        'modify_payment_pocket',
+        async (
+            input: {
+                id: string;
+                plan_name: PlanName;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { id, plan_name } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'modify_payment_pocket',
+                {
+                    id,
+                    plan_name
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when modify_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
+    cancel_payment_pocket: createAsyncThunk(
+        'cancel_payment_pocket',
+        async (
+            input: {
+                id: string;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { id } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'cancel_payment_pocket',
+                {
+                    id
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when cancel_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
+    get_payment_pocket: createAsyncThunk(
+        'get_payment_pocket',
+        async (_, { getState }): Promise<string> => {
+            const { email } = (getState() as RootState).user;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'get_payment_pocket',
+                {
+                    email
+                }
+            );
+
+            data;
+            if (err)
+                throw new Error(
+                    'Error when create_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
     change_size: createAsyncThunk(
         'change_size',
         async ({ size }: { size: string }, { getState }): Promise<void> => {
@@ -597,6 +839,19 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.fetch_wallet,
+                hander: (state, action) => {
+                    state.wallet.money = action.payload.amount;
+                }
+            },
+            {
+                fetch: userAsync.fetch_payment_history,
+                hander: (state, action) => {
+                    state.wallet.historyDeposit = action.payload.depositData;
+                    state.wallet.historyPayment = action.payload.paymentData;
+                }
+            },
+            {
                 fetch: userAsync.fetch_usage,
                 hander: (state, action) => {
                     if (state.subscription.status == 'PAID')
@@ -616,11 +871,39 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.get_deposit_status,
+                hander: (state, action) => {
+                    state.wallet.depositStatus = action.payload;
+                }
+            },
+            {
                 fetch: userAsync.get_payment,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
                 }
             },
+            {
+                fetch: userAsync.create_payment_link,
+                hander: (state, action) => {
+                    window.open(action.payload, '_self');
+                }
+            },
+            {
+                fetch: userAsync.create_payment_pocket,
+                hander: (state, action) => {
+                    if (action.payload) {
+                        location.reload();
+                    }
+                    //reload
+                }
+            },
+            {
+                fetch: userAsync.get_payment_pocket,
+                hander: (state, action) => {
+                    state.wallet.currentOrders = action.payload;
+                }
+            },
+
             {
                 fetch: userAsync.change_template,
                 hander: (state, action) => {}

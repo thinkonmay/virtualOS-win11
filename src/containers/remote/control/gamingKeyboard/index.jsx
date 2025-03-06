@@ -65,7 +65,7 @@ function GamingKeyboard() {
         });
     };
 
-    const handleDrag = (e, data) => { };
+    const handleDrag = (e, data) => {};
 
     const handleStop = (e, data) => {
         const id = data.node.id;
@@ -76,7 +76,6 @@ function GamingKeyboard() {
             y: positionDrag.y / deviceResolution.deviceHeight
         };
 
-        console.log(positionDrag, 'stop');
         appDispatch(
             move_key_gamingKeyboard({
                 id,
@@ -234,8 +233,9 @@ const NavSettings = () => {
 
     return (
         <div
-            className={`${true ? 'slide-in' : 'slide-out'
-                } navGamingKeyBoardSetting`}
+            className={`${
+                true ? 'slide-in' : 'slide-out'
+            } navGamingKeyBoardSetting`}
         >
             {/*<div className="wrapperLeft">
 				<div className="ctnContent items-center">
