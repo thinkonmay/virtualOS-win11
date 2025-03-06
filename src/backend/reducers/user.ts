@@ -675,9 +675,10 @@ export const userAsync = {
                     'Error when cancel_payment_pocket' + err.message
                 );
 
-            if (data != null) {
-                return data;
+            if (!data) {
+                throw new Error('Can not cancel sub' + err.message);
             }
+            return id;
         }
     ),
     get_payment_pocket: createAsyncThunk(
@@ -926,7 +927,10 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.modify_payment_pocket,
                 hander: (state, action) => {
-                    location.reload();
+                    //location.reload();
+                    if (action.payload) {
+                        //location.reload();
+                    }
                 }
             },
             {
@@ -936,6 +940,18 @@ export const userSlice = createSlice({
                         location.reload();
                     }
                     //reload
+                }
+            },
+            {
+                fetch: userAsync.cancel_payment_pocket,
+                hander: (state, action) => {
+                    if (action.payload) {
+                        // delete Id\
+                        const cloneData = [...state.wallet.currentOrders];
+                        state.wallet.currentOrders = cloneData.filter(
+                            (i) => i.id != action.payload
+                        );
+                    }
                 }
             },
             {

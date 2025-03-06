@@ -261,8 +261,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         return check;
     };
 
-    console.log(isHavingPlan());
-
     const onChooseSub = (plan_name) => {
         if (not_logged_in) {
             login('google', false);
@@ -278,6 +276,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     };
 
     const handleChangePlan = (plan_name) => {
+        console.log(plan_name);
         if (isHavingPlan()?.id) {
             appDispatch(
                 popup_open({
@@ -292,6 +291,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             );
             return;
         }
+
+        createPaymentPocket({
+            plan_name: sub.name,
+            cluster_domain: domain,
+            plan_price: sub.price_in_vnd,
+            plan_title: sub.title
+        });
     };
     const handleCancelSub = (plan_name) => {
         appDispatch(
