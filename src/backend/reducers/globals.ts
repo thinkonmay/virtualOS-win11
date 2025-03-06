@@ -260,9 +260,14 @@ export const globalAsync = {
             );
             if (error) throw error;
 
+            const { data: domains_v3, error: err } = await GLOBAL().rpc(
+                'get_domains_availability_v3'
+            );
+            if (err) throw err;
+
             return (
                 await Promise.all(
-                    domains.map(
+                    [...domains, ...domains_v3].map(
                         async (dom: { domain: string; free: string }) => {
                             let signal: AbortSignal = undefined;
                             let timeout: any = undefined;
