@@ -7,6 +7,7 @@ import {
     increase_key_gamingKeyboard,
     move_key_gamingKeyboard,
     save_gamingKeyboard_to_local,
+    scancode,
     set_default_gamingKeyboard,
     set_gamingKeyboard_data,
     set_keyboard_edit_state,
@@ -75,7 +76,6 @@ function GamingKeyboard() {
             y: positionDrag.y / deviceResolution.deviceHeight
         };
 
-        console.log(positionDrag, 'stop');
         appDispatch(
             move_key_gamingKeyboard({
                 id,
@@ -297,6 +297,7 @@ const NavDraggable = () => {
     const handleFinish = () => {
         appDispatch(set_keyboard_edit_state('idle'));
         appDispatch(save_gamingKeyboard_to_local());
+        appDispatch(scancode(true));
     };
 
     return (

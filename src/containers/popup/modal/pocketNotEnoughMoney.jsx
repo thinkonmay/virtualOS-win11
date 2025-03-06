@@ -44,7 +44,7 @@ export function pocketNotEnoughMoney({ data: { plan_name, plan_price } }) {
                     onClick={handleContinue}
                     className="cursor-pointer justify-center  text-base font-medium instbtn h-[40px] rounded-md"
                 >
-                    Tôi biết
+                    Nạp ngay
                 </button>
             </div>
         </div>

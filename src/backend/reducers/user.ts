@@ -29,29 +29,29 @@ type Usage = {
 
 export type PaymentStatus =
     | {
-        status: 'PAID';
-        cluster: string;
-        correct_domain: boolean;
-        created_at: string;
-        ended_at?: string;
-        policy?: {
-            size: string;
-            limit_hour: number;
-            total_days: number;
-        };
-        local_metadata: {
-            ram?: string;
-            vcpu?: string;
-        };
+          status: 'PAID';
+          cluster: string;
+          correct_domain: boolean;
+          created_at: string;
+          ended_at?: string;
+          policy?: {
+              size: string;
+              limit_hour: number;
+              total_days: number;
+          };
+          local_metadata: {
+              ram?: string;
+              vcpu?: string;
+          };
 
-        usage?: Usage;
-    }
+          usage?: Usage;
+      }
     | {
-        status: 'NO_ACTION';
-    }
+          status: 'NO_ACTION';
+      }
     | {
-        status: 'PENDING';
-    };
+          status: 'PENDING';
+      };
 
 type Plan = {
     name: string;
@@ -74,11 +74,25 @@ interface Order {
     plan_name: PlanName;
 }
 
+interface DepositStatus {
+    created_at: string;
+    amount: number;
+    status: string;
+}
+
+interface PlanStatus {
+    created_at: string;
+    amount: number;
+    plan_name: string;
+}
+
 interface Wallet {
     money: number;
     historyDeposit: Deposit[];
     historyPayment: Deposit[];
     currentOrders?: Order[];
+    depositStatus?: DepositStatus[];
+    planStatus?: PlanStatus[];
 }
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -88,8 +102,6 @@ type Data = RecordModel & {
     wallet: Wallet;
 };
 
-const notexpired = () =>
-    `ended_at.gt.${new Date().toISOString()},ended_at.is.${null}`;
 const isUUID = (uuid) =>
     uuid.match(
         '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
@@ -111,7 +123,10 @@ const initialState: Data = {
     wallet: {
         historyPayment: [],
         historyDeposit: [],
-        money: 0
+        money: 0,
+        currentOrders: [],
+        depositStatus: [],
+        planStatus: []
     }
 };
 
@@ -137,10 +152,10 @@ export const userAsync = {
                 ? vol != undefined
                     ? bucket != undefined
                         ? {
-                            ...result,
-                            volume_id: vol.local_id,
-                            bucket_name: bucket.bucket_name
-                        }
+                              ...result,
+                              volume_id: vol.local_id,
+                              bucket_name: bucket.bucket_name
+                          }
                         : { ...result, volume_id: vol.local_id }
                     : { ...result, volume_id: '' }
                 : initialState;
@@ -161,7 +176,6 @@ export const userAsync = {
                 email
             });
 
-            console.log(data.at(0), '=============');
             const { amount } = data[0];
             return {
                 amount
@@ -262,22 +276,22 @@ export const userAsync = {
                 template =
                     screenshots == null
                         ? {
-                            image: null,
-                            code: tpl,
-                            name
-                        }
+                              image: null,
+                              code: tpl,
+                              name
+                          }
                         : {
-                            image:
-                                screenshots[
-                                    Math.round(
-                                        Math.random() *
-                                        ((screenshots as any[]).length -
-                                            1)
-                                    )
-                                ]?.path_full ?? null,
-                            code: tpl,
-                            name
-                        };
+                              image:
+                                  screenshots[
+                                      Math.round(
+                                          Math.random() *
+                                              ((screenshots as any[]).length -
+                                                  1)
+                                      )
+                                  ]?.path_full ?? null,
+                              code: tpl,
+                              name
+                          };
             } else {
                 template = {
                     image: null,
@@ -334,7 +348,7 @@ export const userAsync = {
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,cluster,local_metadata,ended_at')
-                .or(notexpired())
+                .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
@@ -424,15 +438,12 @@ export const userAsync = {
                 throw new Error('gói dịch vụ hiện đang tạm đóng');
             const { id: plan } = _plans;
 
-            const expire_at = new Date(
-                new Date().getTime() + 1000 * 60 * 10 * 1
-            ).toISOString();
             const { email, volume_id } = (getState() as RootState).user;
 
             const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,local_metadata->>volume_id')
-                .or(notexpired())
+                .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
@@ -540,6 +551,44 @@ export const userAsync = {
             }
         }
     ),
+    get_deposit_status: createAsyncThunk(
+        'get_deposit_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_deposit_status, error: err } = await GLOBAL().rpc(
+                'get_deposit_status',
+                {
+                    email
+                }
+            );
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_deposit_status != null) {
+                return get_deposit_status;
+            }
+        }
+    ),
+    get_payment_pocket_status: createAsyncThunk(
+        'get_payment_pocket_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_payment_pocket_status, error: err } =
+                await GLOBAL().rpc('get_payment_pocket_status', {
+                    email
+                });
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_payment_pocket_status != null) {
+                return get_payment_pocket_status;
+            }
+        }
+    ),
     create_payment_pocket: createAsyncThunk(
         'create_payment_pocket',
         async (
@@ -577,17 +626,19 @@ export const userAsync = {
             input: {
                 id: string;
                 plan_name: PlanName;
+                renew?: boolean;
             },
             { getState }
         ) => {
             const { email } = (getState() as RootState).user;
-            const { id, plan_name } = input;
+            const { id, plan_name, renew = false } = input;
 
             const { data, error: err } = await GLOBAL().rpc(
                 'modify_payment_pocket',
                 {
                     id,
-                    plan_name
+                    plan_name,
+                    renew
                 }
             );
 
@@ -641,7 +692,7 @@ export const userAsync = {
                 }
             );
 
-            console.log(data);
+            data;
             if (err)
                 throw new Error(
                     'Error when create_payment_pocket' + err.message
@@ -692,10 +743,11 @@ export const userAsync = {
                                 loading: true,
                                 timeProcessing: 2,
                                 tips: false,
-                                title: `Đang cài đặt game ${data[0].base
-                                    } vào lúc ${new Date(
-                                        data[0].created_at
-                                    ).toLocaleTimeString()}`,
+                                title: `Đang cài đặt game ${
+                                    data[0].base
+                                } vào lúc ${new Date(
+                                    data[0].created_at
+                                ).toLocaleTimeString()}`,
                                 text: 'Nếu cài đặt lâu hơn 20 phút. Vui lòng liên hệ Admin ở hỗ trợ ngay!'
                             }
                         })
@@ -824,7 +876,6 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.fetch_payment_history,
                 hander: (state, action) => {
-                    console.log(action.payload);
                     state.wallet.historyDeposit = action.payload.depositData;
                     state.wallet.historyPayment = action.payload.paymentData;
                 }
@@ -849,6 +900,18 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.get_deposit_status,
+                hander: (state, action) => {
+                    state.wallet.depositStatus = action.payload;
+                }
+            },
+            {
+                fetch: userAsync.get_payment_pocket_status,
+                hander: (state, action) => {
+                    state.wallet.planStatus = action.payload;
+                }
+            },
+            {
                 fetch: userAsync.get_payment,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
@@ -858,6 +921,12 @@ export const userSlice = createSlice({
                 fetch: userAsync.create_payment_link,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
+                }
+            },
+            {
+                fetch: userAsync.modify_payment_pocket,
+                hander: (state, action) => {
+                    location.reload();
                 }
             },
             {
@@ -878,7 +947,7 @@ export const userSlice = createSlice({
 
             {
                 fetch: userAsync.change_template,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }

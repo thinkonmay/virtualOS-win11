@@ -370,7 +370,7 @@
 		}
 
 		.depositBox {
-			margin-top: 32px;
+			margin-top: 22px;
 
 			.wrapperDeposit {
 				display: flex;
@@ -391,6 +391,7 @@
 					padding-right: 24px;
 					font-weight: bold;
 					font-size: 18px;
+					border-radius: 6px;
 				}
 			}
 		}
@@ -415,17 +416,17 @@
 		}
 
 		.noticesBox {
-			margin-top: 12px;
+			margin-top: 16px;
 
 			.title {
-				font-size: 14px;
+				font-size: 18px;
 				font-weight: 600;
 				margin-bottom: 4px;
 
 			}
 
 			ul {
-				font-size: 14px;
+				font-size: 16px;
 				padding-left: 18px;
 			}
 		}

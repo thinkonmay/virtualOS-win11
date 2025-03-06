@@ -319,7 +319,6 @@ export const sidepaneSlice = createSlice({
             state.statusConnection = true;
         },
         set_status_connection: (state, action) => {
-            console.log(action.payload);
             state.statusConnection = action.payload;
         }
     }
