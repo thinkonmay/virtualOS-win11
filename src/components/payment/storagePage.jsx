@@ -31,11 +31,8 @@ export const StoragePage = () => {
     };
 
     const handleBuyUpgrage = (plan_name, price, title) => {
-        window.open(
-            externalLink.MESSAGE_LINK,
-            '_blank'
-        );
-        return
+        window.open(externalLink.MESSAGE_LINK, '_blank');
+        return;
         let actuallyTitle = title ?? plan_name;
         createPaymentPocket({
             plan_name,
