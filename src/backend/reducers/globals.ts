@@ -295,6 +295,9 @@ export const globalAsync = {
                             } catch {}
 
                             try {
+                                // TODO: HARDCODE play2
+                                if (dom.domain == 'play.2.thinkmay.net')
+                                    return dom;
                                 const { ok } = await fetch(
                                     `https://${dom.domain}`,
                                     { signal }
