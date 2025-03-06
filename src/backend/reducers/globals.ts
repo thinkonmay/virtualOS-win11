@@ -265,39 +265,7 @@ export const globalAsync = {
             );
             if (err) throw err;
 
-            return (
-                await Promise.all(
-                    [...domains, ...domains_v3].map(
-                        async (dom: { domain: string; free: number }) => {
-                            let signal: AbortSignal = undefined;
-                            let timeout: any = undefined;
-                            try {
-                                const controller = new AbortController();
-                                timeout = setTimeout(controller.abort, 2000);
-                                signal = controller.signal;
-                            } catch {}
-
-                            try {
-                                const { ok } = await fetch(
-                                    `https://${dom.domain}`,
-                                    { signal }
-                                );
-                                if (!ok) throw new Error('not ok');
-                            } catch (err) {
-                                UserEvents({
-                                    type: 'domain/test_fail',
-                                    payload: { ...dom, error: err }
-                                });
-                                return null;
-                            }
-
-                            if (timeout != undefined) clearTimeout(timeout);
-
-                            return dom;
-                        }
-                    )
-                )
-            ).filter((dom) => dom != null);
+            return [...domains, ...domains_v3]
         }
     ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
