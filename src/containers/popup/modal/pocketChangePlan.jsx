@@ -1,17 +1,20 @@
 import { MdOutlineChangeCircle } from 'react-icons/md';
 import {
     appDispatch,
+    modify_payment_pocket,
     popup_close,
     useAppSelector
 } from '../../../backend/reducers';
+import { numberFormat } from '../../../backend/utils/format';
 
 export function pocketChangePlan({
-    data: { plan_name, cluster_domain = 'play.thinkmay.net' }
+    data: { plan_name, plan_price, plan_title, oldPlanId }
 }) {
     const t = useAppSelector((state) => state.globals.translation);
 
     const handleContinue = () => {
         appDispatch(popup_close());
+        appDispatch(modify_payment_pocket({ plan_name, id: oldPlanId }));
     };
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
@@ -21,11 +24,12 @@ export function pocketChangePlan({
             </div>
             <div>
                 <p className="mt-[8px] text-lg text-center">
-                    Sau khi đăng ký gói M2, gói M1 hiện tại vẫn còn hiệu lực tới
-                    11:59:59, 26/02/2025.{' '}
+                    Sau khi đăng ký {plan_title}, gói hiện tại vẫn còn hiệu lực
+                    tới khi hết hạn.
                 </p>
                 <p className="mt-[8px] text-lg text-center">
-                    Sau đó Gói M2 sẽ bắt đầu hiệu lực, với giá 1,699K/ tháng.{' '}
+                    Sau đó {plan_title} sẽ bắt đầu hiệu lực, với giá{' '}
+                    {numberFormat(plan_price)} vnđ.{' '}
                 </p>
             </div>
             <div className="flex gap-3 justify-end mt-3 mb-2">

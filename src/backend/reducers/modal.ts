@@ -102,6 +102,8 @@ type PopupData =
           data: {
               plan_name: string;
               plan_price: number;
+              plan_title: string;
+              oldPlanId: string;
           };
       };
 
