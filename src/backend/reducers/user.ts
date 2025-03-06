@@ -79,12 +79,20 @@ interface DepositStatus {
     amount: number;
     status: string;
 }
+
+interface PlanStatus {
+    created_at: string;
+    amount: number;
+    plan_name: string;
+}
+
 interface Wallet {
     money: number;
     historyDeposit: Deposit[];
     historyPayment: Deposit[];
     currentOrders?: Order[];
     depositStatus?: DepositStatus[];
+    planStatus?: PlanStatus[];
 }
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -117,7 +125,8 @@ const initialState: Data = {
         historyDeposit: [],
         money: 0,
         currentOrders: [],
-        depositStatus: []
+        depositStatus: [],
+        planStatus: []
     }
 };
 
@@ -562,6 +571,24 @@ export const userAsync = {
             }
         }
     ),
+    get_payment_pocket_status: createAsyncThunk(
+        'get_payment_pocket_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_payment_pocket_status, error: err } =
+                await GLOBAL().rpc('get_payment_pocket_status', {
+                    email
+                });
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_payment_pocket_status != null) {
+                return get_payment_pocket_status;
+            }
+        }
+    ),
     create_payment_pocket: createAsyncThunk(
         'create_payment_pocket',
         async (
@@ -599,17 +626,19 @@ export const userAsync = {
             input: {
                 id: string;
                 plan_name: PlanName;
+                renew?: boolean;
             },
             { getState }
         ) => {
             const { email } = (getState() as RootState).user;
-            const { id, plan_name } = input;
+            const { id, plan_name, renew = false } = input;
 
             const { data, error: err } = await GLOBAL().rpc(
                 'modify_payment_pocket',
                 {
                     id,
-                    plan_name
+                    plan_name,
+                    renew
                 }
             );
 
@@ -877,6 +906,12 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.get_payment_pocket_status,
+                hander: (state, action) => {
+                    state.wallet.planStatus = action.payload;
+                }
+            },
+            {
                 fetch: userAsync.get_payment,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
@@ -886,6 +921,12 @@ export const userSlice = createSlice({
                 fetch: userAsync.create_payment_link,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
+                }
+            },
+            {
+                fetch: userAsync.modify_payment_pocket,
+                hander: (state, action) => {
+                    location.reload();
                 }
             },
             {
