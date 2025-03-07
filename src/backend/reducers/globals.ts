@@ -265,7 +265,7 @@ export const globalAsync = {
             );
             if (err) throw err;
 
-            return [...domains, ...domains_v3]
+            return [...domains, ...domains_v3];
         }
     ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
