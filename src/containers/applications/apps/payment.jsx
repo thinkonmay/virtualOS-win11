@@ -94,7 +94,7 @@ const listSubs = [
         ]
     },
     {
-        active: true,
+        active: false,
         highlight: false,
         title: 'Nâng 20gb ram và 20gb vcpu',
         price_in_vnd: 50000,
@@ -109,6 +109,11 @@ const listSubs = [
         ]
     }
 ];
+
+const listDisableShows = {
+    week2: true,
+    ramcpu20: true
+};
 export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
@@ -583,17 +588,30 @@ const SubscriptionPage = () => {
 
     listSubs.forEach((e) => {
         const plan = plans.find((x) => x.name == e.name);
+        console.log(plan);
         if (plan == null || undefined) return;
         e.active = plan.allow_payment;
         e.price_in_vnd = plan.amount;
         e.total_time = plan.limit_hour;
         e.total_days = plan.total_days;
     });
+
+    const listSubfiler = listSubs.map((sub) => {
+        if (!sub.active && listDisableShows[sub.name]) return;
+        return sub;
+    });
+    console.log(listSubs);
     return (
         <div className="subscriptionPage md:!justify-evenly px-0 ">
-            {listSubs.map((sub, index) => (
-                <SubscriptionCard key={index} subInfo={sub}></SubscriptionCard>
-            ))}
+            {listSubfiler.map(
+                (sub, index) =>
+                    sub && (
+                        <SubscriptionCard
+                            key={index}
+                            subInfo={sub}
+                        ></SubscriptionCard>
+                    )
+            )}
         </div>
     );
 };
