@@ -17,7 +17,6 @@ import './index.scss';
 function UserInfo() {
     const {
         email,
-        volume_id,
         subscription: { status, cluster, created_at, ended_at, usage, policy }
     } = useAppSelector((state) => state.user);
     const { node, total_usage } = usage ?? {};
@@ -27,18 +26,6 @@ function UserInfo() {
     if (endedAtFormat.isBefore(oldPaidUser, 'day') && limit_hour == 120) {
         limit_hour = 150;
     }
-
-    const copyClipboard = () => {
-        navigator.clipboard.writeText(volume_id);
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: true
-                }
-            })
-        );
-    };
 
     const thm = useAppSelector((state) => state.setting.person.theme);
     var icon = thm == 'light' ? 'sun' : 'moon';
@@ -134,16 +121,6 @@ function UserInfo() {
                         <DomainSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between mt-[1rem]">
-                        <div className="w-full flex gap-4 justify-between">
-                            <span>Volume ID</span>
-                            <div
-                                className="strBtn handcr prtclk"
-                                onClick={copyClipboard}
-                            >
-                                <MdOutlineLink width={14} />
-                            </div>
-                        </div>
-
                         <div className="w-full flex gap-4 justify-between">
                             <span>Theme</span>
                             <div

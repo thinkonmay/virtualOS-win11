@@ -30,11 +30,6 @@ export type PaymentStatus =
               limit_hour: number;
               total_days: number;
           };
-          local_metadata: {
-              ram?: string;
-              vcpu?: string;
-          };
-
           usage?: Usage;
       }
     | {
@@ -87,7 +82,6 @@ interface Wallet {
 }
 type Data = RecordModel & {
     subscription: PaymentStatus;
-    volume_id: string;
     bucket_name?: string;
     plans: Plan[];
     wallet: Wallet;
@@ -106,7 +100,6 @@ const initialState: Data = {
 
     id: 'unknown',
     email: '',
-    volume_id: '',
     created: '',
     updated: '',
     subscription: {
@@ -127,23 +120,12 @@ const initialState: Data = {
 export const userAsync = {
     fetch_user: createAsyncThunk(
         'fetch_user',
-        async (): Promise<
-            RecordModel & {
-                volume_id: string;
-            }
-        > => {
+        async (): Promise<RecordModel> => {
             const {
                 items: [result]
             } = await POCKETBASE.collection('users').getList(1);
-            const [vol] = await POCKETBASE.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
 
-            return result != undefined
-                ? vol != undefined
-                    ? { ...result, volume_id: vol.local_id }
-                    : { ...result, volume_id: '' }
-                : initialState;
+            return result != undefined ? { ...result } : initialState;
         }
     ),
 
@@ -204,19 +186,14 @@ export const userAsync = {
         'fetch_usage',
         async (_, { getState }): Promise<Usage | null> => {
             const {
-                user: { volume_id, subscription, email },
+                user: { subscription, email },
                 worker: { data, currentAddress }
             } = getState() as RootState;
-            if (!isUUID(volume_id)) return null;
-            else if (subscription.status != 'PAID') return;
-            const {
-                ended_at,
-                policy,
-                local_metadata: {}
-            } = subscription;
+            if (subscription.status != 'PAID') return;
+            const { ended_at, policy } = subscription;
             let { limit_hour } = policy ?? { limit_hour: Infinity };
             const node = data[currentAddress]?.Volumes?.find(
-                (x) => x.name == volume_id
+                (x) => x.pool == 'user_data'
             )?.node;
 
             // Adjust sub after 30-12
@@ -332,7 +309,7 @@ export const userAsync = {
 
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
-                .select('id,cluster,local_metadata,ended_at')
+                .select('id,cluster,ended_at')
                 .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
@@ -355,7 +332,6 @@ export const userAsync = {
                     return {
                         status: 'PAID',
                         cluster: sub_verify_data.domain,
-                        local_metadata: sub_verify_data.local_metadata,
                         policy: sub_verify_data.policy,
                         created_at: sub_verify_data.created_at,
                         ended_at: sub_verify_data.ended_at
@@ -414,12 +390,12 @@ export const userAsync = {
                 throw new Error('gói dịch vụ hiện đang tạm đóng');
             const { id: plan } = _plans;
 
-            const { email, volume_id } = (getState() as RootState).user;
+            const email = (getState() as RootState).user?.email;
             const currentAddr = (getState() as RootState).worker.currentAddress;
 
             const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
-                .select('id,local_metadata->>volume_id')
+                .select('id')
                 .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
@@ -684,10 +660,11 @@ export const userAsync = {
     change_size: createAsyncThunk(
         'change_size',
         async ({ size }: { size: string }, { getState }): Promise<void> => {
-            const { volume_id, subscription } = (getState() as RootState).user;
-            if (isUUID(volume_id) && subscription.status == 'PAID') {
-                // TODO implement installation job inside pocketbase
-            } else throw new Error('no volume available');
+            const [vol] = await POCKETBASE.collection('volumes').getFullList<{
+                local_id: string;
+            }>();
+
+            // TODO implement installation job inside pocketbase
         }
     ),
     change_template: createAsyncThunk(
@@ -697,11 +674,10 @@ export const userAsync = {
             { getState }
         ): Promise<void> => {
             const {
-                user: { volume_id },
                 worker: { currentAddress, data }
             } = getState() as RootState;
             const vol = data[currentAddress]?.Volumes?.find(
-                (x) => x.name == volume_id
+                (x) => x.pool == 'user_data'
             );
 
             if (vol == undefined) throw new Error('volume is not available');
@@ -713,7 +689,7 @@ export const userAsync = {
                 const resp = await ChangeTemplate(
                     currentAddress,
                     template,
-                    volume_id
+                    vol.name
                 );
                 if (resp instanceof Error) throw resp;
             }
@@ -725,10 +701,7 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        user_update: (
-            state,
-            action: PayloadAction<RecordModel & { volume_id: string }>
-        ) => {
+        user_update: (state, action: PayloadAction<RecordModel>) => {
             state.id = action.payload.id;
             state.collectionId = action.payload.collectionId;
             state.collectionName = action.payload.collectionName;
@@ -736,7 +709,6 @@ export const userSlice = createSlice({
             state.updated = action.payload.updated;
             state.email = action.payload.email;
             state.expand = action.payload.expand;
-            state.volume_id = action.payload.volume_id;
         },
         user_check_sub: (state, action) => {
             state.isExpired = action.payload.isExpired;
@@ -757,7 +729,6 @@ export const userSlice = createSlice({
                 hander: (state, action) => {
                     state.id = action.payload.id;
                     state.collectionId = action.payload.collectionId;
-                    state.volume_id = action.payload.volume_id;
                     state.bucket_name = action.payload.bucket_name;
                     state.collectionName = action.payload.collectionName;
                     state.created = action.payload.created;

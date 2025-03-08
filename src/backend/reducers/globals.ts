@@ -269,10 +269,9 @@ export const globalAsync = {
         }
     ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
-        const volume_id = store.getState().user.volume_id;
         const { data: tree, currentAddress } = store.getState().worker;
         const node = tree[currentAddress]?.Volumes?.find(
-            (x) => x.name == volume_id
+            (x) => x.pool == 'user_data'
         ).node;
         const samenodes = tree[currentAddress]?.Volumes?.filter(
             (x) => x.node == node

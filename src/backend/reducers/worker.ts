@@ -90,7 +90,7 @@ export const workerAsync = {
             if (session == undefined) {
                 if (
                     info?.Volumes?.filter(
-                        (x) => x.pool == 'user_data' && isUUID(x.name)
+                        (x) => x.pool == 'user_data' 
                     ).length == 0
                 )
                     throw new Error(`you don't have any volume available`);

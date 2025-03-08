@@ -75,12 +75,11 @@ const DetailPage = ({ app }) => {
     const subscribed = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'
     );
-    const volume_id = useAppSelector((state) => state.user.volume_id);
     const { currentAddress, data } = useAppSelector((state) => state.worker);
 
-    const inuse = data[currentAddress]?.Volumes?.find(
-        (x) => x.name == volume_id
-    )?.inuse;
+    const volume = data[currentAddress]?.Volumes?.find(
+        (x) => x.pool == 'user_data'
+    );
 
     const t = useAppSelector((state) => state.globals.translation);
     const {
@@ -125,8 +124,8 @@ const DetailPage = ({ app }) => {
                     <div className="text-sm font-thin ">Release {date}</div>
 
                     {subscribed ? (
-                        volume_id != '' ? (
-                            inuse ? (
+                        volume != undefined ? (
+                            volume.inuse ? (
                                 <button className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]">
                                     volume is in use
                                 </button>
