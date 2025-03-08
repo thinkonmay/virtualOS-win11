@@ -121,7 +121,8 @@ function UserInfo() {
                         <DomainSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between mt-[1rem]">
-                        <div className="w-full flex gap-4 justify-between">
+                        {/* TODO */}
+                        {/* <div className="w-full flex gap-4 justify-between">
                             <span>Theme</span>
                             <div
                                 className="strBtn handcr prtclk"
@@ -134,7 +135,7 @@ function UserInfo() {
                                     width={14}
                                 />
                             </div>
-                        </div>
+                        </div> */}
                         {renderPlanName[status]}
                     </div>
                 </div>
