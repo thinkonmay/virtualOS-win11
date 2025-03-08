@@ -14,6 +14,7 @@ function DomainSwitch() {
                 <option value="play.thinkmay.net">play</option>
                 <option value="play.2.thinkmay.net">play.2</option>
                 <option value="play.3.thinkmay.net">play.3</option>
+                <option value="v4.thinkmay.net">v4</option>
             </select>
         </div>
     );
