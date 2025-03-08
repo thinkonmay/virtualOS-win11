@@ -1,32 +1,35 @@
-import { MdOutlineAddCard } from 'react-icons/md';
+import { MdOutlineChangeCircle } from 'react-icons/md';
 import {
-    app_full,
     appDispatch,
+    modify_payment_pocket,
     popup_close,
     useAppSelector
 } from '../../../backend/reducers';
 import { numberFormat } from '../../../backend/utils/format';
 
-export function pocketNotEnoughMoney({ data: { plan_name, plan_price } }) {
+export function pocketChangePlan({
+    data: { plan_name, plan_price, plan_title, oldPlanId }
+}) {
     const t = useAppSelector((state) => state.globals.translation);
-    const wallet = useAppSelector((state) => state.user.wallet);
-
-    const moneyNeed = numberFormat(plan_price - wallet.money);
 
     const handleContinue = () => {
         appDispatch(popup_close());
-        appDispatch(app_full({ id: 'payment', page: 'deposit' }));
+        appDispatch(modify_payment_pocket({ plan_name, id: oldPlanId }));
     };
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
             <div className="flex justify-center items-center gap-2 text-[#0067c0]">
-                <MdOutlineAddCard className="text-5xl text-[#0067c0]"></MdOutlineAddCard>
-                <h2>Ví của bạn hiện không đủ tiền</h2>
+                <MdOutlineChangeCircle className="text-5xl text-[#0067c0]"></MdOutlineChangeCircle>
+                <h2>Xác nhận chuyển gói</h2>
             </div>
             <div>
                 <p className="mt-[8px] text-lg text-center">
-                    Bạn cần nạp thêm {moneyNeed}đ vào Ví Thinkmay để đăng ký{' '}
-                    {plan_name}.{' '}
+                    Sau khi đăng ký {plan_title}, gói hiện tại vẫn còn hiệu lực
+                    tới khi hết hạn.
+                </p>
+                <p className="mt-[8px] text-lg text-center">
+                    Sau đó {plan_title} sẽ bắt đầu hiệu lực, với giá{' '}
+                    {numberFormat(plan_price)} vnđ.{' '}
                 </p>
             </div>
             <div className="flex gap-3 justify-end mt-3 mb-2">
@@ -44,7 +47,7 @@ export function pocketNotEnoughMoney({ data: { plan_name, plan_price } }) {
                     onClick={handleContinue}
                     className="cursor-pointer justify-center  text-base font-medium instbtn h-[40px] rounded-md"
                 >
-                    Nạp ngay
+                    Xác nhận
                 </button>
             </div>
         </div>

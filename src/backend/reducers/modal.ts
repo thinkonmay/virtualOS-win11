@@ -86,6 +86,21 @@ type PopupData =
               plan_name: string;
               plan_price: number;
           };
+      }
+    | {
+          type: 'pocketCancelPlan';
+          data: {
+              plan_name: string;
+          };
+      }
+    | {
+          type: 'pocketChangePlan';
+          data: {
+              plan_name: string;
+              plan_price: number;
+              plan_title: string;
+              oldPlanId: string;
+          };
       };
 
 type Data = {

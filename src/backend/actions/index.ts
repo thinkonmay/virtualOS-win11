@@ -22,8 +22,9 @@ import {
     unclaim_volume,
     worker_refresh
 } from '../reducers/index';
-import { preload } from './background';
 import { Contents } from '../reducers/locales';
+import { PlanName } from '../utils/constant';
+import { preload } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -225,4 +226,54 @@ export const showConnect = () => {
             }
         })
     );
+};
+
+interface WrapperCreatePaymentPocket {
+    plan_name: PlanName;
+    cluster_domain?: string;
+    plan_price: number;
+    plan_title: string;
+}
+export const createPaymentPocket = ({
+    plan_name,
+    cluster_domain = 'play.thinkmay.net',
+    plan_price,
+    plan_title
+}: WrapperCreatePaymentPocket) => {
+    const status = store.getState().user.subscription.status;
+    const wallet = store.getState().user.wallet;
+
+    if (wallet.money < plan_price) {
+        appDispatch(
+            popup_open({
+                type: 'pocketNotEnoughMoney',
+                data: {
+                    plan_name: plan_title,
+                    plan_price: plan_price
+                }
+            })
+        );
+        return;
+    }
+    if (status != 'PAID') {
+        appDispatch(
+            popup_open({
+                type: 'pocketBuyConfirm',
+                data: {
+                    plan_name,
+                    cluster_domain
+                }
+            })
+        );
+    } else {
+        appDispatch(
+            popup_open({
+                type: 'pocketBuyConfirm',
+                data: {
+                    plan_name,
+                    cluster_domain
+                }
+            })
+        );
+    }
 };

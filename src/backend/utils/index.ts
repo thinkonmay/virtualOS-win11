@@ -9,6 +9,7 @@ export type AppData = {
     action: string;
     payload?: any;
 
+    page?: string; //sub - refund - storage -history;
     menu?: MenuOption;
     size?: string;
     hide?: boolean;
@@ -34,6 +35,7 @@ const apps: AppData[] = [
     {
         name: [Contents.PAYMENT_APP],
         id: 'payment',
+        page: 'sub',
         action: 'apps/app_toggle',
         payload: 'payment'
     },

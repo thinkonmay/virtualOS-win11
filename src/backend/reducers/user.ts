@@ -5,6 +5,7 @@ import { appDispatch, popup_open, RootState } from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
+import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
 type Usage = {
     node: string;
@@ -56,13 +57,33 @@ interface Deposit {
     amount: number;
     created_at: string;
     id: number;
-    plan_name: 'month1' | 'month2' | 'week1' | 'week2';
+    plan_name: PlanName;
+}
+interface Order {
+    id: string;
+    pay_at: string;
+    plan_name: PlanName;
+}
+
+interface DepositStatus {
+    created_at: string;
+    amount: number;
+    status: string;
+}
+
+interface PlanStatus {
+    created_at: string;
+    amount: number;
+    plan_name: string;
 }
 
 interface Wallet {
     money: number;
     historyDeposit: Deposit[];
     historyPayment: Deposit[];
+    currentOrders?: Order[];
+    depositStatus?: DepositStatus[];
+    planStatus?: PlanStatus[];
 }
 type Data = RecordModel & {
     subscription: PaymentStatus;
@@ -74,6 +95,7 @@ type Data = RecordModel & {
 
 const notexpired = () =>
     `ended_at.gt.${new Date().toISOString()},ended_at.is.${null}`;
+
 export const isUUID = (uuid) =>
     uuid.match(
         '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
@@ -95,7 +117,10 @@ const initialState: Data = {
     wallet: {
         historyPayment: [],
         historyDeposit: [],
-        money: 0
+        money: 0,
+        currentOrders: [],
+        depositStatus: [],
+        planStatus: []
     }
 };
 
@@ -308,7 +333,7 @@ export const userAsync = {
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,cluster,local_metadata,ended_at')
-                .or(notexpired())
+                .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
@@ -389,16 +414,13 @@ export const userAsync = {
                 throw new Error('gói dịch vụ hiện đang tạm đóng');
             const { id: plan } = _plans;
 
-            const expire_at = new Date(
-                new Date().getTime() + 1000 * 60 * 10 * 1
-            ).toISOString();
             const { email, volume_id } = (getState() as RootState).user;
             const currentAddr = (getState() as RootState).worker.currentAddress;
 
             const { data: existSub, error: errr } = await GLOBAL()
                 .from('subscriptions')
                 .select('id,local_metadata->>volume_id')
-                .or(notexpired())
+                .gt('ended_at', new Date().toISOString())
                 .eq('user', email)
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
@@ -506,6 +528,44 @@ export const userAsync = {
             }
         }
     ),
+    get_deposit_status: createAsyncThunk(
+        'get_deposit_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_deposit_status, error: err } = await GLOBAL().rpc(
+                'get_deposit_status',
+                {
+                    email
+                }
+            );
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_deposit_status != null) {
+                return get_deposit_status;
+            }
+        }
+    ),
+    get_payment_pocket_status: createAsyncThunk(
+        'get_payment_pocket_status',
+        async (_, { getState }) => {
+            const { email } = (getState() as RootState).user;
+
+            const { data: get_payment_pocket_status, error: err } =
+                await GLOBAL().rpc('get_payment_pocket_status', {
+                    email
+                });
+
+            if (err)
+                throw new Error('Error when create payment link' + err.message);
+
+            if (get_payment_pocket_status != null) {
+                return get_payment_pocket_status;
+            }
+        }
+    ),
     create_payment_pocket: createAsyncThunk(
         'create_payment_pocket',
         async (
@@ -537,6 +597,67 @@ export const userAsync = {
             }
         }
     ),
+    modify_payment_pocket: createAsyncThunk(
+        'modify_payment_pocket',
+        async (
+            input: {
+                id: string;
+                plan_name: PlanName;
+                renew?: boolean;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { id, plan_name, renew = false } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'modify_payment_pocket',
+                {
+                    id,
+                    plan_name,
+                    renew
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when modify_payment_pocket' + err.message
+                );
+
+            if (data != null) {
+                return data;
+            }
+        }
+    ),
+    cancel_payment_pocket: createAsyncThunk(
+        'cancel_payment_pocket',
+        async (
+            input: {
+                id: string;
+            },
+            { getState }
+        ) => {
+            const { email } = (getState() as RootState).user;
+            const { id } = input;
+
+            const { data, error: err } = await GLOBAL().rpc(
+                'cancel_payment_pocket',
+                {
+                    id
+                }
+            );
+
+            if (err)
+                throw new Error(
+                    'Error when cancel_payment_pocket' + err.message
+                );
+
+            if (!data) {
+                throw new Error('Can not cancel sub' + err.message);
+            }
+            return id;
+        }
+    ),
     get_payment_pocket: createAsyncThunk(
         'get_payment_pocket',
         async (_, { getState }): Promise<string> => {
@@ -549,7 +670,7 @@ export const userAsync = {
                 }
             );
 
-            console.log(data);
+            data;
             if (err)
                 throw new Error(
                     'Error when create_payment_pocket' + err.message
@@ -679,6 +800,18 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.get_deposit_status,
+                hander: (state, action) => {
+                    state.wallet.depositStatus = action.payload;
+                }
+            },
+            {
+                fetch: userAsync.get_payment_pocket_status,
+                hander: (state, action) => {
+                    state.wallet.planStatus = action.payload;
+                }
+            },
+            {
                 fetch: userAsync.get_payment,
                 hander: (state, action) => {
                     window.open(action.payload, '_self');
@@ -691,6 +824,15 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.modify_payment_pocket,
+                hander: (state, action) => {
+                    //location.reload();
+                    if (action.payload) {
+                        //location.reload();
+                    }
+                }
+            },
+            {
                 fetch: userAsync.create_payment_pocket,
                 hander: (state, action) => {
                     if (action.payload) {
@@ -700,9 +842,21 @@ export const userSlice = createSlice({
                 }
             },
             {
+                fetch: userAsync.cancel_payment_pocket,
+                hander: (state, action) => {
+                    if (action.payload) {
+                        // delete Id\
+                        const cloneData = [...state.wallet.currentOrders];
+                        state.wallet.currentOrders = cloneData.filter(
+                            (i) => i.id != action.payload
+                        );
+                    }
+                }
+            },
+            {
                 fetch: userAsync.get_payment_pocket,
                 hander: (state, action) => {
-                    console.log(action.payload);
+                    state.wallet.currentOrders = action.payload;
                 }
             },
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { BiSupport } from 'react-icons/bi';
-import { MdOutlineMonetizationOn } from 'react-icons/md';
 import { RiBookLine } from 'react-icons/ri';
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
@@ -13,7 +12,7 @@ import {
 
 import { afterMath } from '../../backend/actions';
 import {
-    app_toggle,
+    app_full,
     appDispatch,
     startogg,
     task_hide,
@@ -27,6 +26,7 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
+import { numberFormat } from '../../backend/utils/format';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
 
@@ -163,13 +163,22 @@ const Taskbar = () => {
                     <audio src={ringSound}></audio>
                     <div className="containerWalletInfo">
                         <div className="wrapperWallet">
-                            <div className="flex items-center gap-[2px] text-xs font-semibold lg:text-sm">
-                                <MdOutlineMonetizationOn fontSize={'1.2rem'} />
-                                {wallet.money}
+                            <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">
+                                <Icon
+                                    className="vndIcon"
+                                    src="vnd"
+                                    width={24}
+                                />
+                                {numberFormat(wallet.money)}
                             </div>
                             <button
                                 onClick={() => {
-                                    appDispatch(app_toggle('payment'));
+                                    appDispatch(
+                                        app_full({
+                                            id: 'payment',
+                                            page: 'deposit'
+                                        })
+                                    );
                                 }}
                                 className="depositBtn"
                             >
