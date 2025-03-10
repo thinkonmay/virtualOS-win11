@@ -117,7 +117,7 @@ function UserInfo() {
                         <LangSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between my-[8px] ">
-                        <span>Domain</span>
+                        <span>Server</span>
                         <DomainSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between mt-[1rem]">

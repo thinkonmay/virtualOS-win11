@@ -64,6 +64,7 @@ function App() {
     useEffect(() => {
         const url = new URL(window.location.href);
         const game = url.searchParams.get('game');
+        const domain = url.searchParams.get('server');
         appDispatch(direct_access(url));
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
@@ -71,6 +72,16 @@ function App() {
             if (e) e.returnValue = text;
             return text;
         };
+        // TODO: hardcode
+        const listDomain = [
+            'play.thinkmay.net',
+            'play.2.thinkmay.net',
+            'play.3.thinkmay.net',
+            'v4.thinkmay.net'
+        ];
+        if (listDomain.includes(domain)) {
+            localStorage.setItem('thinkmay_domain', domain);
+        }
 
         const waitForPhoneRotation = async () => {
             const finish_fetch = now();
