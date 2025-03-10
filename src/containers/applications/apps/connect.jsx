@@ -24,11 +24,6 @@ export const ConnectApp = () => {
     const paid = useAppSelector(
         (state) => state.user.subscription.status == 'PAID'
     );
-    const cluster = useAppSelector((state) =>
-        state.user.subscription.status == 'PAID'
-            ? state.user.subscription.cluster
-            : null
-    );
     const { image, name } = useAppSelector((state) =>
         state.user.subscription.status == 'PAID'
             ? state.user.subscription.usage?.template ?? {
@@ -44,9 +39,7 @@ export const ConnectApp = () => {
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
-    const reload = () => {
-        location.reload();
-    };
+    const reload = () => location.reload();
 
     return (
         <div

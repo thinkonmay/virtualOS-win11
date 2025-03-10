@@ -7,8 +7,6 @@ import {
 import './index.scss';
 import * as modals from './modal';
 
-const preferred = ['extendService', 'redirectDomain', 'maintain'];
-const preferred_title = 'Connect to PC';
 const Popup = () => {
     const popup = useAppSelector(
         (state) =>

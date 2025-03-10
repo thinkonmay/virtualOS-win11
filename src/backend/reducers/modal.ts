@@ -41,7 +41,6 @@ type PopupData =
           type: 'redirectDomain';
           data: {
               domain: string;
-              from: string;
           };
       }
     | {
@@ -120,21 +119,13 @@ export const modalSlice = createSlice({
         popup_open: (state, action: PayloadAction<PopupData>) => {
             state.data_stack = [...state.data_stack, action.payload];
         },
-        popup_close: (state) => {
-            const preferred = ['extendService', 'redirectDomain', 'maintain'];
-            //const preferred_title = 'Connect to PC';
+        popup_close: (state, action: PayloadAction<boolean | undefined>) => {
+            let preferred = ['extendService', 'redirectDomain', 'maintain'];
+            if (action.payload) preferred = [];
 
-            state.data_stack = [];
-            //const rm = state.data_stack.findIndex(
-            //    (x) =>
-            //        !preferred.includes(x.type)
-            //    //&&
-            //    //!(x.type == 'notify' && x.data.title == preferred_title)
-            //);
-
-            //state.data_stack = state.data_stack.filter(
-            //    (val, index) => index != (rm != -1 ? rm : 0)
-            //);
+            state.data_stack = state.data_stack.filter((x) =>
+                preferred.includes(x.type)
+            );
         }
     }
 });

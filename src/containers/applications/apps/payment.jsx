@@ -261,23 +261,18 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         return check;
     };
 
-    const isHavingPlan = (plan) => {
-        let check = wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
-        return check;
-    };
+    const isHavingPlan = () =>
+        wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
 
-    const onChooseSub = (plan_name) => {
-        if (not_logged_in) {
-            login('google', false);
-            return;
-        }
-
-        createPaymentPocket({
-            plan_name: sub.name,
-            cluster_domain: domain,
-            plan_price: sub.price_in_vnd,
-            plan_title: sub.title
-        });
+    const onChooseSub = () => {
+        if (not_logged_in) login('google', false);
+        else
+            createPaymentPocket({
+                plan_name: sub.name,
+                cluster_domain: domain,
+                plan_price: sub.price_in_vnd,
+                plan_title: sub.title
+            });
     };
 
     const handleChangePlan = (plan_name) => {

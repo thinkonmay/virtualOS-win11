@@ -1,7 +1,18 @@
 import { MdInfoOutline } from 'react-icons/md';
-import { appDispatch, popup_close } from '../../../backend/reducers';
+import {
+    appDispatch,
+    popup_close,
+    useAppSelector
+} from '../../../backend/reducers';
 
-export function redirectDomain({ data: { domain, from } }) {
+export function redirectDomain({ data: { domain } }) {
+    const from = useAppSelector((state) => state.worker.currentAddress);
+
+    const updateDomain = () => {
+        localStorage.setItem('thinkmay_domain', domain);
+        window.location.reload();
+    };
+
     return (
         <div className="w-[320px] h-auto p-[14px] rounded-lg flex flex-col gap-y-5">
             <div className="flex justify-center items-center gap-2 text-[#B0D0EF]">
@@ -20,17 +31,17 @@ export function redirectDomain({ data: { domain, from } }) {
                 <button
                     style={{ padding: '6px 14px' }}
                     className=" text-base font-medium rounded-md"
-                    onClick={() => appDispatch(popup_close())}
+                    onClick={() => appDispatch(popup_close(true))}
                 >
                     Tiếp tục
                 </button>
                 <a
                     style={{ padding: '6px 14px' }}
-                    href={`https://${domain}`}
+                    onClick={() => updateDomain()}
                     target="_self"
                     className="cursor-pointer  text-base font-medium instbtn rounded-md"
                 >
-                    Chuyển trang
+                    Chuyển server
                 </a>
             </div>
         </div>

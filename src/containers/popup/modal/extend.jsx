@@ -12,7 +12,8 @@ export function extendService({ data: { type, to, available_time } }) {
             type: 'payment/extends_service_denied',
             payload: { type, to, available_time }
         });
-        appDispatch(popup_close());
+
+        appDispatch(popup_close(true));
     };
     return (
         <div className="w-[320px] h-auto p-[14px] rounded-lg flex flex-col gap-y-3">

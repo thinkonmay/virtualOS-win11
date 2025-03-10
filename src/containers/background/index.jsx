@@ -48,11 +48,7 @@ export const LockScreen = () => {
     const [unlocked, setUnLock] = useState(false);
 
     const user = useAppSelector((state) => state.user);
-    const dispatch = appDispatch;
-    const action = () => {
-        setLock(true);
-    };
-
+    const action = () => setLock(true);
     const proceed = async (provider) => {
         if (user.id != 'unknown') return setUnLock(true);
         else await login(provider);
@@ -99,11 +95,6 @@ export const LockScreen = () => {
                 <div className="mt-2 text-2xl font-medium text-gray-200">
                     {user?.email ?? ''}
                 </div>
-                {/*<
-                >
-                    {user.id != 'unknown' ? ' Enter' : 'Continue with Google'}
-                </>*/}
-
                 <div className="ctn_btn_login mt-8">
                     {user?.id != 'unknown' ? (
                         <div

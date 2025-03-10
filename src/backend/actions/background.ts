@@ -30,7 +30,6 @@ import {
     sync,
     worker_refresh
 } from '../reducers';
-import { PaymentStatus } from '../reducers/user.ts';
 import { localStorageKey } from '../utils/constant';
 import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
@@ -130,22 +129,25 @@ const fetchPlans = async () => {
 
 const updateUI = async () => {
     appDispatch(show_tutorial('close'));
+    const {
+        user: { subscription },
+        worker: { currentAddress }
+    } = store.getState();
 
-    const subscription = store.getState().user.subscription as PaymentStatus;
     const { status } = subscription;
     const rms = [];
     const ops = [];
     if (status == 'PENDING') ops.push('payment');
     else if (status == 'PAID') {
+        const { ended_at, cluster } = subscription;
+
         ops.push('connectPc');
-        if (subscription?.usage?.isNewUser) {
-            ops.push('store');
-        }
-        const { ended_at } = subscription;
+        if (subscription?.usage?.isNewUser) ops.push('store');
+
         if (
             ended_at != null &&
             new Date(ended_at).getTime() - Date.now() < 3 * 24 * 3600 * 1000
-        ) {
+        )
             appDispatch(
                 popup_open({
                     type: 'extendService',
@@ -155,7 +157,16 @@ const updateUI = async () => {
                     }
                 })
             );
-        }
+
+        if (cluster != currentAddress)
+            appDispatch(
+                popup_open({
+                    type: 'redirectDomain',
+                    data: {
+                        domain: cluster
+                    }
+                })
+            );
     }
     if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
@@ -185,6 +196,8 @@ export const preload = async (update_ui?: boolean) => {
             fetchStore(),
             fetchPlans()
         ]);
+
+        if (update_ui ?? true) await updateUI();
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',
@@ -201,8 +214,6 @@ export const preload = async (update_ui?: boolean) => {
             })
         );
     }
-
-    if (update_ui ?? true) await updateUI();
 };
 
 export const PreloadBackground = async (update_ui?: boolean) => {
