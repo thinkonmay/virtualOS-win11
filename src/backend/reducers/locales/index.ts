@@ -105,6 +105,7 @@ export enum Contents {
     EXPLORE,
     DONT_KNOW,
 
+    ACCOUNT,
     BEST_EXP,
     HEADER_1,
     HEADER_2,
@@ -204,6 +205,7 @@ export enum Contents {
     //CONNECT APP ( CA )
     CA_TURN_ON_PC,
     CA_CONNECT,
+    CA_CONNECT_EXPLAIN,
     CA_INITIALIZING,
     CA_RELOAD_TRY_AGAIN,
     // HANG CHO
@@ -243,7 +245,12 @@ export enum Contents {
     //SIDEPANE
 
     SP_PULL_VIDEO,
-    SP_PULL_VIDEO_EXPLAIN
+    SP_PULL_VIDEO_EXPLAIN,
+
+    CONTINUE,
+    SWITCH_DOMAIN,
+    YOU_REGISTERED_AT,
+    YOU_ARE_IN
 }
 
 export function language() {
@@ -258,6 +265,10 @@ export function language() {
     en.set(Contents.SP_PULL_VIDEO, 'Pull Video');
     vn.set(Contents.SP_PULL_VIDEO, 'Kéo video');
     id.set(Contents.SP_PULL_VIDEO, 'Pull Video');
+
+    en.set(Contents.ACCOUNT, 'Account');
+    vn.set(Contents.ACCOUNT, 'Tài khoản');
+    id.set(Contents.ACCOUNT, 'Account');
 
     en.set(Contents.SP_PULL_VIDEO_EXPLAIN, 'Pull the video fit in screen');
     vn.set(Contents.SP_PULL_VIDEO_EXPLAIN, 'Kéo hình sao cho vừa với màn hình');
@@ -317,6 +328,10 @@ export function language() {
     en.set(Contents.CA_CONNECT, 'Connect');
     vn.set(Contents.CA_CONNECT, 'Kết nối');
     id.set(Contents.CA_CONNECT, 'Sambungkan');
+
+    en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
+    vn.set(Contents.CA_CONNECT_EXPLAIN, 'Click để truy cập cloud PC');
+    en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
 
     en.set(Contents.CA_INITIALIZING, 'Your PC is initializing');
     vn.set(Contents.CA_INITIALIZING, 'Máy đang được khởi tạo');
@@ -899,6 +914,20 @@ export function language() {
     id.set(Contents.FRAMERATE, 'FPS');
 
     // Connecta App
+    en.set(Contents.CONTINUE, 'Continue');
+    vn.set(Contents.CONTINUE, 'Tiếp tục');
+    id.set(Contents.CONTINUE, 'Continue');
 
+    en.set(Contents.SWITCH_DOMAIN, 'Switch server');
+    vn.set(Contents.SWITCH_DOMAIN, 'Chuyển server');
+    id.set(Contents.SWITCH_DOMAIN, 'Switch server');
+
+    en.set(Contents.YOU_REGISTERED_AT, 'You have registered at');
+    vn.set(Contents.YOU_REGISTERED_AT, 'Bạn đã đăng kí ở');
+    id.set(Contents.YOU_REGISTERED_AT, 'You have registered at');
+
+    en.set(Contents.YOU_ARE_IN, 'You are in');
+    vn.set(Contents.YOU_ARE_IN, 'Bạn đang ở');
+    id.set(Contents.YOU_ARE_IN, 'You are in');
     return t;
 }

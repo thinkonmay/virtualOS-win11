@@ -6,7 +6,6 @@ export const CustomJoyStick = React.memo(
         const { size = 100, type = 'right' } = props;
 
         const knobRef = useRef(null);
-        const [position, setPosition] = useState({ x: 0, y: 0 });
         const [touching, setTouching] = useState(false);
         const knobRadius = size * 0.2;
         const speed = 0.48;
@@ -95,7 +94,6 @@ export const CustomJoyStick = React.memo(
                         borderRadius: '50%',
                         backgroundColor: 'rgba(255, 255, 255,0.5',
                         position: 'absolute',
-                        //transform: `translate(${position.x}px, ${position.y}px)`,
                         boxShadow: 'rgba(255, 255, 255, 0.1) 0px 0px 4px 5px',
                         transition: touching
                             ? 'none'

@@ -163,13 +163,14 @@ export const userAsync = {
                     email: email
                 }
             );
+            if (depositErr) throw depositErr;
+
             const { error: paymentErr, data: paymentData } = await GLOBAL().rpc(
                 'get_payment_history',
                 {
                     email: email
                 }
             );
-
             if (paymentErr) throw paymentErr;
 
             return {

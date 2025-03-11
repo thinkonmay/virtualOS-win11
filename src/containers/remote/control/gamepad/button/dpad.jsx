@@ -8,7 +8,6 @@ const DPad = (props) => {
         <div
             className="dpad"
             style={{ width: `${props.size}px`, height: `${props.size}px` }}
-            //style={{ width: `${size ?? 20}px`, height: `${size ?? 20}px` }}
             {...rest}
         >
             <button

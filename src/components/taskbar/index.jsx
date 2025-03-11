@@ -203,7 +203,7 @@ const Taskbar = () => {
                                     //style={{ '--prefix': 'START' }}
                                 />{' '}
                                 <p className="text-xm font-semibold">
-                                    Tài khoản
+                                    {t[Contents.ACCOUNT]}
                                 </p>
                             </div>
                             {defaultapps.map((task, i) => {
@@ -276,7 +276,9 @@ const Taskbar = () => {
                                 strokeWidth={'0rem'}
                                 fontSize={'1.5rem'}
                             />
-                            <span className="hidden md:block">Hỗ trợ</span>
+                            <span className="hidden md:block">
+                                {t[Contents.SUPPORT]}
+                            </span>
                         </div>
                         <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
@@ -287,7 +289,9 @@ const Taskbar = () => {
                             style={{ '--prefix': 'QA' }}
                         >
                             <RiBookLine fontSize={'1.4rem'} />
-                            <span className="hidden md:block">Hướng dẫn</span>
+                            <span className="hidden md:block">
+                                {t[Contents.GUIDELINE]}
+                            </span>
                         </div>
                         <div
                             id="settingBtn"
