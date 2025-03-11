@@ -237,7 +237,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     const { ended_at } = useAppSelector((state) => state.user.subscription);
 
     const wallet = user.wallet;
-    const currentSub = renderCurrentSub(user?.subscription?.policy?.limit_hour);
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const max = useAppSelector(
         (state) =>

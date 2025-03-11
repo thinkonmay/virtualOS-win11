@@ -27,8 +27,6 @@ function UserInfo() {
         limit_hour = 150;
     }
 
-    const thm = useAppSelector((state) => state.setting.person.theme);
-    var icon = thm == 'light' ? 'sun' : 'moon';
     const t = useAppSelector((state) => state.globals.translation);
 
     const Paid = () => (

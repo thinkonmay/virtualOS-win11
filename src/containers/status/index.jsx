@@ -18,13 +18,6 @@ export const Status = () => {
 
     const sidePaneOpen = useAppSelector((state) => !state.sidepane.hide);
 
-    const userCreatedAt = useAppSelector(
-        (state) => state.user.subscription?.created_at
-    );
-
-    const createDate = dayjs(userCreatedAt);
-    const targetDate = dayjs('2024-12-01 00:18');
-
     useEffect(() => {
         const interval = setInterval(() => {
             setVideoConnectivity(CLIENT.Metrics.video.status);
