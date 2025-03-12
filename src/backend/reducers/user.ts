@@ -1,12 +1,19 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import { RecordModel } from 'pocketbase';
-import { appDispatch, popup_open, RootState } from '.';
+import {
+    appDispatch,
+    fetch_subscription,
+    fetch_wallet,
+    popup_close,
+    popup_open,
+    RootState
+} from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
-import { remotelogin } from '../actions';
 import { formatDate } from '../utils/date';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
+import { Contents } from './locales';
 type Usage = {
     node: string;
     total_usage: number;
@@ -415,6 +422,7 @@ export const userAsync = {
         ) => {
             const { email } = (getState() as RootState).user;
             const { plan_name, cluster_domain = 'play.thinkmay.net' } = input;
+            const t = (getState() as RootState).globals.translation;
 
             const { data, error: err } = await GLOBAL().rpc(
                 'create_payment_pocket',
@@ -429,8 +437,23 @@ export const userAsync = {
                 throw new Error(
                     'Error when create_payment_pocket' + err.message
                 );
+            if (data == false) {
+                throw new Error('failed to create payment to pocket');
+            }
 
-            if (data != null) {
+            if (data) {
+                await GLOBAL().rpc('verify_all_pocket_payment');
+                await appDispatch(fetch_wallet());
+                appDispatch(popup_close());
+                appDispatch(
+                    popup_open({
+                        type: 'complete',
+                        data: {
+                            success: true,
+                            content: t[Contents.PAYMENT_POCKET_SUCCESS]
+                        }
+                    })
+                );
                 return data;
             }
         }
@@ -445,8 +468,8 @@ export const userAsync = {
             },
             { getState }
         ) => {
-            const { email } = (getState() as RootState).user;
             const { id, plan_name, renew = false } = input;
+            const t = (getState() as RootState).globals.translation;
 
             const { data, error: err } = await GLOBAL().rpc(
                 'modify_payment_pocket',
@@ -462,8 +485,25 @@ export const userAsync = {
                     'Error when modify_payment_pocket' + err.message
                 );
 
-            if (data != null) {
-                return data;
+            if (data == false) {
+                throw new Error('failed to modify payment to pocket');
+            }
+
+            if (data) {
+                await GLOBAL().rpc('verify_all_pocket_payment');
+                await appDispatch(fetch_wallet());
+                await appDispatch(fetch_subscription());
+                appDispatch(popup_close());
+                appDispatch(
+                    popup_open({
+                        type: 'complete',
+                        data: {
+                            success: true,
+                            content: t[Contents.PAYMENT_POCKET_SUCCESS]
+                        }
+                    })
+                );
+                await new Promise((r) => setTimeout(r, 10000));
             }
         }
     ),
@@ -647,7 +687,6 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.modify_payment_pocket,
                 hander: (state, action) => {
-                    //location.reload();
                     if (action.payload) {
                         //location.reload();
                     }
@@ -659,7 +698,6 @@ export const userSlice = createSlice({
                     if (action.payload) {
                         location.reload();
                     }
-                    //reload
                 }
             },
             {
