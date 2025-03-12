@@ -22,7 +22,7 @@ const DepositPage = () => {
 
         if (!e.target.value) return;
         if (removeCommasAndCurrency(e.target.value) < 50000) {
-            setErr(' Số tiền nạp phải >= 50k Vnđ');
+            setErr('Số tiền nạp phải >= 50k Vnđ');
         } else if (removeCommasAndCurrency(e.target.value) > 1000000000) {
             setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
         } else {

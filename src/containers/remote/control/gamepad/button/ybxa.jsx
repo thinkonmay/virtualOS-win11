@@ -13,29 +13,29 @@ export default function YBXA(props) {
             >
                 <GamepadButton
                     className="button-y"
-                    onTouchStart={() => gamepadButton(3, 'down')}
-                    onTouchEnd={() => gamepadButton(3, 'up')}
+                    onTouchStart={() => gamepadButton(3, true)}
+                    onTouchEnd={() => gamepadButton(3)}
                 >
                     Y
                 </GamepadButton>
                 <GamepadButton
                     className="button-b"
-                    onTouchStart={() => gamepadButton(0, 'down')}
-                    onTouchEnd={() => gamepadButton(0, 'up')}
+                    onTouchStart={() => gamepadButton(0, true)}
+                    onTouchEnd={() => gamepadButton(0)}
                 >
                     A
                 </GamepadButton>
                 <GamepadButton
                     className="button-x"
-                    onTouchStart={() => gamepadButton(1, 'down')}
-                    onTouchEnd={() => gamepadButton(1, 'up')}
+                    onTouchStart={() => gamepadButton(1, true)}
+                    onTouchEnd={() => gamepadButton(1)}
                 >
                     B
                 </GamepadButton>
                 <GamepadButton
                     className="button-a"
-                    onTouchStart={() => gamepadButton(2, 'down')}
-                    onTouchEnd={() => gamepadButton(2, 'up')}
+                    onTouchStart={() => gamepadButton(2, true)}
+                    onTouchEnd={() => gamepadButton(2)}
                 >
                     X
                 </GamepadButton>

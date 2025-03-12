@@ -48,10 +48,11 @@ export const Remote = () => {
     }, [active]);
 
     useEffect(() => {
-        CLIENT.touch.touch_callback = async () => {
-            if (keyboard && CLIENT.touch.mode == 'none')
-                appDispatch(toggle_keyboard());
-        };
+        if (CLIENT)
+            CLIENT.touch.touch_callback = async () => {
+                if (keyboard && CLIENT.touch.mode == 'none')
+                    appDispatch(toggle_keyboard());
+            };
     }, [keyboard]);
 
     const setupWebRTC = () =>

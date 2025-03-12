@@ -126,98 +126,104 @@ function GamingKeyboard() {
 
     const renderKeys = () => {
         return gamingKeyboard.data.map((key) => {
-            if (key.type == 'joystick') {
-                return (
-                    <Draggable
-                        key={key.id}
-                        disabled={true}
-                        nodeRef={joystickWrapperRef}
-                        position={{
-                            x: deviceResolution.deviceWidth * key.position.x,
-                            y: deviceResolution.deviceHeight * key.position.y
-                        }}
-                    >
-                        <div
-                            id={key.id}
-                            className="wrapperDraggable"
-                            ref={joystickWrapperRef}
+            switch (key.type) {
+                case 'joystick':
+                    return (
+                        <Draggable
+                            key={key.id}
+                            disabled={true}
+                            nodeRef={joystickWrapperRef}
+                            position={{
+                                x:
+                                    deviceResolution.deviceWidth *
+                                    key.position.x,
+                                y:
+                                    deviceResolution.deviceHeight *
+                                    key.position.y
+                            }}
                         >
-                            <CustomJoyStick
-                                ref={joystickRef}
-                                draggable={false}
-                                size={100}
-                                type="right"
-                            />
-                        </div>
-                    </Draggable>
-                );
-            } else if (key.type == 'key') {
-                return (
-                    <GamingKeyboardButton
-                        id={key.id}
-                        key={key.id}
-                        onTouchStart={() => {
-                            keyboard({
-                                action: 'down',
-                                val: key.value
-                            });
-                        }}
-                        onTouchEnd={() => {
-                            keyboard({
-                                action: 'up',
-                                val: key.value
-                            });
-                        }}
-                        onStop={handleStop}
-                        onDrag={handleDrag}
-                        draggable={gamingKeyboard.editState == 'draggable'}
-                        style={{
-                            width: `${50 * key.size}px`,
-                            height: `${50 * key.size}px`
-                        }}
-                        pos={{
-                            x: deviceResolution.deviceWidth * key.position.x,
-                            y: deviceResolution.deviceHeight * key.position.y
-                        }}
-                    >
-                        {handleRenderKeyName(key.name)}
-                    </GamingKeyboardButton>
-                );
-            } else if (key.type == 'mouse') {
-                const Icon = MouseIcons[key.name];
-
-                return (
-                    <GamingKeyboardButton
-                        id={key.id}
-                        key={key.id}
-                        onTouchStart={() => {
-                            virtMouse(key.value, 'down');
-                        }}
-                        onTouchEnd={() => {
-                            virtMouse(key.value, 'up');
-                        }}
-                        onStop={handleStop}
-                        onDrag={handleDrag}
-                        draggable={gamingKeyboard.editState == 'draggable'}
-                        style={{
-                            width: `${50 * key.size}px`,
-                            height: `${50 * key.size}px`
-                        }}
-                        pos={{
-                            x: deviceResolution.deviceWidth * key.position.x,
-                            y: deviceResolution.deviceHeight * key.position.y
-                        }}
-                    >
-                        <Icon fontSize="1.2rem"></Icon>
-                    </GamingKeyboardButton>
-                );
+                            <div
+                                id={key.id}
+                                className="wrapperDraggable"
+                                ref={joystickWrapperRef}
+                            >
+                                <CustomJoyStick
+                                    ref={joystickRef}
+                                    draggable={false}
+                                    size={100}
+                                    isRight={true}
+                                />
+                            </div>
+                        </Draggable>
+                    );
+                case 'key':
+                    return (
+                        <GamingKeyboardButton
+                            id={key.id}
+                            key={key.id}
+                            onTouchStart={() => {
+                                keyboard({
+                                    val: key.value,
+                                    isDown: true
+                                });
+                            }}
+                            onTouchEnd={() => {
+                                keyboard({
+                                    val: key.value
+                                });
+                            }}
+                            onStop={handleStop}
+                            onDrag={handleDrag}
+                            draggable={gamingKeyboard.editState == 'draggable'}
+                            style={{
+                                width: `${50 * key.size}px`,
+                                height: `${50 * key.size}px`
+                            }}
+                            pos={{
+                                x:
+                                    deviceResolution.deviceWidth *
+                                    key.position.x,
+                                y:
+                                    deviceResolution.deviceHeight *
+                                    key.position.y
+                            }}
+                        >
+                            {handleRenderKeyName(key.name)}
+                        </GamingKeyboardButton>
+                    );
+                case 'mouse':
+                    const Icon = MouseIcons[key.name];
+                    return (
+                        <GamingKeyboardButton
+                            id={key.id}
+                            key={key.id}
+                            onTouchStart={() => virtMouse(key.value, true)}
+                            onTouchEnd={() => virtMouse(key.value)}
+                            onStop={handleStop}
+                            onDrag={handleDrag}
+                            draggable={gamingKeyboard.editState == 'draggable'}
+                            style={{
+                                width: `${50 * key.size}px`,
+                                height: `${50 * key.size}px`
+                            }}
+                            pos={{
+                                x:
+                                    deviceResolution.deviceWidth *
+                                    key.position.x,
+                                y:
+                                    deviceResolution.deviceHeight *
+                                    key.position.y
+                            }}
+                        >
+                            <Icon fontSize="1.2rem"></Icon>
+                        </GamingKeyboardButton>
+                    );
             }
         });
     };
     return (
         <>
             {gamingKeyboard.editState != 'idle' ? <NavSettings /> : null}
-
             {renderKeys()}
             <KeyboardPicker />
         </>
@@ -237,39 +243,6 @@ const NavSettings = () => {
                 true ? 'slide-in' : 'slide-out'
             } navGamingKeyBoardSetting`}
         >
-            {/*<div className="wrapperLeft">
-				<div className="ctnContent items-center">
-					<p className="title">Kích cỡ:</p>
-
-					<div className="btnGroup">
-						<button
-							onClick={() => {
-								appDispatch(decrease_btn_gamepad(selected));
-							}}
-						>
-							<MdOutlineRemoveCircleOutline
-								fontSize={'1.4rem'}
-								color="#fff"
-							/>
-						</button>
-
-						<p className="px-2 py-1 bg-blue-600 rounded-md">
-							{text}%
-						</p>
-
-						<button
-							onClick={() => {
-								appDispatch(increase_btn_gamepad(selected));
-							}}
-						>
-							<MdAddCircleOutline
-								fontSize={'1.4rem'}
-								color="#fff"
-							/>
-						</button>
-					</div>
-				</div>
-			</div>*/}
             {gamingKeyboard.editState == 'draggable' ? (
                 <NavDraggable />
             ) : gamingKeyboard.editState == 'addingKey' ? (

@@ -72,7 +72,7 @@ const fetchSetting = async () => {
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (CLIENT == null || !CLIENT?.ready()) return;
+        if (CLIENT == undefined || !CLIENT?.ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
         const clipboardHash = md5(clipboard);

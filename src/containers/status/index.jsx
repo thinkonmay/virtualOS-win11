@@ -20,8 +20,8 @@ export const Status = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setVideoConnectivity(CLIENT.Metrics.video.status);
-            setAudioConnectivity(CLIENT.Metrics.audio.status);
+            setVideoConnectivity(CLIENT?.Metrics.video.status);
+            setAudioConnectivity(CLIENT?.Metrics.audio.status);
         }, 1000);
 
         return () => {

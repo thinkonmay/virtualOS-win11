@@ -3,7 +3,7 @@ import { gamepadAxis } from '../../../../../../src-tauri/singleton';
 
 export const CustomJoyStick = React.memo(
     forwardRef((props, ref) => {
-        const { size = 100, type = 'right' } = props;
+        const { size = 100, isRight = true } = props;
 
         const knobRef = useRef(null);
         const [touching, setTouching] = useState(false);
@@ -42,7 +42,7 @@ export const CustomJoyStick = React.memo(
 
                 knobRef.current.style.transform = `translate(${x}px, ${y}px)`;
 
-                throttle(gamepadAxis(normalizedX, normalizedY, type), 0.5);
+                throttle(gamepadAxis(normalizedX, normalizedY, isRight), 0.5);
             }
         };
 
@@ -60,7 +60,7 @@ export const CustomJoyStick = React.memo(
         const handlePointerUp = () => {
             setTouching(false);
             knobRef.current.style.transform = 'translate(0px, 0px)';
-            gamepadAxis(0, 0, type);
+            gamepadAxis(0, 0, isRight);
         };
 
         return (
