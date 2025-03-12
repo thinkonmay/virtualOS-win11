@@ -50,9 +50,7 @@ export function paymentQR({
     useEffect(() => {
         const interval = setInterval(verify, 2000);
         return async () => {
-            await new Promise((r) => setTimeout(r, 10000));
             clearInterval(interval);
-            window.location.reload();
         };
     }, []);
 

@@ -12,6 +12,7 @@ import {
     desk_size,
     desk_sort,
     dispatch_generic,
+    fetch_wallet,
     menu_chng,
     menu_hide,
     popup_close,
@@ -290,9 +291,6 @@ export const create_payment_link = async ({ amount }: { amount: string }) => {
     if (error)
         throw new Error('Error when create payment link' + error.message);
     else {
-        console.log(data[0].data.data.accountName);
-        console.log(data[0].data.data.amount);
-        console.log(data[0].data.data.description.split(' ')[1]);
         appDispatch(
             popup_open({
                 type: 'paymentQR',
@@ -329,6 +327,9 @@ export const verify_transaction = async ({ id }: { id: number }) => {
             'Error when try to verify transaction:' + error.message
         );
     else if (data == 'PAID') {
+        await GLOBAL().rpc('verify_all_transactions');
+        await appDispatch(fetch_wallet());
+
         return true;
     }
 
