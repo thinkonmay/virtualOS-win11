@@ -258,8 +258,8 @@ export const ButtonGroupRight = (props) => {
         <>
             <GamepadButton
                 id={'rt'}
-                onTouchStart={() => gamepadButton(7, 'down')}
-                onTouchEnd={() => gamepadButton(7, 'up')}
+                onTouchStart={() => gamepadButton(7, true)}
+                onTouchEnd={() => gamepadButton(7)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -278,8 +278,8 @@ export const ButtonGroupRight = (props) => {
 
             <GamepadButton
                 id={'rb'}
-                onTouchStart={() => gamepadButton(5, 'down')}
-                onTouchEnd={() => gamepadButton(5, 'up')}
+                onTouchStart={() => gamepadButton(5, true)}
+                onTouchEnd={() => gamepadButton(5)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -298,8 +298,8 @@ export const ButtonGroupRight = (props) => {
 
             <GamepadButton
                 id={'btnY'}
-                onTouchStart={() => gamepadButton(3, 'down')}
-                onTouchEnd={() => gamepadButton(3, 'up')}
+                onTouchStart={() => gamepadButton(3, true)}
+                onTouchEnd={() => gamepadButton(3)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -316,8 +316,8 @@ export const ButtonGroupRight = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'btnA'}
-                onTouchStart={() => gamepadButton(0, 'down')}
-                onTouchEnd={() => gamepadButton(0, 'up')}
+                onTouchStart={() => gamepadButton(0, true)}
+                onTouchEnd={() => gamepadButton(0)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -334,8 +334,8 @@ export const ButtonGroupRight = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'btnB'}
-                onTouchStart={() => gamepadButton(1, 'down')}
-                onTouchEnd={() => gamepadButton(1, 'up')}
+                onTouchStart={() => gamepadButton(1, true)}
+                onTouchEnd={() => gamepadButton(1)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -352,8 +352,8 @@ export const ButtonGroupRight = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'btnX'}
-                onTouchStart={() => gamepadButton(2, 'down')}
-                onTouchEnd={() => gamepadButton(2, 'up')}
+                onTouchStart={() => gamepadButton(2, true)}
+                onTouchEnd={() => gamepadButton(2)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -391,7 +391,7 @@ export const ButtonGroupRight = (props) => {
                         ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSizes.rightJt}
-                        type="right"
+                        isRight={true}
                     />
                 </div>
             </Draggable>
@@ -405,8 +405,8 @@ export const ButtonGroupRight = (props) => {
                 <div ref={subBtnRef} className="containerSubButton" id="subBtn">
                     <div
                         className="centerButton"
-                        onTouchStart={() => gamepadButton(8, 'down')}
-                        onTouchEnd={() => gamepadButton(8, 'up')}
+                        onTouchStart={() => gamepadButton(8, true)}
+                        onTouchEnd={() => gamepadButton(8)}
                     >
                         <MdArrowLeft />
                     </div>
@@ -420,8 +420,8 @@ export const ButtonGroupRight = (props) => {
                     </div>
                     <div
                         className="centerButton"
-                        onTouchStart={() => gamepadButton(9, 'down')}
-                        onTouchEnd={() => gamepadButton(9, 'up')}
+                        onTouchStart={() => gamepadButton(9, true)}
+                        onTouchEnd={() => gamepadButton(9)}
                     >
                         <MdArrowRight />
                     </div>
@@ -430,8 +430,8 @@ export const ButtonGroupRight = (props) => {
 
             <GamepadButton
                 id={'rs'}
-                onTouchStart={() => gamepadButton(11, 'down')}
-                onTouchEnd={() => gamepadButton(11, 'up')}
+                onTouchStart={() => gamepadButton(11, true)}
+                onTouchEnd={() => gamepadButton(11)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -587,8 +587,8 @@ export const ButtonGroupLeft = (props) => {
         <>
             <GamepadButton
                 id={'lt'}
-                onTouchStart={() => gamepadButton(6, 'down')}
-                onTouchEnd={() => gamepadButton(6, 'up')}
+                onTouchStart={() => gamepadButton(6, true)}
+                onTouchEnd={() => gamepadButton(6)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -606,8 +606,8 @@ export const ButtonGroupLeft = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'lb'}
-                onTouchStart={() => gamepadButton(4, 'down')}
-                onTouchEnd={() => gamepadButton(4, 'up')}
+                onTouchStart={() => gamepadButton(4, true)}
+                onTouchEnd={() => gamepadButton(4)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -645,8 +645,8 @@ export const ButtonGroupLeft = (props) => {
             </Draggable>
             <GamepadButton
                 id={'ls'}
-                onTouchStart={() => gamepadButton(10, 'down')}
-                onTouchEnd={() => gamepadButton(10, 'up')}
+                onTouchStart={() => gamepadButton(10, true)}
+                onTouchEnd={() => gamepadButton(10)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -683,7 +683,7 @@ export const ButtonGroupLeft = (props) => {
                 >
                     <CustomJoyStick
                         color="black"
-                        type="left"
+                        isRight={false}
                         ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSizes.leftJt}

@@ -35,15 +35,12 @@ export const VirtKeyboard = () => {
         keyboard(
             ...(useShift(button)
                 ? [
-                      { val: 'Shift', action: 'down' },
-                      { val: button, action: 'down' },
-                      { val: button, action: 'up' },
-                      { val: 'Shift', action: 'up' }
+                      { val: 'Shift', isDown: true },
+                      { val: button, isDown: true },
+                      { val: button },
+                      { val: 'Shift' }
                   ]
-                : [
-                      { val: button, action: 'down' },
-                      { val: button, action: 'up' }
-                  ])
+                : [{ val: button, isDown: true }, { val: button }])
         );
 
         play();

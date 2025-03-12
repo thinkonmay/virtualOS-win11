@@ -11,7 +11,7 @@ import {
     worker_refresh
 } from '.';
 import { RemoteCredential } from '../../../src-tauri/api';
-import { EventCode, isMobile } from '../../../src-tauri/core';
+import { isMobile } from '../../../src-tauri/core';
 import {
     Assign,
     CLIENT,
@@ -98,16 +98,6 @@ const initialState: Data = {
     objectFit: 'fill'
 };
 
-export function WindowD() {
-    if (CLIENT == null) return;
-    CLIENT.VirtualKeyboard(
-        { code: EventCode.kd, jsKey: 'lwin' },
-        { code: EventCode.kd, jsKey: 'd' },
-        { code: EventCode.ku, jsKey: 'd' },
-        { code: EventCode.ku, jsKey: 'lwin' }
-    );
-}
-
 export const setClipBoard = async (content: string) => {
     await CLIENT?.SetClipboard(content);
 };
@@ -118,7 +108,7 @@ export const remoteAsync = {
         } = store.getState();
         if (!active) return;
         else if (direct_access) return;
-        else if (CLIENT == null) return;
+        else if (CLIENT == undefined) return;
         else if (CLIENT.Metrics.video.status == 'connected') return;
 
         await appDispatch(worker_refresh());
@@ -150,7 +140,7 @@ export const remoteAsync = {
             prev_size
         } = store.getState().remote;
         if (!active) return;
-        else if (CLIENT == null || !CLIENT?.ready()) return;
+        else if (CLIENT == undefined || !CLIENT?.ready()) return;
         if (isMobile()) CLIENT.PointerVisible(true);
 
         const {
@@ -234,7 +224,7 @@ export const remoteAsync = {
     hard_reset_async: createAsyncThunk(
         'hard_reset_async',
         async (_: void, { getState }) => {
-            if (CLIENT == null) return;
+            if (CLIENT == undefined) return;
 
             appDispatch(
                 popup_open({
@@ -272,7 +262,7 @@ export const remoteSlice = createSlice({
         },
         loose_focus: (state) => {
             state.focus = false;
-            CLIENT?.hid?.ResetKeyStuck();
+            if (CLIENT) CLIENT?.hid?.ResetKeyStuck();
         },
         have_focus: (state) => {
             state.focus = true;
@@ -314,8 +304,7 @@ export const remoteSlice = createSlice({
         },
         pointer_lock: (state, action: PayloadAction<boolean>) => {
             state.pointer_lock = action.payload;
-            if (CLIENT == null) return;
-            CLIENT.PointerVisible(action.payload);
+            CLIENT?.PointerVisible(action.payload);
         },
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
