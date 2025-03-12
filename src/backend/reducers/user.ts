@@ -87,10 +87,6 @@ type Data = RecordModel & {
     wallet: Wallet;
 };
 
-export const isUUID = (uuid) =>
-    uuid.match(
-        '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-    ) != null;
 const initialState: Data = {
     collectionId: '',
     collectionName: '',
@@ -369,139 +365,7 @@ export const userAsync = {
             return plans;
         }
     ),
-    get_payment: createAsyncThunk(
-        'get_payment',
-        async (
-            input: { plan_name: string; domain?: string },
-            { getState }
-        ): Promise<string> => {
-            const {
-                data: [_plans],
-                error: errrr
-            } = await GLOBAL()
-                .from('plans')
-                .select('id')
-                .eq('name', input.plan_name)
-                .limit(1);
-            if (errrr) throw new Error(errrr.message);
-            else if (_plans == undefined)
-                throw new Error('gói dịch vụ hiện đang tạm đóng');
-            const { id: plan } = _plans;
 
-            const email = (getState() as RootState).user?.email;
-            const currentAddr = (getState() as RootState).worker.currentAddress;
-
-            const { data: existSub, error: errr } = await GLOBAL()
-                .from('subscriptions')
-                .select('id')
-                .gt('ended_at', new Date().toISOString())
-                .eq('user', email)
-                .is('cancelled_at', null)
-                .order('created_at', { ascending: false });
-            if (errr) throw new Error(errr.message);
-            else if (existSub.length > 0) {
-                const { data: get_payment_link, error } = await GLOBAL().rpc(
-                    'get_payment_link',
-                    {
-                        email
-                    }
-                );
-
-                if (error)
-                    throw new Error(
-                        'Error when get payment link' + error.message
-                    );
-
-                if (get_payment_link != null) {
-                    return get_payment_link;
-                }
-
-                const { data: create_payment_link, error: err } =
-                    await GLOBAL().rpc('create_payment_link', {
-                        email,
-                        plan,
-                        provider: 'PAYOS',
-                        currency: 'VND'
-                    });
-
-                if (err)
-                    throw new Error(
-                        'Error when create payment link' + error.message
-                    );
-
-                if (create_payment_link != null) {
-                    return create_payment_link;
-                }
-            } else if (input.domain != undefined) {
-                // new users
-
-                const { domain } = input;
-
-                const {
-                    data: [cluster_ele],
-                    error: errrrr
-                } = await GLOBAL()
-                    .from('clusters')
-                    .select('id')
-                    .eq('domain', domain)
-                    .eq('active', true)
-                    .limit(1);
-                if (errrrr) throw new Error(errrrr.message);
-                else if (cluster_ele == undefined)
-                    throw new Error('dịch vụ hiện chưa triển khai trên domain');
-
-                const { id: cluster } = cluster_ele;
-                const { data, error } = await GLOBAL()
-                    .from('subscriptions')
-                    .insert({ user: email, cluster })
-                    .select('id');
-                if (error) throw new Error(error.message);
-
-                const { data: create_payment_link, error: err } =
-                    await GLOBAL().rpc('create_payment_link', {
-                        email,
-                        plan,
-                        provider: 'PAYOS',
-                        currency: 'VND'
-                    });
-
-                if (err)
-                    throw new Error(
-                        'Error when create payment link' + error.message
-                    );
-
-                if (domain != currentAddr) await remotelogin(domain, email);
-
-                if (create_payment_link != null) {
-                    return create_payment_link;
-                }
-
-                throw new Error('Failed to create payment link');
-            } else throw new Error('Bạn đã đăng kí dịch vụ');
-        }
-    ),
-    create_payment_link: createAsyncThunk(
-        'create_payment_link',
-        async (input: any, { getState }) => {
-            const { email } = (getState() as RootState).user;
-            const { amount } = input;
-
-            const { data: create_payment_link, error: err } =
-                await GLOBAL().rpc('create_pocket_deposit', {
-                    email,
-                    amount: +amount,
-                    provider: 'PAYOS',
-                    currency: 'VND'
-                });
-
-            if (err)
-                throw new Error('Error when create payment link' + err.message);
-
-            if (create_payment_link != null) {
-                return create_payment_link;
-            }
-        }
-    ),
     get_deposit_status: createAsyncThunk(
         'get_deposit_status',
         async (_, { getState }) => {
@@ -778,18 +642,6 @@ export const userSlice = createSlice({
                 fetch: userAsync.get_payment_pocket_status,
                 hander: (state, action) => {
                     state.wallet.planStatus = action.payload;
-                }
-            },
-            {
-                fetch: userAsync.get_payment,
-                hander: (state, action) => {
-                    window.open(action.payload, '_self');
-                }
-            },
-            {
-                fetch: userAsync.create_payment_link,
-                hander: (state, action) => {
-                    window.open(action.payload, '_self');
                 }
             },
             {

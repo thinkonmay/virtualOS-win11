@@ -135,7 +135,6 @@ export const {
 export const {
     remote_connect,
     remote_ready,
-    share_reference,
     toggle_remote,
     loose_focus,
     have_focus,
@@ -167,8 +166,6 @@ export const {
     fetch_payment_history,
     fetch_subscription,
     fetch_usage,
-    get_payment,
-    create_payment_link,
     get_plans,
     change_template,
     create_payment_pocket,

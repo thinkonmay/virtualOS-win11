@@ -277,3 +277,26 @@ export const createPaymentPocket = ({
         );
     }
 };
+
+export const create_payment_link = async ({ amount }: { amount: string }) => {
+    const email = store.getState().user.email;
+    const { data, error } = await GLOBAL().rpc('create_pocket_deposit_qr', {
+        email,
+        amount: +amount,
+        provider: 'PAYOS',
+        currency: 'VND'
+    });
+
+    if (error)
+        throw new Error('Error when create payment link' + error.message);
+    else
+        appDispatch(
+            popup_open({
+                type: 'paymentQR',
+                data: {
+                    code: data[0].qrcode,
+                    url: data[0].payment_url
+                }
+            })
+        );
+};
