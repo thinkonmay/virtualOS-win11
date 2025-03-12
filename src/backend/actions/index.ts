@@ -327,7 +327,7 @@ export const verify_transaction = async ({ id }: { id: number }) => {
             'Error when try to verify transaction:' + error.message
         );
     else if (data == 'PAID') {
-        await GLOBAL().rpc('verify_all_transactions');
+        await GLOBAL().rpc('verify_all_deposits');
         await appDispatch(fetch_wallet());
 
         return true;
