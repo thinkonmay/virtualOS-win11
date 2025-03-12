@@ -35,7 +35,7 @@ const DepositPage = () => {
             <h2 className="title">Chuyển khoản ngân hàng</h2>
 
             <p className="subtitle mt-2">
-                *Tiền sẽ chuyển vào ví sau 2-5 phút, mong bạn thông cảm
+                *Tiền sẽ chuyển vào ví sau 15 - 30 giây, mong bạn thông cảm
             </p>
 
             <div className="depositBox">

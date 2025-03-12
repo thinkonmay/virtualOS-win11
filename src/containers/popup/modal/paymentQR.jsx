@@ -1,4 +1,9 @@
+import { useEffect } from 'react';
 import QRCode from 'react-qr-code';
+import {
+    cancel_transaction,
+    verify_transaction
+} from '../../../backend/actions';
 import {
     appDispatch,
     popup_close,
@@ -6,26 +11,36 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
-import { useEffect } from 'react';
 
-export function paymentQR({ data: { code, url } }) {
+export function paymentQR({
+    data: { id, code, url, accountName, amount, description }
+}) {
     const t = useAppSelector((state) => state.globals.translation);
 
     const cancel = () => {
-        // TODO: call cancel request to PAYOS
+        appDispatch(cancel_transaction({ id }));
         appDispatch(popup_close(true));
-        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: 'Cancel'
+                }
+            })
+        );
     };
 
     const verify = async () => {
-        if (true) {
+        const result = await verify_transaction({ id });
+        if (result) {
             appDispatch(popup_close(true));
             appDispatch(
                 popup_open({
                     type: 'complete',
                     data: {
                         success: true,
-                        content: 'Your Payment is success'
+                        content: t[Contents.PAYMENT_DEPOSIT_SUCCESS]
                     }
                 })
             );
@@ -33,9 +48,11 @@ export function paymentQR({ data: { code, url } }) {
     };
 
     useEffect(() => {
-        const interval = setInterval(verify, 5000);
-        return () => {
+        const interval = setInterval(verify, 2000);
+        return async () => {
+            await new Promise((r) => setTimeout(r, 10000));
             clearInterval(interval);
+            window.location.reload();
         };
     }, []);
 
@@ -48,8 +65,7 @@ export function paymentQR({ data: { code, url } }) {
                     {t[Contents.PAYMENT_APP]}
                 </p>
             </div>
-            <p className="text-lg mb-8">{t[Contents.PAYMENT_APP]}</p>
-
+            <p className="text-lg mb-8">{t[Contents.PAYMENT_DEPOSIT]}</p>
             <div className=" flex justify-between gap-3 items-center rounded-lg p-2 bg-slate-200">
                 <QRCode
                     size={256}
@@ -58,6 +74,17 @@ export function paymentQR({ data: { code, url } }) {
                     viewBox={`0 0 256 256`}
                 />
             </div>
+            <div className="flex gap-3 justify-center mt-3 mb-2">
+                {t[Contents.PAYMENT_ACCOUNT_NAME]} {accountName}
+            </div>
+            <div className="flex gap-3 justify-center mt-3 mb-2">
+                {t[Contents.PAYMENT_DESCRIPTION]} {description} (
+                {t[Contents.PAYMENT_REQUIRE]})
+            </div>
+            <div className="flex gap-3 justify-center mt-3 mb-2">
+                {t[Contents.PAYMENT_AMOUNT]} {amount}
+            </div>
+
             <div className="flex gap-3 justify-center mt-3 mb-2">
                 <button
                     style={{ padding: '6px 14px' }}

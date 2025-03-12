@@ -2,11 +2,18 @@ import { Translation } from '../globals';
 
 export type Languages = 'VN' | 'ENG' | 'ID';
 export enum Contents {
+    // ------------ PAYMENT
     PAYMENT_FOLLOW_UP_TITLE,
     PAYMENT_FOLLOW_UP_TITLE1,
     PAYMENT_FOLLOW_UP_CONTENT,
     PAYMENT_FOLLOW_UP_DONE,
-
+    PAYMENT_DEPOSIT,
+    PAYMENT_ACCOUNT_NAME,
+    PAYMENT_DESCRIPTION,
+    PAYMENT_AMOUNT,
+    PAYMENT_REQUIRE,
+    PAYMENT_DEPOSIT_SUCCESS,
+    // ------------------------------
     BOOTING,
     ROTATE_PHONE,
 
@@ -929,5 +936,33 @@ export function language() {
     en.set(Contents.YOU_ARE_IN, 'You are in');
     vn.set(Contents.YOU_ARE_IN, 'Bạn đang ở');
     id.set(Contents.YOU_ARE_IN, 'You are in');
+
+    en.set(Contents.PAYMENT_DEPOSIT, 'Transfer money');
+    vn.set(Contents.PAYMENT_DEPOSIT, 'Chuyển tiền');
+    id.set(Contents.PAYMENT_DEPOSIT, 'Transfer money');
+
+    en.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');
+    vn.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');
+    id.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');
+
+    en.set(Contents.PAYMENT_DESCRIPTION, 'Description');
+    vn.set(Contents.PAYMENT_DESCRIPTION, 'Nội dung');
+    id.set(Contents.PAYMENT_DESCRIPTION, 'Description');
+
+    en.set(Contents.PAYMENT_AMOUNT, 'Description');
+    vn.set(Contents.PAYMENT_AMOUNT, 'Số tiền');
+    id.set(Contents.PAYMENT_AMOUNT, 'Description');
+
+    en.set(Contents.PAYMENT_REQUIRE, 'Require');
+    vn.set(Contents.PAYMENT_REQUIRE, 'Bắt buộc');
+    id.set(Contents.PAYMENT_REQUIRE, 'Require');
+
+    en.set(Contents.PAYMENT_DEPOSIT_SUCCESS, 'Success');
+    vn.set(
+        Contents.PAYMENT_DEPOSIT_SUCCESS,
+        'Hệ thống đã nhận được thanh toán nạp tiền của bạn. Trang web sẽ khởi động lại 10s!'
+    );
+    id.set(Contents.PAYMENT_DEPOSIT_SUCCESS, 'Success');
+
     return t;
 }

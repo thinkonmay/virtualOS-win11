@@ -26,7 +26,7 @@ export function pocketBuyConfirm({
                     Sau khi xác nhận tiền trong ví sẽ bị trừ
                 </p>
                 <p className="mt-[8px] text-lg text-center">
-                    Bạn vui lòng đợi 2 phút sau đó tải lại trang để gói được cập
+                    Bạn vui lòng đợi 10s sau đó tải lại trang để gói được cập
                     nhật
                 </p>
             </div>
