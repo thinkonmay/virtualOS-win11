@@ -275,7 +275,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     };
 
     const handleChangePlan = (plan_name) => {
-        console.log(plan_name);
         if (isHavingPlan()?.id) {
             appDispatch(
                 popup_open({
@@ -578,11 +577,9 @@ const GreenLight = () => {
 
 const SubscriptionPage = () => {
     const plans = useAppSelector((state) => state.user.plans);
-    const wallet = useAppSelector((state) => state.user.wallet);
 
     listSubs.forEach((e) => {
         const plan = plans.find((x) => x.name == e.name);
-        console.log(plan);
         if (plan == null || undefined) return;
         e.active = plan.allow_payment;
         e.price_in_vnd = plan.amount;
@@ -594,7 +591,6 @@ const SubscriptionPage = () => {
         if (!sub.active && listDisableShows[sub.name]) return;
         return sub;
     });
-    console.log(listSubs);
     return (
         <div className="subscriptionPage md:!justify-evenly px-0 ">
             {listSubfiler.map(

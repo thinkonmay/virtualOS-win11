@@ -50,6 +50,17 @@ type PopupData =
           };
       }
     | {
+          type: 'paymentQR';
+          data: {
+              id: number;
+              code: string;
+              url: string;
+              accountName: string;
+              amount: number;
+              description: string;
+          };
+      }
+    | {
           type: 'info';
           data: {
               title: string;

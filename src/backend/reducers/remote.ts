@@ -270,11 +270,6 @@ export const remoteSlice = createSlice({
             set_hq(!state.hq);
             state.hq = !state.hq;
         },
-        share_reference: (state) => {
-            const token = state.ref;
-            if (token == undefined) return;
-            // navigator.clipboard.writeText(`${getDomainURL()}/?ref=${token}`);
-        },
         loose_focus: (state) => {
             state.focus = false;
             CLIENT?.hid?.ResetKeyStuck();

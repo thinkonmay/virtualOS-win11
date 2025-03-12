@@ -277,3 +277,60 @@ export const createPaymentPocket = ({
         );
     }
 };
+
+export const create_payment_link = async ({ amount }: { amount: string }) => {
+    const email = store.getState().user.email;
+    const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
+        email,
+        amount: +amount,
+        provider: 'PAYOS',
+        currency: 'VND'
+    });
+
+    if (error)
+        throw new Error('Error when create payment link' + error.message);
+    else {
+        console.log(data[0].data.data.accountName);
+        console.log(data[0].data.data.amount);
+        console.log(data[0].data.data.description.split(' ')[1]);
+        appDispatch(
+            popup_open({
+                type: 'paymentQR',
+                data: {
+                    id: data[0].id,
+                    code: data[0].qrcode,
+                    url: data[0].payment_url,
+                    accountName: data[0].data.data.accountName,
+                    amount: Number.parseInt(data[0].data.data.amount),
+                    description: data[0].data.data.description.split(' ')[1]
+                }
+            })
+        );
+    }
+};
+
+export const cancel_transaction = async ({ id }: { id: number }) => {
+    const { error } = await GLOBAL().rpc('cancel_transaction', {
+        id
+    });
+
+    if (error)
+        throw new Error('Error when cancellled transaction:' + error.message);
+
+    return true;
+};
+
+export const verify_transaction = async ({ id }: { id: number }) => {
+    const { data, error } = await GLOBAL().rpc('get_transaction_status', {
+        id
+    });
+    if (error)
+        throw new Error(
+            'Error when try to verify transaction:' + error.message
+        );
+    else if (data == 'PAID') {
+        return true;
+    }
+
+    return false;
+};

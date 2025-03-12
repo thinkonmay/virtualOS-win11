@@ -12,4 +12,5 @@ export { showQa } from './qa';
 export { redirectDomain } from './redirect';
 export { serversInfo } from './serversInfo';
 export { shareLink } from './shareLink';
+export { paymentQR } from './paymentQR';
 export { yesNo } from './yesNo';

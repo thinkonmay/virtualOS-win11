@@ -21,7 +21,6 @@ import {
 import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
-import { isUUID } from './user';
 import { showConnect } from '../actions';
 
 type innerComputer = Computer & {

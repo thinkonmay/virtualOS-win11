@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from 'react-icons/md';
 import { NumericFormat } from 'react-number-format';
-import { appDispatch, create_payment_link } from '../../backend/reducers';
+import { create_payment_link } from '../../backend/actions';
 
 const DepositPage = () => {
     const [depositNumber, setDepositNumber] = useState('');
@@ -10,24 +10,13 @@ const DepositPage = () => {
 
     const handleDeposit = () => {
         if (isErr) return;
-
-        appDispatch(
-            create_payment_link({
-                amount: removeCommasAndCurrency(depositNumber)
-            })
-        );
-
-        /// show thanh t oán.
+        create_payment_link({
+            amount: removeCommasAndCurrency(depositNumber)
+        });
     };
 
-    function removeCommasAndCurrency(str) {
-        // Extract just the numeric part with commas
-        const numericPart = str.match(/[\d,]+/)[0];
-
-        // Remove commas
-        return numericPart.replace(/,/g, '');
-    }
-
+    const removeCommasAndCurrency = (str) =>
+        str.match(/[\d,]+/)[0].replace(/,/g, '');
     const handleChangeDepositNumber = (e) => {
         setDepositNumber(e.target.value);
 
@@ -46,7 +35,7 @@ const DepositPage = () => {
             <h2 className="title">Chuyển khoản ngân hàng</h2>
 
             <p className="subtitle mt-2">
-                *Tiền sẽ chuyển vào ví sau 2-5 phút, mong bạn thông cảm
+                *Tiền sẽ chuyển vào ví sau 15 - 30 giây, mong bạn thông cảm
             </p>
 
             <div className="depositBox">
@@ -82,7 +71,6 @@ const DepositPage = () => {
                 >
                     Tuỳ chọn
                 </div>
-                {/*<div className={`option ${option == 'any' ? 'selected' : ''}`}>Gia hạn gói hiện tại</div>*/}
             </div>
 
             <div className="noticesBox">
@@ -96,9 +84,6 @@ const DepositPage = () => {
                     </li>
                 </ul>
             </div>
-
-            {/*<CardDepositBox />*/}
-            {/*<OthersDepositBox />*/}
         </div>
     );
 };
