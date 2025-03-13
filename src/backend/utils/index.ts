@@ -64,8 +64,11 @@ const apps: AppData[] = [
     {
         name: [Contents.G4MARKET_APP],
         id: 'g4market',
-        action: 'apps/app_toggle',
-        payload: 'g4market'
+        //action: 'apps/app_toggle',
+        //payload: 'g4market'
+        action: 'apps/app_external',
+        payload: externalLink.G4MARKET_LINK_DESKTOP,
+        mono: true
     },
     {
         name: [Contents.DISCORD_APP],
