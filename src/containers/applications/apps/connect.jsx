@@ -3,7 +3,8 @@ import {
     app_toggle,
     popup_open,
     useAppSelector,
-    wait_and_claim_volume
+    wait_and_claim_volume,
+    worker_refresh_ui
 } from '../../../backend/reducers';
 import {
     Icon,
@@ -57,7 +58,7 @@ export const ConnectApp = () => {
 
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
-    const reload = () => location.reload();
+    const reload = () => appDispatch(worker_refresh_ui());
 
     return (
         <div

@@ -1,21 +1,14 @@
 import { MdOutlineChangeCircle } from 'react-icons/md';
-import {
-    appDispatch,
-    modify_payment_pocket,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
+import { modify_payment_pocket } from '../../../backend/actions';
+import { appDispatch, popup_close } from '../../../backend/reducers';
 import { numberFormat } from '../../../backend/utils/format';
 
 export function pocketChangePlan({
     data: { plan_name, plan_price, plan_title, oldPlanId }
 }) {
-    const t = useAppSelector((state) => state.globals.translation);
+    const handleContinue = () =>
+        modify_payment_pocket({ plan_name, id: oldPlanId });
 
-    const handleContinue = () => {
-        appDispatch(popup_close());
-        appDispatch(modify_payment_pocket({ plan_name, id: oldPlanId }));
-    };
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
             <div className="flex justify-center items-center gap-2 text-[#0067c0]">

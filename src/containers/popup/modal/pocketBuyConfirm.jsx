@@ -1,20 +1,10 @@
 import { MdCheckCircleOutline } from 'react-icons/md';
-import {
-    appDispatch,
-    create_payment_pocket,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
+import { appDispatch, popup_close } from '../../../backend/reducers';
+import { create_payment_pocket } from '../../../backend/actions';
 
-export function pocketBuyConfirm({
-    data: { plan_name, cluster_domain = 'play.thinkmay.net' }
-}) {
-    const t = useAppSelector((state) => state.globals.translation);
+export function pocketBuyConfirm({ data }) {
+    const handleContinue = () => create_payment_pocket(data);
 
-    const handleContinue = () => {
-        appDispatch(popup_close());
-        appDispatch(create_payment_pocket({ plan_name, cluster_domain }));
-    };
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
             <div className="flex justify-center items-center gap-2 text-[#0067c0]">

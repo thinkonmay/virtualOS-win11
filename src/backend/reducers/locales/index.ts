@@ -964,15 +964,12 @@ export function language() {
     en.set(Contents.PAYMENT_DEPOSIT_SUCCESS, 'Success');
     vn.set(
         Contents.PAYMENT_DEPOSIT_SUCCESS,
-        'Hệ thống đã nhận được thanh toán nạp tiền của bạn. Trang web sẽ khởi động lại 10s!'
+        'Hệ thống đã nhận được thanh toán nạp tiền của bạn'
     );
     id.set(Contents.PAYMENT_DEPOSIT_SUCCESS, 'Success');
 
     en.set(Contents.PAYMENT_POCKET_SUCCESS, 'Success');
-    vn.set(
-        Contents.PAYMENT_POCKET_SUCCESS,
-        'Hệ thống thanh toán thành công. Trang web sẽ khởi động lại sau 10s!'
-    );
+    vn.set(Contents.PAYMENT_POCKET_SUCCESS, 'Hệ thống thanh toán thành công');
     id.set(Contents.PAYMENT_POCKET_SUCCESS, 'Success');
 
     return t;

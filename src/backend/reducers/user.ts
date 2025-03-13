@@ -411,102 +411,6 @@ export const userAsync = {
             }
         }
     ),
-    create_payment_pocket: createAsyncThunk(
-        'create_payment_pocket',
-        async (
-            input: {
-                plan_name: string;
-                cluster_domain?: string;
-            },
-            { getState }
-        ) => {
-            const { email } = (getState() as RootState).user;
-            const { plan_name, cluster_domain = 'play.thinkmay.net' } = input;
-            const t = (getState() as RootState).globals.translation;
-
-            const { data, error: err } = await GLOBAL().rpc(
-                'create_payment_pocket',
-                {
-                    email,
-                    plan_name,
-                    cluster_domain: cluster_domain
-                }
-            );
-
-            if (err)
-                throw new Error(
-                    'Error when create_payment_pocket' + err.message
-                );
-            if (data == false) {
-                throw new Error('failed to create payment to pocket');
-            }
-
-            if (data) {
-                await GLOBAL().rpc('verify_all_pocket_payment');
-                await appDispatch(fetch_wallet());
-                appDispatch(popup_close());
-                appDispatch(
-                    popup_open({
-                        type: 'complete',
-                        data: {
-                            success: true,
-                            content: t[Contents.PAYMENT_POCKET_SUCCESS]
-                        }
-                    })
-                );
-                return data;
-            }
-        }
-    ),
-    modify_payment_pocket: createAsyncThunk(
-        'modify_payment_pocket',
-        async (
-            input: {
-                id: string;
-                plan_name: PlanName;
-                renew?: boolean;
-            },
-            { getState }
-        ) => {
-            const { id, plan_name, renew = false } = input;
-            const t = (getState() as RootState).globals.translation;
-
-            const { data, error: err } = await GLOBAL().rpc(
-                'modify_payment_pocket',
-                {
-                    id,
-                    plan_name,
-                    renew
-                }
-            );
-
-            if (err)
-                throw new Error(
-                    'Error when modify_payment_pocket' + err.message
-                );
-
-            if (data == false) {
-                throw new Error('failed to modify payment to pocket');
-            }
-
-            if (data) {
-                await GLOBAL().rpc('verify_all_pocket_payment');
-                await appDispatch(fetch_wallet());
-                await appDispatch(fetch_subscription());
-                appDispatch(popup_close());
-                appDispatch(
-                    popup_open({
-                        type: 'complete',
-                        data: {
-                            success: true,
-                            content: t[Contents.PAYMENT_POCKET_SUCCESS]
-                        }
-                    })
-                );
-                await new Promise((r) => setTimeout(r, 10000));
-            }
-        }
-    ),
     cancel_payment_pocket: createAsyncThunk(
         'cancel_payment_pocket',
         async (
@@ -540,7 +444,6 @@ export const userAsync = {
         'get_payment_pocket',
         async (_, { getState }): Promise<string> => {
             const { email } = (getState() as RootState).user;
-
             const { data, error: err } = await GLOBAL().rpc(
                 'get_payment_pocket',
                 {
@@ -548,15 +451,8 @@ export const userAsync = {
                 }
             );
 
-            data;
-            if (err)
-                throw new Error(
-                    'Error when create_payment_pocket' + err.message
-                );
-
-            if (data != null) {
-                return data;
-            }
+            if (err) throw new Error(err.message);
+            else if (data != null) return data;
         }
     ),
     change_size: createAsyncThunk(
@@ -682,22 +578,6 @@ export const userSlice = createSlice({
                 fetch: userAsync.get_payment_pocket_status,
                 hander: (state, action) => {
                     state.wallet.planStatus = action.payload;
-                }
-            },
-            {
-                fetch: userAsync.modify_payment_pocket,
-                hander: (state, action) => {
-                    if (action.payload) {
-                        //location.reload();
-                    }
-                }
-            },
-            {
-                fetch: userAsync.create_payment_pocket,
-                hander: (state, action) => {
-                    if (action.payload) {
-                        location.reload();
-                    }
                 }
             },
             {
