@@ -127,7 +127,7 @@ const DetailPage = ({ app }) => {
                         volume != undefined ? (
                             volume.inuse ? (
                                 <button className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]">
-                                    volume is in use
+                                    Vui lòng tắt máy!
                                 </button>
                             ) : (
                                 <>

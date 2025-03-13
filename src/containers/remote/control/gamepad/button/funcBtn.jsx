@@ -3,7 +3,7 @@ import GamepadButton from './defaultBtn';
 import './index.scss';
 
 export function RightFuncButton(props) {
-    const { name, className, size, ...rest } = props
+    const { name, className, size, ...rest } = props;
     const buttonSize = {
         width: size,
         height: size
