@@ -16,7 +16,7 @@ function SubscriptionPaidStatus() {
         if (planStatus?.length > 1) {
             title = 'Các lệnh nạp tiền';
         } else if (planStatus?.length == 1) {
-            title = `Lệnh nạp ${numberFormat(planStatus[0].amount)} vnđ`;
+            title = `Lệnh nạp ${numberFormat(planStatus[0].amount)} đ`;
         }
         return title;
     };

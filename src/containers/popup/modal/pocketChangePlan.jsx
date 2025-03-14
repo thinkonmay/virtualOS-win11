@@ -22,7 +22,7 @@ export function pocketChangePlan({
                 </p>
                 <p className="mt-[8px] text-lg text-center">
                     Sau đó {plan_title} sẽ bắt đầu hiệu lực, với giá{' '}
-                    {numberFormat(plan_price)} vnđ.{' '}
+                    {numberFormat(plan_price)} đ.{' '}
                 </p>
             </div>
             <div className="flex gap-3 justify-end mt-3 mb-2">

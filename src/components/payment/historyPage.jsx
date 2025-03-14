@@ -121,7 +121,7 @@ export const TransactionHistoryPage = () => {
                     currentData.map((item) => (
                         <div className="rowContent" key={item.id}>
                             <div className="columnContent">
-                                {numberFormat(+item.amount)} Vnđ
+                                {numberFormat(+item.amount)} đ
                             </div>
                             <div className="columnContent">
                                 {renderNameDeteils(item.plan_name)}
