@@ -22,7 +22,7 @@ const DepositPage = () => {
 
         if (!e.target.value) return;
         if (removeCommasAndCurrency(e.target.value) < 50000) {
-            setErr('Số tiền nạp phải >= 50k Vnđ');
+            setErr('Số tiền nạp phải >= 50k');
         } else if (removeCommasAndCurrency(e.target.value) > 1000000000) {
             setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
         } else {
@@ -44,7 +44,7 @@ const DepositPage = () => {
                 <div className="wrapperDeposit">
                     <NumericFormat
                         className="depositInput"
-                        placeholder="Nhập số tiền (VNĐ)"
+                        placeholder="Nhập số tiền (đ)"
                         onChange={handleChangeDepositNumber}
                         value={depositNumber}
                         //allowLeadingZeros
@@ -76,7 +76,7 @@ const DepositPage = () => {
             <div className="noticesBox">
                 <p className="title">Lưu ý:</p>
                 <ul className="">
-                    <li>Số tiền nạp tối thiểu là 50,000 VNĐ</li>
+                    <li>Số tiền nạp tối thiểu là 50,000 đ</li>
                     <li>Tiền đã nạp không thể rút ra thành tiền mặt</li>
                     <li>
                         Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên

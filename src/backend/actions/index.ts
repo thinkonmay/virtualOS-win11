@@ -242,6 +242,16 @@ export const createPaymentPocket = ({
     const status = store.getState().user.subscription.status;
     const wallet = store.getState().user.wallet;
 
+    const listPlan = {
+        week1: true,
+        week2: true,
+        month1: true,
+        month2: true
+    };
+
+    const isHavingPlan = () =>
+        wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
+
     if (wallet.money < plan_price) {
         appDispatch(
             popup_open({
@@ -267,10 +277,13 @@ export const createPaymentPocket = ({
     } else {
         appDispatch(
             popup_open({
-                type: 'pocketBuyConfirm',
+                type: 'pocketChangePlan',
                 data: {
                     plan_name,
-                    cluster_domain
+                    plan_price,
+                    plan_title,
+                    oldPlanId: isHavingPlan().id,
+                    isRenew: true
                 }
             })
         );

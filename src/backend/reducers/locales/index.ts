@@ -233,6 +233,7 @@ export enum Contents {
     //TEMPLATE APP (TA)
 
     TA_TILE,
+    TA_NEW_USER_CREATE_VOLUME,
     TA_SUBTITLE,
     TA_CRATE_NEW_PC,
     TA_CRATE_NEW_PC_NOTIFY,
@@ -425,6 +426,11 @@ export function language() {
         Contents.TA_TILE,
         'Sebuah mesin baru telah dibuat sebelumnya dengan game sudah terinstal.'
     );
+
+    en.set(Contents.TA_NEW_USER_CREATE_VOLUME, 'Please create a new template');
+
+    vn.set(Contents.TA_NEW_USER_CREATE_VOLUME, 'Vui lòng tạo máy');
+    id.set(Contents.TA_NEW_USER_CREATE_VOLUME, 'Please create a new template');
 
     en.set(
         Contents.TA_SUBTITLE,

@@ -18,7 +18,11 @@ import DepositPage from '../../../components/payment/depositPage';
 import { TransactionHistoryPage } from '../../../components/payment/historyPage';
 import { RefundPage } from '../../../components/payment/refundPage';
 import { StoragePage } from '../../../components/payment/storagePage';
-import { LazyComponent, ToolBar } from '../../../components/shared/general';
+import {
+    Icon,
+    LazyComponent,
+    ToolBar
+} from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
 
@@ -310,14 +314,20 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                     <div className="containerPrice">
                         <div className="flex items-end">
                             {
-                                <>
+                                <div className="flex">
                                     <h3 className="gradient-text-500 text-lg lg:text-3xl pb-1 uppercase font-mono text-brand-600">
-                                        {sub.price_in_vnd / 1000}k VND
+                                        {sub.price_in_vnd / 1000}k
                                     </h3>
+                                    <Icon
+                                        className="vndIcon ml-2 pb-2"
+                                        src="vnd"
+                                        invert={1}
+                                        width={24}
+                                    />
                                     {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
                                                     / {sub.period}{' '}
                                                 </p>*/}
-                                </>
+                                </div>
                             }
                         </div>
                         <p className="-mt-2">

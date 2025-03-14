@@ -4,26 +4,47 @@ import { appDispatch, popup_close } from '../../../backend/reducers';
 import { numberFormat } from '../../../backend/utils/format';
 
 export function pocketChangePlan({
-    data: { plan_name, plan_price, plan_title, oldPlanId }
+    data: { plan_name, plan_price, plan_title, oldPlanId, isRenew = false }
 }) {
     const handleContinue = () =>
-        modify_payment_pocket({ plan_name, id: oldPlanId });
+        modify_payment_pocket({ plan_name, id: oldPlanId, renew: isRenew });
 
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
             <div className="flex justify-center items-center gap-2 text-[#0067c0]">
                 <MdOutlineChangeCircle className="text-5xl text-[#0067c0]"></MdOutlineChangeCircle>
-                <h2>Xác nhận chuyển gói</h2>
+                {isRenew ? (
+                    <>
+                        <h2>Xác nhận Mua ngay</h2>
+                    </>
+                ) : (
+                    <>
+                        <h2>Xác nhận chuyển gói</h2>
+                    </>
+                )}
             </div>
             <div>
-                <p className="mt-[8px] text-lg text-center">
-                    Sau khi đăng ký {plan_title}, gói hiện tại vẫn còn hiệu lực
-                    tới khi hết hạn.
-                </p>
-                <p className="mt-[8px] text-lg text-center">
-                    Sau đó {plan_title} sẽ bắt đầu hiệu lực, với giá{' '}
-                    {numberFormat(plan_price)} vnđ.{' '}
-                </p>
+                {isRenew ? (
+                    <>
+                        <p className="mt-[8px] text-lg text-center">
+                            {plan_title} hiện tại của bạn vẫn còn hiệu lực.
+                        </p>
+                        <p className="mt-[8px] text-lg text-center">
+                            Bạn có CHẮC CHẮN là muốn Mua Ngay gói mới?
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <p className="mt-[8px] text-lg text-center">
+                            Sau khi đăng ký {plan_title}, gói hiện tại vẫn còn
+                            hiệu lực tới khi hết hạn.
+                        </p>
+                        <p className="mt-[8px] text-lg text-center ml-[1px] mr-[1px]">
+                            Sau đó {plan_title} sẽ bắt đầu hiệu lực, với giá{' '}
+                            {numberFormat(plan_price)} đ.{' '}
+                        </p>
+                    </>
+                )}
             </div>
             <div className="flex gap-3 justify-end mt-3 mb-2">
                 <button

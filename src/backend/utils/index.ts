@@ -44,7 +44,7 @@ const apps: AppData[] = [
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store',
-        size: 'mini'
+        size: 'full'
     },
     {
         name: [Contents.CONNECT_APP],
@@ -57,8 +57,8 @@ const apps: AppData[] = [
     {
         name: [Contents.G4MARKET_APP],
         id: 'g4market',
-        action: 'apps/app_toggle',
-        payload: 'g4market'
+        action: 'apps/app_external',
+        payload: externalLink.G4MARKET_LINK_STORE
     },
     {
         name: [Contents.DISCORD_APP],

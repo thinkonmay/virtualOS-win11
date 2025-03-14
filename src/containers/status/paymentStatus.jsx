@@ -17,7 +17,7 @@ function PaymentStatus() {
         if (depositStatus?.length > 1) {
             title = 'Các lệnh nạp tiền';
         } else if (depositStatus?.length == 1) {
-            title = `Lệnh nạp ${numberFormat(depositStatus[0].amount)} vnđ`;
+            title = `Lệnh nạp ${numberFormat(depositStatus[0].amount)} đ`;
         }
         return title;
     };
