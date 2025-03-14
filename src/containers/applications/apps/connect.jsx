@@ -1,8 +1,10 @@
 import {
     appDispatch,
     app_toggle,
+    popup_open,
     useAppSelector,
-    wait_and_claim_volume
+    wait_and_claim_volume,
+    worker_refresh_ui
 } from '../../../backend/reducers';
 import {
     Icon,
@@ -18,6 +20,7 @@ export const ConnectApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
+    const user = useAppSelector((state) => state.user);
     const available = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
@@ -36,10 +39,26 @@ export const ConnectApp = () => {
     const { browser } = detectBrowserAndOS();
 
     const id = useAppSelector((state) => state.user.id);
-    const connect = () => appDispatch(wait_and_claim_volume());
+    const connect = () => {
+        if (user?.subscription?.usage?.isExpired || !paid) {
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'expired',
+                        to: ''
+                    }
+                })
+            );
+            return;
+        }
+
+        appDispatch(wait_and_claim_volume());
+    };
+
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
-    const reload = () => location.reload();
+    const reload = () => appDispatch(worker_refresh_ui());
 
     return (
         <div

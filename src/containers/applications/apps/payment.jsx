@@ -206,30 +206,6 @@ export const PaymentApp = () => {
     );
 };
 
-const renderCurrentSub = (limit_hour) => {
-    let currentSub = '';
-
-    switch (limit_hour) {
-        case 120:
-            currentSub = 'month1';
-            break;
-        case 50:
-            currentSub = 'week1';
-            break;
-        case 25:
-            currentSub = 'week2';
-            break;
-        case 9999:
-            currentSub = 'month2';
-            break;
-
-        default:
-            break;
-    }
-
-    return currentSub;
-};
-
 const SubscriptionCard = ({ subInfo: sub }) => {
     const status = useAppSelector((state) => state.user.subscription.status);
     const domains = useAppSelector((state) => state.globals.domains);
@@ -517,42 +493,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                     </>
                                 )
                             }
-
-                            {/*{isActivePlan(sub.name) ? (
-                                <button
-                                    onClick={() => handleCancelSub(sub.name)}
-                                    className="buyButton bg-red-700 flex-1"
-                                >
-                                    Huỷ gia hạn
-                                </button>
-                            ) : null}
-
-                            <button
-                                onClick={() => {
-                                    if (!sub.active) {
-                                        if (sub.name == 'week2') {
-                                            return;
-                                        }
-                                        return window.open(
-                                            externalLink.MESSAGE_LINK,
-                                            '_blank'
-                                        );
-                                    }
-                                    onChooseSub(sub.name);
-                                }}
-                                type="button"
-                                className={`buyButton
-                                flex-1 bg-[#0067c0] ${!sub.active && sub.name == 'week2'
-                                        ? 'bg-red-700'
-                                        : ''
-                                    }`}
-                            >
-                                {!sub.active
-                                    ? sub.name == 'week2'
-                                        ? 'Tạm đóng'
-                                        : 'Đặt trước'
-                                    : 'Đăng ký'}
-                            </button>*/}
                         </div>
                     </div>
                 </div>

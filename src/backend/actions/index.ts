@@ -333,3 +333,124 @@ export const verify_transaction = async ({ id }: { id: number }) => {
 
     return false;
 };
+
+export const create_payment_pocket = async ({
+    plan_name,
+    cluster_domain
+}: {
+    plan_name: string;
+    cluster_domain: string;
+}) => {
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: { loading: true }
+        })
+    );
+
+    const {
+        user: { email },
+        globals: { translation: t }
+    } = store.getState();
+    const { data, error: err } = await GLOBAL().rpc('create_payment_pocket', {
+        email,
+        plan_name,
+        cluster_domain
+    });
+
+    if (err) {
+        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: err.message
+                }
+            })
+        );
+    } else if (!data) {
+        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: 'you already registered for this plan'
+                }
+            })
+        );
+    } else {
+        await GLOBAL().rpc('verify_all_pocket_payment');
+        await preload(false);
+
+        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: true,
+                    content: t[Contents.PAYMENT_POCKET_SUCCESS]
+                }
+            })
+        );
+    }
+};
+
+export const modify_payment_pocket = async ({
+    id,
+    plan_name,
+    renew = false
+}) => {
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: { loading: true }
+        })
+    );
+
+    const t = store.getState().globals.translation;
+
+    const { data, error: err } = await GLOBAL().rpc('modify_payment_pocket', {
+        id,
+        plan_name,
+        renew
+    });
+    if (err) {
+        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: err.message
+                }
+            })
+        );
+    } else if (!data) {
+        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: 'You have not register for this plan before'
+                }
+            })
+        );
+    } else {
+        await GLOBAL().rpc('verify_all_pocket_payment');
+        await preload(false);
+
+        appDispatch(popup_close());
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: true,
+                    content: t[Contents.PAYMENT_POCKET_SUCCESS]
+                }
+            })
+        );
+    }
+};

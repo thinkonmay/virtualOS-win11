@@ -168,10 +168,8 @@ export const {
     fetch_usage,
     get_plans,
     change_template,
-    create_payment_pocket,
     get_payment_pocket,
     cancel_payment_pocket,
-    modify_payment_pocket,
     get_deposit_status
 } = userAsync;
 export const {
