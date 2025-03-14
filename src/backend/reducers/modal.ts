@@ -110,6 +110,7 @@ type PopupData =
               plan_price: number;
               plan_title: string;
               oldPlanId: string;
+              isRenew?: boolean;
           };
       };
 
