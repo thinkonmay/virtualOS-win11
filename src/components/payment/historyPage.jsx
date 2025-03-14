@@ -29,12 +29,13 @@ export const TransactionHistoryPage = () => {
         (state) => state.user.wallet.historyPayment
     );
     const [currentNav, setNav] = useState('all'); //all-deposit-upgrade-buy
-    const [currentData, setCurrentData] = useState([
-        ...historyPayment,
-        ...historyDeposit
-    ].sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()))) ;
-
-    console.log(currentData)
+    const [currentData, setCurrentData] = useState(
+        [...historyPayment, ...historyDeposit].sort(
+            (a, b) =>
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime()
+        )
+    );
 
     const handleChangeNav = (nav) => {
         setNav(nav);

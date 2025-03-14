@@ -1,19 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import { RecordModel } from 'pocketbase';
-import {
-    appDispatch,
-    fetch_subscription,
-    fetch_wallet,
-    popup_close,
-    popup_open,
-    RootState
-} from '.';
+import { app_close, app_full, appDispatch, popup_open, RootState } from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { formatDate } from '../utils/date';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
-import { Contents } from './locales';
 type Usage = {
     node: string;
     total_usage: number;
@@ -490,6 +482,8 @@ export const userAsync = {
                     vol.name
                 );
                 if (resp instanceof Error) throw resp;
+                appDispatch(app_close('store'));
+                appDispatch(app_full({ id: 'connectPc', page: null }));
             }
         }
     )

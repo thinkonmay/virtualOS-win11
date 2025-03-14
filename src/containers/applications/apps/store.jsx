@@ -209,15 +209,22 @@ const DetailPage = ({ app }) => {
 const DownPage = ({ action }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const games = useAppSelector((state) => state.globals.games);
-
+    const subscription = useAppSelector((state) => state.user?.subscription);
     return (
         <div className="pagecont w-full absolute top-0 box-border pt-8">
             <div className="max-w-[1200px] mx-auto">
                 <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
                     <div className="">
-                        <b className=" storeHeading capitalize font-bold">
-                            {t[Contents.TA_TILE]}
-                        </b>
+                        {subscription?.usage?.isNewUser ? (
+                            <b className=" storeHeading capitalize font-bold">
+                                {t[Contents.TA_NEW_USER_CREATE_VOLUME]}
+                            </b>
+                        ) : (
+                            <b className=" storeHeading capitalize font-bold">
+                                {t[Contents.TA_TILE]}
+                            </b>
+                        )}
+
                         <p className="storeSubHeading font-bold text-left mt-2">
                             {t[Contents.TA_SUBTITLE]}
                         </p>
