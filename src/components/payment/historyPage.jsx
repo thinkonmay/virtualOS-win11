@@ -32,7 +32,9 @@ export const TransactionHistoryPage = () => {
     const [currentData, setCurrentData] = useState([
         ...historyPayment,
         ...historyDeposit
-    ]);
+    ].sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()))) ;
+
+    console.log(currentData)
 
     const handleChangeNav = (nav) => {
         setNav(nav);
