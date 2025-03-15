@@ -32,16 +32,19 @@ export const VirtKeyboard = () => {
 
             return;
         }
-        keyboard(
-            ...(useShift(button)
-                ? [
-                      { val: 'Shift', isDown: true },
-                      { val: button, isDown: true },
-                      { val: button },
-                      { val: 'Shift' }
-                  ]
-                : [{ val: button, isDown: true }, { val: button }])
-        );
+
+        for (const k of useShift(button)
+            ? [
+                  { val: 'Shift', isDown: true },
+                  { val: button, isDown: true },
+                  { val: button },
+                  { val: 'Shift' }
+              ]
+            : [{ val: button, isDown: true }, { val: button }]) {
+            // TODO: immediate up after down cause key stroke fail
+            await new Promise((r) => setTimeout(r, 50));
+            await keyboard(k);
+        }
 
         play();
         if (button === 'Shift')
