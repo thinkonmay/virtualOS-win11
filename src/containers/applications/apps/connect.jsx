@@ -15,32 +15,25 @@ import {
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
+import { login } from '../../../backend/actions';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
+    const not_signed = useAppSelector((state) => state.user.id== 'unknown');
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
-    const user = useAppSelector((state) => state.user);
     const available = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
-    const paid = useAppSelector(
-        (state) => state.user.subscription.status == 'PAID'
+    const {cluster,usage}= useAppSelector(
+        (state) => state.user.subscription ?? {}
     );
-    const { image, name } = useAppSelector((state) =>
-        state.user.subscription.status == 'PAID'
-            ? state.user.subscription.usage?.template ?? {
-                  image: null,
-                  name: null
-              }
-            : { image: null, name: null }
-    );
+    const { image, name } = usage?.template ?? {}
 
     const { browser } = detectBrowserAndOS();
 
-    const id = useAppSelector((state) => state.user.id);
     const connect = () => {
-        if (user?.subscription?.usage?.isExpired || !paid) {
+        if (usage?.isExpired) {
             appDispatch(
                 popup_open({
                     type: 'extendService',
@@ -57,8 +50,12 @@ export const ConnectApp = () => {
     };
 
     const pay = () => appDispatch(app_toggle('payment'));
-    const loginNow = () => login('google');
+    const loginNow = () => login('google')
     const reload = () => appDispatch(worker_refresh_ui());
+    const redirect = () => {
+        localStorage.setItem('thinkmay_domain', cluster);
+        window.location.reload();
+    };
 
     return (
         <div
@@ -109,7 +106,7 @@ export const ConnectApp = () => {
                                 </div>
                             ) : null}
 
-                            {id == 'unknown' ? (
+                            {not_signed  ? (
                                 <button
                                     onClick={loginNow}
                                     className="instbtn connectBtn12 connectBtn"
@@ -131,26 +128,32 @@ export const ConnectApp = () => {
                                         {t[Contents.CA_CONNECT_EXPLAIN]}
                                     </p>
                                 </>
-                            ) : available == 'not_ready' ? (
-                                <button
-                                    onClick={reload}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    {t[Contents.CA_INITIALIZING]}
-                                </button>
-                            ) : paid ? (
+                            ) : available == 'no_node' ? (
                                 <button
                                     onClick={reload}
                                     className="instbtn connectBtn12 connectBtn"
                                 >
                                     {t[Contents.CA_RELOAD_TRY_AGAIN]}
                                 </button>
+                            ) : available == undefined ? (
+                                cluster != undefined ? (
+                                    <button
+                                        onClick={redirect}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        {t[Contents.CA_NOTAVAILABLE]}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={pay}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        {t[Contents.PAYMENT_APP]}
+                                    </button>
+                                )
                             ) : (
-                                <button
-                                    onClick={pay}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    {t[Contents.PAYMENT_APP]}
+                                <button className="instbtn connectBtn12 connectBtn">
+                                    Very weird bug happened
                                 </button>
                             )}
                         </div>

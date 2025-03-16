@@ -18,25 +18,17 @@ type Usage = {
     isNewUser: boolean;
 };
 
-export type PaymentStatus =
-    | {
-          status: 'PAID';
-          cluster: string;
-          created_at: string;
-          ended_at?: string;
-          policy?: {
-              size: string;
-              limit_hour: number;
-              total_days: number;
-          };
-          usage?: Usage;
-      }
-    | {
-          status: 'NO_ACTION';
-      }
-    | {
-          status: 'PENDING';
-      };
+export type Subscription = {
+    cluster: string;
+    created_at: string;
+    ended_at?: string;
+    policy?: {
+        size: string;
+        limit_hour: number;
+        total_days: number;
+    };
+    usage?: Usage;
+};
 
 type Plan = {
     name: string;
@@ -80,7 +72,7 @@ interface Wallet {
     planStatus?: PlanStatus[];
 }
 type Data = RecordModel & {
-    subscription: PaymentStatus;
+    subscription?: Subscription;
     bucket_name?: string;
     plans: Plan[];
     wallet: Wallet;
@@ -94,9 +86,6 @@ const initialState: Data = {
     email: '',
     created: '',
     updated: '',
-    subscription: {
-        status: 'NO_ACTION'
-    },
     plans: [],
 
     wallet: {
@@ -182,7 +171,7 @@ export const userAsync = {
                 user: { subscription, email },
                 worker: { data, currentAddress }
             } = getState() as RootState;
-            if (subscription.status != 'PAID') return;
+            if (subscription == undefined) return;
             const { ended_at, policy } = subscription;
             let { limit_hour } = policy ?? { limit_hour: Infinity };
             const node = data[currentAddress]?.Volumes?.find(
@@ -296,9 +285,9 @@ export const userAsync = {
     ),
     fetch_subscription: createAsyncThunk(
         'fetch_subscription',
-        async (_: void, { getState }): Promise<PaymentStatus> => {
+        async (_: void, { getState }): Promise<Subscription> => {
             const { id, email } = (getState() as RootState).user;
-            if (id == 'unknown') return { status: 'NO_ACTION' };
+            if (id == 'unknown') return undefined;
 
             const { data: subs, error: errr1 } = await GLOBAL()
                 .from('subscriptions')
@@ -308,7 +297,7 @@ export const userAsync = {
                 .is('cancelled_at', null)
                 .order('created_at', { ascending: false });
             if (errr1) throw new Error(errr1.message);
-            else if (subs.length == 0) return { status: 'NO_ACTION' };
+            else if (subs.length == 0) return undefined;
 
             for (const { id: subscription_id } of subs) {
                 const { data, error } = await GLOBAL().rpc(
@@ -317,22 +306,13 @@ export const userAsync = {
                         sub_id: subscription_id
                     }
                 );
+
                 if (error) continue;
                 else if (data.length == 0) continue;
-                const [sub_verify_data] = data;
-
-                if (sub_verify_data.verified_at != null)
-                    return {
-                        status: 'PAID',
-                        cluster: sub_verify_data.domain,
-                        policy: sub_verify_data.policy,
-                        created_at: sub_verify_data.created_at,
-                        ended_at: sub_verify_data.ended_at
-                    };
-                else return { status: 'PENDING' };
+                else return data?.[0];
             }
 
-            return { status: 'NO_ACTION' };
+            return undefined;
         }
     ),
     get_plans: createAsyncThunk(
@@ -546,7 +526,7 @@ export const userSlice = createSlice({
             {
                 fetch: userAsync.fetch_usage,
                 hander: (state, action) => {
-                    if (state.subscription.status == 'PAID')
+                    if (state.subscription != undefined)
                         state.subscription.usage = action.payload;
                 }
             },

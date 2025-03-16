@@ -24,7 +24,7 @@ import { BuilderHelper } from './helper';
 import { showConnect } from '../actions';
 
 type innerComputer = Computer & {
-    availability?: 'not_ready' | 'ready' | 'started'; // private
+    availability?: 'no_node' | 'ready' | 'started'; // private
 };
 
 type WorkerType = {
@@ -133,10 +133,14 @@ export const workerAsync = {
                 if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
             } else if (info.virtReady) {
-                if (info.Volumes?.length == 0) availability = undefined;
+                if (
+                    info.Volumes?.filter((x) => x.pool == 'user_data')
+                        ?.length == 0
+                )
+                    availability = 'no_node';
                 else if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
-            } else availability = 'not_ready';
+            } else availability = undefined;
 
             return { [currentAddress]: { ...info, availability } };
         }

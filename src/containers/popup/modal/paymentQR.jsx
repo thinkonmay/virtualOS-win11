@@ -32,8 +32,7 @@ export function paymentQR({
     };
 
     const verify = async () => {
-        const result = await verify_transaction({ id });
-        if (result) {
+        if (await verify_transaction({ id })) {
             appDispatch(popup_close(true));
             appDispatch(
                 popup_open({

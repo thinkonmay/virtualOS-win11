@@ -235,11 +235,10 @@ interface WrapperCreatePaymentPocket {
 }
 export const createPaymentPocket = ({
     plan_name,
-    cluster_domain = 'play.thinkmay.net',
+    cluster_domain,
     plan_price,
     plan_title
 }: WrapperCreatePaymentPocket) => {
-    const status = store.getState().user.subscription.status;
     const wallet = store.getState().user.wallet;
 
     const listPlan = {
@@ -252,7 +251,17 @@ export const createPaymentPocket = ({
     const isHavingPlan = () =>
         wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
 
-    if (wallet.money < plan_price) {
+    if (cluster_domain == undefined)
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: false,
+                    content: 'unknown cluster'
+                }
+            })
+        );
+    if (wallet.money < plan_price)
         appDispatch(
             popup_open({
                 type: 'pocketNotEnoughMoney',
@@ -262,9 +271,7 @@ export const createPaymentPocket = ({
                 }
             })
         );
-        return;
-    }
-    if (status != 'PAID') {
+    else if (store.getState().user.subscription != undefined)
         appDispatch(
             popup_open({
                 type: 'pocketBuyConfirm',
@@ -274,7 +281,7 @@ export const createPaymentPocket = ({
                 }
             })
         );
-    } else {
+    else
         appDispatch(
             popup_open({
                 type: 'pocketChangePlan',
@@ -287,7 +294,6 @@ export const createPaymentPocket = ({
                 }
             })
         );
-    }
 };
 
 export const create_payment_link = async ({ amount }: { amount: string }) => {

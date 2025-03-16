@@ -15,10 +15,8 @@ import { Icon } from './general';
 import './index.scss';
 
 function UserInfo() {
-    const {
-        email,
-        subscription: { status, cluster, created_at, ended_at, usage, policy }
-    } = useAppSelector((state) => state.user);
+    const { email, subscription } = useAppSelector((state) => state.user);
+    const { cluster, created_at, ended_at, usage, policy } = subscription ?? {};
     const { node, total_usage } = usage ?? {};
     let { limit_hour } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
@@ -71,26 +69,8 @@ function UserInfo() {
                     <span>{node}</span>
                 </div>
             ) : null}
-            {/*{total_usage ? (
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">Usage</span>
-                    <span>{total_usage} hour</span>
-                </div>
-            ) : null}*/}
         </div>
     );
-
-    const renderPlanName = {
-        PAID: <Paid />,
-        undefined: (
-            <div className="restWindow w-full  flex flex-col ">
-                <div className="w-full flex gap-4 justify-between mt-2 items-end">
-                    <span className="text-left">You haven't paid yet</span>
-                </div>
-                <p></p>
-            </div>
-        )
-    };
 
     return (
         <div className="userManager">
@@ -119,22 +99,18 @@ function UserInfo() {
                         <DomainSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between mt-[1rem]">
-                        {/* TODO */}
-                        {/* <div className="w-full flex gap-4 justify-between">
-                            <span>Theme</span>
-                            <div
-                                className="strBtn handcr prtclk"
-                                onClick={changeTheme}
-                            >
-                                <Icon
-                                    className="quickIcon"
-                                    ui={true}
-                                    src={icon}
-                                    width={14}
-                                />
+                        {subscription != undefined ? (
+                            <Paid />
+                        ) : (
+                            <div className="restWindow w-full  flex flex-col ">
+                                <div className="w-full flex gap-4 justify-between mt-2 items-end">
+                                    <span className="text-left">
+                                        You haven't paid yet
+                                    </span>
+                                </div>
+                                <p></p>
                             </div>
-                        </div> */}
-                        {renderPlanName[status]}
+                        )}
                     </div>
                 </div>
 

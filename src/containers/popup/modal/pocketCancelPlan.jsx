@@ -9,7 +9,9 @@ import {
 
 export function pocketCancelPlan({ data: { plan_name } }) {
     const t = useAppSelector((state) => state.globals.translation);
-    const { ended_at } = useAppSelector((state) => state.user.subscription);
+    const { ended_at } = useAppSelector(
+        (state) => state.user.subscription ?? {}
+    );
     const currentOrders = useAppSelector(
         (state) => state.user.wallet.currentOrders
     );

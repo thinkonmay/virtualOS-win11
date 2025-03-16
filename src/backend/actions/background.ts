@@ -134,11 +134,9 @@ const updateUI = async () => {
         worker: { currentAddress }
     } = store.getState();
 
-    const { status } = subscription;
     const rms = [];
     const ops = [];
-    if (status == 'PENDING') ops.push('payment');
-    else if (status == 'PAID') {
+    if (subscription != undefined) {
         const { ended_at, cluster } = subscription;
 
         ops.push('connectPc');
@@ -171,7 +169,7 @@ const updateUI = async () => {
     if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        status != 'PAID'
+        subscription == undefined
     ) {
         appDispatch(show_tutorial('NewTutorial'));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');

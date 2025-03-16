@@ -211,10 +211,12 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub }) => {
-    const status = useAppSelector((state) => state.user.subscription.status);
+    const subcription = useAppSelector(
+        (state) => state.user.subscription ?? {}
+    );
+    const { ended_at } = subcription;
     const domains = useAppSelector((state) => state.globals.domains);
     const user = useAppSelector((state) => state.user);
-    const { ended_at } = useAppSelector((state) => state.user.subscription);
 
     const wallet = user.wallet;
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
@@ -360,7 +362,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             ))}
                     </ul>
                     <div className="flex flex-col gap-2 mt-auto">
-                        {sub.active && status == 'NO_ACTION' ? (
+                        {sub.active && subcription != undefined ? (
                             <>
                                 <div className="flex flex-col">
                                     <span className="mt-2 w-full mx-auto shadow-sm">
