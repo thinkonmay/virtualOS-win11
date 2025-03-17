@@ -82,17 +82,15 @@ const DetailPage = ({ app }) => {
     );
 
     const t = useAppSelector((state) => state.globals.translation);
+    const { name, code_name, metadata } = app;
+
     const {
-        name,
-        code_name,
-        metadata: {
-            capsule_image,
-            short_description,
-            screenshots,
-            release_date: { date },
-            publishers: [publisher]
-        }
-    } = app;
+        capsule_image,
+        short_description,
+        screenshots,
+        release_date: { date },
+        publishers: [publisher]
+    } = metadata ?? {};
 
     const handleDownload = () => {
         appDispatch(
@@ -209,9 +207,8 @@ const DetailPage = ({ app }) => {
 const DownPage = ({ action }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const games = useAppSelector((state) => state.globals.games);
-    const { isNewUser } = useAppSelector(
-        (state) => state.user?.subscription?.usage?.isNewUser
-    );
+    const isNewUser = false;
+
     return (
         <div className="pagecont w-full absolute top-0 box-border pt-8">
             <div className="max-w-[1200px] mx-auto">
@@ -243,7 +240,7 @@ const DownPage = ({ action }) => {
                         >
                             <Image
                                 className=" mb-2 rounded"
-                                src={game.metadata.capsule_image}
+                                src={game.metadata?.capsule_image}
                                 imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
                                 ext
                             />

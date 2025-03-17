@@ -121,7 +121,7 @@ const filterActions = [
     'update_local_worker',
     'fetch_local_worker',
     'fetch_user',
-    'fetch_usage',
+    'fetch_subscription_metadata',
     'fetch_subscription',
     'fetch_store',
     'get_plans',

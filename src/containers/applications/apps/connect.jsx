@@ -18,39 +18,36 @@ import './assets/connect.scss';
 import { login } from '../../../backend/actions';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
-    const not_signed = useAppSelector((state) => state.user.id== 'unknown');
+    const not_signed = useAppSelector((state) => state.user.id == 'unknown');
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
     const available = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
-    const {cluster,usage}= useAppSelector(
+    const { cluster, usage } = useAppSelector(
         (state) => state.user.subscription ?? {}
     );
-    const { image, name } = usage?.template ?? {}
-
+    const { soft_expired, template } = usage ?? {};
+    const { image, name } = template ?? {};
     const { browser } = detectBrowserAndOS();
 
-    const connect = () => {
-        if (usage?.isExpired) {
-            appDispatch(
-                popup_open({
-                    type: 'extendService',
-                    data: {
-                        type: 'expired',
-                        to: ''
-                    }
-                })
-            );
-            return;
-        }
+    const expire_popup = () =>
+        popup_open({
+            type: 'extendService',
+            data: {
+                type: 'expired',
+                to: ''
+            }
+        });
 
-        appDispatch(wait_and_claim_volume());
-    };
+    const connect = () =>
+        soft_expired
+            ? appDispatch(expire_popup())
+            : appDispatch(wait_and_claim_volume());
 
     const pay = () => appDispatch(app_toggle('payment'));
-    const loginNow = () => login('google')
+    const loginNow = () => login('google');
     const reload = () => appDispatch(worker_refresh_ui());
     const redirect = () => {
         localStorage.setItem('thinkmay_domain', cluster);
@@ -106,7 +103,7 @@ export const ConnectApp = () => {
                                 </div>
                             ) : null}
 
-                            {not_signed  ? (
+                            {not_signed ? (
                                 <button
                                     onClick={loginNow}
                                     className="instbtn connectBtn12 connectBtn"

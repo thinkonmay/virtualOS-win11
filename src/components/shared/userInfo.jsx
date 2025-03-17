@@ -16,8 +16,9 @@ import './index.scss';
 
 function UserInfo() {
     const { email, subscription } = useAppSelector((state) => state.user);
-    const { cluster, created_at, ended_at, usage, policy } = subscription ?? {};
-    const { node, total_usage } = usage ?? {};
+    const { cluster, created_at, total_usage, ended_at, usage, policy } =
+        subscription ?? {};
+    const { node } = usage ?? {};
     let { limit_hour } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
     const endedAtFormat = dayjs(ended_at);

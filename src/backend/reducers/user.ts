@@ -6,28 +6,29 @@ import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { formatDate } from '../utils/date';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
-type Usage = {
+
+type Metadata = {
     node: string;
-    total_usage: number;
     template: {
         image: string | null;
         code: string;
         name: string;
     };
-    isExpired?: boolean;
-    isNewUser: boolean;
+    soft_expired: boolean;
 };
 
 export type Subscription = {
     cluster: string;
     created_at: string;
+    last_payment: string;
     ended_at?: string;
-    policy?: {
+    total_usage: number;
+    policy: {
         size: string;
         limit_hour: number;
         total_days: number;
     };
-    usage?: Usage;
+    usage?: Metadata;
 };
 
 type Plan = {
@@ -116,18 +117,15 @@ export const userAsync = {
             _,
             { getState }
         ): Promise<{
-            amount;
+            amount: number;
         }> => {
-            const { email } = (getState() as RootState).user;
-
             const { error, data } = await GLOBAL().rpc('get_pocket_balance', {
-                email
+                email: (getState() as RootState).user.email
             });
-
-            const { amount } = data[0];
-            return {
-                amount
-            };
+            if (error) throw error;
+            else if (data.length == 0) throw new Error('pocket not exist');
+            const [{ amount }] = data;
+            return { amount };
         }
     ),
 
@@ -164,11 +162,11 @@ export const userAsync = {
         }
     ),
 
-    fetch_usage: createAsyncThunk(
-        'fetch_usage',
-        async (_, { getState }): Promise<Usage | null> => {
+    fetch_subscription_metadata: createAsyncThunk(
+        'fetch_subscription_metadata',
+        async (_, { getState }): Promise<Metadata | null> => {
             const {
-                user: { subscription, email },
+                user: { subscription },
                 worker: { data, currentAddress }
             } = getState() as RootState;
             if (subscription == undefined) return;
@@ -187,23 +185,6 @@ export const userAsync = {
             ) {
                 limit_hour = 150;
             }
-
-            const { data: usageData, error: usageErr } = await GLOBAL().rpc(
-                'get_subscription',
-                {
-                    email
-                }
-            );
-            if (usageErr) throw usageErr;
-            const { data: total_usage, error } = await GLOBAL().rpc(
-                'query_user_usage_v3',
-                {
-                    email,
-                    start: usageData[0]?.created_at,
-                    stop: usageData[0]?.ended_at
-                }
-            );
-            if (error) throw error;
 
             // TODO : fetch template
             const tpl = '';
@@ -245,12 +226,10 @@ export const userAsync = {
                 };
             }
 
-            const available = limit_hour - total_usage;
-            const targetDate = dayjs(ended_at);
-            const currentDate = dayjs();
-            const isExpired =
-                targetDate.isBefore(currentDate, 'day') ||
-                total_usage > limit_hour;
+            const available = limit_hour - subscription.total_usage;
+            const soft_expired =
+                dayjs(ended_at).isBefore(dayjs(), 'day') ||
+                subscription.total_usage > limit_hour;
 
             if (available < 20 && available >= 0)
                 appDispatch(
@@ -263,7 +242,7 @@ export const userAsync = {
                         }
                     })
                 );
-            if (isExpired)
+            if (soft_expired)
                 appDispatch(
                     popup_open({
                         type: 'extendService',
@@ -277,9 +256,7 @@ export const userAsync = {
             return {
                 node,
                 template,
-                total_usage,
-                isExpired,
-                isNewUser: usageData[0]?.new_user
+                soft_expired
             };
         }
     ),
@@ -289,36 +266,19 @@ export const userAsync = {
             const { id, email } = (getState() as RootState).user;
             if (id == 'unknown') return undefined;
 
-            const { data: subs, error: errr1 } = await GLOBAL()
-                .from('subscriptions')
-                .select('id,cluster,ended_at')
-                .gt('ended_at', new Date().toISOString())
-                .eq('user', email)
-                .is('cancelled_at', null)
-                .order('created_at', { ascending: false });
-            if (errr1) throw new Error(errr1.message);
-            else if (subs.length == 0) return undefined;
+            const { data, error } = await GLOBAL().rpc('get_subscription', {
+                email
+            });
 
-            for (const { id: subscription_id } of subs) {
-                const { data, error } = await GLOBAL().rpc(
-                    'get_subscription_verify',
-                    {
-                        sub_id: subscription_id
-                    }
-                );
-
-                if (error) continue;
-                else if (data.length == 0) continue;
-                else return data?.[0];
-            }
-
-            return undefined;
+            if (error) throw error;
+            else if (data.length == 0)
+                throw new Error('no subscription available');
+            else return data?.[0];
         }
     ),
     get_plans: createAsyncThunk(
         'get_plans',
         async (_: void, { getState }): Promise<Plan[]> => {
-            const plans = [];
             const { data, error } = await GLOBAL()
                 .from('plans')
                 .select(
@@ -330,18 +290,18 @@ export const userAsync = {
                 throw new Error(
                     `Failed to query plan table + ${error.message}`
                 );
-
-            data.forEach((e) => {
-                plans.push({
-                    name: e.name,
-                    size: Number(e.size),
-                    limit_hour: Number(e.limit_hour),
-                    total_days: Number(e.total_days),
-                    amount: Number(e.amount),
-                    allow_payment: Boolean(e.allow_payment)
-                } as Plan);
-            });
-            return plans;
+            else
+                return data.map(
+                    (e) =>
+                        ({
+                            name: e.name,
+                            size: Number(e.size),
+                            limit_hour: Number(e.limit_hour),
+                            total_days: Number(e.total_days),
+                            amount: Number(e.amount),
+                            allow_payment: Boolean(e.allow_payment)
+                        }) as Plan
+                );
         }
     ),
 
@@ -365,35 +325,16 @@ export const userAsync = {
             }
         }
     ),
-    get_payment_pocket_status: createAsyncThunk(
-        'get_payment_pocket_status',
-        async (_, { getState }) => {
-            const { email } = (getState() as RootState).user;
-
-            const { data: get_payment_pocket_status, error: err } =
-                await GLOBAL().rpc('get_payment_pocket_status', {
-                    email
-                });
-
-            if (err)
-                throw new Error('Error when create payment link' + err.message);
-
-            if (get_payment_pocket_status != null) {
-                return get_payment_pocket_status;
-            }
-        }
-    ),
     cancel_payment_pocket: createAsyncThunk(
         'cancel_payment_pocket',
         async (
-            input: {
+            {
+                id
+            }: {
                 id: string;
             },
             { getState }
         ) => {
-            const { email } = (getState() as RootState).user;
-            const { id } = input;
-
             const { data, error: err } = await GLOBAL().rpc(
                 'cancel_payment_pocket',
                 {
@@ -405,7 +346,6 @@ export const userAsync = {
                 throw new Error(
                     'Error when cancel_payment_pocket' + err.message
                 );
-
             if (!data) {
                 throw new Error('Can not cancel sub' + err.message);
             }
@@ -482,11 +422,6 @@ export const userSlice = createSlice({
             state.email = action.payload.email;
             state.expand = action.payload.expand;
         },
-        user_check_sub: (state, action) => {
-            state.isExpired = action.payload.isExpired;
-            state.isNearbyEndTime = action.payload.isNearbyEndTime;
-            state.isNearbyUsageHour = action.payload.isNearbyUsageHour;
-        },
         user_delete: (state) => {
             state.id = initialState.id;
             state.stat = initialState.stat;
@@ -524,7 +459,7 @@ export const userSlice = createSlice({
                 }
             },
             {
-                fetch: userAsync.fetch_usage,
+                fetch: userAsync.fetch_subscription_metadata,
                 hander: (state, action) => {
                     if (state.subscription != undefined)
                         state.subscription.usage = action.payload;
@@ -546,12 +481,6 @@ export const userSlice = createSlice({
                 fetch: userAsync.get_deposit_status,
                 hander: (state, action) => {
                     state.wallet.depositStatus = action.payload;
-                }
-            },
-            {
-                fetch: userAsync.get_payment_pocket_status,
-                hander: (state, action) => {
-                    state.wallet.planStatus = action.payload;
                 }
             },
             {
