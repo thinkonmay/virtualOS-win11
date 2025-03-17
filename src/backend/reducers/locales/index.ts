@@ -77,6 +77,7 @@ export enum Contents {
     CLOSEDEMO,
     PLAN_NAME,
     STARTAT,
+    LASTPAID,
     ENDAT,
     TIME,
     INACTIVEUSER,
@@ -674,6 +675,10 @@ export function language() {
     vn.set(Contents.STARTAT, 'Ngày bắt đầu');
     id.set(Contents.STARTAT, 'Mulai pada');
 
+    en.set(Contents.LASTPAID, 'Last payment');
+    vn.set(Contents.LASTPAID, 'Thanh toán từ');
+    id.set(Contents.LASTPAID, 'Last payment');
+
     en.set(Contents.ENDAT, 'End');
     vn.set(Contents.ENDAT, 'Ngày hết hạn');
     id.set(Contents.ENDAT, 'Berakhir pada');
@@ -829,10 +834,6 @@ export function language() {
     en.set(Contents.PLAN_NAME, 'Package');
     vn.set(Contents.PLAN_NAME, 'Gói');
     id.set(Contents.PLAN_NAME, 'Paket');
-
-    en.set(Contents.STARTAT, 'Start at');
-    vn.set(Contents.STARTAT, 'Ngày bắt đầu');
-    id.set(Contents.STARTAT, 'Mulai pada');
 
     en.set(Contents.ENDAT, 'End');
     vn.set(Contents.ENDAT, 'Ngày hết hạn');

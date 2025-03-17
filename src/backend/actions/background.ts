@@ -196,7 +196,7 @@ export const preload = async (update_ui?: boolean) => {
             fetchApp(),
             fetchPlans()
         ]);
-        await Promise.all([fetchSubMetadata(), fetchStore(), ]);
+        await Promise.all([fetchSubMetadata(), fetchStore()]);
 
         if (update_ui ?? true) await updateUI();
     } catch (e) {

@@ -296,7 +296,7 @@ export const createPaymentPocket = ({
         );
 };
 
-export const create_payment_link = async ({ amount }: { amount: string }) => {
+export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const email = store.getState().user.email;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,

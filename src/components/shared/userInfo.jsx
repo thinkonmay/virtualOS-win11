@@ -16,8 +16,15 @@ import './index.scss';
 
 function UserInfo() {
     const { email, subscription } = useAppSelector((state) => state.user);
-    const { cluster, created_at, total_usage, ended_at, usage, policy } =
-        subscription ?? {};
+    const {
+        cluster,
+        created_at,
+        last_payment,
+        total_usage,
+        ended_at,
+        usage,
+        policy
+    } = subscription ?? {};
     const { node } = usage ?? {};
     let { limit_hour } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
@@ -48,10 +55,18 @@ function UserInfo() {
                 <span className="text-left">Dung lượng</span>
                 <span>150GB</span>
             </div>
-            <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                <span className="text-left">{t[Contents.STARTAT]}</span>
-                <span>{formatDate(created_at)}</span>
-            </div>
+            {created_at ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">{t[Contents.STARTAT]}</span>
+                    <span>{formatDate(created_at)}</span>
+                </div>
+            ) : null}
+            {last_payment ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">{t[Contents.LASTPAID]}</span>
+                    <span>{formatDate(last_payment)}</span>
+                </div>
+            ) : null}
             {ended_at ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">{t[Contents.ENDAT]}</span>
