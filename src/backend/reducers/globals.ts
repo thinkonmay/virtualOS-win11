@@ -243,7 +243,8 @@ const initialState = {
     maintenance: {} as Maintain,
     games: [] as IGame[],
     domains: [] as Domain[],
-    opening: null as IGame | null
+    opening: null as IGame | null,
+    chat: false as boolean
 };
 
 type Data = {
@@ -295,6 +296,9 @@ export const globalSlice = createSlice({
         },
         open_game: (state, payload: PayloadAction<IGame>) => {
             state.opening = payload.payload;
+        },
+        show_chat: (state) => {
+            state.chat = !state.chat;
         },
         show_tutorial: (state, action: PayloadAction<TutorialType>) => {
             state.tutorial = action.payload;

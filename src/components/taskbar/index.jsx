@@ -14,6 +14,7 @@ import { afterMath } from '../../backend/actions';
 import {
     app_full,
     appDispatch,
+    show_chat,
     startogg,
     task_hide,
     task_show,
@@ -21,7 +22,6 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
-import { externalLink } from '../../backend/utils/constant';
 import {
     clickDispatch,
     customClickDispatch
@@ -122,7 +122,7 @@ const Taskbar = () => {
                         id="supportNow"
                         className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight flex rounded "
                         // onClick={customDispatch}
-                        onClick={() => window.open(externalLink.MESSAGE_LINK)}
+                        onClick={() => appDispatch(show_chat())}
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
                     >
@@ -266,9 +266,7 @@ const Taskbar = () => {
                         <div
                             className="settingBtn supportNow p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
                             // onClick={clickDispatch}
-                            onClick={() =>
-                                window.open(externalLink.MESSAGE_LINK)
-                            }
+                            onClick={() => appDispatch(show_chat())}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
