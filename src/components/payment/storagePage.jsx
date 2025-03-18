@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { createPaymentPocket } from '../../backend/actions';
-import { useAppSelector } from '../../backend/reducers';
-import { externalLink } from '../../backend/utils/constant';
+import { appDispatch, show_chat, useAppSelector } from '../../backend/reducers';
 
 export const StoragePage = () => {
     const { ended_at } = useAppSelector(
@@ -26,7 +25,7 @@ export const StoragePage = () => {
 
     const renderMoney = (money) => `${Math.floor(money / 1000)}k`;
     const handleBuyUpgrage = (plan_name, price, title) =>
-        window.open(externalLink.MESSAGE_LINK, '_blank');
+        appDispatch(show_chat());
     // {
     //     let actuallyTitle = title ?? plan_name;
     //     createPaymentPocket({
@@ -35,6 +34,7 @@ export const StoragePage = () => {
     //         plan_title: actuallyTitle
     //     });
     // };
+
     return (
         <div className="storagePage pt-[1%] ">
             <div className="flex flex-col items-center justify-center">
@@ -178,12 +178,7 @@ export const StoragePage = () => {
                         <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">
                             <button
-                                onClick={() => {
-                                    window.open(
-                                        externalLink.MESSAGE_LINK,
-                                        '_blank'
-                                    );
-                                }}
+                                onClick={() => appDispatch(show_chat())}
                                 className="instbtn buyBtn"
                             >
                                 Liên hệ

@@ -43,7 +43,7 @@ function App() {
     const [booting, setLockscreen] = useState(true);
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
     const [delayPayment, setDelayPayment] = useState(false);
-    const showChat = useAppSelector(state => state.globals.chat)
+    const showChat = useAppSelector((state) => state.globals.chat);
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -66,7 +66,7 @@ function App() {
         const url = new URL(window.location.href);
         const game = url.searchParams.get('game');
         const domain = url.searchParams.get('server');
-        window.LiveChatWidget.call('minimize')
+        window.LiveChatWidget.call('minimize');
         appDispatch(direct_access(url));
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
@@ -159,8 +159,8 @@ function App() {
     };
 
     useEffect(() => {
-        window.LiveChatWidget.call(showChat ? 'maximize' : 'minimize')
-    },[showChat])
+        window.LiveChatWidget.call(showChat ? 'maximize' : 'minimize');
+    }, [showChat]);
 
     useEffect(() => {
         if (tutorial != 'close') window.onclick = null;
@@ -264,10 +264,7 @@ function App() {
                         </>
                     )}
                 </div>
-                <LiveChatWidget
-                    license="19084863"
-                    visibility="maximized"
-                />
+                <LiveChatWidget license="19084863" visibility="maximized" />
             </ErrorBoundary>
         </div>
     );

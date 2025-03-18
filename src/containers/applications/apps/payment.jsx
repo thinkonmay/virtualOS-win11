@@ -11,6 +11,7 @@ import {
     app_metadata_change,
     appDispatch,
     popup_open,
+    show_chat,
     useAppSelector
 } from '../../../backend/reducers';
 import { externalLink } from '../../../backend/utils/constant';
@@ -432,10 +433,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                 if (sub.name == 'week2') {
                                                     return;
                                                 }
-                                                return window.open(
-                                                    externalLink.MESSAGE_LINK,
-                                                    '_blank'
-                                                );
+
+                                                return appDispatch(show_chat());
                                             }
                                             onChooseSub(sub.name);
                                         }}
@@ -481,9 +480,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                                     if (sub.name == 'week2') {
                                                         return;
                                                     }
-                                                    return window.open(
-                                                        externalLink.MESSAGE_LINK,
-                                                        '_blank'
+                                                    return appDispatch(
+                                                        show_chat()
                                                     );
                                                 }
                                                 onChooseSub(sub.name);
