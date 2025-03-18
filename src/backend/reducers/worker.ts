@@ -34,13 +34,17 @@ type WorkerType = {
 
     currentAddress: string;
     HideVM: boolean;
+    HighMTU: boolean;
+    HighQueue: boolean;
 };
 
 const initialState: WorkerType = {
     data: {},
 
     currentAddress: 'play.2.thinkmay.net',
-    HideVM: true
+    HideVM: true,
+    HighMTU: false,
+    HighQueue: true
 };
 
 export const workerAsync = {
@@ -77,7 +81,7 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const {
-                worker: { HideVM, currentAddress }
+                worker: { HideVM, HighMTU, HighQueue, currentAddress }
             } = getState() as RootState;
 
             const info = await GetInfo(currentAddress);
@@ -108,7 +112,10 @@ export const workerAsync = {
                 session = getRemoteSession(resp);
             }
 
-            const result = ParseRequest(currentAddress, session);
+            const result = ParseRequest(currentAddress, session, {
+                high_mtu: HighMTU,
+                high_queue: HighQueue
+            });
             if (result instanceof Error) throw result;
             await appDispatch(save_reference(result));
 
@@ -193,6 +200,12 @@ export const workerSlice = createSlice({
     name: 'worker',
     initialState,
     reducers: {
+        toggle_high_queue: (state) => {
+            state.HighQueue = !state.HighQueue;
+        },
+        toggle_high_mtu: (state) => {
+            state.HighMTU = !state.HighMTU;
+        },
         toggle_hide_vm: (state) => {
             state.HideVM = !state.HideVM;
         },
