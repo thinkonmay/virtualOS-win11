@@ -296,7 +296,7 @@ const Taskbar = () => {
                             style={{ '--prefix': 'PANE' }}
                             data-action="sidepane_panetogg"
                         >
-                            <div className="text-xm flex gap-[4px] items-center font-semibold">
+                            <div className="hidden md:block text-xm flex gap-[4px] items-center font-semibold">
                                 <MdOutlineVideoSettings
                                     fontSize={'1.2rem'}
                                 ></MdOutlineVideoSettings>
