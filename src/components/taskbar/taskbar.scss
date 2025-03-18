@@ -147,7 +147,7 @@ body[data-theme="dark"] {
   }
 }
 
-@media (1px < width < 1024px) {
+@media (max-width: 1024px) {
   .taskright {
     position: absolute;
 
@@ -249,7 +249,7 @@ body[data-theme="dark"] {
   transition: all ease-in-out 200ms;
 }
 
-@media (1px < width < 680px) {
+@media (max-width: 680px) {
   .tsbar {
     width: 100%;
     padding-left: 8px;

@@ -223,7 +223,7 @@ body[data-theme="dark"] {
   }
 }
 
-@media (1px < width < 1024px) {
+@media (max-width: 1024px) {
   .appscont {
 
     .ribcont {
