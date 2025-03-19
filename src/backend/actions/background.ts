@@ -13,7 +13,7 @@ import {
     fetch_payment_history,
     fetch_store,
     fetch_subscription,
-    fetch_usage,
+    fetch_subscription_metadata,
     fetch_user,
     fetch_wallet,
     get_deposit_status,
@@ -100,13 +100,15 @@ const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
 const startAnalytics = async () => {
-    await UserSession(store.getState().user.email);
+    const email = store.getState().user.email;
+    (window as any).LiveChatWidget.call('set_customer_email', email);
+    await UserSession(email);
 };
 const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());
 };
-const fetchUsage = async () => {
-    await appDispatch(fetch_usage());
+const fetchSubMetadata = async () => {
+    await appDispatch(fetch_subscription_metadata());
 };
 const fetchDomains = async () => {
     await appDispatch(fetch_domain());
@@ -114,12 +116,14 @@ const fetchDomains = async () => {
 const fetchUser = async () => {
     await appDispatch(fetch_user());
 };
-const fetchPayment = async () => {
-    await appDispatch(fetch_wallet());
-    await appDispatch(fetch_payment_history());
-    await appDispatch(get_payment_pocket());
-    await appDispatch(get_deposit_status());
-};
+const fetchPayment = () =>
+    Promise.all([
+        appDispatch(fetch_wallet()),
+        appDispatch(fetch_payment_history()),
+        appDispatch(get_payment_pocket()),
+        appDispatch(get_deposit_status())
+    ]);
+
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
 };
@@ -134,15 +138,14 @@ const updateUI = async () => {
         worker: { currentAddress }
     } = store.getState();
 
-    const { status } = subscription;
     const rms = [];
     const ops = [];
-    if (status == 'PENDING') ops.push('payment');
-    else if (status == 'PAID') {
+    if (subscription != undefined) {
         const { ended_at, cluster } = subscription;
 
         ops.push('connectPc');
-        if (subscription?.usage?.isNewUser) ops.push('store');
+        // TODO
+        // if (subscription?.usage?.isNewUser) ops.push('store');
 
         if (
             ended_at != null &&
@@ -171,7 +174,7 @@ const updateUI = async () => {
     if (
         localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
         !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        status != 'PAID'
+        subscription == undefined
     ) {
         appDispatch(show_tutorial('NewTutorial'));
         localStorage.setItem(localStorageKey.shownTutorial, 'true');
@@ -185,17 +188,17 @@ export const preload = async (update_ui?: boolean) => {
     try {
         await setDomain();
         await fetchUser();
-        await Promise.all([fetchSubscription(), fetchApp()]);
         await Promise.all([
-            startAnalytics(),
+            fetchSubscription(),
             loadSettings(),
             fetchPayment(),
-            fetchSetting(),
+            startAnalytics(),
             fetchDomains(),
-            fetchUsage(),
-            fetchStore(),
+            fetchSetting(),
+            fetchApp(),
             fetchPlans()
         ]);
+        await Promise.all([fetchSubMetadata(), fetchStore()]);
 
         if (update_ui ?? true) await updateUI();
     } catch (e) {

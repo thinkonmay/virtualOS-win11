@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from 'react-icons/md';
 import { NumericFormat } from 'react-number-format';
-import { create_payment_link } from '../../backend/actions';
+import { create_payment_qr } from '../../backend/actions';
 
 const DepositPage = () => {
     const [depositNumber, setDepositNumber] = useState('');
@@ -10,7 +10,7 @@ const DepositPage = () => {
 
     const handleDeposit = () => {
         if (isErr) return;
-        create_payment_link({
+        create_payment_qr({
             amount: removeCommasAndCurrency(depositNumber)
         });
     };

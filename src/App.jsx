@@ -5,6 +5,7 @@ import { UserEvents } from '../src-tauri/api';
 import { isMobile } from '../src-tauri/core';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
+import { LiveChatWidget } from '@livechat/widget-react';
 
 import {
     appDispatch,
@@ -42,6 +43,7 @@ function App() {
     const [booting, setLockscreen] = useState(true);
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
     const [delayPayment, setDelayPayment] = useState(false);
+    const showChat = useAppSelector((state) => state.globals.chat);
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -64,6 +66,7 @@ function App() {
         const url = new URL(window.location.href);
         const game = url.searchParams.get('game');
         const domain = url.searchParams.get('server');
+        window.LiveChatWidget.call('minimize');
         appDispatch(direct_access(url));
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
@@ -151,6 +154,10 @@ function App() {
             await document.msExitFullscreen();
         }
     };
+
+    useEffect(() => {
+        window.LiveChatWidget.call(showChat ? 'maximize' : 'minimize');
+    }, [showChat]);
 
     useEffect(() => {
         if (tutorial != 'close') window.onclick = null;
@@ -254,6 +261,7 @@ function App() {
                         </>
                     )}
                 </div>
+                <LiveChatWidget license="19084863" visibility="maximized" />
             </ErrorBoundary>
         </div>
     );

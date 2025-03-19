@@ -57,9 +57,9 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const appDispatch = store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const { update_language, show_tutorial, open_game } =
+export const { update_language, show_tutorial, show_chat, open_game } =
     globalSlice.actions;
-export const { user_delete, user_update, user_check_sub } = userSlice.actions;
+export const { user_delete, user_update } = userSlice.actions;
 export const { task_audo, task_hide, task_show, task_toggle } =
     taskSlice.actions;
 export const {
@@ -165,7 +165,7 @@ export const {
     fetch_wallet,
     fetch_payment_history,
     fetch_subscription,
-    fetch_usage,
+    fetch_subscription_metadata,
     get_plans,
     change_template,
     get_payment_pocket,

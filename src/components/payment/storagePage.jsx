@@ -1,45 +1,40 @@
 import dayjs from 'dayjs';
 import { createPaymentPocket } from '../../backend/actions';
-import { useAppSelector } from '../../backend/reducers';
-import { externalLink } from '../../backend/utils/constant';
+import { appDispatch, show_chat, useAppSelector } from '../../backend/reducers';
 
 export const StoragePage = () => {
-    const wallet = useAppSelector((state) => state.user.wallet);
-    const { ended_at } = useAppSelector((state) => state.user.subscription);
+    const { ended_at } = useAppSelector(
+        (state) => state.user.subscription ?? {}
+    );
 
-    const calculateMoney = (planBasePrice) => {
-        let result = planBasePrice;
-        return result;
+    const calculateMoney = (planBasePrice) => planBasePrice;
+    // {
+    //     const planBasePricePerDay = planBasePrice / 30;
+    //     //calculate by the end_at of subscription
+    //     // Calculate the difference in days
+    //     if (ended_at) {
+    //         const startDate = dayjs();
+    //         const endDate = dayjs(ended_at);
+    //         const daysLeft = endDate.diff(startDate, 'day');
 
-        const planBasePricePerDay = planBasePrice / 30;
-        //calculate by the end_at of subscription
-        // Calculate the difference in days
-        if (ended_at) {
-            const startDate = dayjs();
-            const endDate = dayjs(ended_at);
-            const daysLeft = endDate.diff(startDate, 'day');
+    //         result = Math.floor(planBasePricePerDay * daysLeft);
+    //     }
 
-            result = Math.floor(planBasePricePerDay * daysLeft);
-        }
+    //     return result;
+    // };
 
-        return result;
-    };
-    const renderMoney = (money) => {
-        let result = `${Math.floor(money / 1000)}k`;
+    const renderMoney = (money) => `${Math.floor(money / 1000)}k`;
+    const handleBuyUpgrage = (plan_name, price, title) =>
+        appDispatch(show_chat());
+    // {
+    //     let actuallyTitle = title ?? plan_name;
+    //     createPaymentPocket({
+    //         plan_name,
+    //         plan_price: price,
+    //         plan_title: actuallyTitle
+    //     });
+    // };
 
-        return result;
-    };
-
-    const handleBuyUpgrage = (plan_name, price, title) => {
-        window.open(externalLink.MESSAGE_LINK, '_blank');
-        return;
-        let actuallyTitle = title ?? plan_name;
-        createPaymentPocket({
-            plan_name,
-            plan_price: price,
-            plan_title: actuallyTitle
-        });
-    };
     return (
         <div className="storagePage pt-[1%] ">
             <div className="flex flex-col items-center justify-center">
@@ -183,12 +178,7 @@ export const StoragePage = () => {
                         <div className="columnContent">Liên hệ</div>
                         <div className="columnContent">
                             <button
-                                onClick={() => {
-                                    window.open(
-                                        externalLink.MESSAGE_LINK,
-                                        '_blank'
-                                    );
-                                }}
+                                onClick={() => appDispatch(show_chat())}
                                 className="instbtn buyBtn"
                             >
                                 Liên hệ

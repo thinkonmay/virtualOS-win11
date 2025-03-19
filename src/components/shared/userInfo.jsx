@@ -15,12 +15,18 @@ import { Icon } from './general';
 import './index.scss';
 
 function UserInfo() {
+    const { email, subscription } = useAppSelector((state) => state.user);
     const {
-        email,
-        subscription: { status, cluster, created_at, ended_at, usage, policy }
-    } = useAppSelector((state) => state.user);
-    const { node, total_usage } = usage ?? {};
-    let { limit_hour } = policy ?? {};
+        cluster,
+        created_at,
+        last_payment,
+        total_usage,
+        ended_at,
+        usage,
+        policy
+    } = subscription ?? {};
+    const { node } = usage ?? {};
+    let { limit_hour, name: plan_name } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
     const endedAtFormat = dayjs(ended_at);
     if (endedAtFormat.isBefore(oldPaidUser, 'day') && limit_hour == 120) {
@@ -42,17 +48,25 @@ function UserInfo() {
 
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">Gói</span>
-                <span>Gói M1</span>
+                <span>Gói {plan_name}</span>
             </div>
 
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">Dung lượng</span>
                 <span>150GB</span>
             </div>
-            <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                <span className="text-left">{t[Contents.STARTAT]}</span>
-                <span>{formatDate(created_at)}</span>
-            </div>
+            {created_at ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">{t[Contents.STARTAT]}</span>
+                    <span>{formatDate(created_at)}</span>
+                </div>
+            ) : null}
+            {last_payment ? (
+                <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                    <span className="text-left">{t[Contents.LASTPAID]}</span>
+                    <span>{formatDate(last_payment)}</span>
+                </div>
+            ) : null}
             {ended_at ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
                     <span className="text-left">{t[Contents.ENDAT]}</span>
@@ -71,26 +85,8 @@ function UserInfo() {
                     <span>{node}</span>
                 </div>
             ) : null}
-            {/*{total_usage ? (
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">Usage</span>
-                    <span>{total_usage} hour</span>
-                </div>
-            ) : null}*/}
         </div>
     );
-
-    const renderPlanName = {
-        PAID: <Paid />,
-        undefined: (
-            <div className="restWindow w-full  flex flex-col ">
-                <div className="w-full flex gap-4 justify-between mt-2 items-end">
-                    <span className="text-left">You haven't paid yet</span>
-                </div>
-                <p></p>
-            </div>
-        )
-    };
 
     return (
         <div className="userManager">
@@ -119,22 +115,18 @@ function UserInfo() {
                         <DomainSwitch />
                     </div>
                     <div className="w-full flex gap-4 justify-between mt-[1rem]">
-                        {/* TODO */}
-                        {/* <div className="w-full flex gap-4 justify-between">
-                            <span>Theme</span>
-                            <div
-                                className="strBtn handcr prtclk"
-                                onClick={changeTheme}
-                            >
-                                <Icon
-                                    className="quickIcon"
-                                    ui={true}
-                                    src={icon}
-                                    width={14}
-                                />
+                        {subscription != undefined ? (
+                            <Paid />
+                        ) : (
+                            <div className="restWindow w-full  flex flex-col ">
+                                <div className="w-full flex gap-4 justify-between mt-2 items-end">
+                                    <span className="text-left">
+                                        You haven't paid yet
+                                    </span>
+                                </div>
+                                <p></p>
                             </div>
-                        </div> */}
-                        {renderPlanName[status]}
+                        )}
                     </div>
                 </div>
 

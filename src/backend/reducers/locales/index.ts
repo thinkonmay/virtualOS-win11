@@ -77,6 +77,7 @@ export enum Contents {
     CLOSEDEMO,
     PLAN_NAME,
     STARTAT,
+    LASTPAID,
     ENDAT,
     TIME,
     INACTIVEUSER,
@@ -219,7 +220,7 @@ export enum Contents {
     CA_TURN_ON_PC,
     CA_CONNECT,
     CA_CONNECT_EXPLAIN,
-    CA_INITIALIZING,
+    CA_NOTAVAILABLE,
     CA_RELOAD_TRY_AGAIN,
     // HANG CHO
 
@@ -347,20 +348,29 @@ export function language() {
     vn.set(Contents.CA_CONNECT_EXPLAIN, 'Click để truy cập cloud PC');
     en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
 
-    en.set(Contents.CA_INITIALIZING, 'Your PC is initializing');
-    vn.set(Contents.CA_INITIALIZING, 'Máy đang được khởi tạo');
-    id.set(Contents.CA_INITIALIZING, 'PC Anda sedang menginisialisasi');
+    en.set(
+        Contents.CA_NOTAVAILABLE,
+        'You do not have available computer on this server, click to go back to the server you registered'
+    );
+    vn.set(
+        Contents.CA_NOTAVAILABLE,
+        'Bạn không có máy tính trên server này, click để chuyển về server bạn đã đăng kí'
+    );
+    id.set(
+        Contents.CA_NOTAVAILABLE,
+        'You do not have available computer on this server, click to go back to the server you registered'
+    );
 
     en.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
     vn.set(Contents.CA_POS_PLEASE, 'Vui lòng không thoát ứng dụng!');
     id.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
 
-    en.set(
+    en.set(Contents.CA_RELOAD_TRY_AGAIN, 'Unable to find your node, try again');
+    vn.set(
         Contents.CA_RELOAD_TRY_AGAIN,
-        'Please wait in 5 minutes & try later'
+        'Không thể tìm thấy node của bạn, thử lại'
     );
-    vn.set(Contents.CA_RELOAD_TRY_AGAIN, 'Reload và thử lại sau 5 phút');
-    id.set(Contents.CA_RELOAD_TRY_AGAIN, 'Tunggu 5 menit & coba lagi');
+    id.set(Contents.CA_RELOAD_TRY_AGAIN, 'Unable to find your node, try again');
 
     en.set(
         Contents.CA_FIRST_QUEUED,
@@ -667,6 +677,10 @@ export function language() {
     vn.set(Contents.STARTAT, 'Ngày bắt đầu');
     id.set(Contents.STARTAT, 'Mulai pada');
 
+    en.set(Contents.LASTPAID, 'Last payment');
+    vn.set(Contents.LASTPAID, 'Thanh toán từ');
+    id.set(Contents.LASTPAID, 'Last payment');
+
     en.set(Contents.ENDAT, 'End');
     vn.set(Contents.ENDAT, 'Ngày hết hạn');
     id.set(Contents.ENDAT, 'Berakhir pada');
@@ -830,10 +844,6 @@ export function language() {
     en.set(Contents.PLAN_NAME, 'Package');
     vn.set(Contents.PLAN_NAME, 'Gói');
     id.set(Contents.PLAN_NAME, 'Paket');
-
-    en.set(Contents.STARTAT, 'Start at');
-    vn.set(Contents.STARTAT, 'Ngày bắt đầu');
-    id.set(Contents.STARTAT, 'Mulai pada');
 
     en.set(Contents.ENDAT, 'End');
     vn.set(Contents.ENDAT, 'Ngày hết hạn');

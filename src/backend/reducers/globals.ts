@@ -243,7 +243,8 @@ const initialState = {
     maintenance: {} as Maintain,
     games: [] as IGame[],
     domains: [] as Domain[],
-    opening: null as IGame | null
+    opening: null as IGame | null,
+    chat: false as boolean
 };
 
 type Data = {
@@ -255,17 +256,11 @@ export const globalAsync = {
     fetch_domain: createAsyncThunk(
         'fetch_domain',
         async (): Promise<Domain[]> => {
-            const { data: domains, error } = await GLOBAL().rpc(
-                'get_domains_availability'
-            );
-            if (error) throw error;
-
             const { data: domains_v3, error: err } = await GLOBAL().rpc(
                 'get_domains_availability_v3'
             );
             if (err) throw err;
-
-            return [...domains, ...domains_v3];
+            else return domains_v3;
         }
     ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
@@ -301,6 +296,9 @@ export const globalSlice = createSlice({
         },
         open_game: (state, payload: PayloadAction<IGame>) => {
             state.opening = payload.payload;
+        },
+        show_chat: (state) => {
+            state.chat = !state.chat;
         },
         show_tutorial: (state, action: PayloadAction<TutorialType>) => {
             state.tutorial = action.payload;

@@ -73,7 +73,7 @@ export const MicroStore = () => {
 const DetailPage = ({ app }) => {
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
     const subscribed = useAppSelector(
-        (state) => state.user.subscription.status == 'PAID'
+        (state) => state.user.subscription != undefined
     );
     const { currentAddress, data } = useAppSelector((state) => state.worker);
 
@@ -82,17 +82,15 @@ const DetailPage = ({ app }) => {
     );
 
     const t = useAppSelector((state) => state.globals.translation);
+    const { name, code_name, metadata } = app;
+
     const {
-        name,
-        code_name,
-        metadata: {
-            capsule_image,
-            short_description,
-            screenshots,
-            release_date: { date },
-            publishers: [publisher]
-        }
-    } = app;
+        capsule_image,
+        short_description,
+        screenshots,
+        release_date: { date },
+        publishers: [publisher]
+    } = metadata ?? {};
 
     const handleDownload = () => {
         appDispatch(
@@ -209,13 +207,14 @@ const DetailPage = ({ app }) => {
 const DownPage = ({ action }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const games = useAppSelector((state) => state.globals.games);
-    const subscription = useAppSelector((state) => state.user?.subscription);
+    const isNewUser = false;
+
     return (
         <div className="pagecont w-full absolute top-0 box-border pt-8">
             <div className="max-w-[1200px] mx-auto">
                 <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
                     <div className="">
-                        {subscription?.usage?.isNewUser ? (
+                        {isNewUser ? (
                             <b className=" storeHeading capitalize font-bold">
                                 {t[Contents.TA_NEW_USER_CREATE_VOLUME]}
                             </b>
@@ -241,7 +240,7 @@ const DownPage = ({ action }) => {
                         >
                             <Image
                                 className=" mb-2 rounded"
-                                src={game.metadata.capsule_image}
+                                src={game.metadata?.capsule_image}
                                 imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
                                 ext
                             />
