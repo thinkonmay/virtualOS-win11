@@ -71,13 +71,16 @@ function App() {
             if (e) e.returnValue = text;
             return text;
         };
-
-        const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
-        const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
-        if (listDomain.includes(domain))
-            window.open(`https://${domain}`, '_self');
-        else if (v2_domain.includes(domain))
+        // TODO: hardcode
+        const listDomain = [
+            'play.thinkmay.net',
+            'play.2.thinkmay.net',
+            'play.3.thinkmay.net',
+            'v4.thinkmay.net'
+        ];
+        if (listDomain.includes(domain)) {
             localStorage.setItem('thinkmay_domain', domain);
+        }
 
         const waitForPhoneRotation = async () => {
             const finish_fetch = now();

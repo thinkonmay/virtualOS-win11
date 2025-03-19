@@ -169,19 +169,15 @@ export const login = async (
     update_ui?: boolean
 ) => {
     const w = window.open();
-    await POCKETBASE()
-        .collection('users')
-        .authWithOAuth2({
-            provider,
-            urlCallback: (url) => {
-                w.location.href = url;
-            }
-        });
-    await POCKETBASE()
-        .collection('users')
-        .update(POCKETBASE().authStore.model.id, {
-            emailVisibility: true
-        });
+    await POCKETBASE.collection('users').authWithOAuth2({
+        provider,
+        urlCallback: (url) => {
+            w.location.href = url;
+        }
+    });
+    await POCKETBASE.collection('users').update(POCKETBASE.authStore.model.id, {
+        emailVisibility: true
+    });
 
     await preload(update_ui);
 };

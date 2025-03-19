@@ -115,7 +115,7 @@ export const userAsync = {
         async (): Promise<RecordModel> => {
             const {
                 items: [result]
-            } = await POCKETBASE().collection('users').getList(1);
+            } = await POCKETBASE.collection('users').getList(1);
 
             return result != undefined ? { ...result } : initialState;
         }
@@ -450,7 +450,7 @@ export const userAsync = {
     change_size: createAsyncThunk(
         'change_size',
         async ({ size }: { size: string }, { getState }): Promise<void> => {
-            const [vol] = await POCKETBASE().collection('volumes').getFullList<{
+            const [vol] = await POCKETBASE.collection('volumes').getFullList<{
                 local_id: string;
             }>();
 
@@ -510,7 +510,7 @@ export const userSlice = createSlice({
         user_delete: (state) => {
             state.id = initialState.id;
             state.stat = initialState.stat;
-            POCKETBASE().authStore.clear();
+            POCKETBASE.authStore.clear();
         }
     },
     extraReducers: (builder) => {

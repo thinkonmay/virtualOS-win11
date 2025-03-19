@@ -5,21 +5,14 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
-import { preload } from '../../../backend/actions/background';
 
 export function redirectDomain({ data: { domain } }) {
     const t = useAppSelector((state) => state.globals.translation);
     const from = useAppSelector((state) => state.worker.currentAddress);
 
     const updateDomain = () => {
-        const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
-        const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
-        if (listDomain.includes(domain))
-            window.open(`https://${domain}`, '_self');
-        else if (v2_domain.includes(domain)) {
-            localStorage.setItem('thinkmay_domain', domain);
-            preload(false);
-        }
+        localStorage.setItem('thinkmay_domain', domain);
+        window.location.reload();
     };
 
     return (
