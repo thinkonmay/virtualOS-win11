@@ -202,7 +202,7 @@ const Taskbar = () => {
                                     //click="startmenu/startogg"
                                     //style={{ '--prefix': 'START' }}
                                 />{' '}
-                                <p className="text-xm font-semibold">
+                                <p className="hidden md:block text-xm font-semibold">
                                     {t[Contents.ACCOUNT]}
                                 </p>
                             </div>

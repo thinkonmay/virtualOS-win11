@@ -144,7 +144,7 @@
 	}
 }
 
-@media (1px < width < 1024px) {
+@media (max-width: 1024px) {
 
 	.__floater__arrow {
 		top: -16px !important;

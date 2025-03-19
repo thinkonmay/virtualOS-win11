@@ -164,6 +164,12 @@ export const listMobileSettings = [
         state: 'HideVM',
         action: 'worker/toggle_hide_vm',
         explain: [Contents.HIDE_VM_EXPLAIN]
+    },
+    {
+        src: 'MdOutlineNetworkWifi',
+        name: [Contents.HIGH_QUEUE],
+        state: 'HighQueue',
+        action: 'worker/toggle_high_queue'
     }
 ];
 export const listDesktopShortCut = [
@@ -245,8 +251,19 @@ export const listDesktopSettings = [
         src: 'MdVideogameAsset',
         name: [Contents.HIDE_VM],
         state: 'HideVM',
-        action: 'worker/toggle_hide_vm',
-        explain: [Contents.HIDE_VM_EXPLAIN]
+        action: 'worker/toggle_hide_vm'
+    },
+    {
+        src: 'MdOutlineNetworkWifi',
+        name: [Contents.HIGH_QUEUE],
+        state: 'HighQueue',
+        action: 'worker/toggle_high_queue'
+    },
+    {
+        src: 'MdOutlineNetworkWifi',
+        name: [Contents.HIGH_MTU],
+        state: 'HighMTU',
+        action: 'worker/toggle_high_mtu'
     },
     ...(!DevEnv
         ? []

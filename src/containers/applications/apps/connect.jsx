@@ -32,20 +32,21 @@ export const ConnectApp = () => {
     const { image, name } = template ?? {};
     const { browser } = detectBrowserAndOS();
 
-    const expire_popup = () =>
-        popup_open({
-            type: 'extendService',
-            data: {
-                type: 'expired',
-                to: ''
-            }
-        });
+    // const expire_popup = () =>
+    //     popup_open({
+    //         type: 'extendService',
+    //         data: {
+    //             type: 'expired',
+    //             to: ''
+    //         }
+    //     });
 
-    const connect = () =>
-        soft_expired
-            ? appDispatch(expire_popup())
-            : appDispatch(wait_and_claim_volume());
+    // const connect = () =>
+    //     soft_expired
+    //         ? appDispatch(expire_popup())
+    //          : appDispatch(wait_and_claim_volume());
 
+    const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     const loginNow = () => login('google');
     const reload = () => appDispatch(worker_refresh_ui());

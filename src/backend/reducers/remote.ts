@@ -175,13 +175,18 @@ export const remoteAsync = {
         const audio = url.searchParams.get('audio');
         const video = url.searchParams.get('video');
         const data = url.searchParams.get('data');
+        const high_queue = store.getState().worker.HighQueue;
+        const high_mtu = store.getState().worker.HighMTU;
         if (address == null || audio == null || video == null || data == null)
             return false;
 
+        const opt = `&queue_size=${high_queue ? 16 : 4}&mtu=${
+            high_mtu ? 1400 : 1200
+        }`;
         showConnect();
         appDispatch(
             remote_connect({
-                videoUrl: `wss://${address}/broadcasters/webrtc?token=${video}`,
+                videoUrl: `wss://${address}/broadcasters/webrtc?token=${video}${opt}`,
                 audioUrl: `wss://${address}/broadcasters/webrtc?token=${audio}`,
                 dataUrl: `wss://${address}/broadcasters/websocket?token=${data}`
             })

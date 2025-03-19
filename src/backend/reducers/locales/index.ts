@@ -149,6 +149,8 @@ export enum Contents {
     SCAN_CODE_EXPLAIN,
     HIDE_VM,
     HIDE_VM_EXPLAIN,
+    HIGH_MTU,
+    HIGH_QUEUE,
     STRICT_TIMING,
     EXTERNAL_TAB,
     EXTERNAL_TAB_EXPlAIN,
@@ -726,6 +728,14 @@ export function language() {
     en.set(Contents.HIDE_VM, 'Online game');
     vn.set(Contents.HIDE_VM, 'Online game');
     id.set(Contents.HIDE_VM, 'Online game');
+
+    en.set(Contents.HIGH_MTU, 'High MTU');
+    vn.set(Contents.HIGH_MTU, 'High MTU');
+    id.set(Contents.HIGH_MTU, 'High MTU');
+
+    en.set(Contents.HIGH_QUEUE, 'High Queue');
+    vn.set(Contents.HIGH_QUEUE, 'High Queue');
+    id.set(Contents.HIGH_QUEUE, 'High Queue');
 
     en.set(Contents.HIDE_VM_EXPLAIN, 'Enable for online games like FC Online');
     vn.set(
