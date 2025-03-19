@@ -73,6 +73,13 @@ const apps: AppData[] = [
         action: 'apps/app_external',
         payload: externalLink.FACEBOOK_LINK,
         mono: true
+    },
+    {
+        name: [Contents.MESSAGE_APP],
+        id: 'facebook',
+        action: 'apps/app_external',
+        payload: externalLink.MESSAGE_LINK,
+        mono: true
     }
 ];
 var { taskbar, desktop } = {
@@ -86,6 +93,7 @@ var { taskbar, desktop } = {
         'g4market',
         'connectPc',
         'payment',
+        'facebook',
         ...(DevEnv ? ['worker'] : [])
     ]
 };
