@@ -26,7 +26,7 @@ function UserInfo() {
         policy
     } = subscription ?? {};
     const { node } = usage ?? {};
-    let { limit_hour } = policy ?? {};
+    let { limit_hour, name: plan_name } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
     const endedAtFormat = dayjs(ended_at);
     if (endedAtFormat.isBefore(oldPaidUser, 'day') && limit_hour == 120) {
@@ -48,7 +48,7 @@ function UserInfo() {
 
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">Gói</span>
-                <span>Gói M1</span>
+                <span>Gói {plan_name}</span>
             </div>
 
             <div className="w-full flex gap-4 justify-between mt-1 items-end">

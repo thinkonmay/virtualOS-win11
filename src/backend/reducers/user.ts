@@ -27,6 +27,7 @@ export type Subscription = {
         size: string;
         limit_hour: number;
         total_days: number;
+        name: string;
     };
     usage?: Metadata;
 };
