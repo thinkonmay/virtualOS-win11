@@ -12,7 +12,7 @@ function DomainSwitch() {
             window.open(`https://${domain}`, '_self');
         else if (v2_domain.includes(domain)) {
             localStorage.setItem('thinkmay_domain', domain);
-            window.location.reload()
+            window.location.reload();
         }
     };
 

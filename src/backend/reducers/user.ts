@@ -187,43 +187,45 @@ export const userAsync = {
             }
 
             // TODO : fetch template
-            const tpl = '';
-
-            const { data: stores, error: err } = await GLOBAL()
-                .from('stores')
-                .select('metadata->screenshots,name')
-                .eq('code_name', tpl)
-                .limit(1);
-
+            const tpl = undefined;
             let template = null;
-            if (err) throw err;
-            else if (stores.length > 0) {
-                const [{ screenshots, name }] = stores;
-                template =
-                    screenshots == null
-                        ? {
-                              image: null,
-                              code: tpl,
-                              name
-                          }
-                        : {
-                              image:
-                                  screenshots[
-                                      Math.round(
-                                          Math.random() *
-                                              ((screenshots as any[]).length -
-                                                  1)
-                                      )
-                                  ]?.path_full ?? null,
-                              code: tpl,
-                              name
-                          };
-            } else {
-                template = {
-                    image: null,
-                    code: tpl,
-                    name: tpl
-                };
+            if (tpl != undefined) {
+                const { data: stores, error: err } = await GLOBAL()
+                    .from('stores')
+                    .select('metadata->screenshots,name')
+                    .eq('code_name', tpl)
+                    .limit(1);
+
+                if (err) throw err;
+                else if (stores.length > 0) {
+                    const [{ screenshots, name }] = stores;
+                    template =
+                        screenshots == null
+                            ? {
+                                  image: null,
+                                  code: tpl,
+                                  name
+                              }
+                            : {
+                                  image:
+                                      screenshots[
+                                          Math.round(
+                                              Math.random() *
+                                                  ((screenshots as any[])
+                                                      .length -
+                                                      1)
+                                          )
+                                      ]?.path_full ?? null,
+                                  code: tpl,
+                                  name
+                              };
+                } else {
+                    template = {
+                        image: null,
+                        code: tpl,
+                        name: tpl
+                    };
+                }
             }
 
             const available = limit_hour - subscription.total_usage;
