@@ -44,7 +44,7 @@ const initialState: WorkerType = {
     currentAddress: 'play.2.thinkmay.net',
     HideVM: true,
     HighMTU: false,
-    HighQueue: true
+    HighQueue: false
 };
 
 export const workerAsync = {
