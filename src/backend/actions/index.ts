@@ -243,7 +243,7 @@ export const createPaymentPocket = ({
     plan_price,
     plan_title
 }: WrapperCreatePaymentPocket) => {
-    const wallet = store.getState().user.wallet;
+    const { wallet, subscription } = store.getState().user;
 
     const listPlan = {
         week1: true,
@@ -275,7 +275,7 @@ export const createPaymentPocket = ({
                 }
             })
         );
-    else if (store.getState().user.subscription != undefined)
+    else if (subscription == undefined)
         appDispatch(
             popup_open({
                 type: 'pocketBuyConfirm',
