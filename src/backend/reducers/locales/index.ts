@@ -215,6 +215,7 @@ export enum Contents {
     CONNECT_APP,
     DISCORD_APP,
     FANPAGE_APP,
+    MESSAGE_APP,
     G4MARKET_APP,
     //CONNECT APP ( CA )
     CA_TURN_ON_PC,
@@ -531,6 +532,10 @@ export function language() {
     en.set(Contents.FANPAGE_APP, 'Fanpage');
     vn.set(Contents.FANPAGE_APP, 'Fanpage');
     id.set(Contents.FANPAGE_APP, 'Halaman penggemar');
+
+    en.set(Contents.MESSAGE_APP, 'Messenger');
+    vn.set(Contents.MESSAGE_APP, 'Messenger');
+    id.set(Contents.MESSAGE_APP, 'Messenger');
 
     en.set(Contents.DISCORD_APP, 'Discord');
     vn.set(Contents.DISCORD_APP, 'Discord');
