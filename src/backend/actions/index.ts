@@ -404,7 +404,7 @@ export const create_payment_pocket = async ({
             })
         );
     } else {
-        await GLOBAL().rpc('verify_all_pocket_payment');
+        await GLOBAL().rpc('verify_all_payment');
         await preload(false);
 
         appDispatch(popup_close(true));
@@ -462,7 +462,7 @@ export const modify_payment_pocket = async ({
             })
         );
     } else {
-        await GLOBAL().rpc('verify_all_pocket_payment');
+        await GLOBAL().rpc('verify_all_payment');
         await preload(false);
 
         appDispatch(popup_close());
