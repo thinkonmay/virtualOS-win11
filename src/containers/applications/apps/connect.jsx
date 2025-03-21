@@ -1,7 +1,6 @@
 import {
     appDispatch,
     app_toggle,
-    popup_open,
     useAppSelector,
     wait_and_claim_volume
 } from '../../../backend/reducers';
@@ -133,12 +132,17 @@ export const ConnectApp = () => {
                                     </p>
                                 </>
                             ) : available == 'not_ready' ? (
-                                <button
-                                    onClick={reload}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    {t[Contents.CA_INITIALIZING]}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={reload}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        {t[Contents.CA_INITIALIZING]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        Hãy nhắn hỗ trợ, nếu đợi quá 5'!
+                                    </p>
+                                </>
                             ) : paid ? (
                                 wrongsite ? (
                                     <a
@@ -149,20 +153,30 @@ export const ConnectApp = () => {
                                         {cluster}
                                     </a>
                                 ) : (
-                                    <button
-                                        onClick={reload}
-                                        className="instbtn connectBtn12 connectBtn"
-                                    >
-                                        {t[Contents.CA_RELOAD_TRY_AGAIN]}
-                                    </button>
+                                    <>
+                                        <button
+                                            onClick={reload}
+                                            className="instbtn connectBtn12 connectBtn"
+                                        >
+                                            {t[Contents.CA_RELOAD_TRY_AGAIN]}
+                                        </button>
+                                        <p className="text-xs text-center mt-3">
+                                            Hãy nhắn hỗ trợ, nếu đợi quá 5'!
+                                        </p>
+                                    </>
                                 )
                             ) : (
-                                <button
-                                    onClick={pay}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    {t[Contents.PAYMENT_APP]}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={pay}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        {t[Contents.PAYMENT_APP]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        Hãy nhắn hỗ trợ, nếu bạn đã thanh toán!
+                                    </p>
+                                </>
                             )}
                         </div>
                     </div>

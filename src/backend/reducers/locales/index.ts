@@ -482,7 +482,7 @@ export function language() {
     id.set(Contents.TEMPLATE_APP, 'Template');
 
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
-    vn.set(Contents.CONNECT_APP, 'Máy tính cá nhân');
+    vn.set(Contents.CONNECT_APP, 'Kết nối CloudPC');
     id.set(Contents.CONNECT_APP, 'Sambungkan ke PC Anda');
 
     en.set(Contents.WORKER_APP, 'Worker');
