@@ -22,6 +22,7 @@ import {
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
 import { PaidTutorial } from './components/onboarding/paidUser';
+import { NewTutorial } from './components/onboarding/newUser';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { ListQAs } from './components/start/listQa';
 import Taskbar from './components/taskbar';
@@ -228,10 +229,10 @@ function App() {
                             <ActMenu />
                             <StartMenu />
                             <SidePane />
-                            <ListQAs></ListQAs>
+                            <ListQAs />
                             <Popup />
                             <PaidTutorial />
-                            {/*<PaymentStatus />*/}
+                            {/* <NewTutorial /> */}
                             <SubscriptionPaidStatus />
                         </>
                     )}
@@ -245,14 +246,6 @@ function App() {
                             <Background />
                             <div className="desktop" data-menu="desk">
                                 <DesktopApp />
-                                {/*{Object.keys(Tutorials)
-                                    .filter((x) => x == tutorial)
-                                    .map((key, idx) => {
-                                        var WinApp = Tutorials[key];
-                                        return <WinApp key={idx} />;
-                                    })}*/}
-
-                                {/*<Tutorials.NewTutorial />*/}
                                 {Object.keys(Applications).map((key, idx) => {
                                     var WinApp = Applications[key];
                                     return <WinApp key={idx} />;
