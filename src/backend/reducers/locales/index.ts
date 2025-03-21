@@ -470,7 +470,7 @@ export function language() {
     );
 
     en.set(Contents.PAYMENT_APP, 'Payment');
-    vn.set(Contents.PAYMENT_APP, 'Thanh toán');
+    vn.set(Contents.PAYMENT_APP, 'Mua CloudPC');
     id.set(Contents.PAYMENT_APP, 'Pembayaran');
 
     en.set(Contents.GUIDELINE_APP, 'Guideline');
@@ -490,7 +490,7 @@ export function language() {
     id.set(Contents.WORKER_APP, 'Pekerja');
 
     en.set(Contents.FANPAGE_APP, 'Fanpage');
-    vn.set(Contents.FANPAGE_APP, 'Fanpage');
+    vn.set(Contents.FANPAGE_APP, 'FB Hỗ trợ');
     id.set(Contents.FANPAGE_APP, 'Halaman penggemar');
 
     en.set(Contents.DISCORD_APP, 'Discord');

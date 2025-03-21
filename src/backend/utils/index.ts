@@ -93,7 +93,7 @@ var { taskbar, desktop } = {
         'guideline',
         'facebook',
         'store',
-        'g4market',
+        //'g4market',
         'connectPc',
         'payment',
         ...(DevEnv ? ['worker'] : [])
