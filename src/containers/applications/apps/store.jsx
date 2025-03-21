@@ -88,7 +88,7 @@ const DetailPage = ({ app }) => {
         capsule_image,
         short_description,
         screenshots,
-        release_date: { date },
+        release_date,
         publishers: [publisher]
     } = metadata ?? {};
 
@@ -119,7 +119,7 @@ const DetailPage = ({ app }) => {
                         {name}
                     </div>
                     <div className="text-sm mt-4">{publisher}</div>
-                    <div className="text-sm font-thin ">Release {date}</div>
+                    <div className="text-sm font-thin ">Release {release_date}</div>
 
                     {subscribed ? (
                         volume != undefined ? (
