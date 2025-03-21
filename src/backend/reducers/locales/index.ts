@@ -514,7 +514,7 @@ export function language() {
     );
 
     en.set(Contents.PAYMENT_APP, 'Payment');
-    vn.set(Contents.PAYMENT_APP, 'Thanh toán');
+    vn.set(Contents.PAYMENT_APP, 'Mua CloudPC');
     id.set(Contents.PAYMENT_APP, 'Pembayaran');
 
     en.set(Contents.GUIDELINE_APP, 'Guideline');
@@ -526,7 +526,7 @@ export function language() {
     id.set(Contents.TEMPLATE_APP, 'Template');
 
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
-    vn.set(Contents.CONNECT_APP, 'Máy tính cá nhân');
+    vn.set(Contents.CONNECT_APP, 'Kết nối máy ảo');
     id.set(Contents.CONNECT_APP, 'Sambungkan ke PC Anda');
 
     en.set(Contents.FANPAGE_APP, 'Fanpage');
@@ -534,7 +534,7 @@ export function language() {
     id.set(Contents.FANPAGE_APP, 'Halaman penggemar');
 
     en.set(Contents.MESSAGE_APP, 'Messenger');
-    vn.set(Contents.MESSAGE_APP, 'Messenger');
+    vn.set(Contents.MESSAGE_APP, 'FB hỗ trợ');
     id.set(Contents.MESSAGE_APP, 'Messenger');
 
     en.set(Contents.DISCORD_APP, 'Discord');

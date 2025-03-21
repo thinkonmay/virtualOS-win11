@@ -67,13 +67,13 @@ const apps: AppData[] = [
         payload: externalLink.DISCORD_LINK,
         mono: true
     },
-    {
-        name: [Contents.FANPAGE_APP],
-        id: 'facebook',
-        action: 'apps/app_external',
-        payload: externalLink.FACEBOOK_LINK,
-        mono: true
-    },
+    //{
+    //    name: [Contents.FANPAGE_APP],
+    //    id: 'facebook',
+    //    action: 'apps/app_external',
+    //    payload: externalLink.FACEBOOK_LINK,
+    //    mono: true
+    //},
     {
         name: [Contents.MESSAGE_APP],
         id: 'facebook',
@@ -90,7 +90,7 @@ var { taskbar, desktop } = {
         'guideline',
         'facebook',
         'store',
-        'g4market',
+        //'g4market',
         'connectPc',
         'payment',
         'facebook',

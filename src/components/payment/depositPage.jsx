@@ -21,9 +21,9 @@ const DepositPage = () => {
         setDepositNumber(e.target.value);
 
         if (!e.target.value) return;
-        if (removeCommasAndCurrency(e.target.value) < 50000) {
-            setErr('Số tiền nạp phải >= 50k');
-        } else if (removeCommasAndCurrency(e.target.value) > 1000000000) {
+        if (removeCommasAndCurrency(e.target.value) < 99000) {
+            setErr('Số tiền nạp phải >= 99k');
+        } else if (removeCommasAndCurrency(e.target.value) > 10000000) {
             setErr('Wow, bạn giàu quá! Vui lòng nhập số tiền thực tế hơn');
         } else {
             setErr('');
@@ -76,7 +76,7 @@ const DepositPage = () => {
             <div className="noticesBox">
                 <p className="title">Lưu ý:</p>
                 <ul className="">
-                    <li>Số tiền nạp tối thiểu là 50,000 đ</li>
+                    <li>Số tiền nạp tối thiểu là 99,000 đ</li>
                     <li>Tiền đã nạp không thể rút ra thành tiền mặt</li>
                     <li>
                         Nếu bạn gặp lỗi trong quá trình nạp, xin vui lòng liên
