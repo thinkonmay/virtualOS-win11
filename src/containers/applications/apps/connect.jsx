@@ -1,7 +1,6 @@
 import {
     appDispatch,
     app_toggle,
-    popup_open,
     useAppSelector,
     wait_and_claim_volume,
     worker_refresh_ui
@@ -12,10 +11,10 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
+import { login } from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
-import { login } from '../../../backend/actions';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const not_signed = useAppSelector((state) => state.user.id == 'unknown');
@@ -127,27 +126,48 @@ export const ConnectApp = () => {
                                     </p>
                                 </>
                             ) : available == 'no_node' ? (
-                                <button
-                                    onClick={reload}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    {t[Contents.CA_RELOAD_TRY_AGAIN]}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={reload}
+                                        className="instbtn connectBtn12 connectBtn"
+                                    >
+                                        {t[Contents.CA_RELOAD_TRY_AGAIN]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        Hãy nhắn hỗ trợ nếu đợi quá 5'!
+                                    </p>
+                                </>
                             ) : available == undefined ? (
                                 cluster != undefined ? (
-                                    <button
-                                        onClick={redirect}
-                                        className="instbtn connectBtn12 connectBtn"
-                                    >
-                                        {t[Contents.CA_NOTAVAILABLE]}
-                                    </button>
+                                    <>
+                                        <button
+                                            onClick={redirect}
+                                            className="instbtn connectBtn12 connectBtn"
+                                        >
+                                            {t[Contents.CA_NOTAVAILABLE]}
+                                        </button>
+                                        <p className="text-xs text-center mt-3">
+                                            {
+                                                t[
+                                                    Contents
+                                                        .CA_NOTAVAILABLE_EXPLAIN
+                                                ]
+                                            }
+                                            !
+                                        </p>
+                                    </>
                                 ) : (
-                                    <button
-                                        onClick={pay}
-                                        className="instbtn connectBtn12 connectBtn"
-                                    >
-                                        {t[Contents.PAYMENT_APP]}
-                                    </button>
+                                    <>
+                                        <button
+                                            onClick={pay}
+                                            className="instbtn connectBtn12 connectBtn"
+                                        >
+                                            {t[Contents.PAYMENT_APP]}
+                                        </button>
+                                        <p className="text-xs text-center mt-3">
+                                            Hãy nhắn hỗ trợ nếu đã mua gói!
+                                        </p>
+                                    </>
                                 )
                             ) : (
                                 <button className="instbtn connectBtn12 connectBtn">

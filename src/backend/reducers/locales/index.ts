@@ -222,6 +222,7 @@ export enum Contents {
     CA_CONNECT,
     CA_CONNECT_EXPLAIN,
     CA_NOTAVAILABLE,
+    CA_NOTAVAILABLE_EXPLAIN,
     CA_RELOAD_TRY_AGAIN,
     // HANG CHO
 
@@ -351,15 +352,24 @@ export function language() {
 
     en.set(
         Contents.CA_NOTAVAILABLE,
-        'You do not have available computer on this server, click to go back to the server you registered'
+        'Click to go back to the server you registered'
     );
-    vn.set(
-        Contents.CA_NOTAVAILABLE,
-        'Bạn không có máy tính trên server này, click để chuyển về server bạn đã đăng kí'
-    );
+    vn.set(Contents.CA_NOTAVAILABLE, 'Click để chuyển về đúng server');
     id.set(
         Contents.CA_NOTAVAILABLE,
-        'You do not have available computer on this server, click to go back to the server you registered'
+        'Click to go back to the server you registered'
+    );
+    en.set(
+        Contents.CA_NOTAVAILABLE_EXPLAIN,
+        'You do not have available computer on this server'
+    );
+    vn.set(
+        Contents.CA_NOTAVAILABLE_EXPLAIN,
+        'Bạn không có máy trên server này'
+    );
+    id.set(
+        Contents.CA_NOTAVAILABLE_EXPLAIN,
+        'You do not have available computer on this server'
     );
 
     en.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
