@@ -90,6 +90,7 @@ const DetailPage = ({ app }) => {
         screenshots,
         publishers: [publisher]
     } = metadata ?? {
+        screenshots: [],
         publishers: []
     };
 
@@ -178,7 +179,7 @@ const DetailPage = ({ app }) => {
                     <div className="text-xs font-semibold">Screenshots</div>
                     <div className="overflow-x-scroll win11Scroll mt-4">
                         <div className="w-max flex">
-                            {screenshots.map((img, id) => {
+                            {screenshots?.map((img, id) => {
                                 return (
                                     <div className="mr-6 relative" key={id}>
                                         <Image
