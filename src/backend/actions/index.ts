@@ -375,31 +375,20 @@ export const create_payment_pocket = async ({
         user: { email },
         globals: { translation: t }
     } = store.getState();
-    const { data, error: err } = await GLOBAL().rpc('create_payment_pocket', {
+    const { error } = await GLOBAL().rpc('create_payment_pocket', {
         email,
         plan_name,
         cluster_domain
     });
 
-    if (err) {
+    if (error) {
         appDispatch(popup_close(true));
         appDispatch(
             popup_open({
                 type: 'complete',
                 data: {
                     success: false,
-                    content: err.message
-                }
-            })
-        );
-    } else if (!data) {
-        appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: 'you already registered for this plan'
+                    content: error.message
                 }
             })
         );
