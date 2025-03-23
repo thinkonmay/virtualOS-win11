@@ -6,7 +6,7 @@ import { isMobile } from '../src-tauri/core';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import { LiveChatWidget } from '@livechat/widget-react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import {
     appDispatch,
@@ -88,18 +88,6 @@ function App() {
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });
             setLockscreen(false);
-            const domain = localStorage.getItem('thinkmay_domain');
-            toast(
-                `Version ${import.meta.env.__BUILD__}\nYou are in ${domain}`,
-                {
-                    icon: '👏',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff'
-                    }
-                }
-            );
         });
     }, []);
 

@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import { UserEvents, UserSession } from '../../../src-tauri/api';
+import { POCKETBASE, UserEvents, UserSession } from '../../../src-tauri/api';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -33,6 +33,8 @@ import {
 import { localStorageKey } from '../utils/constant';
 import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
+import toast from 'react-hot-toast';
+import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -140,8 +142,10 @@ const updateUI = async () => {
 
     const rms = [];
     const ops = [];
+    let node = undefined;
     if (subscription != undefined) {
-        const { ended_at, cluster } = subscription;
+        const { ended_at, cluster, usage } = subscription;
+        node = usage?.node;
 
         ops.push('connectPc');
         // TODO
@@ -182,6 +186,29 @@ const updateUI = async () => {
 
     ops.forEach((x) => appDispatch(app_toggle(x)));
     rms.forEach((x) => appDispatch(desk_remove(x)));
+
+    const domain = localStorage.getItem('thinkmay_domain');
+    const version = import.meta.env.__BUILD__;
+    const device = getOS() + ' ' + getBrowser();
+    const volume = (
+        await POCKETBASE()
+            .collection('volumes')
+            .getFullList<{ local_id: string }>()
+    )?.[0]?.local_id;
+    const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
+    const nodetext = node ? `\nNode ${node}` : '';
+    toast(
+        `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}`,
+        {
+            icon: '👏',
+            duration: 15000,
+            style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff'
+            }
+        }
+    );
 };
 
 export const preload = async (update_ui?: boolean) => {
