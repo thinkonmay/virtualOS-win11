@@ -36,8 +36,6 @@ const Taskbar = () => {
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
     const apps = useAppSelector((state) => state.apps);
-    //const open = useAppSelector((state) => !state.sidepane.hide);
-    const tutorialState = useAppSelector((state) => state.globals.tutorial);
     const wallet = useAppSelector((state) => state.user.wallet);
     const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
@@ -89,12 +87,7 @@ const Taskbar = () => {
     }, [remote.ready]);
 
     const toggleControl = (e) => {
-        if (tutorialState == 'PaidTutorial') return;
         setOpen((old) => !old);
-
-        //appDispatch(sidepane_panetogg());
-
-        //appDispatch()
         afterMath(e);
     };
 

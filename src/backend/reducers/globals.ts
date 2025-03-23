@@ -67,7 +67,6 @@ type Domain = {
     free: number;
 };
 
-type TutorialType = 'NewTutorial' | 'PaidTutorial' | 'close';
 const initialState = {
     lays: [
         [
@@ -238,7 +237,7 @@ const initialState = {
     ],
 
     service_available: false,
-    tutorial: 'close' as TutorialType,
+    tutorial: false,
     translation: {} as TranslationResult,
     maintenance: {} as Maintain,
     games: [] as IGame[],
@@ -300,8 +299,12 @@ export const globalSlice = createSlice({
         show_chat: (state) => {
             state.chat = !state.chat;
         },
-        show_tutorial: (state, action: PayloadAction<TutorialType>) => {
-            state.tutorial = action.payload;
+        show_tutorial: (
+            state,
+            action: PayloadAction<'open' | 'close' | undefined>
+        ) => {
+            if (action.payload) state.tutorial = action.payload == 'open';
+            else state.tutorial = !state.tutorial;
         }
     },
     extraReducers: (builder) => {

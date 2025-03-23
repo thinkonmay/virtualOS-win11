@@ -32,10 +32,6 @@ export const refresh = async () => {
     appDispatch(desk_show());
 };
 
-export const open_guideline = () => {
-    appDispatch(app_toggle('guideline'));
-};
-
 export const afterMath = (event: any) => {
     var ess = [
         ['START', 'startmenu/starthid', 'startmenu.hide'], // TODO

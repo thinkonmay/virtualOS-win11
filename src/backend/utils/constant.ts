@@ -28,8 +28,6 @@ export const localStorageKey = {
     request: 'REQUESTCACHE',
     language: 'language',
     PATH_NAME: 'FINISH_PAYMENT',
-    shownTutorial: 'SHOWN_TUTORIAL',
-    shownPaidUserTutorial: 'SHOWN_PAID_USER_TUTORIAL',
     gamepadBtnSizes: 'GAMEPAD_BUTTON_SIZE',
     gamingKeyboardData: 'GAMING_KEYBOARD_DATA'
 };

@@ -51,7 +51,6 @@ const initialState = {
         //        ques: '',
         //        ans: ''
         //    },
-
         //]
     },
     currentShow: 'cloudPc'

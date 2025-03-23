@@ -24,13 +24,11 @@ import {
     popup_open,
     set_current_address,
     setting_theme,
-    show_tutorial,
     sidepane_panethem,
     store,
     sync,
     worker_refresh
 } from '../reducers';
-import { localStorageKey } from '../utils/constant';
 import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
 import toast from 'react-hot-toast';
@@ -134,7 +132,6 @@ const fetchPlans = async () => {
 };
 
 const updateUI = async () => {
-    appDispatch(show_tutorial('close'));
     const {
         user: { subscription },
         worker: { currentAddress }
@@ -174,14 +171,6 @@ const updateUI = async () => {
                     }
                 })
             );
-    }
-    if (
-        localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
-        !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        subscription == undefined
-    ) {
-        appDispatch(show_tutorial('NewTutorial'));
-        localStorage.setItem(localStorageKey.shownTutorial, 'true');
     }
 
     ops.forEach((x) => appDispatch(app_toggle(x)));

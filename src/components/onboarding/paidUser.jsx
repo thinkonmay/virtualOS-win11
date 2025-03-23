@@ -290,18 +290,12 @@ function CustomTooltip(props) {
 //        </div>
 //    );
 //}
-export const PaidTutorial = () => {
-    const logged_in = useAppSelector((state) => state.user.id != 'unknown');
+export const Tutorial = () => {
     const [videoConnectivity, setVideoConnectivity] = useState('not started');
 
     const remote = useAppSelector((state) => state.remote);
-    const show = useAppSelector(
-        (state) => state.globals.tutorial == 'PaidTutorial'
-    );
+    const show = useAppSelector((state) => state.globals.tutorial);
 
-    const firstCondition =
-        videoConnectivity == 'connected' &&
-        localStorage.getItem(localStorageKey.shownPaidUserTutorial) != 'true';
     const [run, setRun] = useState(false);
 
     const intervalRef = useRef(null);

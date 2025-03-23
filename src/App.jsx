@@ -1,12 +1,12 @@
+import { LiveChatWidget } from '@livechat/widget-react';
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Toaster } from 'react-hot-toast';
 import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
 import { isMobile } from '../src-tauri/core';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
-import { LiveChatWidget } from '@livechat/widget-react';
-import { Toaster } from 'react-hot-toast';
 
 import {
     appDispatch,
@@ -18,8 +18,7 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
-import { PaidTutorial } from './components/onboarding/paidUser';
-import { NewTutorial } from './components/onboarding/newUser';
+import { Tutorial } from './components/onboarding/paidUser';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { ListQAs } from './components/start/listQa';
 import Taskbar from './components/taskbar';
@@ -195,8 +194,7 @@ function App() {
                             <SidePane />
                             <ListQAs />
                             <Popup />
-                            <PaidTutorial />
-                            {/* <NewTutorial /> */}
+                            <Tutorial />
                             <SubscriptionPaidStatus />
                             <Toaster position="top-right" />
                         </>

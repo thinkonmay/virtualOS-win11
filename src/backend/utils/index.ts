@@ -27,8 +27,8 @@ const apps: AppData[] = [
     {
         name: [Contents.GUIDELINE_APP],
         id: 'guideline',
-        action: 'apps/app_toggle',
-        payload: 'guideline',
+        action: 'global/show_tutorial',
+        payload: 'open',
         icon: 'info',
         size: 'full'
     },
@@ -53,12 +53,6 @@ const apps: AppData[] = [
         image: 'worker',
         payload: 'connectPc',
         size: 'mini'
-    },
-    {
-        name: [Contents.G4MARKET_APP],
-        id: 'g4market',
-        action: 'apps/app_external',
-        payload: externalLink.G4MARKET_LINK_STORE
     },
     {
         name: [Contents.DISCORD_APP],
@@ -90,7 +84,6 @@ var { taskbar, desktop } = {
         'guideline',
         'facebook',
         'store',
-        //'g4market',
         'connectPc',
         'payment',
         'facebook',
