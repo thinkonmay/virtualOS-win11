@@ -88,14 +88,18 @@ function App() {
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });
             setLockscreen(false);
-            toast(`You are in ${localStorage.getItem('thinkmay_domain')}`, {
-                icon: '👏',
-                style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff'
+            const domain = localStorage.getItem('thinkmay_domain');
+            toast(
+                `Version ${import.meta.env.__BUILD__}\nYou are in ${domain}`,
+                {
+                    icon: '👏',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff'
+                    }
                 }
-            });
+            );
         });
     }, []);
 
