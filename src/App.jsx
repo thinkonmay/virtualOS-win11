@@ -124,7 +124,7 @@ function App() {
     }, [showChat]);
 
     useEffect(() => {
-        if (tutorial != 'close') window.onclick = null;
+        if (tutorial) window.onclick = null;
         else if (remote.fullscreen) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
