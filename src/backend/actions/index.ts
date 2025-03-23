@@ -1,4 +1,3 @@
-import 'sweetalert2/src/sweetalert2.scss';
 import { POCKETBASE } from '../../../src-tauri/api';
 import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';

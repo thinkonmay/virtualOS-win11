@@ -238,10 +238,8 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         month1: true,
         month2: true
     };
-    const isActivePlan = (plan) => {
-        let check = wallet?.currentOrders.find((o) => o.plan_name == plan);
-        return check;
-    };
+    const isActivePlan = (plan) =>
+        wallet?.currentOrders.find((o) => o.plan_name == plan);
 
     const isHavingPlan = () =>
         wallet?.currentOrders.find((o) => listPlan[o.plan_name]);

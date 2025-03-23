@@ -5,14 +5,6 @@ export const isDevEnv = () => {
     );
 };
 
-export const isRunOutOfGpu = (respText: string): boolean => {
-    let check = true;
-
-    check = JSON.stringify(respText).includes(' out of gpu');
-
-    return check;
-};
-
 export function isIos() {
     return (
         [

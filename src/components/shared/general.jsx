@@ -1,6 +1,3 @@
-import * as FaRegIcons from '@fortawesome/free-regular-svg-icons';
-import * as FaIcons from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import {
     appDispatch,
@@ -32,37 +29,7 @@ export const Icon = (props) => {
         }
     }
 
-    if (props.fafa != null) {
-        return (
-            <div
-                className={`uicon prtclk ${props.className || ''}`}
-                onClick={
-                    props.onClick || (props.click && clickDispatch) || null
-                }
-                data-action={props.click}
-                data-payload={props.payload}
-                data-menu={props.menu}
-                style={{ ...props.style }}
-            >
-                <FontAwesomeIcon
-                    data-flip={props.flip != null}
-                    data-invert={props.invert != null ? 'true' : 'false'}
-                    data-rounded={props.rounded != null ? 'true' : 'false'}
-                    style={{
-                        width: props.width,
-                        height: props.height || props.width,
-                        color: props.color || null,
-                        margin: props.margin || null
-                    }}
-                    icon={
-                        props.reg == null
-                            ? FaIcons[props.fafa]
-                            : FaRegIcons[props.fafa]
-                    }
-                />
-            </div>
-        );
-    } else if (props.icon != null) {
+    if (props.icon != null) {
         var CustomIcon = AllIcons[props.icon];
         return (
             <div
@@ -162,8 +129,6 @@ export const Icon = (props) => {
 };
 
 export const Image = (props) => {
-    const dispatch = appDispatch;
-
     let src = props.absolute
         ? props.src
         : `img/${(props.dir ? props.dir + '/' : '') + props.src}.png`;

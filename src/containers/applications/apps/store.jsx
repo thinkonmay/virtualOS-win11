@@ -47,7 +47,7 @@ export const MicroStore = () => {
                 <LazyComponent show={!wnapp.hide}>
                     <div className="storeNav h-full w-20 flex flex-col">
                         <Icon
-                            fafa="faHome"
+                            icon="home"
                             onClick={() => appDispatch(open_game(null))}
                             click="page1"
                             width={20}
