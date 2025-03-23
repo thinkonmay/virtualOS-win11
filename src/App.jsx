@@ -6,17 +6,14 @@ import { isMobile } from '../src-tauri/core';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import { LiveChatWidget } from '@livechat/widget-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 import {
     appDispatch,
-    app_toggle,
     direct_access,
-    fetch_store,
     menu_show,
-    open_game,
     pointer_lock,
     set_fullscreen,
-    store,
     useAppSelector
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
@@ -34,6 +31,9 @@ import { Status } from './containers/status';
 import SubscriptionPaidStatus from './containers/status/subscriptionStatus';
 import { ErrorFallback } from './error';
 import './index.css';
+
+const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
+const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
 
 function App() {
     ReactModal.setAppElement('#root');
@@ -64,10 +64,8 @@ function App() {
     };
 
     useEffect(() => {
-        const url = new URL(window.location.href);
-        const game = url.searchParams.get('game');
-        const domain = url.searchParams.get('server');
         window.LiveChatWidget.call('minimize');
+        const url = new URL(window.location.href);
         appDispatch(direct_access(url));
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
@@ -76,54 +74,28 @@ function App() {
             return text;
         };
 
-        const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
-        const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
+        const domain = url.searchParams.get('server');
         if (listDomain.includes(domain))
             window.open(`https://${domain}`, '_self');
         else if (v2_domain.includes(domain))
             localStorage.setItem('thinkmay_domain', domain);
 
-        const waitForPhoneRotation = async () => {
-            const finish_fetch = now();
-            while (
-                window.screen.width < window.screen.height &&
-                !(now() - finish_fetch > 2 * 1000)
-            ) {
-                setloadingText(Contents.ROTATE_PHONE);
-                await new Promise((r) => setTimeout(r, 100));
-            }
-        };
-
-        let update_ui = true;
-        if (url.pathname == '/payment') {
-            appDispatch(app_toggle('payment'));
-            setDelayPayment(true);
-            update_ui = false;
-        }
-
-        if (game != null) {
-            update_ui = false;
-            setDelayPayment(true);
-            appDispatch(fetch_store()).then(() => {
-                const target = store
-                    .getState()
-                    .globals.games.find((x) => x.code_name == game);
-                if (target != undefined) {
-                    appDispatch(open_game(target));
-                    appDispatch(app_toggle('store'));
-                }
-            });
-        }
-
         const now = () => new Date().getTime();
         const start_fetch = now();
-        PreloadBackground(update_ui).finally(async () => {
+        PreloadBackground(true).finally(async () => {
             window.history.replaceState({}, document.title, '/' + '');
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });
-            if (isMobile()) await waitForPhoneRotation();
             setLockscreen(false);
+            toast(`You are in ${localStorage.getItem('thinkmay_domain')}`, {
+                icon: '👏',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff'
+                }
+            });
         });
     }, []);
 
@@ -234,6 +206,7 @@ function App() {
                             <PaidTutorial />
                             {/* <NewTutorial /> */}
                             <SubscriptionPaidStatus />
+                            <Toaster position="top-right" />
                         </>
                     )}
                     {remote.active && !pointerLock ? <Status /> : null}
