@@ -7,7 +7,7 @@
 }
 
 .dskApp {
-  margin: 4px;
+  margin: 40px;
   height: 84px;
   width: 70px;
   display: flex;
@@ -33,7 +33,9 @@
   .appName {
     text-align: center;
     color: #fafafa;
-    margin-top: 4px;
+    margin-top: 10px;
+    width: max-content;
+    font-weight: 700;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
   }
 }

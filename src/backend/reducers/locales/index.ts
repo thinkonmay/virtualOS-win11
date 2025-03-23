@@ -531,8 +531,8 @@ export function language() {
     vn.set(Contents.GUIDELINE_APP, 'Hướng dẫn');
     id.set(Contents.GUIDELINE_APP, 'Panduan');
 
-    en.set(Contents.TEMPLATE_APP, 'Installed games');
-    vn.set(Contents.TEMPLATE_APP, 'Tạo máy có sẵn game');
+    en.set(Contents.TEMPLATE_APP, 'Install game');
+    vn.set(Contents.TEMPLATE_APP, 'Tải game');
     id.set(Contents.TEMPLATE_APP, 'Template');
 
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
@@ -544,7 +544,7 @@ export function language() {
     id.set(Contents.FANPAGE_APP, 'Halaman penggemar');
 
     en.set(Contents.MESSAGE_APP, 'Messenger');
-    vn.set(Contents.MESSAGE_APP, 'FB hỗ trợ');
+    vn.set(Contents.MESSAGE_APP, 'Messenger');
     id.set(Contents.MESSAGE_APP, 'Messenger');
 
     en.set(Contents.DISCORD_APP, 'Discord');

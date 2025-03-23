@@ -57,6 +57,7 @@ const apps: AppData[] = [
     {
         name: [Contents.DISCORD_APP],
         id: 'discord',
+        icon: 'discord',
         action: 'apps/app_external',
         payload: externalLink.DISCORD_LINK,
         mono: true

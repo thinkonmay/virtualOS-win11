@@ -190,7 +190,7 @@ const updateUI = async () => {
         `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}`,
         {
             icon: '👏',
-            duration: 15000,
+            duration: 5000,
             style: {
                 borderRadius: '10px',
                 background: '#333',

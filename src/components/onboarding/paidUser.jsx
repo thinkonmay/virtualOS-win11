@@ -291,8 +291,6 @@ function CustomTooltip(props) {
 //    );
 //}
 export const Tutorial = () => {
-    const [videoConnectivity, setVideoConnectivity] = useState('not started');
-
     const remote = useAppSelector((state) => state.remote);
     const show = useAppSelector((state) => state.globals.tutorial);
 
