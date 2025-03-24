@@ -9,12 +9,13 @@ import { BuilderHelper } from './helper';
 
 type Metadata = {
     node: string;
-    template: {
-        image: string | null;
-        code: string;
-        name: string;
-    };
     soft_expired: boolean;
+    template: {
+        local_id?: string;
+        image?: string;
+        code?: string;
+        name?: string;
+    };
 };
 
 export type Subscription = {
@@ -29,7 +30,7 @@ export type Subscription = {
         total_days: number;
         name: string;
     };
-    usage?: Metadata;
+    metadata?: Metadata;
 };
 
 type Plan = {
@@ -188,13 +189,25 @@ export const userAsync = {
             }
 
             // TODO : fetch template
-            const tpl = undefined;
+            const volume = (
+                await POCKETBASE().collection('volumes').getFullList<{
+                    local_id: String;
+                    configuration?: { template: string };
+                }>()
+            )?.[0];
+
+            const local_id = volume?.local_id;
+            const code = volume?.configuration?.template?.replaceAll(
+                '.template',
+                ''
+            );
+
             let template = null;
-            if (tpl != undefined) {
+            if (code != undefined) {
                 const { data: stores, error: err } = await GLOBAL()
                     .from('stores')
                     .select('metadata->screenshots,name')
-                    .eq('code_name', tpl)
+                    .eq('code_name', code)
                     .limit(1);
 
                 if (err) throw err;
@@ -203,8 +216,8 @@ export const userAsync = {
                     template =
                         screenshots == null
                             ? {
-                                  image: null,
-                                  code: tpl,
+                                  code,
+                                  local_id,
                                   name
                               }
                             : {
@@ -216,18 +229,18 @@ export const userAsync = {
                                                       .length -
                                                       1)
                                           )
-                                      ]?.path_full ?? null,
-                                  code: tpl,
+                                      ]?.path_full ?? undefined,
+                                  code,
+                                  local_id,
                                   name
                               };
-                } else {
+                } else
                     template = {
-                        image: null,
-                        code: tpl,
-                        name: tpl
+                        code,
+                        local_id,
+                        name: code
                     };
-                }
-            }
+            } else template = { local_id };
 
             const available = limit_hour - subscription.total_usage;
             const soft_expired =
@@ -370,16 +383,6 @@ export const userAsync = {
             else if (data != null) return data;
         }
     ),
-    change_size: createAsyncThunk(
-        'change_size',
-        async ({ size }: { size: string }, { getState }): Promise<void> => {
-            const [vol] = await POCKETBASE().collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-
-            // TODO implement installation job inside pocketbase
-        }
-    ),
     change_template: createAsyncThunk(
         'change_template',
         async (
@@ -465,7 +468,7 @@ export const userSlice = createSlice({
                 fetch: userAsync.fetch_subscription_metadata,
                 hander: (state, action) => {
                     if (state.subscription != undefined)
-                        state.subscription.usage = action.payload;
+                        state.subscription.metadata = action.payload;
                 }
             },
             {

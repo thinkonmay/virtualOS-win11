@@ -25,11 +25,11 @@ export const ConnectApp = () => {
     const available = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
-    const { cluster, usage } = useAppSelector(
+    const { cluster, metadata } = useAppSelector(
         (state) => state.user.subscription ?? {}
     );
     const addr = useAppSelector((state) => state.worker.currentAddress);
-    const { soft_expired, template } = usage ?? {};
+    const { soft_expired, template } = metadata ?? {};
     const { image, name } = template ?? {};
     const { browser } = detectBrowserAndOS();
 

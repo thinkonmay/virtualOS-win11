@@ -167,6 +167,8 @@ export enum Contents {
     DEMO_TUTORIAL_4,
     DEMO_TUTORIAL_5,
 
+    DEFAULT_TEMPLATE,
+
     START_DEMO,
     READ_USER_MANUAL,
     PRO_TIP_DEMO_0,
@@ -490,6 +492,19 @@ export function language() {
     en.set(Contents.TA_CRATE_NEW_PC, 'Create new PC');
     vn.set(Contents.TA_CRATE_NEW_PC, 'Tạo máy mới');
     id.set(Contents.TA_CRATE_NEW_PC, 'Buat PC baru');
+
+    en.set(
+        Contents.DEFAULT_TEMPLATE,
+        `You are using default template\nDo you want to install some games?`
+    );
+    vn.set(
+        Contents.DEFAULT_TEMPLATE,
+        `Bạn đang dùng template mặc định\nbạn có muốn cài đặt game không?`
+    );
+    id.set(
+        Contents.DEFAULT_TEMPLATE,
+        'You are using default template\nDo you want to install some games?'
+    );
 
     en.set(
         Contents.TA_CRATE_NEW_PC_NOTIFY,

@@ -1,9 +1,6 @@
 import dayjs from 'dayjs';
-import { MdOutlineLink } from 'react-icons/md';
-import { changeTheme } from '../../backend/actions';
 import {
     appDispatch,
-    popup_open,
     useAppSelector,
     user_delete
 } from '../../backend/reducers';
@@ -22,10 +19,10 @@ function UserInfo() {
         last_payment,
         total_usage,
         ended_at,
-        usage,
+        metadata,
         policy
     } = subscription ?? {};
-    const { node } = usage ?? {};
+    const { node } = metadata ?? {};
     let { limit_hour, name: plan_name } = policy ?? {};
     const oldPaidUser = dayjs('2024-12-30');
     const endedAtFormat = dayjs(ended_at);

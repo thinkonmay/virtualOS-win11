@@ -1,5 +1,7 @@
 import md5 from 'md5';
-import { POCKETBASE, UserEvents, UserSession } from '../../../src-tauri/api';
+import toast from 'react-hot-toast';
+import { UserEvents, UserSession } from '../../../src-tauri/api';
+import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
@@ -29,10 +31,9 @@ import {
     sync,
     worker_refresh
 } from '../reducers';
+import { Contents } from '../reducers/locales/index.ts';
 import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
-import toast from 'react-hot-toast';
-import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -139,14 +140,9 @@ const updateUI = async () => {
 
     const rms = [];
     const ops = [];
-    let node = undefined;
     if (subscription != undefined) {
-        const { ended_at, cluster, usage } = subscription;
-        node = usage?.node;
-
+        const { ended_at, cluster } = subscription;
         ops.push('connectPc');
-        // TODO
-        // if (subscription?.usage?.isNewUser) ops.push('store');
 
         if (
             ended_at != null &&
@@ -179,17 +175,29 @@ const updateUI = async () => {
     const domain = store.getState().worker.currentAddress;
     const version = import.meta.env.__BUILD__;
     const device = getOS() + ' ' + getBrowser();
-    const volume = (
-        await POCKETBASE()
-            .collection('volumes')
-            .getFullList<{ local_id: string }>()
-    )?.[0]?.local_id;
-    const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
+    const metadata = store.getState().user.subscription?.metadata;
+    const template = metadata?.template;
+    const node = metadata?.node;
     const nodetext = node ? `\nNode ${node}` : '';
+    const templatetext = template ? `\nTemplate ${template.name}` : '';
+    const volume = template?.local_id;
+    const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
+    const def = ['win11', '150'];
+    if (def.includes(template?.code))
+        toast(store.getState().globals.translation[Contents.DEFAULT_TEMPLATE], {
+            duration: 15000,
+            icon: '🥸',
+            style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff'
+            }
+        });
+
     toast(
-        `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}`,
+        `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}${templatetext}`,
         {
-            icon: '👏',
+            icon: 'ℹ️',
             duration: 5000,
             style: {
                 borderRadius: '10px',
