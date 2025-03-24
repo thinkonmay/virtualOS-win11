@@ -179,10 +179,10 @@ const updateUI = async () => {
     const template = metadata?.template;
     const node = metadata?.node;
     const nodetext = node ? `\nNode ${node}` : '';
-    const templatetext = template ? `\nTemplate ${template.name}` : '';
+    const templatetext = template?.name ? `\nTemplate ${template.name}` : '';
     const volume = template?.local_id;
     const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
-    const def = ['win11', '150'];
+    const def = ['win11', '150',undefined];
     if (def.includes(template?.code))
         toast(store.getState().globals.translation[Contents.DEFAULT_TEMPLATE], {
             duration: 15000,
