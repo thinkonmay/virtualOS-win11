@@ -27,7 +27,6 @@ import { Background, BootScreen, LockScreen } from './containers/background';
 import Popup from './containers/popup';
 import { Remote } from './containers/remote';
 import { Status } from './containers/status';
-import SubscriptionPaidStatus from './containers/status/subscriptionStatus';
 import { ErrorFallback } from './error';
 import './index.css';
 
@@ -195,7 +194,6 @@ function App() {
                             <ListQAs />
                             <Popup />
                             <Tutorial />
-                            <SubscriptionPaidStatus />
                             <Toaster position="top-right" />
                         </>
                     )}
