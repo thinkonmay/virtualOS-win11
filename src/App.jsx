@@ -1,4 +1,3 @@
-import { LiveChatWidget } from '@livechat/widget-react';
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
@@ -42,7 +41,6 @@ function App() {
     const [booting, setLockscreen] = useState(true);
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
     const [delayPayment, setDelayPayment] = useState(false);
-    const showChat = useAppSelector((state) => state.globals.chat);
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -62,7 +60,6 @@ function App() {
     };
 
     useEffect(() => {
-        window.LiveChatWidget.call('minimize');
         const url = new URL(window.location.href);
         appDispatch(direct_access(url));
         window.onbeforeunload = (e) => {
@@ -118,9 +115,6 @@ function App() {
         }
     };
 
-    useEffect(() => {
-        window.LiveChatWidget.call(showChat ? 'maximize' : 'minimize');
-    }, [showChat]);
 
     useEffect(() => {
         if (tutorial) window.onclick = null;
@@ -188,12 +182,9 @@ function App() {
                     {pointerLock ? null : (
                         <>
                             <Taskbar />
-                            <ActMenu />
-                            <StartMenu />
                             <SidePane />
-                            <ListQAs />
+                            <StartMenu />
                             <Popup />
-                            <Tutorial />
                             <Toaster position="top-right" />
                         </>
                     )}
@@ -215,7 +206,6 @@ function App() {
                         </>
                     )}
                 </div>
-                <LiveChatWidget license="19084863" visibility="maximized" />
             </ErrorBoundary>
         </div>
     );

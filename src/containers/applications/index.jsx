@@ -4,7 +4,6 @@ import './tabs2.scss';
 import './wnapp.scss';
 
 export * from './apps/connect';
-export * from './apps/payment';
 export * from './apps/store';
 
 export const ScreenPreview = () => {

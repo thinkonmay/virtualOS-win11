@@ -101,9 +101,7 @@ const fetchStore = async () => {
     await appDispatch(fetch_store());
 };
 const startAnalytics = async () => {
-    const email = store.getState().user.email;
-    (window as any).LiveChatWidget.call('set_customer_email', email);
-    await UserSession(email);
+    await UserSession(store.getState().user.email);
 };
 const fetchSubscription = async () => {
     await appDispatch(fetch_subscription());

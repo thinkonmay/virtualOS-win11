@@ -25,21 +25,6 @@ export type AppData = {
 
 const apps: AppData[] = [
     {
-        name: [Contents.GUIDELINE_APP],
-        id: 'guideline',
-        action: 'global/show_tutorial',
-        payload: 'open',
-        icon: 'info',
-        size: 'full'
-    },
-    {
-        name: [Contents.PAYMENT_APP],
-        id: 'payment',
-        page: 'sub',
-        action: 'apps/app_toggle',
-        payload: 'payment'
-    },
-    {
         name: [Contents.TEMPLATE_APP],
         id: 'store',
         action: 'apps/app_toggle',
@@ -54,28 +39,6 @@ const apps: AppData[] = [
         payload: 'connectPc',
         size: 'mini'
     },
-    {
-        name: [Contents.DISCORD_APP],
-        id: 'discord',
-        icon: 'discord',
-        action: 'apps/app_external',
-        payload: externalLink.DISCORD_LINK,
-        mono: true
-    },
-    //{
-    //    name: [Contents.FANPAGE_APP],
-    //    id: 'facebook',
-    //    action: 'apps/app_external',
-    //    payload: externalLink.FACEBOOK_LINK,
-    //    mono: true
-    //},
-    {
-        name: [Contents.MESSAGE_APP],
-        id: 'facebook',
-        action: 'apps/app_external',
-        payload: externalLink.MESSAGE_LINK,
-        mono: true
-    }
 ];
 var { taskbar, desktop } = {
     taskbar: [],

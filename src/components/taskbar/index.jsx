@@ -154,31 +154,6 @@ const Taskbar = () => {
                     style={{ '--prefix': 'TASK' }}
                 >
                     <audio src={ringSound}></audio>
-                    <div className="containerWalletInfo">
-                        <div className="wrapperWallet">
-                            <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">
-                                <Icon
-                                    className="vndIcon"
-                                    src="vnd"
-                                    width={24}
-                                />
-                                {numberFormat(wallet.money)}
-                            </div>
-                            <button
-                                onClick={() => {
-                                    appDispatch(
-                                        app_full({
-                                            id: 'payment',
-                                            page: 'deposit'
-                                        })
-                                    );
-                                }}
-                                className="depositBtn"
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
                     <div className="tasksCont" data-side={tasks.align}>
                         <div className="tsbar" onMouseOut={hidePrev}>
                             <div
@@ -192,8 +167,6 @@ const Taskbar = () => {
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={28}
-                                    //click="startmenu/startogg"
-                                    //style={{ '--prefix': 'START' }}
                                 />{' '}
                                 <p className="hidden md:block text-xm font-semibold">
                                     {t[Contents.ACCOUNT]}
@@ -256,34 +229,6 @@ const Taskbar = () => {
                         } taskright`}
                         data-remote={remote.active}
                     >
-                        <div
-                            className="settingBtn supportNow p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
-                            // onClick={clickDispatch}
-                            onClick={() => appDispatch(show_chat())}
-                            data-action="sidepane/sidepane_bandtogg"
-                            style={{ '--prefix': 'BAND' }}
-                        >
-                            <BiSupport
-                                strokeWidth={'0rem'}
-                                fontSize={'1.5rem'}
-                            />
-                            <span className="hidden md:block">
-                                {t[Contents.SUPPORT]}
-                            </span>
-                        </div>
-                        <div
-                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
-                            // onClick={clickDispatch}
-                            id="supportNow"
-                            onClick={() => appDispatch(toggleQa())}
-                            data-action="sidepane/sidepane_bandtogg"
-                            style={{ '--prefix': 'QA' }}
-                        >
-                            <RiBookLine fontSize={'1.4rem'} />
-                            <span className="hidden md:block">
-                                {t[Contents.GUIDELINE]}
-                            </span>
-                        </div>
                         <div
                             id="settingBtn"
                             className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] items-center rounded"
