@@ -176,7 +176,7 @@ const updateUI = async () => {
     ops.forEach((x) => appDispatch(app_toggle(x)));
     rms.forEach((x) => appDispatch(desk_remove(x)));
 
-    const domain = localStorage.getItem('thinkmay_domain');
+    const domain = store.getState().worker.currentAddress;
     const version = import.meta.env.__BUILD__;
     const device = getOS() + ' ' + getBrowser();
     const volume = (

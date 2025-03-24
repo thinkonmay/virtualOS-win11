@@ -1,6 +1,7 @@
 import {
     appDispatch,
     app_toggle,
+    show_chat,
     useAppSelector,
     wait_and_claim_volume,
     worker_refresh_ui
@@ -27,6 +28,7 @@ export const ConnectApp = () => {
     const { cluster, usage } = useAppSelector(
         (state) => state.user.subscription ?? {}
     );
+    const addr = useAppSelector((state) => state.worker.currentAddress);
     const { soft_expired, template } = usage ?? {};
     const { image, name } = template ?? {};
     const { browser } = detectBrowserAndOS();
@@ -139,23 +141,45 @@ export const ConnectApp = () => {
                                 </>
                             ) : available == undefined ? (
                                 cluster != undefined ? (
-                                    <>
-                                        <button
-                                            onClick={redirect}
-                                            className="instbtn connectBtn12 connectBtn"
-                                        >
-                                            {t[Contents.CA_NOTAVAILABLE]}
-                                        </button>
-                                        <p className="text-xs text-center mt-3">
-                                            {
-                                                t[
-                                                    Contents
-                                                        .CA_NOTAVAILABLE_EXPLAIN
-                                                ]
-                                            }
-                                            !
-                                        </p>
-                                    </>
+                                    cluster != addr ? (
+                                        <>
+                                            <button
+                                                onClick={redirect}
+                                                className="instbtn connectBtn12 connectBtn"
+                                            >
+                                                {t[Contents.CA_WRONG_SERVER]}
+                                            </button>
+                                            <p className="text-xs text-center mt-3">
+                                                {
+                                                    t[
+                                                        Contents
+                                                            .CA_WRONG_SERVER_EXPLAIN
+                                                    ]
+                                                }
+                                                !
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                onClick={() =>
+                                                    appDispatch(show_chat())
+                                                }
+                                                className="instbtn connectBtn12 connectBtn"
+                                            >
+                                                {t[Contents.CA_MISSING_VOLUME]}
+                                            </button>
+                                            <p className="text-xs text-center mt-3">
+                                                {
+                                                    t[
+                                                        Contents
+                                                            .CA_MISSING_VOLUME_EXPLAIN
+                                                    ]
+                                                }
+                                                !
+                                            </p>
+                                        </>
+                                    )
                                 ) : (
                                     <>
                                         <button

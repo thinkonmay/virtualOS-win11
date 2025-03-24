@@ -221,8 +221,13 @@ export enum Contents {
     CA_TURN_ON_PC,
     CA_CONNECT,
     CA_CONNECT_EXPLAIN,
-    CA_NOTAVAILABLE,
-    CA_NOTAVAILABLE_EXPLAIN,
+
+    CA_MISSING_VOLUME,
+    CA_MISSING_VOLUME_EXPLAIN,
+
+    CA_WRONG_SERVER,
+    CA_WRONG_SERVER_EXPLAIN,
+
     CA_RELOAD_TRY_AGAIN,
     // HANG CHO
 
@@ -351,25 +356,43 @@ export function language() {
     en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
 
     en.set(
-        Contents.CA_NOTAVAILABLE,
+        Contents.CA_WRONG_SERVER,
         'Click to go back to the server you registered'
     );
-    vn.set(Contents.CA_NOTAVAILABLE, 'Click để chuyển về đúng server');
+    vn.set(Contents.CA_WRONG_SERVER, 'Click để chuyển về đúng server');
     id.set(
-        Contents.CA_NOTAVAILABLE,
+        Contents.CA_WRONG_SERVER,
         'Click to go back to the server you registered'
     );
+
     en.set(
-        Contents.CA_NOTAVAILABLE_EXPLAIN,
+        Contents.CA_WRONG_SERVER_EXPLAIN,
         'You do not have available computer on this server'
     );
     vn.set(
-        Contents.CA_NOTAVAILABLE_EXPLAIN,
+        Contents.CA_WRONG_SERVER_EXPLAIN,
         'Bạn không có máy trên server này'
     );
     id.set(
-        Contents.CA_NOTAVAILABLE_EXPLAIN,
+        Contents.CA_WRONG_SERVER_EXPLAIN,
         'You do not have available computer on this server'
+    );
+
+    en.set(Contents.CA_MISSING_VOLUME, 'Contact us');
+    vn.set(Contents.CA_MISSING_VOLUME, 'Liên hệ với chúng mình');
+    id.set(Contents.CA_MISSING_VOLUME, 'Contact us');
+
+    en.set(
+        Contents.CA_MISSING_VOLUME_EXPLAIN,
+        'Your data have not been allocated yet'
+    );
+    vn.set(
+        Contents.CA_MISSING_VOLUME_EXPLAIN,
+        'Dữ liệu của bạn chưa được khởi tạo trên server này'
+    );
+    id.set(
+        Contents.CA_MISSING_VOLUME_EXPLAIN,
+        'Your data have not been allocated yet'
     );
 
     en.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
