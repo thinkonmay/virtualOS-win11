@@ -270,7 +270,7 @@ export const createPaymentPocket = ({
                 }
             })
         );
-    else if (subscription == undefined)
+    else if (subscription == undefined || wallet.currentOrders?.length == 0)
         appDispatch(
             popup_open({
                 type: 'pocketBuyConfirm',

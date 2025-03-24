@@ -81,7 +81,9 @@ type PopupData =
       }
     | {
           type: 'serversInfo';
-          data: {};
+          data: {
+              domains: any[];
+          };
       }
     | {
           type: 'pocketBuyConfirm';

@@ -18,7 +18,7 @@ import {
 } from './backend/reducers';
 import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
-import { Tutorial } from './components/onboarding/paidUser';
+import { Tutorial } from './components/onboarding/tutorial';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { ListQAs } from './components/start/listQa';
 import Taskbar from './components/taskbar';

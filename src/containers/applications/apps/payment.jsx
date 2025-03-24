@@ -1,10 +1,5 @@
-import { useState } from 'react';
-import {
-    MdArrowDropDown,
-    MdArrowForwardIos,
-    MdArrowRight,
-    MdCheck
-} from 'react-icons/md';
+import { useEffect, useState } from 'react';
+import { MdArrowDropDown, MdArrowRight, MdCheck } from 'react-icons/md';
 import { UserEvents } from '../../../../src-tauri/api';
 import { createPaymentPocket, login } from '../../../backend/actions';
 import {
@@ -14,7 +9,6 @@ import {
     show_chat,
     useAppSelector
 } from '../../../backend/reducers';
-import { externalLink } from '../../../backend/utils/constant';
 import DepositPage from '../../../components/payment/depositPage';
 import { TransactionHistoryPage } from '../../../components/payment/historyPage';
 import { RefundPage } from '../../../components/payment/refundPage';
@@ -216,21 +210,11 @@ const SubscriptionCard = ({ subInfo: sub }) => {
         (state) => state.user.subscription ?? {}
     );
     const { ended_at } = subcription;
-    const domains = useAppSelector((state) => state.globals.domains);
     const user = useAppSelector((state) => state.user);
-
     const wallet = user.wallet;
     const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
-    const max = useAppSelector(
-        (state) =>
-            state.globals.domains?.findIndex(
-                (y) =>
-                    y.free ==
-                    Math.max(...state.globals.domains.map((x) => x.free))
-            ) ?? -1
-    );
 
-    const [domain, setDomain] = useState(domains?.[max]?.domain ?? 'unknown');
+    const [domain, setDomain] = useState();
 
     const listPlan = {
         week1: true,
@@ -368,57 +352,10 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         Chọn server:
                                     </span>
                                 </div>
-                                <div className="flex flex-col gap-2 mb-4">
-                                    {domains?.map(({ domain, free }, index) =>
-                                        free > 0 ? (
-                                            <label
-                                                key={index}
-                                                className="text-blue-500 flex gap-2 items-center"
-                                                htmlFor="server1"
-                                            >
-                                                <input
-                                                    // defaultChecked={
-                                                    //     index == max
-                                                    // }
-                                                    onChange={(e) =>
-                                                        e.target.checked
-                                                            ? setDomain(domain)
-                                                            : null
-                                                    }
-                                                    data={domain}
-                                                    type="radio"
-                                                    name="server"
-                                                    id="server1"
-                                                />
-                                                <span
-                                                    name="play"
-                                                    className="text-blue-500"
-                                                >
-                                                    {domain}
-                                                </span>
-                                                <div className="flex gap-2 items-center text-xs">
-                                                    {free} chỗ trống
-                                                    {index == max ? (
-                                                        <GreenLight />
-                                                    ) : null}
-                                                </div>
-                                            </label>
-                                        ) : null
-                                    )}
-                                </div>
-
-                                <div
-                                    className="flex items-center gap-1 hover:underline cursor-pointer font-semibold"
-                                    onClick={() => {
-                                        appDispatch(
-                                            popup_open({
-                                                type: 'serversInfo'
-                                            })
-                                        );
-                                    }}
-                                >
-                                    Hướng dẫn chọn server <MdArrowForwardIos />
-                                </div>
+                                <DomainSelection
+                                    onChangeDomain={setDomain}
+                                    domain={domain}
+                                />
                             </>
                         ) : null}
                         <div className="flex gap-2">
@@ -509,19 +446,47 @@ const SubscriptionCard = ({ subInfo: sub }) => {
     );
 };
 
-const GreenLight = () => {
+function DomainSelection({ onChangeDomain, domain }) {
+    const domains = useAppSelector((state) => state.globals.domains);
+    const [location, setLocation] = useState([]);
+
+    const getLatency = async (x) => {
+        const start = new Date();
+        await fetch(`https://${x.domain}/`, { method: 'POST' });
+        return {
+            latency: new Date().getTime() - start,
+            ...x
+        };
+    };
+
+    useEffect(() => {
+        Promise.all(domains.map(getLatency)).then((x) => {
+            setLocation(x);
+            onChangeDomain(
+                x.sort((a, b) => a.latency - b.latency)?.[0]?.domain
+            );
+        });
+    }, [domains]);
+
+    const chooseDomain = (e) => onChangeDomain(e.target.value);
+
     return (
-        <div className="relative h-4 w-4">
-            {/* Outer glow effect */}
-            <div className="absolute -inset-1 rounded-full bg-green-500/30 blur-sm animate-pulse"></div>
-            {/* Inner bright dot */}
-            <div className="relative h-4 w-4 rounded-full bg-green-500 shadow-lg shadow-green-500/50">
-                {/* Highlight effect */}
-                {/*<div className="absolute top-0.5 left-0.5 h-1.5 w-1.5 rounded-full bg-green-200/60"></div>*/}
-            </div>
+        <div className="h-8 ">
+            <select
+                className="bg-gray-400 rounded-md w-full h-full"
+                value={domain}
+                onChange={chooseDomain}
+            >
+                {location.map((x, index) => (
+                    <option key={index} value={x.domain}>
+                        {x.domain.replaceAll('.thinkmay.net', '')} {x.latency}ms{' '}
+                        {x.free}slot
+                    </option>
+                ))}
+            </select>
         </div>
     );
-};
+}
 
 const SubscriptionPage = () => {
     const plans = useAppSelector((state) => state.user.plans);
