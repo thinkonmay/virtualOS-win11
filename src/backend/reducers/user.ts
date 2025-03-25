@@ -30,6 +30,7 @@ export type Subscription = {
         name: string;
     };
     plan_name: string;
+    next_plan?: string;
     metadata?: Metadata;
 };
 
