@@ -582,7 +582,7 @@ export function language() {
     id.set(Contents.FANPAGE_APP, 'Halaman penggemar');
 
     en.set(Contents.MESSAGE_APP, 'Messenger');
-    vn.set(Contents.MESSAGE_APP, 'Messenger');
+    vn.set(Contents.MESSAGE_APP, 'Nhắn Hỗ Trợ');
     id.set(Contents.MESSAGE_APP, 'Messenger');
 
     en.set(Contents.DISCORD_APP, 'Discord');
