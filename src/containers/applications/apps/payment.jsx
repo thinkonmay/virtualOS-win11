@@ -451,12 +451,19 @@ function DomainSelection({ onChangeDomain, domain }) {
     const [location, setLocation] = useState([]);
 
     const getLatency = async (x) => {
-        const start = new Date();
-        await fetch(`https://${x.domain}/`, { method: 'POST' });
-        return {
-            latency: new Date().getTime() - start,
-            ...x
-        };
+        try {
+            const start = new Date();
+            await fetch(`https://${x.domain}/`, { method: 'POST' });
+            return {
+                latency: new Date().getTime() - start,
+                ...x
+            };
+        } catch {
+            return {
+                latency: 9999,
+                ...x
+            };
+        }
     };
 
     useEffect(() => {
