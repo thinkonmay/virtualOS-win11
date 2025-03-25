@@ -3,7 +3,8 @@ import { appDispatch, popup_close } from '../../../backend/reducers';
 import { create_payment_pocket } from '../../../backend/actions';
 
 export function pocketBuyConfirm({ data }) {
-    const handleContinue = () => create_payment_pocket({...data,synchronous:true});
+    const handleContinue = () =>
+        create_payment_pocket({ ...data, synchronous: true });
 
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">

@@ -178,7 +178,7 @@ function App() {
             <ErrorBoundary FallbackComponent={ErrorFallback}>
                 {booting ? <BootScreen loadingText={loadingText} /> : null}
                 {id == 'unknown' && !remote.active && !delayPayment ? (
-                    <LockScreen />
+                    <LockScreen loading={setLockscreen} />
                 ) : null}
                 <div className="appwrap ">
                     {pointerLock ? null : (

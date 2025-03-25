@@ -18,7 +18,6 @@ import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
-    const not_signed = useAppSelector((state) => state.user.id == 'unknown');
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
@@ -49,7 +48,6 @@ export const ConnectApp = () => {
 
     const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
-    const loginNow = () => login('google');
     const reload = () => appDispatch(worker_refresh_ui());
     const redirect = () => {
         localStorage.setItem('thinkmay_domain', cluster);
@@ -105,15 +103,7 @@ export const ConnectApp = () => {
                                 </div>
                             ) : null}
 
-                            {not_signed ? (
-                                <button
-                                    onClick={loginNow}
-                                    className="instbtn connectBtn12 connectBtn"
-                                >
-                                    Login
-                                </button>
-                            ) : available == 'ready' ||
-                              available == 'started' ? (
+                            {available == 'ready' || available == 'started' ? (
                                 <>
                                     <button
                                         onClick={connect}

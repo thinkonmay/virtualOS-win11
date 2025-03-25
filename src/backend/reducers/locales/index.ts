@@ -562,7 +562,7 @@ export function language() {
     );
 
     en.set(Contents.PAYMENT_APP, 'Payment');
-    vn.set(Contents.PAYMENT_APP, 'Mua CloudPC');
+    vn.set(Contents.PAYMENT_APP, 'Thanh toán');
     id.set(Contents.PAYMENT_APP, 'Pembayaran');
 
     en.set(Contents.GUIDELINE_APP, 'Guideline');
