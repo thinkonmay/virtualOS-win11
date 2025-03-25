@@ -315,7 +315,7 @@ export const create_payment_pocket = async ({
         );
     } else {
         await GLOBAL().rpc('verify_all_payment');
-        await preload(false);
+        await preload();
 
         appDispatch(popup_close(true));
         appDispatch(
