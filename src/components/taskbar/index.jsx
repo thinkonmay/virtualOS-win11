@@ -184,17 +184,13 @@ const Taskbar = () => {
                             <div
                                 style={{ '--prefix': 'START' }}
                                 className="settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight"
-                                onClick={() => {
-                                    appDispatch(startogg());
-                                }}
+                                onClick={() => appDispatch(startogg())}
                             >
                                 <Icon
                                     className="infoBtn tsIcon tsIconInvert"
                                     src="home"
                                     width={28}
-                                    //click="startmenu/startogg"
-                                    //style={{ '--prefix': 'START' }}
-                                />{' '}
+                                />
                                 <p className="hidden md:block text-xm font-semibold">
                                     {t[Contents.ACCOUNT]}
                                 </p>

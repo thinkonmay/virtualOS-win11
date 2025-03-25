@@ -169,7 +169,6 @@ export const {
     get_plans,
     change_template,
     get_payment_pocket,
-    cancel_payment_pocket,
     get_deposit_status
 } = userAsync;
 export const {

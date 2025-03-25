@@ -15,12 +15,8 @@ export function pocketBuyConfirm({ data }) {
                 <p className="mt-[8px] text-lg text-center">
                     Sau khi xác nhận tiền trong ví sẽ bị trừ
                 </p>
-                <p className="mt-[8px] text-lg text-center">
-                    Bạn vui lòng đợi 10s sau đó tải lại trang để gói được cập
-                    nhật
-                </p>
             </div>
-            <div className="flex gap-3 justify-end mt-3 mb-2">
+            <div className="flex gap-3 justify-center mt-3 mb-2">
                 <button
                     style={{ padding: '6px 14px' }}
                     className="text-base font-medium rounded-md"

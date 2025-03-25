@@ -30,6 +30,7 @@ export type Subscription = {
         total_days: number;
         name: string;
     };
+    plan_name: string;
     metadata?: Metadata;
 };
 
@@ -341,33 +342,6 @@ export const userAsync = {
             }
         }
     ),
-    cancel_payment_pocket: createAsyncThunk(
-        'cancel_payment_pocket',
-        async (
-            {
-                id
-            }: {
-                id: string;
-            },
-            { getState }
-        ) => {
-            const { data, error: err } = await GLOBAL().rpc(
-                'cancel_payment_pocket',
-                {
-                    id
-                }
-            );
-
-            if (err)
-                throw new Error(
-                    'Error when cancel_payment_pocket' + err.message
-                );
-            if (!data) {
-                throw new Error('Can not cancel sub' + err.message);
-            }
-            return id;
-        }
-    ),
     get_payment_pocket: createAsyncThunk(
         'get_payment_pocket',
         async (_, { getState }): Promise<string> => {
@@ -487,18 +461,6 @@ export const userSlice = createSlice({
                 fetch: userAsync.get_deposit_status,
                 hander: (state, action) => {
                     state.wallet.depositStatus = action.payload;
-                }
-            },
-            {
-                fetch: userAsync.cancel_payment_pocket,
-                hander: (state, action) => {
-                    if (action.payload) {
-                        // delete Id\
-                        const cloneData = [...state.wallet.currentOrders];
-                        state.wallet.currentOrders = cloneData.filter(
-                            (i) => i.id != action.payload
-                        );
-                    }
                 }
             },
             {

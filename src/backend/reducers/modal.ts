@@ -100,12 +100,6 @@ type PopupData =
           };
       }
     | {
-          type: 'pocketCancelPlan';
-          data: {
-              plan_name: string;
-          };
-      }
-    | {
           type: 'pocketChangePlan';
           data: {
               plan_name: string;
