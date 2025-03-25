@@ -12,8 +12,15 @@
   background: var(--bg1);
   -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  bottom: 0;
   z-index: 10000;
+
+  &[data-align="center"] {
+    bottom: 0;
+  }
+
+  &[data-align="left"] {
+    top: 0;
+  }
 
   &[data-remote="true"] {
     display: none;

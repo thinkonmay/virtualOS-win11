@@ -7,7 +7,6 @@
 	--padding: 1.25rem;
 
 	position: absolute;
-	bottom: 56px;
 	right: 12px;
 	width: 376px;
 
@@ -23,8 +22,16 @@
 	display: flex;
 	flex-direction: column;
 
+	&[data-align="center"] {
+		bottom: 56px;
+	}
+
+	&[data-align="left"] {
+		top: 56px;
+	}
+
 	&[data-hide="true"] {
-		transform: translateY(120%);
+		transform: translateX(200%);
 		animation: overflow-hider 0s ease-in-out 150ms forwards;
 		transition: all cubic-bezier(0.62, 0, 0.32, 1) 150ms;
 	}

@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { taskApps } from '../utils';
+import { isMobile } from '../../../src-tauri/core';
 
 const initialState = {
     apps: taskApps,
     prev: false,
     prevApp: '',
     prevPos: 0,
-    align: 'center',
+    align: isMobile() ? 'left' : 'center',
     search: true,
     widgets: true,
     audio: 3

@@ -35,6 +35,7 @@ const Taskbar = () => {
     const dispatch = appDispatch;
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
+    const align = useAppSelector((state) => state.taskbar.align);
     const apps = useAppSelector((state) => state.apps);
     const wallet = useAppSelector((state) => state.user.wallet);
     const [open, setOpen] = useState(true);
@@ -151,6 +152,7 @@ const Taskbar = () => {
                 <div
                     className="taskbar"
                     data-remote={remote.active}
+                    data-align={align}
                     style={{ '--prefix': 'TASK' }}
                 >
                     <audio src={ringSound}></audio>
