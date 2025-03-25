@@ -274,11 +274,8 @@ export const verify_transaction = async ({ id }: { id: number }) => {
     else if (data == 'PAID') {
         await GLOBAL().rpc('verify_all_deposits');
         await appDispatch(fetch_wallet());
-
         return true;
-    }
-
-    return false;
+    } else return false;
 };
 
 export const create_payment_pocket = async ({
