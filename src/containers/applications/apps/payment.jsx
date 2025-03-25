@@ -230,7 +230,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
             appDispatch(
                 create_payment_pocket({
                     plan_name,
-                    cluster_domain
+                    cluster_domain,
                 })
             );
         else

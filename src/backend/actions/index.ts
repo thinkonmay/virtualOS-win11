@@ -281,10 +281,12 @@ export const verify_transaction = async ({ id }: { id: number }) => {
 
 export const create_payment_pocket = async ({
     plan_name,
-    cluster_domain = 'unknown'
+    cluster_domain = 'unknown',
+    synchronous
 }: {
     plan_name: string;
     cluster_domain?: string;
+    synchronous?: boolean
 }) => {
     appDispatch(
         popup_open({
@@ -313,6 +315,9 @@ export const create_payment_pocket = async ({
         );
     } else {
         await GLOBAL().rpc('verify_all_payment');
+        if (!synchronous) 
+            return await preload(false);
+            
         appDispatch(app_close('payment'));
         if (store.getState().worker.currentAddress != cluster_domain) {
             await new Promise((r) => setTimeout(r, 90 * 1000));
