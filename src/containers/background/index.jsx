@@ -43,7 +43,7 @@ export const BootScreen = ({ loadingText }) => {
     );
 };
 
-export const LockScreen = () => {
+export const LockScreen = ({ loading }) => {
     const [lock, setLock] = useState(false);
     const [unlocked, setUnLock] = useState(false);
 
@@ -51,7 +51,11 @@ export const LockScreen = () => {
     const action = () => setLock(true);
     const proceed = async (provider) => {
         if (user.id != 'unknown') return setUnLock(true);
-        else await login(provider);
+        else {
+            loading(true);
+            await login(provider);
+            loading(false);
+        }
     };
 
     return (

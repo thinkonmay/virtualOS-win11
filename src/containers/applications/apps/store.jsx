@@ -150,7 +150,7 @@ const DetailPage = ({ app }) => {
                                 volume not available in pb
                             </button>
                         )
-                    ) : !not_logged_in ? (
+                    ) : (
                         <>
                             <button
                                 onClick={() =>
@@ -164,13 +164,6 @@ const DetailPage = ({ app }) => {
                                 {t[Contents.TA_PAYMENT_DESC]}
                             </div>
                         </>
-                    ) : (
-                        <button
-                            onClick={() => login('google', false)}
-                            className="font-semibold text-base rounded-lg instbtn mt-5 handcr !px-[32px] !py-[12px]"
-                        >
-                            login
-                        </button>
                     )}
                 </div>
             </div>
