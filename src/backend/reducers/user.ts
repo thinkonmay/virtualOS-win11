@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import dayjs from 'dayjs';
 import { RecordModel } from 'pocketbase';
 import { app_close, app_full, appDispatch, popup_open, RootState } from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
@@ -179,16 +178,6 @@ export const userAsync = {
                 (x) => x.pool == 'user_data'
             )?.node;
 
-            // Adjust sub after 30-12
-            const oldPaidUser = dayjs('2024-12-30');
-            const endedAtFormat = dayjs(ended_at);
-            if (
-                endedAtFormat.isBefore(oldPaidUser, 'day') &&
-                limit_hour == 120
-            ) {
-                limit_hour = 150;
-            }
-
             // TODO : fetch template
             const volume = (
                 await POCKETBASE().collection('volumes').getFullList<{
@@ -245,7 +234,7 @@ export const userAsync = {
 
             const available = limit_hour - subscription.total_usage;
             const soft_expired =
-                dayjs(ended_at).isBefore(dayjs(), 'day') ||
+                new Date(ended_at) < new Date() ||
                 subscription.total_usage > limit_hour;
 
             if (available < 20 && available >= 0)

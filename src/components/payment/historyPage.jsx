@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useAppSelector } from '../../backend/reducers';
 import { numberFormat } from '../../backend/utils/format';
@@ -130,9 +129,7 @@ export const TransactionHistoryPage = () => {
                                 {renderNameDeteils(item.plan_name)}
                             </div>
                             <div className="columnContent">
-                                {dayjs(item.created_at).format(
-                                    'HH:mm DD/MM/YYYY'
-                                )}
+                                {new Date(item.created_at).toLocaleString()}
                             </div>
                         </div>
                     ))

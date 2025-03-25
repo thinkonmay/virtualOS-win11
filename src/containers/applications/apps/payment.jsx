@@ -314,11 +314,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         {sub.active && plan_name == sub.name ? (
                             <>
                                 <div className="flex flex-col">
-                                    <span className="w-full mx-auto shadow-sm">
-                                        Hết hạn ngày{' '}
-                                        {new Date(
+                                    <span className="w-full mx-auto shadow-sm font-bold">
+                                        {`Hết hạn ngày ${new Date(
                                             subcription?.ended_at
-                                        ).toLocaleDateString()}
+                                        ).toLocaleDateString()}, còn lại ${
+                                            subcription?.policy?.limit_hour -
+                                            subcription?.total_usage
+                                        }h`}
                                     </span>
                                 </div>
                                 <div className="flex gap-2">

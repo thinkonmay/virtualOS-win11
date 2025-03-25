@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import {
     appDispatch,
     useAppSelector,
@@ -24,24 +23,17 @@ function UserInfo() {
     } = subscription ?? {};
     const { node } = metadata ?? {};
     let { limit_hour, name: plan_name } = policy ?? {};
-    const oldPaidUser = dayjs('2024-12-30');
-    const endedAtFormat = dayjs(ended_at);
-    if (endedAtFormat.isBefore(oldPaidUser, 'day') && limit_hour == 120) {
-        limit_hour = 150;
-    }
 
     const t = useAppSelector((state) => state.globals.translation);
 
     const Paid = () => (
         <div className="restWindow w-full  flex flex-col mt-4">
-            {/*{correctsite ? (*/}
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">{t[Contents.TIME]}</span>
                 <span>
                     {total_usage?.toFixed(1)} / {limit_hour}h
                 </span>
             </div>
-            {/*) : null}*/}
 
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">Gói</span>

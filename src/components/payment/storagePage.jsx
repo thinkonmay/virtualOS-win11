@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { appDispatch, show_chat, useAppSelector } from '../../backend/reducers';
 
 export const StoragePage = () => {
@@ -12,8 +11,6 @@ export const StoragePage = () => {
     //     //calculate by the end_at of subscription
     //     // Calculate the difference in days
     //     if (ended_at) {
-    //         const startDate = dayjs();
-    //         const endDate = dayjs(ended_at);
     //         const daysLeft = endDate.diff(startDate, 'day');
 
     //         result = Math.floor(planBasePricePerDay * daysLeft);
@@ -46,14 +43,11 @@ export const StoragePage = () => {
                         <div className="columnContent ">
                             <p className="">Đăng ký ngay</p>
                             <p className="subtitle">
-                                {ended_at ? (
-                                    <>
-                                        tới{' '}
-                                        {dayjs(ended_at).format('DD/MM/YYYY')}
-                                    </>
-                                ) : (
-                                    '30 ngày'
-                                )}
+                                {ended_at
+                                    ? `tới ${new Date(
+                                          ended_at
+                                      ).toLocaleDateString()}`
+                                    : '30 ngày'}
                             </p>
                         </div>
                         <div className="columnContent">
@@ -134,14 +128,11 @@ export const StoragePage = () => {
                         <div className="columnContent ">
                             <p className="">Đăng ký ngay</p>
                             <p className="subtitle">
-                                {ended_at ? (
-                                    <>
-                                        tới{' '}
-                                        {dayjs(ended_at).format('DD/MM/YYYY')}
-                                    </>
-                                ) : (
-                                    '30 ngày'
-                                )}
+                                {ended_at
+                                    ? `tới ${new Date(
+                                          ended_at
+                                      ).toLocaleDateString()}`
+                                    : '30 ngày'}
                             </p>
                         </div>
                         <div className="columnContent">
