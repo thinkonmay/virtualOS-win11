@@ -1,29 +1,9 @@
 import { MdCheckCircleOutline } from 'react-icons/md';
-import {
-    appDispatch,
-    popup_close,
-    popup_open,
-    useAppSelector
-} from '../../../backend/reducers';
+import { appDispatch, popup_close } from '../../../backend/reducers';
 import { create_payment_pocket } from '../../../backend/actions';
 
 export function pocketBuyConfirm({ data }) {
-    const currentAddr = useAppSelector((state) => state.worker.currentAddress);
-    const handleContinue = async () => {
-        await create_payment_pocket(data);
-        if (
-            data?.cluster_domain != undefined &&
-            currentAddr != data.cluster_domain
-        )
-            appDispatch(
-                popup_open({
-                    type: 'redirectDomain',
-                    data: {
-                        domain: data.cluster_domain
-                    }
-                })
-            );
-    };
+    const handleContinue = () => create_payment_pocket(data);
 
     return (
         <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
