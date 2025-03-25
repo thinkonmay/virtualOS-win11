@@ -41,9 +41,9 @@ export const Remote = () => {
 
     useEffect(() => {
         if (!active || auth == undefined) return;
-        if (isMobile()) {
+        if (isMobile()) 
             appDispatch(toggle_objectfit());
-        }
+
         setupWebRTC();
     }, [active]);
 
