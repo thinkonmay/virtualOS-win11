@@ -19,6 +19,7 @@ import {
 } from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
+import { create_payment_pocket } from '../../../backend/actions';
 
 const listSubs = [
     {
@@ -225,6 +226,13 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                     }
                 })
             );
+        else if (subscription != undefined)
+            appDispatch(
+                create_payment_pocket({
+                    plan_name,
+                    cluster_domain
+                })
+            );
         else
             appDispatch(
                 popup_open({
@@ -284,7 +292,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         </span>
                     ))}
                     <div className="flex flex-col gap-2 mt-auto">
-                        {sub.active && subscription == undefined ? (
+                        {sub.active &&
+                        subscription == undefined &&
+                        money >= sub.price_in_vnd ? (
                             <>
                                 <div className="flex flex-col">
                                     <span className="mt-2 w-full mx-auto shadow-sm">
@@ -332,7 +342,9 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                     className="buyButton flex-1 bg-[#2d88dd]"
                                 >
                                     {subscription != undefined
-                                        ? 'Chuyển sang gói này'
+                                        ? money >= sub.price_in_vnd
+                                            ? 'Chuyển sang gói này'
+                                            : `Nạp thêm`
                                         : 'Đăng kí'}
                                 </button>
                             </div>

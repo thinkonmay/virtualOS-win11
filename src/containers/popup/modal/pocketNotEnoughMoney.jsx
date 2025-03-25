@@ -1,40 +1,38 @@
 import { MdOutlineAddCard } from 'react-icons/md';
 import {
-    app_full,
     appDispatch,
     popup_close,
     useAppSelector
 } from '../../../backend/reducers';
 import { numberFormat } from '../../../backend/utils/format';
+import { create_payment_qr } from '../../../backend/actions';
 
-export function pocketNotEnoughMoney({ data: { plan_name, plan_price } }) {
+export function pocketNotEnoughMoney({ data: { plan_price } }) {
     const t = useAppSelector((state) => state.globals.translation);
     const wallet = useAppSelector((state) => state.user.wallet);
     const handleContinue = () => {
         appDispatch(popup_close());
         appDispatch(
-            app_full({
-                id: 'payment',
-                page: 'deposit',
-                value: plan_price - wallet.money
+            create_payment_qr({
+                amount: plan_price
             })
         );
     };
 
     return (
-        <div className="w-[480px] h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
+        <div className="w-120 h-auto px-[24px] py-5 rounded-lg flex flex-col gap-y-3">
             <div className="flex justify-center items-center gap-2 text-[#0067c0]">
                 <MdOutlineAddCard className="text-5xl text-[#0067c0]"></MdOutlineAddCard>
-                <h2>Ví của bạn hiện không đủ tiền</h2>
+                <h2>Nạp thêm vào ví</h2>
             </div>
             <div>
                 <p className="mt-[8px] text-lg text-center">
                     {`Bạn cần nạp thêm ${numberFormat(
                         plan_price - wallet.money
-                    )}đ vào Ví Thinkmay để đăng ký ${plan_name}.`}
+                    )}đ vào ví`}
                 </p>
             </div>
-            <div className="flex gap-3 justify-end mt-3 mb-2">
+            <div className="flex gap-3 justify-center mt-3 mb-2">
                 <button
                     style={{ padding: '6px 14px' }}
                     className="text-base font-medium rounded-md"
