@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { createPaymentPocket } from '../../backend/actions';
 import { appDispatch, show_chat, useAppSelector } from '../../backend/reducers';
 
 export const StoragePage = () => {
@@ -25,7 +24,7 @@ export const StoragePage = () => {
 
     const renderMoney = (money) => `${Math.floor(money / 1000)}k`;
     const handleBuyUpgrage = (plan_name, price, title) =>
-        appDispatch(show_chat());
+        appDispatch(show_chat(true));
     // {
     //     let actuallyTitle = title ?? plan_name;
     //     createPaymentPocket({

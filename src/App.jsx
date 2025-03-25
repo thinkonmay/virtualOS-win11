@@ -42,7 +42,6 @@ function App() {
     const [booting, setLockscreen] = useState(true);
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
     const [delayPayment, setDelayPayment] = useState(false);
-    const showChat = useAppSelector((state) => state.globals.chat);
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -117,10 +116,6 @@ function App() {
             await document.msExitFullscreen();
         }
     };
-
-    useEffect(() => {
-        window.LiveChatWidget.call(showChat ? 'maximize' : 'minimize');
-    }, [showChat]);
 
     useEffect(() => {
         if (tutorial) window.onclick = null;

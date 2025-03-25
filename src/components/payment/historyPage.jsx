@@ -121,8 +121,8 @@ export const TransactionHistoryPage = () => {
                 </div>
 
                 {currentData.length > 0 ? (
-                    currentData.map((item) => (
-                        <div className="rowContent" key={item.id}>
+                    currentData.map((item, index) => (
+                        <div key={index} className="rowContent">
                             <div className="columnContent">
                                 {numberFormat(+item.amount)} đ
                             </div>
@@ -140,7 +140,7 @@ export const TransactionHistoryPage = () => {
                     <div className="rowContent">
                         <p></p>
                         <p className="my-auto font-bold">
-                            Hiện chưa có dự liệu
+                            Hiện chưa có dữ liệu
                         </p>
                         <p></p>
                     </div>

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { MdArrowDropDown, MdArrowRight, MdCheck } from 'react-icons/md';
-import { UserEvents } from '../../../../src-tauri/api';
-import { createPaymentPocket, login } from '../../../backend/actions';
+import { MdCheck } from 'react-icons/md';
 import {
     app_metadata_change,
     appDispatch,
     popup_open,
     show_chat,
+    startogg,
     useAppSelector
 } from '../../../backend/reducers';
 import DepositPage from '../../../components/payment/depositPage';
@@ -206,84 +205,48 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub }) => {
-    const subcription = useAppSelector(
-        (state) => state.user.subscription ?? {}
-    );
-    const { ended_at } = subcription;
-    const user = useAppSelector((state) => state.user);
-    const wallet = user.wallet;
-    const not_logged_in = useAppSelector((state) => state.user.id == 'unknown');
+    const subcription = useAppSelector((state) => state.user.subscription);
+    const money = useAppSelector((state) => state.user.wallet.money);
+    const { plan_name } = subcription ?? {};
 
     const [domain, setDomain] = useState();
-
-    const listPlan = {
-        week1: true,
-        week2: true,
-        month1: true,
-        month2: true
-    };
-    const isActivePlan = (plan) =>
-        wallet?.currentOrders.find((o) => o.plan_name == plan);
-
-    const isHavingPlan = () =>
-        wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
-
+    const askSth = () => appDispatch(show_chat());
+    const info = () => appDispatch(startogg());
     const onChooseSub = () => {
-        if (not_logged_in) login('google', false);
-        else
-            createPaymentPocket({
-                plan_name: sub.name,
-                cluster_domain: domain,
-                plan_price: sub.price_in_vnd,
-                plan_title: sub.title
-            });
-    };
-
-    const handleChangePlan = (plan_name) => {
-        if (isHavingPlan()?.id) {
+        const plan_name = sub.name;
+        const cluster_domain = domain;
+        const plan_price = sub.price_in_vnd;
+        const plan_title = sub.title;
+        if (money < plan_price)
             appDispatch(
                 popup_open({
-                    type: 'pocketChangePlan',
+                    type: 'pocketNotEnoughMoney',
                     data: {
-                        plan_name,
-                        plan_price: sub.price_in_vnd,
-                        plan_title: sub.title,
-                        oldPlanId: isHavingPlan().id
+                        plan_name: plan_title,
+                        plan_price: plan_price
                     }
                 })
             );
-            return;
-        }
-
-        createPaymentPocket({
-            plan_name: sub.name,
-            cluster_domain: domain,
-            plan_price: sub.price_in_vnd,
-            plan_title: sub.title
-        });
-    };
-    const handleCancelSub = (plan_name) => {
-        appDispatch(
-            popup_open({
-                type: 'pocketCancelPlan',
-                data: {
-                    plan_name
-                }
-            })
-        );
-    };
-    const [isShowDetail, setShowDetail] = useState(sub.highlight);
-    const clickDetail = () => {
-        setShowDetail((old) => !old);
-        UserEvents({
-            type: 'payment/detail',
-            payload: isShowDetail
-        });
+        else
+            appDispatch(
+                popup_open({
+                    type: 'pocketBuyConfirm',
+                    data: {
+                        plan_name,
+                        cluster_domain
+                    }
+                })
+            );
     };
 
     return (
         <div className="sub ltShad relative">
-            {sub.highlight ? (
+            {}
+            {sub.name == plan_name ? (
+                <div className="banner">
+                    <p className="content">Gói của bạn</p>
+                </div>
+            ) : sub.highlight ? (
                 <div className="banner">
                     <p className="content">Phổ biến</p>
                 </div>
@@ -298,54 +261,33 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                     <hr />
                     <div className="containerPrice">
                         <div className="flex items-end">
-                            {
-                                <div className="flex">
-                                    <h3 className="gradient-text-500 text-lg lg:text-3xl pb-1 uppercase font-mono text-brand-600">
-                                        {sub.price_in_vnd / 1000}k
-                                    </h3>
-                                    <Icon
-                                        className="vndIcon ml-2 pb-2"
-                                        src="vnd"
-                                        invert={1}
-                                        width={24}
-                                    />
-                                    {/*<p className="text-foreground-lighter mb-1.5 ml-1 text-[13px] leading-4">
-                                                    / {sub.period}{' '}
-                                                </p>*/}
-                                </div>
-                            }
+                            <h3 className="gradient-text-500 text-lg lg:text-3xl pb-1 uppercase font-mono text-brand-600">
+                                {sub.price_in_vnd / 1000}k
+                            </h3>
+                            <Icon
+                                className="vndIcon ml-2 pb-2"
+                                src="vnd"
+                                invert={1}
+                                width={24}
+                            />
                         </div>
                         <p className="-mt-2">
                             <span className="bg-background text-brand-600 border shadow-sm rounded-md bg-opacity-30 py-0.5 px-2 text-[12px]  lg:text-[13px] lg:leading-4">
-                                Giới hạn {sub.total_time}h sử dụng trong{' '}
-                                {sub.total_days} ngày
+                                {`Giới hạn ${sub.total_time}h sử dụng trong ${sub.total_days} ngày`}
                             </span>
                         </p>
                     </div>
                     <hr />
                 </div>
-                <div className=" wrapperBottom">
-                    <div onClick={clickDetail} className="toggleDeteil">
-                        {isShowDetail ? (
-                            <MdArrowDropDown style={{ fontSize: '1.6rem' }} />
-                        ) : (
-                            <MdArrowRight style={{ fontSize: '1.6rem' }} />
-                        )}
-                        Chi tiết:
-                    </div>
-
-                    <ul role="list" className="containerDetails">
-                        {isShowDetail &&
-                            sub.bonus.map((x, i) => (
-                                <li key={i} className="detail">
-                                    <MdCheck />
-
-                                    <span className="">{x}</span>
-                                </li>
-                            ))}
-                    </ul>
+                <div className="wrapperBottom">
+                    {sub.bonus.map((x, i) => (
+                        <span key={i} className="detail">
+                            <MdCheck />
+                            <span className="text-sm">{x}</span>
+                        </span>
+                    ))}
                     <div className="flex flex-col gap-2 mt-auto">
-                        {sub.active && subcription != undefined ? (
+                        {sub.active && subcription == undefined ? (
                             <>
                                 <div className="flex flex-col">
                                     <span className="mt-2 w-full mx-auto shadow-sm">
@@ -358,87 +300,52 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 />
                             </>
                         ) : null}
-                        <div className="flex gap-2">
-                            {
-                                //new user
-                                !ended_at ? (
+                        {sub.active && plan_name != sub.name ? (
+                            <>
+                                <div className="flex gap-2">
                                     <button
-                                        onClick={() => {
-                                            if (!sub.active) {
-                                                if (sub.name == 'week2') {
-                                                    return;
-                                                }
-
-                                                return appDispatch(show_chat());
-                                            }
-                                            onChooseSub(sub.name);
-                                        }}
+                                        onClick={onChooseSub}
                                         type="button"
-                                        className={`buyButton
-                                flex-1 bg-[#0067c0] ${
-                                    !sub.active && sub.name == 'week2'
-                                        ? 'bg-red-500'
-                                        : ''
-                                }`}
+                                        className="buyButton flex-1 bg-[#2d88dd]"
                                     >
-                                        {!sub.active
-                                            ? sub.name == 'week2'
-                                                ? 'Tạm đóng'
-                                                : 'Đặt trước'
-                                            : 'Đăng ký'}
+                                        Nâng cấp
                                     </button>
-                                ) : (
-                                    <>
-                                        {isActivePlan(sub.name) ? (
-                                            <button
-                                                onClick={() =>
-                                                    handleCancelSub(sub.name)
-                                                }
-                                                className="buyButton bg-red-700 flex-1"
-                                            >
-                                                Huỷ gia hạn
-                                            </button>
-                                        ) : sub.active ? (
-                                            <button
-                                                onClick={() =>
-                                                    handleChangePlan(sub.name)
-                                                }
-                                                className="buyButton bg-green-700 flex-1"
-                                            >
-                                                Đổi gói
-                                            </button>
-                                        ) : null}
-
-                                        <button
-                                            onClick={() => {
-                                                if (!sub.active) {
-                                                    if (sub.name == 'week2') {
-                                                        return;
-                                                    }
-                                                    return appDispatch(
-                                                        show_chat()
-                                                    );
-                                                }
-                                                onChooseSub(sub.name);
-                                            }}
-                                            type="button"
-                                            className={`buyButton
-                                flex-1 bg-[#0067c0] ${
-                                    !sub.active && sub.name == 'week2'
-                                        ? 'bg-red-500'
-                                        : ''
-                                }`}
-                                        >
-                                            {!sub.active
-                                                ? sub.name == 'week2'
-                                                    ? 'Tạm đóng'
-                                                    : 'Đặt trước'
-                                                : 'Mua ngay'}
-                                        </button>
-                                    </>
-                                )
-                            }
-                        </div>
+                                </div>
+                            </>
+                        ) : null}
+                        {sub.active && plan_name == sub.name ? (
+                            <>
+                                <div className="flex flex-col">
+                                    <span className="w-full mx-auto shadow-sm">
+                                        Hết hạn ngày{' '}
+                                        {new Date(
+                                            subcription?.ended_at
+                                        ).toLocaleDateString()}
+                                    </span>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={info}
+                                        type="button"
+                                        style={{ '--prefix': 'START' }}
+                                        className="buyButton flex-1 bg-[#11385c]"
+                                    >
+                                        Thông tin
+                                    </button>
+                                </div>
+                            </>
+                        ) : null}
+                        {!sub.active ? (
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={askSth}
+                                    type="button"
+                                    className="buyButton flex-1 bg-[#11385c]"
+                                >
+                                    Liên hệ
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
                 </div>
             </div>

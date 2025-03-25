@@ -296,8 +296,9 @@ export const globalSlice = createSlice({
         open_game: (state, payload: PayloadAction<IGame>) => {
             state.opening = payload.payload;
         },
-        show_chat: (state) => {
-            state.chat = !state.chat;
+        show_chat: (state, payload: PayloadAction<boolean | undefined>) => {
+            if ((window as any).LiveChatWidget != undefined)
+                (window as any).LiveChatWidget.call('maximize');
         },
         show_tutorial: (
             state,

@@ -226,75 +226,6 @@ export const showConnect = () => {
     );
 };
 
-interface WrapperCreatePaymentPocket {
-    plan_name: PlanName;
-    cluster_domain?: string;
-    plan_price: number;
-    plan_title: string;
-}
-export const createPaymentPocket = ({
-    plan_name,
-    cluster_domain,
-    plan_price,
-    plan_title
-}: WrapperCreatePaymentPocket) => {
-    const { wallet, subscription } = store.getState().user;
-
-    const listPlan = {
-        week1: true,
-        week2: true,
-        month1: true,
-        month2: true
-    };
-
-    const isHavingPlan = () =>
-        wallet?.currentOrders.find((o) => listPlan[o.plan_name]);
-
-    if (cluster_domain == undefined)
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: 'unknown cluster'
-                }
-            })
-        );
-    if (wallet.money < plan_price)
-        appDispatch(
-            popup_open({
-                type: 'pocketNotEnoughMoney',
-                data: {
-                    plan_name: plan_title,
-                    plan_price: plan_price
-                }
-            })
-        );
-    else if (subscription == undefined || wallet.currentOrders?.length == 0)
-        appDispatch(
-            popup_open({
-                type: 'pocketBuyConfirm',
-                data: {
-                    plan_name,
-                    cluster_domain
-                }
-            })
-        );
-    else
-        appDispatch(
-            popup_open({
-                type: 'pocketChangePlan',
-                data: {
-                    plan_name,
-                    plan_price,
-                    plan_title,
-                    oldPlanId: isHavingPlan().id,
-                    isRenew: true
-                }
-            })
-        );
-};
-
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const email = store.getState().user.email;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
@@ -354,10 +285,10 @@ export const verify_transaction = async ({ id }: { id: number }) => {
 
 export const create_payment_pocket = async ({
     plan_name,
-    cluster_domain
+    cluster_domain = 'unknown'
 }: {
     plan_name: string;
-    cluster_domain: string;
+    cluster_domain?: string;
 }) => {
     appDispatch(
         popup_open({
@@ -370,7 +301,7 @@ export const create_payment_pocket = async ({
         user: { email },
         globals: { translation: t }
     } = store.getState();
-    const { error } = await GLOBAL().rpc('create_payment_pocket', {
+    const { error } = await GLOBAL().rpc('create_or_replace_payment', {
         email,
         plan_name,
         cluster_domain
@@ -392,64 +323,6 @@ export const create_payment_pocket = async ({
         await preload(false);
 
         appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: true,
-                    content: t[Contents.PAYMENT_POCKET_SUCCESS]
-                }
-            })
-        );
-    }
-};
-
-export const modify_payment_pocket = async ({
-    id,
-    plan_name,
-    renew = false
-}) => {
-    appDispatch(
-        popup_open({
-            type: 'notify',
-            data: { loading: true }
-        })
-    );
-
-    const t = store.getState().globals.translation;
-
-    const { data, error: err } = await GLOBAL().rpc('modify_payment_pocket', {
-        id,
-        plan_name,
-        renew
-    });
-    if (err) {
-        appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: err.message
-                }
-            })
-        );
-    } else if (!data) {
-        appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: 'You have not register for this plan before'
-                }
-            })
-        );
-    } else {
-        await GLOBAL().rpc('verify_all_payment');
-        await preload(false);
-
-        appDispatch(popup_close());
         appDispatch(
             popup_open({
                 type: 'complete',
