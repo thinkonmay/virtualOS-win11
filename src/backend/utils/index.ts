@@ -10,6 +10,7 @@ export type AppData = {
     payload?: any;
 
     page?: string; //sub - refund - storage -history;
+    value?: any;
     menu?: MenuOption;
     size?: string;
     hide?: boolean;

@@ -18,17 +18,8 @@ export function paymentQR({
     const t = useAppSelector((state) => state.globals.translation);
 
     const cancel = () => {
-        appDispatch(cancel_transaction({ id }));
+        cancel_transaction({ id });
         appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: 'Cancel'
-                }
-            })
-        );
     };
 
     const verify = async () => {

@@ -122,10 +122,10 @@ function App() {
         else if (remote.fullscreen) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
-        } else if (!isMobile() && !remote.active) {
+        } else if (!remote.active) {
             window.oncontextmenu = ctxmenu;
             window.onclick = afterMath;
-        }
+        } 
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
         job?.catch(() => {});

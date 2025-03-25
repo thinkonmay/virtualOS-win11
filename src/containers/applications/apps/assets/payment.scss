@@ -204,7 +204,6 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: start;
-		align-items: center;
 		padding-top: 24px;
 		gap: 24px;
 		background-color: var(--bg1);
@@ -215,13 +214,15 @@
 		font-weight: 600;
 
 		.item {
+			margin-left: 1rem;
 			cursor: pointer;
-			text-align: center;
+			&:hover {
+				color: rgb(99, 155, 210);
+			};
+
 		}
 
 		.subActive {
-			text-decoration: underline;
-
 			color: #06c;
 		}
 	}
@@ -380,17 +381,9 @@
 				.depositInput {
 					border-radius: 6px;
 					padding: 0 14px;
-					width: 320px;
+					width: 18rem;
 					font-size: 16px;
 					font-weight: 600;
-				}
-
-				.depositBtn {
-					padding-left: 24px;
-					padding-right: 24px;
-					font-weight: bold;
-					font-size: 18px;
-					border-radius: 6px;
 				}
 			}
 		}
@@ -588,12 +581,9 @@
 
 			.item {
 				cursor: pointer;
-				text-align: center;
 			}
 
 			.subActive {
-				text-decoration: underline;
-
 				color: #06c;
 			}
 		}
@@ -907,16 +897,9 @@
 					.depositInput {
 						border-radius: 6px;
 						padding: 0 14px;
-						width: 320px;
+						width: 18rem;
 						font-size: 16px;
 						font-weight: 600;
-					}
-
-					.depositBtn {
-						padding-left: 20px;
-						padding-right: 20px;
-						font-weight: bold;
-						font-size: 14px;
 					}
 				}
 			}

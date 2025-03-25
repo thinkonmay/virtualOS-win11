@@ -261,8 +261,6 @@ export const cancel_transaction = async ({ id }: { id: number }) => {
 
     if (error)
         throw new Error('Error when cancellled transaction:' + error.message);
-
-    return true;
 };
 
 export const verify_transaction = async ({ id }: { id: number }) => {

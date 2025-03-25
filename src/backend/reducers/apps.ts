@@ -42,9 +42,9 @@ export const appSlice = createSlice({
         },
         app_full: (
             state,
-            action: PayloadAction<{ id: string; page: string }>
+            action: PayloadAction<{ id: string; page?: string; value?: any }>
         ) => {
-            const { id, page = '' } = action.payload;
+            const { id, value, page = '' } = action.payload;
             const obj = state.apps.find((x) => id == x.id);
             if (obj == undefined) return;
 
@@ -52,6 +52,7 @@ export const appSlice = createSlice({
             obj.hide = false;
             obj.max = true;
             obj.page = page;
+            obj.value = value;
             state.hz += 1;
             obj.z = state.hz;
         },
