@@ -203,9 +203,9 @@ export const PaymentApp = () => {
 };
 
 const SubscriptionCard = ({ subInfo: sub }) => {
-    const subcription = useAppSelector((state) => state.user.subscription);
+    const subscription = useAppSelector((state) => state.user.subscription);
     const money = useAppSelector((state) => state.user.wallet.money);
-    const { plan_name } = subcription ?? {};
+    const { plan_name, next_plan } = subscription ?? {};
 
     const [domain, setDomain] = useState();
     const askSth = () => appDispatch(show_chat());
@@ -239,7 +239,6 @@ const SubscriptionCard = ({ subInfo: sub }) => {
 
     return (
         <div className="sub ltShad relative">
-            {}
             {sub.name == plan_name ? (
                 <div className="banner">
                     <p className="content">Gói của bạn</p>
@@ -285,7 +284,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                         </span>
                     ))}
                     <div className="flex flex-col gap-2 mt-auto">
-                        {sub.active && subcription == undefined ? (
+                        {sub.active && subscription == undefined ? (
                             <>
                                 <div className="flex flex-col">
                                     <span className="mt-2 w-full mx-auto shadow-sm">
@@ -298,31 +297,20 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                 />
                             </>
                         ) : null}
-                        {sub.active && plan_name != sub.name ? (
-                            <>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={onChooseSub}
-                                        type="button"
-                                        className="buyButton flex-1 bg-[#2d88dd]"
-                                    >
-                                        Nâng cấp
-                                    </button>
-                                </div>
-                            </>
+                        {plan_name == sub.name ? (
+                            <div className="flex flex-col">
+                                <span className="w-full mx-auto shadow-sm font-bold">
+                                    {`Có giá trị đến ${new Date(
+                                        subscription?.ended_at
+                                    ).toLocaleDateString()}, còn lại ${
+                                        subscription?.policy?.limit_hour -
+                                        subscription?.total_usage
+                                    }h`}
+                                </span>
+                            </div>
                         ) : null}
-                        {sub.active && plan_name == sub.name ? (
+                        {next_plan == sub.name ? (
                             <>
-                                <div className="flex flex-col">
-                                    <span className="w-full mx-auto shadow-sm font-bold">
-                                        {`Hết hạn ngày ${new Date(
-                                            subcription?.ended_at
-                                        ).toLocaleDateString()}, còn lại ${
-                                            subcription?.policy?.limit_hour -
-                                            subcription?.total_usage
-                                        }h`}
-                                    </span>
-                                </div>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={info}
@@ -330,12 +318,25 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         style={{ '--prefix': 'START' }}
                                         className="buyButton flex-1 bg-[#11385c]"
                                     >
-                                        Thông tin
+                                        {`Gia hạn ngày ${new Date(
+                                            subscription?.ended_at
+                                        ).toLocaleDateString()}`}
                                     </button>
                                 </div>
                             </>
-                        ) : null}
-                        {!sub.active ? (
+                        ) : sub.active ? (
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={onChooseSub}
+                                    type="button"
+                                    className="buyButton flex-1 bg-[#2d88dd]"
+                                >
+                                    {subscription != undefined
+                                        ? 'Chuyển sang gói này'
+                                        : 'Đăng kí'}
+                                </button>
+                            </div>
+                        ) : (
                             <div className="flex gap-2">
                                 <button
                                     onClick={askSth}
@@ -345,7 +346,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                     Liên hệ
                                 </button>
                             </div>
-                        ) : null}
+                        )}
                     </div>
                 </div>
             </div>
