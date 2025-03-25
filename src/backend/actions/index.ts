@@ -293,10 +293,7 @@ export const create_payment_pocket = async ({
         })
     );
 
-    const {
-        user: { email },
-        globals: { translation: t }
-    } = store.getState();
+    const email = store.getState().user.email;
     const { error } = await GLOBAL().rpc('create_or_replace_payment', {
         email,
         plan_name,
