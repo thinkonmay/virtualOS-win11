@@ -118,10 +118,8 @@ export const PaymentApp = () => {
     );
 
     const page = wnapp.page; //deposit-sub - refund - storage -history
+    const val = wnapp.value;
 
-    //useEffect(() => {
-    //    setPage(wnapp.page);
-    //}, [wnapp.page]);
     const handleChangePage = (input) => {
         appDispatch(
             app_metadata_change({ id: 'payment', key: 'page', value: input })
@@ -146,7 +144,7 @@ export const PaymentApp = () => {
                 name="Payment"
             />
             <div className="windowScreen wrapperPayment">
-                <div className="navPayment">
+                <div className="navPayment text-left">
                     <div
                         className={
                             page == 'deposit' ? 'item subActive' : 'item'
@@ -167,7 +165,7 @@ export const PaymentApp = () => {
                         className={page == 'sub' ? 'item subActive' : 'item'}
                         onClick={() => handleChangePage('sub')}
                     >
-                        Thuê CloudPC
+                        Đăng kí
                     </div>
                     <div
                         className={
@@ -175,7 +173,7 @@ export const PaymentApp = () => {
                         }
                         onClick={() => handleChangePage('history')}
                     >
-                        Lịch sử
+                        Giao dịch
                     </div>
                     <div
                         className={page == 'refund' ? 'item subActive' : 'item'}
@@ -191,7 +189,7 @@ export const PaymentApp = () => {
                         ) : page == 'refund' ? (
                             <RefundPage />
                         ) : page == 'deposit' ? (
-                            <DepositPage />
+                            <DepositPage value={val} />
                         ) : page == 'history' ? (
                             <TransactionHistoryPage />
                         ) : (

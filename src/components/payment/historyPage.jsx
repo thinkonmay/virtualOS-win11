@@ -12,7 +12,7 @@ const listHistoryNav = [
         id: 'deposit'
     },
     {
-        name: 'Thuê CloudPC',
+        name: 'Đăng kí',
         id: 'buy'
     },
     {
