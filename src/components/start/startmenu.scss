@@ -64,7 +64,6 @@
 
   position: absolute;
   left: 0;
-  bottom: 60px;
   max-width: 360px;
   width: 40%;
   min-width: 270px;
@@ -72,6 +71,7 @@
   height: calc(100% - 62px);
 
   &[data-align="center"] {
+    bottom: 60px;
     margin-left: auto;
     margin-right: auto;
     right: 0;
@@ -80,6 +80,7 @@
 
   &[data-align="left"] {
     left: 8px;
+    top: 50px;
   }
 
 

@@ -36,6 +36,7 @@ const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
 function App() {
     ReactModal.setAppElement('#root');
     const { id } = useAppSelector((state) => state.user);
+    const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
     const tutorial = useAppSelector((state) => state.globals.tutorial);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
@@ -125,7 +126,7 @@ function App() {
         } else if (!remote.active) {
             window.oncontextmenu = ctxmenu;
             window.onclick = afterMath;
-        } 
+        }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
         job?.catch(() => {});
@@ -189,7 +190,13 @@ function App() {
                             <ListQAs />
                             <Popup />
                             <Tutorial />
-                            <Toaster position="top-right" />
+                            <Toaster
+                                position={
+                                    align == 'left'
+                                        ? 'bottom-right'
+                                        : 'top-right'
+                                }
+                            />
                         </>
                     )}
                     {remote.active && !pointerLock ? <Status /> : null}
@@ -200,7 +207,11 @@ function App() {
                     ) : (
                         <>
                             <Background />
-                            <div className="desktop" data-menu="desk">
+                            <div
+                                className="desktop"
+                                data-align={align}
+                                data-menu="desk"
+                            >
                                 <DesktopApp />
                                 {Object.keys(Applications).map((key, idx) => {
                                     var WinApp = Applications[key];
