@@ -1,8 +1,9 @@
-import { POCKETBASE } from '../../../src-tauri/api';
+import { Computer, GetInfo, POCKETBASE } from '../../../src-tauri/api';
 import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
+    app_close,
     app_toggle,
     appDispatch,
     close_remote,
@@ -315,17 +316,27 @@ export const create_payment_pocket = async ({
         );
     } else {
         await GLOBAL().rpc('verify_all_payment');
-        await preload();
+        appDispatch(app_close('payment'));
+        if (store.getState().worker.currentAddress != cluster_domain) {
+            await new Promise((r) => setTimeout(r, 90 * 1000));
+            appDispatch(
+                popup_open({
+                    type: 'redirectDomain',
+                    data: {
+                        domain: cluster_domain
+                    }
+                })
+            );
+        } else {
+            let info: Computer | undefined = undefined;
+            while (!(info?.virtReady ?? false)) {
+                await new Promise((r) => setTimeout(r, 20000));
+                const result = await GetInfo(cluster_domain);
+                if (result instanceof Error) throw result;
+                else info = result;
+            }
 
-        appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: true,
-                    content: t[Contents.PAYMENT_POCKET_SUCCESS]
-                }
-            })
-        );
+            await preload();
+        }
     }
 };
