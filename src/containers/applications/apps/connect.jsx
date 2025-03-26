@@ -1,6 +1,7 @@
 import {
     appDispatch,
     app_toggle,
+    popup_open,
     show_chat,
     useAppSelector,
     wait_and_claim_volume,
@@ -12,7 +13,6 @@ import {
     ToolBar
 } from '../../../components/shared/general';
 
-import { login } from '../../../backend/actions';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
@@ -28,25 +28,23 @@ export const ConnectApp = () => {
         (state) => state.user.subscription ?? {}
     );
     const addr = useAppSelector((state) => state.worker.currentAddress);
-    const { soft_expired, template } = metadata ?? {};
+    const { reach_time_limit, reach_date_limit, template } = metadata ?? {};
     const { image, name } = template ?? {};
     const { browser } = detectBrowserAndOS();
 
-    // const expire_popup = () =>
-    //     popup_open({
-    //         type: 'extendService',
-    //         data: {
-    //             type: 'expired',
-    //             to: ''
-    //         }
-    //     });
+    const limit = (type) =>
+        popup_open({
+            type: 'extendService',
+            data: { type }
+        });
 
-    // const connect = () =>
-    //     soft_expired
-    //         ? appDispatch(expire_popup())
-    //          : appDispatch(wait_and_claim_volume());
+    const connect = () =>
+        reach_time_limit
+            ? appDispatch(limit('time_limit'))
+            : reach_date_limit
+              ? appDispatch(limit('date_limit'))
+              : appDispatch(wait_and_claim_volume());
 
-    const connect = () => appDispatch(wait_and_claim_volume());
     const pay = () => appDispatch(app_toggle('payment'));
     const reload = () => appDispatch(worker_refresh_ui());
     const redirect = () => {

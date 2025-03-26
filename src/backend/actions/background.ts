@@ -141,22 +141,15 @@ const updateUI = async () => {
     const rms = [];
     const ops = [];
     if (subscription != undefined) {
-        const { ended_at, cluster } = subscription;
+        const { cluster, metadata } = subscription;
         ops.push('connectPc');
 
-        if (
-            ended_at != null &&
-            new Date(ended_at).getTime() - Date.now() < 3 * 24 * 3600 * 1000
-        )
-            appDispatch(
-                popup_open({
-                    type: 'extendService',
-                    data: {
-                        type: 'date_limit',
-                        to: formatDate(ended_at)
-                    }
-                })
-            );
+        const {
+            reach_time_limit,
+            nearly_reach_time_limit,
+            reach_date_limit,
+            nearly_reach_date_limit
+        } = metadata ?? {};
 
         if (cluster != currentAddress)
             appDispatch(
@@ -164,6 +157,44 @@ const updateUI = async () => {
                     type: 'redirectDomain',
                     data: {
                         domain: cluster
+                    }
+                })
+            );
+        else if (reach_time_limit)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'time_limit'
+                    }
+                })
+            );
+        else if (reach_date_limit)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'date_limit'
+                    }
+                })
+            );
+        else if (nearly_reach_date_limit)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'near_date_limit',
+                        available_time: nearly_reach_date_limit
+                    }
+                })
+            );
+        else if (nearly_reach_time_limit != undefined)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'near_time_limit',
+                        available_time: nearly_reach_time_limit
                     }
                 })
             );

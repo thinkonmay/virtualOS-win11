@@ -1,3 +1,19 @@
+export type ExtendMsg =
+    | {
+          type: 'date_limit';
+      }
+    | {
+          type: 'time_limit';
+      }
+    | {
+          type: 'near_time_limit';
+          available_time: number;
+      }
+    | {
+          type: 'near_date_limit';
+          available_time: number;
+      };
+
 type PopupData =
     | {
           type: 'complete';
@@ -24,11 +40,7 @@ type PopupData =
       }
     | {
           type: 'extendService';
-          data: {
-              type: 'date_limit' | 'hour_limit' | 'expired';
-              to: string;
-              available_time?: number;
-          };
+          data: ExtendMsg;
       }
     | {
           type: 'maintain';

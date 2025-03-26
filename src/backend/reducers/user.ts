@@ -1,14 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_close, app_full, appDispatch, popup_open, RootState } from '.';
+import { app_close, app_full, appDispatch, RootState } from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
-import { formatDate } from '../utils/date';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
 
 type Metadata = {
     node: string;
-    soft_expired: boolean;
+    reach_time_limit: boolean;
+    reach_date_limit: boolean;
+    nearly_reach_time_limit?: number;
+    nearly_reach_date_limit?: number;
     template: {
         local_id?: string;
         image?: string;
@@ -167,17 +169,19 @@ export const userAsync = {
 
     fetch_subscription_metadata: createAsyncThunk(
         'fetch_subscription_metadata',
-        async (_, { getState }): Promise<Metadata | null> => {
+        async (_, { getState }): Promise<Metadata | undefined> => {
             const {
-                user: { subscription },
+                user: { subscription, wallet, plans },
                 worker: { data, currentAddress }
             } = getState() as RootState;
-            if (subscription == undefined) return;
-            const { ended_at, policy } = subscription;
+            if (subscription == undefined) return undefined;
+            const { ended_at, total_usage, policy, next_plan } = subscription;
             let { limit_hour } = policy ?? { limit_hour: Infinity };
             const node = data[currentAddress]?.Volumes?.find(
                 (x) => x.pool == 'user_data'
             )?.node;
+            const sufficient =
+                plans?.find((x) => x.name == next_plan).amount <= wallet?.money;
 
             // TODO : fetch template
             const volume = (
@@ -233,37 +237,29 @@ export const userAsync = {
                     };
             } else template = { local_id };
 
-            const available = limit_hour - subscription.total_usage;
-            const soft_expired =
-                new Date(ended_at) < new Date() ||
-                subscription.total_usage > limit_hour;
-
-            if (available < 20 && available >= 0)
-                appDispatch(
-                    popup_open({
-                        type: 'extendService',
-                        data: {
-                            type: 'hour_limit',
-                            available_time: available,
-                            to: formatDate(ended_at)
-                        }
-                    })
-                );
-            if (soft_expired)
-                appDispatch(
-                    popup_open({
-                        type: 'extendService',
-                        data: {
-                            type: 'expired',
-                            to: ''
-                        }
-                    })
-                );
-
             return {
                 node,
                 template,
-                soft_expired
+
+                reach_time_limit: sufficient ? false : total_usage > limit_hour,
+                reach_date_limit: sufficient
+                    ? false
+                    : Date.now() > new Date(ended_at).getTime(),
+                nearly_reach_time_limit: sufficient
+                    ? undefined
+                    : total_usage + 20 > limit_hour
+                      ? limit_hour - total_usage
+                      : undefined,
+                nearly_reach_date_limit: sufficient
+                    ? undefined
+                    : Date.now() + 7 * 24 * 3600 * 1000 >
+                        new Date(ended_at).getTime()
+                      ? Math.round(
+                            (new Date(ended_at).getTime() -
+                                new Date().getTime()) /
+                                (24 * 3600 * 1000)
+                        )
+                      : undefined
             };
         }
     ),
