@@ -1025,9 +1025,9 @@ export function language() {
     vn.set(Contents.YOU_ARE_IN, 'Bạn đang ở');
     id.set(Contents.YOU_ARE_IN, 'You are in');
 
-    en.set(Contents.PAYMENT_DEPOSIT, 'Transfer money');
-    vn.set(Contents.PAYMENT_DEPOSIT, 'Chuyển tiền');
-    id.set(Contents.PAYMENT_DEPOSIT, 'Transfer money');
+    en.set(Contents.PAYMENT_DEPOSIT, 'Transfer money to a Vietnamese bank account');
+    vn.set(Contents.PAYMENT_DEPOSIT, 'Quét mã QR từ ứng dụng ngân hàng');
+    id.set(Contents.PAYMENT_DEPOSIT, 'Transfer money to a Vietnamese bank account');
 
     en.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');
     vn.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');
@@ -1041,9 +1041,9 @@ export function language() {
     vn.set(Contents.PAYMENT_AMOUNT, 'Số tiền');
     id.set(Contents.PAYMENT_AMOUNT, 'Description');
 
-    en.set(Contents.PAYMENT_REQUIRE, 'Require');
-    vn.set(Contents.PAYMENT_REQUIRE, 'Bắt buộc');
-    id.set(Contents.PAYMENT_REQUIRE, 'Require');
+    en.set(Contents.PAYMENT_REQUIRE, 'Must not changed');
+    vn.set(Contents.PAYMENT_REQUIRE, 'Tuyệt đối không thay đổi');
+    id.set(Contents.PAYMENT_REQUIRE, 'Must not changed');
 
     en.set(Contents.PAYMENT_DEPOSIT_SUCCESS, 'Success');
     vn.set(

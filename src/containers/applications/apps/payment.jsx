@@ -158,7 +158,7 @@ export const PaymentApp = () => {
                         }
                         onClick={() => handleChangePage('deposit')}
                     >
-                        Nạp tiền
+                        Ví thinkmay
                     </div>
                     <div
                         className={

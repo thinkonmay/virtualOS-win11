@@ -62,18 +62,20 @@ export function paymentQR({
                     viewBox={`0 0 256 256`}
                 />
             </div>
-            <div className="flex gap-3 justify-center mt-3 mb-2">
+            <div className="flex gap-3 justify-center mt-1 mb-2">
                 {t[Contents.PAYMENT_ACCOUNT_NAME]} {accountName}
             </div>
-            <div className="flex gap-3 justify-center mt-3 mb-2">
-                {t[Contents.PAYMENT_DESCRIPTION]} {description} (
-                {t[Contents.PAYMENT_REQUIRE]})
+            <div className="flex gap-3 justify-center mt-1 mb-2 text-xl">
+                {t[Contents.PAYMENT_DESCRIPTION]}: "{description}" 
             </div>
-            <div className="flex gap-3 justify-center mt-3 mb-2">
-                {t[Contents.PAYMENT_AMOUNT]} {amount}
+            <div className="flex gap-3 justify-center mt-1 mb-2 font-bold text-xl">
+                ({t[Contents.PAYMENT_REQUIRE]})
+            </div>
+            <div className="flex gap-3 justify-center mt-1 mb-2">
+                {t[Contents.PAYMENT_AMOUNT]} {amount} VND
             </div>
 
-            <div className="flex gap-3 justify-center mt-3 mb-2">
+            <div className="flex gap-3 justify-center mt-1 mb-2">
                 <button
                     style={{ padding: '6px 14px' }}
                     className=" text-base font-medium rounded-md"
