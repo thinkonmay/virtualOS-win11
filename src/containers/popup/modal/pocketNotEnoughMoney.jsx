@@ -14,7 +14,7 @@ export function pocketNotEnoughMoney({ data: { plan_price } }) {
         appDispatch(popup_close());
         appDispatch(
             create_payment_qr({
-                amount: plan_price
+                amount: plan_price - (wallet?.money ?? 0)
             })
         );
     };
