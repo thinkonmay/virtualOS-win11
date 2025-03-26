@@ -320,7 +320,7 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                             </div>
                         ) : null}
                         {next_plan == sub.name ? (
-                            <>
+                            sub.price_in_vnd <= money ? (
                                 <div className="flex gap-2">
                                     <button
                                         onClick={info}
@@ -333,7 +333,19 @@ const SubscriptionCard = ({ subInfo: sub }) => {
                                         ).toLocaleDateString()}`}
                                     </button>
                                 </div>
-                            </>
+                            ) : (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={onChooseSub}
+                                        type="button"
+                                        className="buyButton flex-1 bg-[#2d88dd]"
+                                    >
+                                        {`Nạp thêm ${
+                                            (sub.price_in_vnd - money) / 1000
+                                        }k để tự động gia hạn`}
+                                    </button>
+                                </div>
+                            )
                         ) : sub.active ? (
                             <div className="flex gap-2">
                                 <button
