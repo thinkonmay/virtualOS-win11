@@ -31,10 +31,6 @@ export const VirtualGamepad = (props) => {
     const draggable = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.draggable
     );
-    const currentSizes = useAppSelector(
-        (state) => state.sidepane.mobileControl.gamepadSetting.btnSizes
-    );
-
     useEffect(() => {
         const gamepadBtnSizes = localStorage.getItem(
             localStorageKey.gamepadBtnSizes
@@ -459,9 +455,6 @@ const defaultButtonGroupLeftValue = {
 };
 
 export const ButtonGroupLeft = (props) => {
-    const btnSize = useAppSelector(
-        (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
-    );
     const selected = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.currentSelected
     );

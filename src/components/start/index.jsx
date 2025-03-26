@@ -45,7 +45,7 @@ export const DesktopApp = () => {
     );
     const t = useAppSelector((state) => state.globals.translation);
 
-    const handleTouchEnd = (e) => setTimeout(clickDispatch(e), 200);
+    const handleTouchEnd = clickDispatch;
     const handleDouble = customClickDispatch((e) => e.stopPropagation());
 
     return (
@@ -54,6 +54,7 @@ export const DesktopApp = () => {
                 deskApps.map((app, i) => (
                     <div
                         key={i}
+                        id={app.id}
                         className="dskApp prtclk relative"
                         tabIndex={0}
                         data-action={app.action}

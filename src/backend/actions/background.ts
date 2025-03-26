@@ -26,14 +26,16 @@ import {
     popup_open,
     set_current_address,
     setting_theme,
+    show_tutorial,
     sidepane_panethem,
     store,
     sync,
     worker_refresh
 } from '../reducers';
 import { Contents } from '../reducers/locales/index.ts';
-import { formatDate } from '../utils/date.ts';
 import { formatError } from '../utils/formatErr.ts';
+
+const originalurl = new URL(window.location.href);
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');
@@ -134,7 +136,7 @@ const fetchPlans = async () => {
 
 const updateUI = async () => {
     const {
-        user: { subscription },
+        user: { subscription, email },
         worker: { currentAddress }
     } = store.getState();
 
@@ -198,7 +200,13 @@ const updateUI = async () => {
                     }
                 })
             );
-    }
+    } else if (
+        originalurl.searchParams.get('tutorial') == 'on' &&
+        email != undefined &&
+        email != 'unkown' &&
+        email != ''
+    )
+        appDispatch(show_tutorial('open'));
 
     ops.forEach((x) => appDispatch(app_toggle(x)));
     rms.forEach((x) => appDispatch(desk_remove(x)));

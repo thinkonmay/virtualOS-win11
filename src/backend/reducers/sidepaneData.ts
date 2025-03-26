@@ -54,7 +54,7 @@ export interface IGamePadBtnSize {
 }
 export const btnGamepadSizes: IGamePadBtnSize = {
     leftJt: 1,
-    dpad: 0.1,
+    dpad: 0.6,
     ls: 1,
     lt: 1,
     lb: 1,

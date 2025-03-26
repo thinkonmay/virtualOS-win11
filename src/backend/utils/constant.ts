@@ -22,12 +22,7 @@ export const scanCodeApps = [
 ];
 
 export const localStorageKey = {
-    user: 'USER1',
-    store: 'STORE',
-    app: 'APP',
-    request: 'REQUESTCACHE',
     language: 'language',
-    PATH_NAME: 'FINISH_PAYMENT',
     gamepadBtnSizes: 'GAMEPAD_BUTTON_SIZE',
     gamingKeyboardData: 'GAMING_KEYBOARD_DATA'
 };

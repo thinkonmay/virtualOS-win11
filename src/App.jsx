@@ -81,7 +81,7 @@ function App() {
         const now = () => new Date().getTime();
         const start_fetch = now();
         PreloadBackground(true).finally(async () => {
-            window.history.replaceState({}, document.title, '/' + '');
+            window.history.replaceState({}, document.title, '/');
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });

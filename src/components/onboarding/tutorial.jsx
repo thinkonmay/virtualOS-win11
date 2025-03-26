@@ -6,18 +6,17 @@ import {
 } from 'react-icons/md';
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import { isMobile } from '../../../src-tauri/core';
-import { CLIENT } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     show_tutorial,
+    sidepane_panehide,
     sidepane_paneopen,
     useAppSelector
 } from '../../backend/reducers';
-import { localStorageKey } from '../../backend/utils/constant';
 import { Image } from '../shared/general';
 import './assets/paidUser.scss';
 
-const general = [
+const generalStart = [
     {
         content: (
             <>
@@ -31,6 +30,39 @@ const general = [
         locale: { next: "Let's go" },
         placement: 'center',
         target: 'body'
+    }
+];
+
+const generalEnd = [
+    {
+        title: 'Thanh toán',
+        content: 'Xem thông tin về các gói đăng kí tại Thinkmay',
+        placement: 'right',
+        target: '#payment'
+    },
+    {
+        title: 'Tải game',
+        content: 'Tải game tại đây',
+        placement: 'right',
+        target: '#store'
+    },
+    {
+        title: 'Kết nối và chơi game',
+        content: 'Kết nối và sử dụng Cloud PC',
+        placement: 'right',
+        target: '#connectPc'
+    },
+    {
+        title: 'Nếu cần Thinkmay hỗ trợ, liên hệ chúng mình ngay nhé!',
+        placement: 'top',
+        spotlightPadding: 1,
+        target: '#supportNow'
+    },
+    {
+        title: 'Xem lại hướng dẫn 1 lần nữa',
+        content: 'Nếu như bạn chưa rõ cách sử dụng sản phẩm',
+        placement: 'right',
+        target: '#guideline'
     }
 ];
 
@@ -68,8 +100,9 @@ const mobileGuide = [
         placement: 'center',
         target: 'body',
         content:
-            'Bấm vào nửa MH bên trái để click chuột trái, phải là chuột phải',
+            'Bấm vào nửa màn hình bên trái để click chuột trái, phải là chuột phải',
         title: 'Làm quen với chuột ảo: CHUỘT TRÁI & PHẢI',
+        showLRMouse: true,
         spotlightPadding: 1
     },
     {
@@ -104,39 +137,12 @@ const mobileGuide = [
         title: 'Mở bàn tay cầm ảo',
         spotlightPadding: 0,
         sidepane_paneopen: true
-    },
-    {
-        title: '  Nếu cần Thinkmay hỗ trợ, liên hệ chúng mình ngay nhé!',
-
-        placement: 'auto',
-        spotlightPadding: 1,
-
-        target: '#supportNow'
     }
 ];
 const desktopGuide = [
     {
-        title: 'LƯU Ý: Bạn đang mở chế độ web dành cho máy tính',
-        content: (
-            <div>
-                Vui lòng chuyển qua chế độ web dành cho <b>điện thoại</b> nếu
-                thiết bị của bạn là Điện thoại hoặc máy tính bảng
-                <div className="flex justify-center mt-2">
-                    <Image
-                        className="w-[160px] rounded-md overflow-hidden"
-                        src="asset/request_mobile_web"
-                    />
-                </div>
-            </div>
-        ),
-
-        placement: 'center',
-        target: 'body'
-    },
-    {
         title: 'Tinh chỉnh',
-        content:
-            'Bấm vô đây để tinh chỉnh kết nối sao cho mượt mà nhất, liên hệ Fanpage nếu bạn chưa biết cách chỉnh nhé!',
+        content: 'Bấm vô đây để tinh chỉnh kết nối sao cho mượt mà nhất',
 
         placement: 'top',
         locale: {
@@ -160,69 +166,27 @@ const desktopGuide = [
     },
     {
         title: 'Thông tin tài khoản',
-        content: (
-            <p>Xem thông tin về tài khoản của bạn, bao gồm thời gian chơi</p>
-        ),
+        content: 'Xem thông tin về tài khoản của bạn, bao gồm thời gian chơi',
 
         placement: 'top',
         target: '.infoBtn',
         spotlightPadding: 1
-    },
-    {
-        title: '  Nếu cần Thinkmay hỗ trợ, liên hệ chúng mình ngay nhé!',
-
-        placement: 'top',
-        spotlightPadding: 1,
-
-        target: '#supportNow'
     }
 ];
 
-const BeaconComponent = forwardRef((props, ref) => {
-    return <div ref={ref} className="tooltipBeacon" {...props}></div>;
-});
-
 const ContinueButton = ({ primaryProps, isLastStep }) => {
-    const [timeRemaining, setTimeRemaining] = useState(2);
-    const [isActive, setIsActive] = useState(true);
-
-    useEffect(() => {
-        if (timeRemaining > 0) {
-            const timer = setInterval(() => {
-                setTimeRemaining((prevTime) => {
-                    if (prevTime <= 1) {
-                        clearInterval(timer);
-                        setIsActive(true);
-                        return 0;
-                    }
-                    return prevTime - 1;
-                });
-            }, 1000);
-
-            return () => clearInterval(timer);
-        }
-    }, []);
-
     return (
-        <>
-            {isActive ? (
-                <button className="tooltipContinue" {...primaryProps}>
-                    {isLastStep ? (
-                        <>
-                            Xong <MdCheck fontSize={'1.2rem'} />{' '}
-                        </>
-                    ) : (
-                        <>
-                            Tiếp <MdKeyboardArrowRight fontSize={'1.2rem'} />
-                        </>
-                    )}
-                </button>
+        <button className="tooltipContinue" {...primaryProps}>
+            {isLastStep ? (
+                <>
+                    Xong <MdCheck fontSize={'1.2rem'} />{' '}
+                </>
             ) : (
-                <button className="tooltipContinue ">
-                    Đợi: {timeRemaining}s
-                </button>
+                <>
+                    Tiếp <MdKeyboardArrowRight fontSize={'1.2rem'} />
+                </>
             )}
-        </>
+        </button>
     );
 };
 function CustomTooltip(props) {
@@ -256,11 +220,7 @@ function CustomTooltip(props) {
             </p>
             {step.title && <h4 className="tooltipTitle">{step.title}</h4>}
             <div className="tooltipContent">{step.content}</div>
-            <div className="tooltipFooter">
-                {/*<button className="tooltipSkip" {...skipProps}>
-                    {skipProps.title}
-                </button>*/}
-            </div>
+            <div className="tooltipFooter"></div>
             <div className="tooltipSpacer">
                 {index > 0 && (
                     <button className="tooltipSkip" {...backProps}>
@@ -278,97 +238,51 @@ function CustomTooltip(props) {
     );
 }
 
-//export function App() {
-//    return (
-//        <div>
-//            <Joyride
-//                tooltipComponent={CustomTooltip}
-//                beaconComponent={BeaconComponent}
-
-//            // ...
-//            />
-//        </div>
-//    );
-//}
 export const Tutorial = () => {
-    const remote = useAppSelector((state) => state.remote);
     const show = useAppSelector((state) => state.globals.tutorial);
-
-    const [run, setRun] = useState(false);
-
-    const intervalRef = useRef(null);
-
+    const [lrmouse, showLRMouse] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
 
-    const stop = () => {
-        setRun(false);
-        setStepIndex(0);
-        appDispatch(show_tutorial('close'));
-        localStorage.setItem(localStorageKey.shownPaidUserTutorial, 'true');
-    };
-
-    const allSteps = [...general, ...(isMobile() ? mobileGuide : desktopGuide)];
-    useEffect(() => {
-        intervalRef.current = setInterval(() => {
-            if (
-                remote.active &&
-                CLIENT?.Metrics?.video?.status == 'connected' &&
-                localStorage.getItem(localStorageKey.shownPaidUserTutorial) !=
-                    'true'
-            ) {
-                setRun(true);
-
-                if (!run) {
-                    setRun(true);
-                } else {
-                    clearInterval(intervalRef.current);
-                }
-            }
-        }, 3000);
-
-        return () => {
-            clearInterval(intervalRef.current);
-        };
-    }, [run, remote.active]);
-    useEffect(() => {
-        setRun(show);
-    }, [show]);
-    useEffect(() => {}, [remote.active]);
+    const allSteps = [
+        ...generalStart,
+        ...(isMobile() ? mobileGuide : desktopGuide),
+        ...generalEnd
+    ];
 
     const handleJoyrideCallback = ({ status, index, type, action }) => {
-        if (action === ACTIONS.CLOSE) {
-            stop();
-            clearInterval(intervalRef?.current);
-            setStepIndex(0);
-        }
-        if (allSteps[index]?.sidepane_paneopen && action != ACTIONS.CLOSE) {
+        showLRMouse(allSteps[index]?.showLRMouse ?? false);
+
+        if (allSteps[index]?.sidepane_paneopen)
             appDispatch(sidepane_paneopen());
-        }
-        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) stop();
-        else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+        else appDispatch(sidepane_panehide());
+
+        if (
+            [STATUS.FINISHED, STATUS.SKIPPED].includes(status) ||
+            action === ACTIONS.CLOSE
+        ) {
+            setStepIndex(0);
+            appDispatch(show_tutorial('close'));
+        } else if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type))
             setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
-        }
     };
 
     return (
         <>
             <Joyride
                 callback={handleJoyrideCallback}
-                //beaconComponent={BeaconComponent}
                 disableScrollParentFix={true}
                 scrollToFirstStep={false}
                 disableScrolling={false}
                 continuous
                 showProgress
                 disableOverlayClose
+                run={show}
                 steps={allSteps}
                 stepIndex={stepIndex}
-                run={run}
                 tooltipComponent={CustomTooltip}
                 disableOverlay={isMobile() && stepIndex < 4 ? true : false}
             />
-
-            {stepIndex == 3 && isMobile() ? <MouseMobileGuide /> : null}
+            {lrmouse ? <MouseMobileGuide /> : null}
         </>
     );
 };

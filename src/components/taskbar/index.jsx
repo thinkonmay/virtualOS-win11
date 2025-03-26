@@ -115,7 +115,6 @@ const Taskbar = () => {
                     <div
                         id="supportNow"
                         className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight flex rounded "
-                        // onClick={customDispatch}
                         onClick={() => appDispatch(show_chat())}
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
@@ -255,8 +254,8 @@ const Taskbar = () => {
                         data-remote={remote.active}
                     >
                         <div
-                            className="settingBtn supportNow p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
-                            // onClick={clickDispatch}
+                            id="supportNow"
+                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
                             onClick={() => appDispatch(show_chat())}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
@@ -271,8 +270,6 @@ const Taskbar = () => {
                         </div>
                         <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
-                            // onClick={clickDispatch}
-                            id="supportNow"
                             onClick={() => appDispatch(toggleQa())}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'QA' }}
