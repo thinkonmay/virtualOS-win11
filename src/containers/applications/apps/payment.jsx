@@ -166,7 +166,7 @@ export const PaymentApp = () => {
                         }
                         onClick={() => handleChangePage('storage')}
                     >
-                        Nâng cấp
+                        Cấu hình
                     </div>
                     <div
                         className={
