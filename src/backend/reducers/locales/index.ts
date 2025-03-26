@@ -1042,7 +1042,7 @@ export function language() {
     id.set(Contents.PAYMENT_AMOUNT, 'Description');
 
     en.set(Contents.PAYMENT_REQUIRE, 'Must not changed');
-    vn.set(Contents.PAYMENT_REQUIRE, 'Tuyệt đối không thay đổi');
+    vn.set(Contents.PAYMENT_REQUIRE, 'Tuyệt đối không thay đổi nội dung');
     id.set(Contents.PAYMENT_REQUIRE, 'Must not changed');
 
     en.set(Contents.PAYMENT_DEPOSIT_SUCCESS, 'Success');
