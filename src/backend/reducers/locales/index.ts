@@ -223,6 +223,7 @@ export enum Contents {
     CA_TURN_ON_PC,
     CA_CONNECT,
     CA_CONNECT_EXPLAIN,
+    CA_CONNECT_EXPLAIN_1,
 
     CA_MISSING_VOLUME,
     CA_MISSING_VOLUME_EXPLAIN,
@@ -356,6 +357,10 @@ export function language() {
     en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
     vn.set(Contents.CA_CONNECT_EXPLAIN, 'Click để truy cập cloud PC');
     en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
+
+    en.set(Contents.CA_CONNECT_EXPLAIN_1, `VM will shutdown after 10min inactive`);
+    vn.set(Contents.CA_CONNECT_EXPLAIN_1, 'Máy sẽ tự tắt sau 10 phút không sử dụng');
+    en.set(Contents.CA_CONNECT_EXPLAIN_1, `VM will shutdown after 10min inactive`);
 
     en.set(
         Contents.CA_WRONG_SERVER,

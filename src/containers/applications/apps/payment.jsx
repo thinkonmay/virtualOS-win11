@@ -147,6 +147,12 @@ export const PaymentApp = () => {
             <div className="windowScreen wrapperPayment">
                 <div className="navPayment text-left">
                     <div
+                        className={page == 'sub' ? 'item subActive' : 'item'}
+                        onClick={() => handleChangePage('sub')}
+                    >
+                        Đăng kí
+                    </div>
+                    <div
                         className={
                             page == 'deposit' ? 'item subActive' : 'item'
                         }
@@ -156,28 +162,22 @@ export const PaymentApp = () => {
                     </div>
                     <div
                         className={
-                            page == 'storage' ? 'item subActive' : 'item'
+                            page == 'storage' ? 'item subActive' : 'item text-gray-500'
                         }
                         onClick={() => handleChangePage('storage')}
                     >
                         Nâng cấp
                     </div>
                     <div
-                        className={page == 'sub' ? 'item subActive' : 'item'}
-                        onClick={() => handleChangePage('sub')}
-                    >
-                        Đăng kí
-                    </div>
-                    <div
                         className={
-                            page == 'history' ? 'item subActive' : 'item'
+                            page == 'history' ? 'item subActive' : 'item text-gray-500'
                         }
                         onClick={() => handleChangePage('history')}
                     >
-                        Giao dịch
+                        Lịch sử
                     </div>
                     <div
-                        className={page == 'refund' ? 'item subActive' : 'item'}
+                        className={page == 'refund' ? 'item subActive' : 'item text-gray-500'}
                         onClick={() => handleChangePage('refund')}
                     >
                         Hoàn tiền
