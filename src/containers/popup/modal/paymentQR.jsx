@@ -66,7 +66,7 @@ export function paymentQR({
                 {t[Contents.PAYMENT_ACCOUNT_NAME]} {accountName}
             </div>
             <div className="flex gap-3 justify-center mt-1 mb-2 text-xl">
-                {t[Contents.PAYMENT_DESCRIPTION]}: "{description}" 
+                {t[Contents.PAYMENT_DESCRIPTION]}: "{description}"
             </div>
             <div className="flex gap-3 justify-center mt-1 mb-2 font-bold text-xl">
                 ({t[Contents.PAYMENT_REQUIRE]})

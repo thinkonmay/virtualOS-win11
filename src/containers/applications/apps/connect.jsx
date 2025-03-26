@@ -113,7 +113,7 @@ export const ConnectApp = () => {
                                     </button>
                                     <p className="text-xs text-center mt-3">
                                         {t[Contents.CA_CONNECT_EXPLAIN]}
-                                        <br/>
+                                        <br />
                                         {t[Contents.CA_CONNECT_EXPLAIN_1]}
                                     </p>
                                 </>

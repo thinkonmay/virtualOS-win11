@@ -358,9 +358,18 @@ export function language() {
     vn.set(Contents.CA_CONNECT_EXPLAIN, 'Click để truy cập cloud PC');
     en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
 
-    en.set(Contents.CA_CONNECT_EXPLAIN_1, `VM will shutdown after 10min inactive`);
-    vn.set(Contents.CA_CONNECT_EXPLAIN_1, 'Máy sẽ tự tắt sau 10 phút không sử dụng');
-    en.set(Contents.CA_CONNECT_EXPLAIN_1, `VM will shutdown after 10min inactive`);
+    en.set(
+        Contents.CA_CONNECT_EXPLAIN_1,
+        `VM will shutdown after 10min inactive`
+    );
+    vn.set(
+        Contents.CA_CONNECT_EXPLAIN_1,
+        'Máy sẽ tự tắt sau 10 phút không sử dụng'
+    );
+    en.set(
+        Contents.CA_CONNECT_EXPLAIN_1,
+        `VM will shutdown after 10min inactive`
+    );
 
     en.set(
         Contents.CA_WRONG_SERVER,
@@ -1025,9 +1034,15 @@ export function language() {
     vn.set(Contents.YOU_ARE_IN, 'Bạn đang ở');
     id.set(Contents.YOU_ARE_IN, 'You are in');
 
-    en.set(Contents.PAYMENT_DEPOSIT, 'Transfer money to a Vietnamese bank account');
+    en.set(
+        Contents.PAYMENT_DEPOSIT,
+        'Transfer money to a Vietnamese bank account'
+    );
     vn.set(Contents.PAYMENT_DEPOSIT, 'Quét mã QR từ ứng dụng ngân hàng');
-    id.set(Contents.PAYMENT_DEPOSIT, 'Transfer money to a Vietnamese bank account');
+    id.set(
+        Contents.PAYMENT_DEPOSIT,
+        'Transfer money to a Vietnamese bank account'
+    );
 
     en.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');
     vn.set(Contents.PAYMENT_ACCOUNT_NAME, 'Tài khoản');

@@ -24,7 +24,7 @@ const blacklist = ['framerate', 'bitrate', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (DevEnv) console.log({ ...(action as any) });
     else if (
-        blacklist.filter((x) => (action as any).type.includes(x)).length == 0
+        blacklist.filter((x) => (action as any)?.type?.includes(x))?.length == 0
     )
         UserEvents(action as any);
 

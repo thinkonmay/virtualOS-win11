@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MdCheck } from 'react-icons/md';
+import { create_payment_pocket } from '../../../backend/actions';
 import {
     app_metadata_change,
     appDispatch,
@@ -19,7 +20,6 @@ import {
 } from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
-import { create_payment_pocket } from '../../../backend/actions';
 
 const listSubs = [
     {
@@ -162,7 +162,9 @@ export const PaymentApp = () => {
                     </div>
                     <div
                         className={
-                            page == 'storage' ? 'item subActive' : 'item text-gray-500'
+                            page == 'storage'
+                                ? 'item subActive'
+                                : 'item text-gray-500'
                         }
                         onClick={() => handleChangePage('storage')}
                     >
@@ -170,14 +172,20 @@ export const PaymentApp = () => {
                     </div>
                     <div
                         className={
-                            page == 'history' ? 'item subActive' : 'item text-gray-500'
+                            page == 'history'
+                                ? 'item subActive'
+                                : 'item text-gray-500'
                         }
                         onClick={() => handleChangePage('history')}
                     >
                         Lịch sử
                     </div>
                     <div
-                        className={page == 'refund' ? 'item subActive' : 'item text-gray-500'}
+                        className={
+                            page == 'refund'
+                                ? 'item subActive'
+                                : 'item text-gray-500'
+                        }
                         onClick={() => handleChangePage('refund')}
                     >
                         Hoàn tiền
