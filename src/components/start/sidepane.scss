@@ -62,7 +62,8 @@
    position: absolute;
    bottom: 56px;
    right: 12px;
-   width: 400px;
+   width: 15rem;
+   height: 22rem;
    border-radius: 0.5rem;
    color: var(--dark-txt);
    background: var(--bg1);
@@ -146,51 +147,6 @@
      flex-direction: column;
      gap: 1rem;
      border-radius: 0.5rem;
-
-     padding-top: calc(var(--padding) + 0.4rem);
-     padding-bottom: 2.4rem;
-
-
-
-   }
-
-   .reduceLagCtn {
-     font-size: 14px;
-
-     .wrapper {
-       position: relative;
-       padding: 12px;
-
-       &:hover {
-
-         .child {
-           display: block;
-         }
-       }
-
-       .child {
-
-         display: none;
-         color: white;
-         position: absolute;
-         bottom: 48px;
-         right: 120px;
-         width: 120%;
-         background: rgba($color: #000000, $alpha: 1);
-
-         padding: 12px;
-
-         border-radius: 16px;
-
-         ul {
-           padding-left: 24px;
-
-         }
-
-       }
-     }
-
-
    }
 
 
@@ -283,7 +239,7 @@
    .sliderCont {
      width: 100%;
      display: flex;
-     align-items: center;
+     align-items: left;
      gap: 20px;
      padding: 0 var(--padding);
 
@@ -449,11 +405,11 @@
  @media (max-width: 1024px) {
    .sidePane {
      position: absolute;
-     top: 58px;
-     right: 12px;
-     width: 240px;
-     height: calc(100% - 56px);
-     max-height: 320px;
+     top: 3.5rem;
+     right: 0.5rem;
+     width: 15rem;
+     width: 15rem;
+     height: 22rem;
 
 
      .quickSettings {
@@ -652,3 +608,23 @@
      --bgHvr: rgba(255, 255, 255, 0.08);
    }
  }
+
+  .reduceLagCtn {
+  font-size: 14px;
+  z-index: 9999;
+
+  position: absolute;
+
+  display: block;
+  color: white;
+  position: absolute;
+
+  top: 3rem;
+  right: 0rem;
+  width: 15rem;
+
+  background: rgba($color: #000000, $alpha: 1);
+  padding: 12px;
+  border-radius: 16px;
+  ul { padding-left: 24px; }
+  }

@@ -99,6 +99,7 @@ export const SidePane = () => {
     const { steam, storage } = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress] ?? {}
     );
+    const [helper, showHelper] = useState(false);
     const [pnstates, setPnstate] = useState({});
     const shutdownable = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
@@ -178,10 +179,7 @@ export const SidePane = () => {
                         ) : (
                             <DesktopComponent data={data} />
                         )}
-
-                        <div className="sliderCont flex flex-col items-start">
-                            <SpecsConnectInfo />
-
+                        <div className="sliderCont flex flex-col items-start mt-2">
                             <div className="containerSlider mb-[-4px]">
                                 <div className="sliderName">
                                     <b>Bitrate:</b>
@@ -237,54 +235,55 @@ export const SidePane = () => {
                                     <span>120</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="reduceLagCtn">
-                        <div className="wrapper ">
-                            <span className="italic text-[10px] lg:text-sm font-semibold underline">
+                            <SpecsConnectInfo />
+                            <span
+                                onClick={() => showHelper((old) => !old)}
+                                className="italic text-[10px] lg:text-sm font-semibold text-left underline"
+                            >
                                 Làm sao để giảm giật lag khi chơi game?
                             </span>
-                            <div className="child inset">
-                                <h3>Cách giảm giật lag khi chơi game</h3>
-                                <ul className="my-4">
-                                    <li>
-                                        Cách 1: Mở trên Chrome, đóng các tab,
-                                        ứng dụng đang chạy trên thiết bị của
-                                        bạn.
-                                    </li>
-                                    <li>
-                                        Cách 2:
-                                        <ul>
-                                            <li>
-                                                Giảm bitrate nếu bị delay, tăng
-                                                nhẹ cho đên khi thấy ổn
-                                            </li>
-                                            <li>
-                                                Chỉnh fps: Thử các mốc: 40, 50,
-                                                60, vv mỗi mốc trong 30s <br />
-                                                + 60-80 với điện thoại
-                                                <br />+ 50-120 với laptop(phụ
-                                                thuộc vào cấu hình)
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                                <p className="italic">
-                                    Nếu các cách trên không giúp giảm giật lag,
-                                    bạn vui lòng liên hệ <b>fanpage Thinkmay</b>{' '}
-                                    để được hỗ trợ nhé!{' '}
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
 
                 <GamePadSetting></GamePadSetting>
             </div>
+            {helper ? <Helper /> : null}
         </>
     );
 };
+
+const Helper = () => (
+    <div className="reduceLagCtn">
+        <h3>Cách giảm giật lag khi chơi game</h3>
+        <ul className="my-4">
+            <li>
+                1: Tối ưu hiệu năng trên thiết bị của bạn
+                <ul>
+                    <li>
+                        Tắt các tab đang có sử dụng video decoder: Youtube,
+                        google Meet
+                    </li>
+                </ul>
+            </li>
+            <li>
+                2: Điều chỉnh fps và bitrate phù hợp
+                <ul>
+                    <li>
+                        Giảm bitrate nếu hình ảnh bị delay, tăng nếu bạn thấy
+                        hình ảnh bị mờ
+                    </li>
+                    <li>
+                        Giảm fps nếu hình ảnh không mượt, tăng fps nếu hình ảnh
+                        bị delay
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <p className="italic">Nếu các cách trên không hoạt động</p>
+        <p className="italic">bạn nhắn vào phần hỗ trợ nhé</p>
+    </div>
+);
 
 const SpecsConnectInfo = () => {
     const remote = useAppSelector((state) => state.remote);
@@ -693,7 +692,6 @@ function DesktopComponent({
                       ))
                     : null}
             </div>
-            <hr className="mb-2 lg:mb-1" />
         </>
     );
 }
