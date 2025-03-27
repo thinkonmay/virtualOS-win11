@@ -161,6 +161,9 @@ i[data-flip="true"] {
   height: calc(100vh - 48px);
   bottom: 5rem;
 
+  &[data-align="center"] {
+    top: 0;
+  }
   &[data-align="left"] {
     top: 3rem;
   }
