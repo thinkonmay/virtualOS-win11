@@ -14,6 +14,7 @@ import {
     fetch_active_discounts,
     fetch_domain,
     fetch_payment_history,
+    fetch_refund_request,
     fetch_store,
     fetch_subscription,
     fetch_subscription_metadata,
@@ -124,6 +125,7 @@ const fetchPayment = () =>
     Promise.all([
         appDispatch(fetch_wallet()),
         appDispatch(fetch_payment_history()),
+        appDispatch(fetch_refund_request()),
         appDispatch(get_payment_pocket()),
         appDispatch(get_deposit_status())
     ]);

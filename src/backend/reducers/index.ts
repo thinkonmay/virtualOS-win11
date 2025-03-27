@@ -167,6 +167,8 @@ export const {
     fetch_payment_history,
     fetch_subscription,
     fetch_subscription_metadata,
+    fetch_refund_request,
+    refund_request,
     get_plans,
     change_template,
     get_payment_pocket,

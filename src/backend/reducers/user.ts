@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_close, app_full, appDispatch, RootState } from '.';
+import {
+    app_close,
+    app_full,
+    appDispatch,
+    RootState,
+    show_chat
+} from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
@@ -67,6 +73,12 @@ interface Order {
     plan_name: PlanName;
 }
 
+type RefundRequest = {
+    id: number;
+    created_at: string;
+    amount: string;
+};
+
 interface DepositStatus {
     created_at: string;
     amount: number;
@@ -85,6 +97,7 @@ interface Wallet {
     historyPayment: Deposit[];
     currentOrders?: Order[];
     depositStatus?: DepositStatus[];
+    refundRequest?: RefundRequest[];
     planStatus?: PlanStatus[];
 }
 type Data = RecordModel & {
@@ -368,6 +381,34 @@ export const userAsync = {
             else if (data != null) return data;
         }
     ),
+    fetch_refund_request: createAsyncThunk(
+        'fetch_refund_request',
+        async (_, { getState }): Promise<RefundRequest[]> => {
+            const { email } = (getState() as RootState).user;
+            const { data, error: err } = await GLOBAL()
+                .from('refund_request')
+                .select('id,created_at,amount')
+                .eq('user', email);
+
+            if (err) throw new Error(err.message);
+            return data;
+        }
+    ),
+    refund_request: createAsyncThunk(
+        'refund_request',
+        async (_, { getState }): Promise<void> => {
+            const { email } = (getState() as RootState).user;
+            const { error: err } = await GLOBAL()
+                .from('refund_request')
+                .insert({
+                    user: email
+                });
+
+            if (err) throw new Error(err.message);
+            appDispatch(show_chat());
+            await appDispatch(userAsync.fetch_refund_request())
+        }
+    ),
     change_template: createAsyncThunk(
         'change_template',
         async (
@@ -440,6 +481,16 @@ export const userSlice = createSlice({
                 fetch: userAsync.fetch_wallet,
                 hander: (state, action) => {
                     state.wallet.money = action.payload.amount;
+                }
+            },
+            {
+                fetch: userAsync.refund_request,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: userAsync.fetch_refund_request,
+                hander: (state, action) => {
+                    state.wallet.refundRequest = action.payload;
                 }
             },
             {
