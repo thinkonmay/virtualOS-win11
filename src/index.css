@@ -159,13 +159,10 @@ i[data-flip="true"] {
   position: absolute;
   width: 100vw;
   height: calc(100vh - 48px);
-
-  &[data-align="center"] {
-    top: 0;
-  }
+  bottom: 5rem;
 
   &[data-align="left"] {
-    bottom: 0;
+    top: 3rem;
   }
   overflow: hidden;
 }

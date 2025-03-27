@@ -104,7 +104,7 @@ body[data-theme="dark"] {
   top: 0;
   right: 0;
   width: auto;
-  height: 56px;
+  height: 100%;
   display: flex;
   align-items: center;
 
@@ -159,22 +159,13 @@ body[data-theme="dark"] {
     position: absolute;
 
     &[data-remote="true"] {
-      //bottom: 0;
       top: 0;
-      height: 40px;
+      height: 3rem; 
       z-index: 10;
-      padding-left: 22px;
-
-
 
       transition: all ease-in-out 0.5s;
       transform: translatex(0%);
-
-
     }
-
-
-
   }
 
   .settingBtn {
@@ -183,7 +174,6 @@ body[data-theme="dark"] {
     align-items: center;
     gap: 8xpx;
   }
-
 }
 
 .taskIcon {
@@ -256,12 +246,6 @@ body[data-theme="dark"] {
   transition: all ease-in-out 200ms;
 }
 
-@media (max-width: 680px) {
-  .tsbar {
-    width: 100%;
-    padding-left: 8px;
-  }
-}
 
 .tsIcon {
   position: relative;
