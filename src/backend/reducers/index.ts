@@ -163,6 +163,7 @@ export const {
 export const {
     fetch_user,
     fetch_wallet,
+    fetch_active_discounts,
     fetch_payment_history,
     fetch_subscription,
     fetch_subscription_metadata,

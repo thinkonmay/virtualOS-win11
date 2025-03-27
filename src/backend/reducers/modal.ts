@@ -70,6 +70,7 @@ type PopupData =
               accountName: string;
               amount: number;
               description: string;
+              discount_percent: number;
           };
       }
     | {

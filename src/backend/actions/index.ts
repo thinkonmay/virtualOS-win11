@@ -228,27 +228,47 @@ export const showConnect = () => {
 };
 
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
-    const email = store.getState().user.email;
+    const { email, discounts } = store.getState().user;
+    const discount_code = discounts.find(x => x.apply_for?.includes('deposit'))?.code;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,
         amount: +amount,
         provider: 'PAYOS',
-        currency: 'VND'
+        currency: 'VND',
+        discount_code
     });
 
     if (error)
         throw new Error('Error when create payment link' + error.message);
+    else if (data.length == 0)
+        throw new Error('Unable to create payment: transaction not found');
     else {
+        const [
+            {
+                id,
+                qrcode,
+                payment_url,
+                data: { data: subdata }
+            }
+        ] = data as any[];
+        const actual_amount = Number.parseInt(subdata?.amount);
+        const prediscount = +amount;
         appDispatch(
             popup_open({
                 type: 'paymentQR',
                 data: {
-                    id: data[0].id,
-                    code: data[0].qrcode,
-                    url: data[0].payment_url,
-                    accountName: data[0].data.data.accountName,
-                    amount: Number.parseInt(data[0].data.data.amount),
-                    description: data[0].data.data.description.split(' ')[1]
+                    id,
+                    code: qrcode,
+                    url: payment_url,
+                    accountName: subdata?.accountName,
+                    amount: actual_amount,
+                    description: subdata?.description?.split(' ')[1],
+                    discount_percent:
+                        actual_amount != prediscount
+                            ? Math.round(
+                                  (prediscount / actual_amount - 1) * 100
+                              )
+                            : undefined
                 }
             })
         );

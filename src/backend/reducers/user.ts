@@ -45,6 +45,16 @@ type Plan = {
     allow_payment: boolean;
 };
 
+type Discount = {
+    code: string;
+    start_at: string;
+    end_at: string;
+    discount_limit_per_user?: number;
+    discount_limit?: number;
+    multiply_rate?: number;
+    apply_for: string[];
+};
+
 interface Deposit {
     amount: number;
     created_at: string;
@@ -81,6 +91,7 @@ type Data = RecordModel & {
     subscription?: Subscription;
     bucket_name?: string;
     plans: Plan[];
+    discounts: Discount[];
     wallet: Wallet;
 };
 
@@ -93,11 +104,12 @@ const initialState: Data = {
     created: '',
     updated: '',
     plans: [],
+    discounts: [],
 
     wallet: {
+        money: 0,
         historyPayment: [],
         historyDeposit: [],
-        money: 0,
         currentOrders: [],
         depositStatus: [],
         planStatus: []
@@ -115,7 +127,20 @@ export const userAsync = {
             return result != undefined ? { ...result } : initialState;
         }
     ),
-
+    fetch_active_discounts: createAsyncThunk(
+        'fetch_active_discounts',
+        async (): Promise<Discount[]> => {
+            const { error, data } = await GLOBAL()
+                .from('discounts')
+                .select(
+                    'code,start_at,end_at,' +
+                        'discount_limit_per_user,discount_limit,' +
+                        'multiply_rate,apply_for'
+                );
+            if (error) throw error;
+            else return data as any[];
+        }
+    ),
     fetch_wallet: createAsyncThunk(
         'fetch_wallet',
         async (
@@ -415,6 +440,12 @@ export const userSlice = createSlice({
                 fetch: userAsync.fetch_wallet,
                 hander: (state, action) => {
                     state.wallet.money = action.payload.amount;
+                }
+            },
+            {
+                fetch: userAsync.fetch_active_discounts,
+                hander: (state, action) => {
+                    state.discounts = action.payload;
                 }
             },
             {

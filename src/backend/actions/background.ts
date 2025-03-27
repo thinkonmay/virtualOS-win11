@@ -11,6 +11,7 @@ import {
     change_framerate,
     check_worker,
     desk_remove,
+    fetch_active_discounts,
     fetch_domain,
     fetch_payment_history,
     fetch_store,
@@ -127,6 +128,9 @@ const fetchPayment = () =>
         appDispatch(get_deposit_status())
     ]);
 
+const fetchDiscounts = async () => {
+    await appDispatch(fetch_active_discounts());
+};
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
 };
@@ -253,6 +257,7 @@ export const preload = async (update_ui?: boolean) => {
         await fetchUser();
         await Promise.all([
             fetchSubscription(),
+            fetchDiscounts(),
             loadSettings(),
             fetchPayment(),
             startAnalytics(),

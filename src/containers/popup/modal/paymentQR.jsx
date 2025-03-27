@@ -13,7 +13,7 @@ import {
 import { Contents } from '../../../backend/reducers/locales';
 
 export function paymentQR({
-    data: { id, code, url, accountName, amount, description }
+    data: { id, code, url, accountName, amount, description, discount_percent }
 }) {
     const t = useAppSelector((state) => state.globals.translation);
 
@@ -65,16 +65,20 @@ export function paymentQR({
             <div className="flex gap-3 justify-center mt-1 mb-2">
                 {t[Contents.PAYMENT_ACCOUNT_NAME]} {accountName}
             </div>
+            <div className="flex gap-3 justify-center mt-1 mb-2">
+                {t[Contents.PAYMENT_AMOUNT]} {amount} VND
+            </div>
             <div className="flex gap-3 justify-center mt-1 mb-2 text-xl">
                 {t[Contents.PAYMENT_DESCRIPTION]}: "{description}"
             </div>
             <div className="flex gap-3 justify-center mt-1 mb-2 font-bold text-xl">
                 ({t[Contents.PAYMENT_REQUIRE]})
             </div>
-            <div className="flex gap-3 justify-center mt-1 mb-2">
-                {t[Contents.PAYMENT_AMOUNT]} {amount} VND
-            </div>
-
+            {discount_percent != undefined ? (
+                <div className="flex gap-3 justify-center mt-1 mb-2">
+                    Bạn được khuyến mãi {discount_percent}% giá trị lần nạp
+                </div>
+            ) : null}
             <div className="flex gap-3 justify-center mt-1 mb-2">
                 <button
                     style={{ padding: '6px 14px' }}
