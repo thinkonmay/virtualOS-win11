@@ -53,12 +53,12 @@ export const RefundPage = () => {
                         <ul>
                             <li>
                                 Không quá{' '}
-                                <span className="font-bold">5 ngày</span> kể từ
+                                <span className="font-bold">2 ngày</span> kể từ
                                 thời điểm thanh toán
                             </li>
                             <li>
                                 Không quá{' '}
-                                <span className="font-bold">12 giờ</span> sử
+                                <span className="font-bold">3 giờ</span> sử
                                 dụng
                             </li>
                         </ul>
