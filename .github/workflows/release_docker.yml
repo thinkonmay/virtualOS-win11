@@ -18,7 +18,7 @@ jobs:
       token: ${{ secrets.PAT_TOKEN }}
    - name: Add .env file
      run: |
-       echo "VITE_SUPABASE_GLOBAL_URL=https://play.thinkmay.net" > .env
+       echo "VITE_SUPABASE_GLOBAL_URL=https://play.3.thinkmay.net" > .env
        echo "VITE_SUPABASE_LOCAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
        echo "VITE_SUPABASE_GLOBAL_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
