@@ -125,7 +125,7 @@ const updateUI = async () => {
         popup_open({
             type: 'redirectDomain',
             data: {
-                domain: 'win11.thinkmay.net',
+                domain: 'v4.thinkmay.net',
                 from: 'play.thinkmay.net'
             }
         })

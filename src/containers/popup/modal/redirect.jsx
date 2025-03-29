@@ -24,7 +24,7 @@ export function redirectDomain({ data: { domain, from } }) {
                 </button>
                 <a
                     style={{ padding: '6px 14px' }}
-                    href={`https://${domain}`}
+                    href={`https://win11.thinkmay.net/?server=${domain}`}
                     target="_self"
                     className="cursor-pointer  text-base font-medium instbtn rounded-md"
                 >
