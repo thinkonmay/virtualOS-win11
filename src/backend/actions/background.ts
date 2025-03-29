@@ -121,62 +121,13 @@ const fetchPlans = async () => {
 };
 
 const updateUI = async () => {
-    //store
-    //    .getState()
-    //    .apps.apps.filter((x) => !x.hide)
-    //    .forEach((x) => appDispatch(app_close(x.id)));
-    appDispatch(show_tutorial('close'));
-
-    const subscription = store.getState().user.subscription as PaymentStatus;
-    let isNewUser = false;
-    const { status } = subscription;
-    if (status == 'PAID' && !subscription.correct_domain) {
-        appDispatch(
-            popup_open({
-                type: 'redirectDomain',
-                data: {
-                    domain: subscription.cluster,
-                    from: origin
-                }
-            })
-        );
-    }
-
-    const rms = [];
-    const ops = [];
-    if (status == 'PENDING') ops.push('payment');
-    else if (status == 'PAID') {
-        ops.push('connectPc');
-        if (subscription?.usage?.isNewUser) {
-            ops.push('store');
+    popup_open({
+        type: 'redirectDomain',
+        data: {
+            domain: 'win11.thinkmay.net',
+            from: 'play.thinkmay.net'
         }
-        const { ended_at } = subscription;
-        if (
-            ended_at != null &&
-            new Date(ended_at).getTime() - Date.now() < 3 * 24 * 3600 * 1000
-        ) {
-            appDispatch(
-                popup_open({
-                    type: 'extendService',
-                    data: {
-                        type: 'date_limit',
-                        to: formatDate(ended_at)
-                    }
-                })
-            );
-        }
-    }
-    if (
-        localStorage.getItem(localStorageKey.shownTutorial) != 'true' &&
-        !localStorage.getItem(localStorageKey.shownPaidUserTutorial) &&
-        status != 'PAID'
-    ) {
-        appDispatch(show_tutorial('NewTutorial'));
-        localStorage.setItem(localStorageKey.shownTutorial, 'true');
-    }
-
-    ops.forEach((x) => appDispatch(app_toggle(x)));
-    rms.forEach((x) => appDispatch(desk_remove(x)));
+    })
 };
 
 export const preload = async (update_ui?: boolean) => {

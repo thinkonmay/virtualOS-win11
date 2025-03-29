@@ -11,9 +11,7 @@ export function redirectDomain({ data: { domain, from } }) {
 
             <div className="justify-center">
                 <p className="mt-[8px] justify-center">
-                    Bạn đã đăng kí tại {domain}
-                    <br />
-                    Bạn đang ở {from}
+                    Server {from} sẽ được chuyển hoàn toàn về v4.thinkmay.net
                 </p>
             </div>
             <div className="flex gap-3 justify-center mt-3 mb-2">
