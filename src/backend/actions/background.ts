@@ -121,13 +121,15 @@ const fetchPlans = async () => {
 };
 
 const updateUI = async () => {
-    popup_open({
-        type: 'redirectDomain',
-        data: {
-            domain: 'win11.thinkmay.net',
-            from: 'play.thinkmay.net'
-        }
-    })
+    appDispatch(
+        popup_open({
+            type: 'redirectDomain',
+            data: {
+                domain: 'win11.thinkmay.net',
+                from: 'play.thinkmay.net'
+            }
+        })
+    );
 };
 
 export const preload = async (update_ui?: boolean) => {
