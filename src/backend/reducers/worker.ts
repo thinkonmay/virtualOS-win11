@@ -112,7 +112,8 @@ export const workerAsync = {
                 session = getRemoteSession(resp);
             }
 
-            const result = ParseRequest(currentAddress, session, {
+            // TODO: migrate on play.2
+            const result = ParseRequest(currentAddress == 'v4.thinkmay.net' ? 'v4.thinkmay.net:444' : currentAddress, session, {
                 high_mtu: HighMTU,
                 high_queue: HighQueue
             });
