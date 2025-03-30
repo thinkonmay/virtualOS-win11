@@ -219,7 +219,7 @@ export const userAsync = {
                 (x) => x.pool == 'user_data'
             )?.node;
             const sufficient =
-                plans?.find((x) => x.name == next_plan).amount <= wallet?.money;
+                plans?.find((x) => x.name == next_plan)?.amount <= wallet?.money;
 
             // TODO : fetch template
             const volume = (
