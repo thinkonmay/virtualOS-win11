@@ -13,13 +13,19 @@ export const RefundPage = () => {
         Date.now() - new Date(subscription?.ended_at).getTime() >
         5 * 24 * 3600 * 1000;
     const out_of_time = subscription?.total_usage > 2;
-    const another_pending_req = useAppSelector(state => state.user.wallet.refundRequest?.[0])
+    const another_pending_req = useAppSelector(
+        (state) => state.user.wallet.refundRequest?.[0]
+    );
 
     const refund = async () => {
         await appDispatch(refund_request());
     };
 
-    const applicable = subscription != undefined && !out_of_day && !out_of_time && another_pending_req == undefined;
+    const applicable =
+        subscription != undefined &&
+        !out_of_day &&
+        !out_of_time &&
+        another_pending_req == undefined;
     return (
         <div className="refundPage">
             <div className="title">
@@ -58,8 +64,7 @@ export const RefundPage = () => {
                             </li>
                             <li>
                                 Không quá{' '}
-                                <span className="font-bold">3 giờ</span> sử
-                                dụng
+                                <span className="font-bold">3 giờ</span> sử dụng
                             </li>
                         </ul>
                     </div>
@@ -68,9 +73,17 @@ export const RefundPage = () => {
                 <h3 className="mt-8">Quy trình yêu cầu hoàn tiền:</h3>
                 <ul className="list-decimal">
                     <li> Click vào yêu cầu hoàn tiền tại đây</li>
-                    <li> Mô tả lý do yêu cầu hoàn tiền, lỗi gặp phải (nếu có) với đội hỗ trợ</li>
-                    <li> Đội hỗ trợ kĩ thuật sẽ cùng khách hàng khắc phục vấn đề </li>
-                    <li> Yêu cầu hoàn tiền sẽ được xử lý trong vòng 1 ngày làm việc.</li>
+                    <li>
+                        Mô tả lý do yêu cầu hoàn tiền, lỗi gặp phải (nếu có) với
+                        đội hỗ trợ
+                    </li>
+                    <li>
+                        Đội hỗ trợ kĩ thuật sẽ cùng khách hàng khắc phục vấn đề{' '}
+                    </li>
+                    <li>
+                        Yêu cầu hoàn tiền sẽ được xử lý trong vòng 1 ngày làm
+                        việc.
+                    </li>
                 </ul>
 
                 {!applicable && subscription != undefined ? (
@@ -101,7 +114,9 @@ export const RefundPage = () => {
                                 <li>
                                     {`Bạn đang có một yêu cầu hoàn tiền khác lúc `}
                                     <span className="font-bold">
-                                        {new Date(another_pending_req?.created_at).toLocaleString()} 
+                                        {new Date(
+                                            another_pending_req?.created_at
+                                        ).toLocaleString()}
                                     </span>
                                 </li>
                             ) : null}

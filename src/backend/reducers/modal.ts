@@ -56,6 +56,14 @@ type PopupData =
           };
       }
     | {
+          type: 'discount';
+          data: {
+              from: string;
+              to: string;
+              percentage: number;
+          };
+      }
+    | {
           type: 'shareLink';
           data: {
               link: string;
@@ -141,7 +149,12 @@ export const modalSlice = createSlice({
             state.data_stack = [...state.data_stack, action.payload];
         },
         popup_close: (state, action: PayloadAction<boolean | undefined>) => {
-            let preferred = ['extendService', 'redirectDomain', 'maintain'];
+            let preferred = [
+                'extendService',
+                'redirectDomain',
+                'discount',
+                'maintain'
+            ];
             if (action.payload) preferred = [];
 
             state.data_stack = state.data_stack.filter((x) =>

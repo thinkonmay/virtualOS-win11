@@ -1,12 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import {
-    app_close,
-    app_full,
-    appDispatch,
-    RootState,
-    show_chat
-} from '.';
+import { app_close, app_full, appDispatch, RootState, show_chat } from '.';
 import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
@@ -219,7 +213,8 @@ export const userAsync = {
                 (x) => x.pool == 'user_data'
             )?.node;
             const sufficient =
-                plans?.find((x) => x.name == next_plan)?.amount <= wallet?.money;
+                plans?.find((x) => x.name == next_plan)?.amount <=
+                wallet?.money;
 
             // TODO : fetch template
             const volume = (
@@ -406,7 +401,7 @@ export const userAsync = {
 
             if (err) throw new Error(err.message);
             appDispatch(show_chat());
-            await appDispatch(userAsync.fetch_refund_request())
+            await appDispatch(userAsync.fetch_refund_request());
         }
     ),
     change_template: createAsyncThunk(
