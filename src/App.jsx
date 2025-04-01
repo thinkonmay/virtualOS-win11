@@ -221,7 +221,7 @@ function App() {
                         </>
                     )}
                 </div>
-                <LiveChatWidget license="19084863" visibility="maximized" />
+                <LiveChatWidget license="19109345" visibility="maximized" />
             </ErrorBoundary>
         </div>
     );
