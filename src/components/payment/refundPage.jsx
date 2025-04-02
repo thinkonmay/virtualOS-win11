@@ -27,7 +27,7 @@ export const RefundPage = () => {
     return (
         <div className="refundPage">
             <div className="title">
-                <h2 className="title">Chính sách hoàn tiền</h2>
+                <h2 className="title">Chính sách hoàn lại 80% tiền</h2>
                 <p className="m d:max-w-[80% text-xs lg:max-w-[60%] lg:text-base">
                     * Không áp dụng cho các trường hợp người dùng vi phạm điều
                     khoản sử dụng dịch vụ

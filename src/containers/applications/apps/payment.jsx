@@ -395,7 +395,10 @@ function DomainSelection({ onChangeDomain, domain }) {
             const start = new Date();
             await fetch(`https://${x.domain}/`, { method: 'POST' });
             return {
-                latency: x.domain == 'play.2.thinkmay.net' ? 10 : new Date().getTime() - start,
+                latency:
+                    x.domain == 'play.2.thinkmay.net'
+                        ? 10
+                        : new Date().getTime() - start,
                 ...x
             };
         } catch {
