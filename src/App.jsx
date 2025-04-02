@@ -4,8 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
 import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
-import { isMobile } from '../src-tauri/core';
-import { PreloadBackground } from './backend/actions/background';
+import { originalurl, PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 
 import {
@@ -63,8 +62,7 @@ function App() {
 
     useEffect(() => {
         window.LiveChatWidget.call('minimize');
-        const url = new URL(window.location.href);
-        appDispatch(direct_access(url));
+        appDispatch(direct_access(originalurl));
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
             e = e || window.event;
@@ -72,7 +70,7 @@ function App() {
             return text;
         };
 
-        const domain = url.searchParams.get('server');
+        const domain = originalurl.searchParams.get('server');
         if (listDomain.includes(domain))
             window.open(`https://${domain}`, '_self');
         else if (v2_domain.includes(domain))

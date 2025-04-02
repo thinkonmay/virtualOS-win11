@@ -37,7 +37,7 @@ import {
 import { Contents } from '../reducers/locales/index.ts';
 import { formatError } from '../utils/formatErr.ts';
 
-const originalurl = new URL(window.location.href);
+export const originalurl = new URL(window.location.href);
 
 const loadSettings = async () => {
     let thm = localStorage.getItem('theme');

@@ -78,9 +78,7 @@ export const RefundPage = () => {
                     <li>
                         Đội hỗ trợ kĩ thuật sẽ cùng khách hàng khắc phục vấn đề{' '}
                     </li>
-                    <li>
-                        Gửi QR chuyển tiền & email của bạn vô Fanpage{' '}
-                    </li>
+                    <li>Gửi QR chuyển tiền & email của bạn vô Fanpage </li>
                     <li>
                         Yêu cầu hoàn tiền sẽ được xử lý trong vòng 1 ngày làm
                         việc.

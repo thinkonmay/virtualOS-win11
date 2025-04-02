@@ -25,6 +25,7 @@ import {
 } from '../../../src-tauri/singleton';
 import { showConnect } from '../actions';
 import { BuilderHelper } from './helper';
+import { originalurl } from '../actions/background';
 
 export type Metric = {
     receivefps: number[];
@@ -203,12 +204,11 @@ export const remoteAsync = {
             const video = new URL(info.videoUrl).searchParams.get('token');
             const data = new URL(info.dataUrl).searchParams.get('token');
             const host = new URL(info.dataUrl).host;
-            const url = new URL(window.location.href);
-            url.searchParams.set('audio', audio);
-            url.searchParams.set('video', video);
-            url.searchParams.set('data', data);
-            url.searchParams.set('host', host);
-            return url.toString();
+            originalurl.searchParams.set('audio', audio);
+            originalurl.searchParams.set('video', video);
+            originalurl.searchParams.set('data', data);
+            originalurl.searchParams.set('host', host);
+            return originalurl.toString();
         }
     ),
     cache_setting: createAsyncThunk(

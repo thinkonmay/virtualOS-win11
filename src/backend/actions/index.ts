@@ -24,8 +24,7 @@ import {
     worker_refresh
 } from '../reducers/index';
 import { Contents } from '../reducers/locales';
-import { PlanName } from '../utils/constant';
-import { preload } from './background';
+import { originalurl, preload } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -164,6 +163,8 @@ export const login = async (
     provider: 'google' | 'facebook' | 'discord',
     update_ui?: boolean
 ) => {
+    const accounts = await POCKETBASE().collection('users').getFullList();
+
     const w = window.open();
     await POCKETBASE()
         .collection('users')
@@ -178,6 +179,15 @@ export const login = async (
         .update(POCKETBASE().authStore.model.id, {
             emailVisibility: true
         });
+
+    if (accounts.length == 0)
+        await POCKETBASE()
+            .collection('users')
+            .update(POCKETBASE().authStore.model.id, {
+                metadata: {
+                    reference: originalurl.searchParams.get('ref')
+                }
+            });
 
     await preload(update_ui);
 };
