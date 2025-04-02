@@ -10,7 +10,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import DepositPage from '../../../components/payment/depositPage';
-import { TransactionHistoryPage } from '../../../components/payment/historyPage';
+import { HistoryPage } from '../../../components/payment/historyPage';
 import { RefundPage } from '../../../components/payment/refundPage';
 import { StoragePage } from '../../../components/payment/storagePage';
 import {
@@ -144,55 +144,57 @@ export const PaymentApp = () => {
                 size={wnapp.size}
                 name="Payment"
             />
-            <div className="windowScreen wrapperPayment">
-                <div className="navPayment text-left">
-                    <div
-                        className={page == 'sub' ? 'item subActive' : 'item'}
-                        onClick={() => handleChangePage('sub')}
-                    >
-                        Đăng kí
+            <LazyComponent show={!wnapp.hide}>
+                <div className="windowScreen wrapperPayment">
+                    <div className="navPayment text-left">
+                        <div
+                            className={
+                                page == 'sub' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('sub')}
+                        >
+                            Đăng kí
+                        </div>
+                        <div
+                            className={
+                                page == 'deposit' ? 'item subActive' : 'item'
+                            }
+                            onClick={() => handleChangePage('deposit')}
+                        >
+                            Ví thinkmay
+                        </div>
+                        <div
+                            className={
+                                page == 'storage'
+                                    ? 'item subActive'
+                                    : 'item text-gray-500'
+                            }
+                            onClick={() => handleChangePage('storage')}
+                        >
+                            Cấu hình
+                        </div>
+                        <div
+                            className={
+                                page == 'history'
+                                    ? 'item subActive'
+                                    : 'item text-gray-500'
+                            }
+                            onClick={() => handleChangePage('history')}
+                        >
+                            Lịch sử
+                        </div>
+                        <div
+                            className={
+                                page == 'refund'
+                                    ? 'item subActive'
+                                    : 'item text-gray-500'
+                            }
+                            onClick={() => handleChangePage('refund')}
+                        >
+                            Hoàn tiền
+                        </div>
                     </div>
-                    <div
-                        className={
-                            page == 'deposit' ? 'item subActive' : 'item'
-                        }
-                        onClick={() => handleChangePage('deposit')}
-                    >
-                        Ví thinkmay
-                    </div>
-                    <div
-                        className={
-                            page == 'storage'
-                                ? 'item subActive'
-                                : 'item text-gray-500'
-                        }
-                        onClick={() => handleChangePage('storage')}
-                    >
-                        Cấu hình
-                    </div>
-                    <div
-                        className={
-                            page == 'history'
-                                ? 'item subActive'
-                                : 'item text-gray-500'
-                        }
-                        onClick={() => handleChangePage('history')}
-                    >
-                        Lịch sử
-                    </div>
-                    <div
-                        className={
-                            page == 'refund'
-                                ? 'item subActive'
-                                : 'item text-gray-500'
-                        }
-                        onClick={() => handleChangePage('refund')}
-                    >
-                        Hoàn tiền
-                    </div>
-                </div>
-                <LazyComponent show={!wnapp.hide}>
-                    <div className="paymentContent win11Scroll">
+                    <div className="win11Scroll w-full">
                         {page == 'sub' ? (
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
@@ -200,13 +202,13 @@ export const PaymentApp = () => {
                         ) : page == 'deposit' ? (
                             <DepositPage value={val} />
                         ) : page == 'history' ? (
-                            <TransactionHistoryPage />
+                            <HistoryPage />
                         ) : (
                             <StoragePage />
                         )}
                     </div>
-                </LazyComponent>
-            </div>
+                </div>
+            </LazyComponent>
         </div>
     );
 };
@@ -395,7 +397,10 @@ function DomainSelection({ onChangeDomain, domain }) {
             const start = new Date();
             await fetch(`https://${x.domain}/`, { method: 'POST' });
             return {
-                latency: x.domain == 'play.2.thinkmay.net' ? 10 : new Date().getTime() - start,
+                latency:
+                    x.domain == 'play.2.thinkmay.net'
+                        ? 10
+                        : new Date().getTime() - start,
                 ...x
             };
         } catch {
@@ -418,18 +423,22 @@ function DomainSelection({ onChangeDomain, domain }) {
     const chooseDomain = (e) => onChangeDomain(e.target.value);
 
     return (
-        <div className="h-8 ">
-            <select
-                className="bg-gray-400 rounded-md w-full h-full"
-                value={domain}
-                onChange={chooseDomain}
+        <div class="block w-full content-center">
+            <label
+                for="countries"
+                class="block text-center mb-2 text-sm font-medium text-gray-600 w-full"
             >
-                {location.map((x, index) => (
-                    <option key={index} value={x.domain}>
-                        {x.domain.replaceAll('.thinkmay.net', '')} {x.latency}ms{' '}
-                        {x.free}slot
-                    </option>
-                ))}
+                Server
+            </label>
+            <select
+                id="countries"
+                class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-50 py-2.5 px-4 focus:outline-none justify-self-center"
+            >
+                <option selected>Choose a country</option>
+                <option value="US">United States</option>
+                <option value="CA">Canada</option>
+                <option value="FR">France</option>
+                <option value="DE">Germany</option>
             </select>
         </div>
     );
@@ -452,16 +461,333 @@ const SubscriptionPage = () => {
         return sub;
     });
     return (
-        <div className="subscriptionPage md:!justify-evenly px-0 ">
-            {listSubfiler.map(
-                (sub, index) =>
-                    sub && (
-                        <SubscriptionCard
-                            key={index}
-                            subInfo={sub}
-                        ></SubscriptionCard>
-                    )
-            )}
-        </div>
+        // <div className="subscriptionPage md:!justify-evenly px-0 ">
+        //     {listSubfiler.map(
+        //         (sub, index) =>
+        //             sub && (
+        //                 <SubscriptionCard
+        //                     key={index}
+        //                     subInfo={sub}
+        //                 ></SubscriptionCard>
+        //             )
+        //     )}
+        // </div>
+        <section class="py-24 ">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <h2 class="font-manrope text-5xl text-center font-bold text-white mb-4">
+                        Choose your plan{' '}
+                    </h2>
+                    <p class="text-gray-500 text-center leading-6 mb-9">
+                        7 Days free trial. No credit card required.
+                    </p>
+                    <DomainSelection onChangeDomain={() => {}} domain={''} />
+                </div>
+                <div class="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-8 lg:space-y-0 lg:items-center">
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-gray-50 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-100">
+                        <h3 class="font-manrope text-2xl font-bold mb-3">
+                            Free
+                        </h3>
+                        <div class="flex items-center mb-6">
+                            <span class="font-manrope mr-2 text-6xl font-semibold">
+                                $0
+                            </span>
+                            <span class="text-xl text-gray-500 ">/ month</span>
+                        </div>
+                        <ul class="mb-12 space-y-6 text-left text-lg text-gray-500">
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>2 auto tracking</span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>7 Day transaction clearing </span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>24/7 Customer support </span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>All widget access</span>
+                            </li>
+                        </ul>
+                        <a
+                            href="javascript:;"
+                            class="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-blue-700"
+                        >
+                            Purchase Plan
+                        </a>
+                    </div>
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-blue-200 transition-all duration-500 hover:bg-blue-100 ">
+                        <div class="uppercase bg-gradient-to-r from-indigo-600 to-violet-600 rounded-t-2xl p-3 text-center text-white">
+                            MOST POPULAR
+                        </div>
+                        <div class="p-6 xl:py-9 xl:px-12">
+                            <h3 class="font-manrope text-2xl font-bold mb-3">
+                                Advanced
+                            </h3>
+                            <div class="flex items-center mb-6">
+                                <span class="font-manrope mr-2 text-6xl font-semibold text-blue-600">
+                                    $150
+                                </span>
+                                <span class="text-xl text-gray-500 ">
+                                    / month
+                                </span>
+                            </div>
+                            <ul class="mb-12 space-y-6 text-left text-lg ">
+                                <li class="flex items-center space-x-4">
+                                    <svg
+                                        class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                        viewBox="0 0 30 30"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                    <span>AI Advisor</span>
+                                </li>
+                                <li class="flex items-center space-x-4">
+                                    <svg
+                                        class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                        viewBox="0 0 30 30"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                    <span>Unlimited auto tracking</span>
+                                </li>
+                                <li class="flex items-center space-x-4">
+                                    <svg
+                                        class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                        viewBox="0 0 30 30"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                    <span>1 Day transaction clearing </span>
+                                </li>
+                                <li class="flex items-center space-x-4">
+                                    <svg
+                                        class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                        viewBox="0 0 30 30"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                    <span>Priority customer support</span>
+                                </li>
+                                <li class="flex items-center space-x-4">
+                                    <svg
+                                        class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                        viewBox="0 0 30 30"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                    <span>All Widget Access</span>
+                                </li>
+                            </ul>
+                            <a
+                                href="javascript:;"
+                                class="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-blue-700"
+                            >
+                                Purchase Plan
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-gray-50 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-100">
+                        <h3 class="font-manrope text-2xl font-bold mb-3">
+                            Team
+                        </h3>
+                        <div class="flex items-center mb-6">
+                            <span class="font-manrope mr-2 text-6xl font-semibold">
+                                $180
+                            </span>
+                            <span class="text-xl text-gray-500 ">/ month</span>
+                        </div>
+                        <ul class="mb-12 space-y-6 text-left text-lg text-gray-500">
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>AI Advisor</span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>Unlimited auto tracking </span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>1 Day transaction clearing </span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>Priority customer support</span>
+                            </li>
+                            <li class="flex items-center space-x-4">
+                                <svg
+                                    class="flex-shrink-0 w-6 h-6 text-blue-600"
+                                    viewBox="0 0 30 30"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <span>All Widget Access</span>
+                            </li>
+                        </ul>
+                        <a
+                            href="javascript:;"
+                            class="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-blue-700"
+                        >
+                            Purchase Plan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 };
