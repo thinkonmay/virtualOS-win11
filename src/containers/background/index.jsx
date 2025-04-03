@@ -6,7 +6,7 @@ import Battery from '../../components/shared/Battery';
 import { Icon, Image } from '../../components/shared/general';
 import './back.scss';
 import './getstarted.scss';
-import { preload } from '../../backend/actions/background';
+import { clickHandler, login } from '../../backend/actions';
 
 export const Background = () => {
     const src = useAppSelector((state) => state.wallpaper.src);
@@ -54,41 +54,8 @@ export const LockScreen = ({ loading }) => {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
+            clickHandler(provider, update_ui).then((e) => {});
 
-            POCKETBASE()
-                .collection('users')
-                .authWithOAuth2({
-                    provider,
-                    createData: {
-                        allowEmailNotifications: true
-                    }
-                })
-                .then(async () => {
-                    const accounts = await POCKETBASE()
-                        .collection('users')
-                        .getFullList();
-
-                    await POCKETBASE()
-                        .collection('users')
-                        .update(POCKETBASE().authStore.model.id, {
-                            emailVisibility: true
-                        });
-
-                    if (accounts.length == 0)
-                        await POCKETBASE()
-                            .collection('users')
-                            .update(POCKETBASE().authStore.model.id, {
-                                metadata: {
-                                    reference:
-                                        originalurl.searchParams.get('ref')
-                                }
-                            });
-
-                    await preload(update_ui);
-                })
-                .catch((err) => {
-                    throw new Error('Failed to loign ' + err);
-                });
             loading(false);
         }
     }

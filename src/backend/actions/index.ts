@@ -178,6 +178,49 @@ export const login = (
             throw new Error('Failed to loign ' + err);
         });
 };
+export function clickHandler(
+    provider: 'google' | 'facebook' | 'discord',
+    update_ui?: boolean
+) {
+    window.oncontextmenu = (ev) => ev.preventDefault();
+
+    (async function () {
+        POCKETBASE()
+            .collection('users')
+            .authWithOAuth2({
+                provider: provider,
+                urlCallback: (url) => {
+                    window.location.href = url;
+                }
+            })
+            .then(async (result) => {
+                const accounts = await POCKETBASE()
+                    .collection('users')
+                    .getFullList();
+
+                await POCKETBASE()
+                    .collection('users')
+                    .update(POCKETBASE().authStore.model.id, {
+                        emailVisibility: true
+                    });
+
+                if (accounts.length == 0)
+                    await POCKETBASE()
+                        .collection('users')
+                        .update(POCKETBASE().authStore.model.id, {
+                            metadata: {
+                                reference: originalurl.searchParams.get('ref')
+                            }
+                        });
+
+                await preload(update_ui);
+            })
+            .catch((err) => {
+                throw new Error('Error:', err);
+            });
+    })();
+    return false;
+}
 export const remotelogin = async (domain: string, email: string) => {
     const { data, error } = await GLOBAL().rpc('generate_account', {
         email,
