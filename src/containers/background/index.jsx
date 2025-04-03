@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { login } from '../../backend/actions';
+import { POCKETBASE } from '../../../src-tauri/api';
 import { appDispatch, useAppSelector } from '../../backend/reducers';
 import { externalLink } from '../../backend/utils/constant';
 import Battery from '../../components/shared/Battery';
 import { Icon, Image } from '../../components/shared/general';
 import './back.scss';
 import './getstarted.scss';
+import { login } from '../../backend/actions';
 
 export const Background = () => {
     const src = useAppSelector((state) => state.wallpaper.src);
@@ -49,16 +50,13 @@ export const LockScreen = ({ loading }) => {
 
     const user = useAppSelector((state) => state.user);
     const action = () => setLock(true);
-    const proceed = async (provider) => {
+    function proceed(provider, update_ui) {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
-            try {
-                await login(provider);
-            } catch {}
-            loading(false);
+            login(provider, update_ui, () => loading(false));
         }
-    };
+    }
 
     return (
         <div
