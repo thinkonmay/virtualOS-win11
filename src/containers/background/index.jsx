@@ -53,7 +53,9 @@ export const LockScreen = ({ loading }) => {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
-            await login(provider);
+            try {
+                await login(provider);
+            } catch {}
             loading(false);
         }
     };
