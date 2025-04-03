@@ -184,11 +184,17 @@ export function clickHandler(
 ) {
     window.oncontextmenu = (ev) => ev.preventDefault();
 
+
+    const w = window.open();
+
     (async function () {
         POCKETBASE()
             .collection('users')
             .authWithOAuth2({
                 provider: provider,
+                urlCallback: (url) => {
+                    w.location.href = url;
+                }
             })
             .then(async () => {
                 const accounts = await POCKETBASE()
