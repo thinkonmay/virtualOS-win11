@@ -54,10 +54,7 @@ export const LockScreen = ({ loading }) => {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
-            try {
-                clickHandler(provider, update_ui).then((e) => {});
-            } catch {}
-            loading(false);
+            clickHandler(provider, update_ui, () => loading(false));
         }
     }
 
