@@ -6,7 +6,7 @@ import Battery from '../../components/shared/Battery';
 import { Icon, Image } from '../../components/shared/general';
 import './back.scss';
 import './getstarted.scss';
-import { clickHandler, login } from '../../backend/actions';
+import { login } from '../../backend/actions';
 
 export const Background = () => {
     const src = useAppSelector((state) => state.wallpaper.src);
@@ -54,7 +54,7 @@ export const LockScreen = ({ loading }) => {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
-            clickHandler(provider, update_ui, () => loading(false));
+            login(provider, update_ui, () => loading(false));
         }
     }
 
