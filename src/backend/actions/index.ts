@@ -177,11 +177,18 @@ export const login = (
         })
         .then(() => {
             preload(update_ui);
+            const isNewUser =
+                (new Date().getTime() -
+                    new Date(POCKETBASE().authStore.model.created).getTime()) /
+                    60000 <
+                5; //
             POCKETBASE()
                 .collection('users')
                 .update(POCKETBASE().authStore.model.id, {
                     metadata: {
-                        reference: originalurl.searchParams.get('ref')
+                        reference: isNewUser
+                            ? originalurl.searchParams.get('ref')
+                            : POCKETBASE().authStore.model.metadata.reference
                     }
                 });
         })
