@@ -50,16 +50,16 @@ export const LockScreen = ({ loading }) => {
 
     const user = useAppSelector((state) => state.user);
     const action = () => setLock(true);
-    const proceed = async (provider) => {
+    const proceed = (provider) => {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
-
-            const accounts = await POCKETBASE()
-                .collection('users')
-                .getFullList();
             try {
                 login(provider).then(async () => {
+                    const accounts = await POCKETBASE()
+                        .collection('users')
+                        .getFullList();
+
                     await POCKETBASE()
                         .collection('users')
                         .update(POCKETBASE().authStore.model.id, {
