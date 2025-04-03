@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { POCKETBASE } from '../../../src-tauri/api';
-import { login } from '../../backend/actions';
 import { appDispatch, useAppSelector } from '../../backend/reducers';
 import { externalLink } from '../../backend/utils/constant';
 import Battery from '../../components/shared/Battery';
 import { Icon, Image } from '../../components/shared/general';
 import './back.scss';
 import './getstarted.scss';
+import { preload } from '../../backend/actions/background';
 
 export const Background = () => {
     const src = useAppSelector((state) => state.wallpaper.src);
@@ -50,12 +50,20 @@ export const LockScreen = ({ loading }) => {
 
     const user = useAppSelector((state) => state.user);
     const action = () => setLock(true);
-    const proceed = (provider) => {
+    function proceed(provider, update_ui) {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
-            try {
-                login(provider).then(async () => {
+
+            POCKETBASE()
+                .collection('users')
+                .authWithOAuth2({
+                    provider,
+                    createData: {
+                        allowEmailNotifications: true
+                    }
+                })
+                .then(async () => {
                     const accounts = await POCKETBASE()
                         .collection('users')
                         .getFullList();
@@ -75,11 +83,15 @@ export const LockScreen = ({ loading }) => {
                                         originalurl.searchParams.get('ref')
                                 }
                             });
+
+                    await preload(update_ui);
+                })
+                .catch((err) => {
+                    throw new Error('Failed to loign ' + err);
                 });
-            } catch {}
             loading(false);
         }
-    };
+    }
 
     return (
         <div
