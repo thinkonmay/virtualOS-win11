@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { POCKETBASE } from '../../../src-tauri/api';
 import { login } from '../../backend/actions';
 import { appDispatch, useAppSelector } from '../../backend/reducers';
 import { externalLink } from '../../backend/utils/constant';
@@ -53,8 +54,28 @@ export const LockScreen = ({ loading }) => {
         if (user.id != 'unknown') return setUnLock(true);
         else {
             loading(true);
+
+            const accounts = await POCKETBASE()
+                .collection('users')
+                .getFullList();
             try {
-                await login(provider);
+                login(provider).then(async () => {
+                    await POCKETBASE()
+                        .collection('users')
+                        .update(POCKETBASE().authStore.model.id, {
+                            emailVisibility: true
+                        });
+
+                    if (accounts.length == 0)
+                        await POCKETBASE()
+                            .collection('users')
+                            .update(POCKETBASE().authStore.model.id, {
+                                metadata: {
+                                    reference:
+                                        originalurl.searchParams.get('ref')
+                                }
+                            });
+                });
             } catch {}
             loading(false);
         }
