@@ -95,13 +95,13 @@ export const HistoryPage = () => {
     };
 
     return (
-        <section class="py-24 relative justify-self-center">
+        <section class="py-24 relative justify-self-center text-white">
             <div class="w-full  px-4 md:px-5 lg:px-5 mx-auto">
                 <div class="w-full flex-col justify-start items-start gap-12 inline-flex">
                     <div class="w-full justify-end items-start gap-8 inline-flex">
                         <div class="w-full flex-col justify-start items-start gap-8 inline-flex">
                             <div class="w-full p-8 bg-gray-600 rounded-xl flex-col justify-start items-start gap-5 flex">
-                                <h2 class="w-full text-gray-900 text-2xl font-semibold font-manrope leading-9 pb-5 border-b border-gray-200">
+                                <h2 class="w-full  text-2xl font-semibold font-manrope leading-9 pb-5 border-b border-gray-200">
                                     Order Items
                                 </h2>
                                 <div class="w-full flex-col justify-start items-start gap-5 flex pb-5 border-b border-gray-200">
@@ -109,11 +109,12 @@ export const HistoryPage = () => {
                                         <div class="md:col-span-8 col-span-12 w-full justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
                                             <img
                                                 class="rounded-md object-cover"
-                                                src="https://pagedone.io/asset/uploads/1718189222.png"
+                                                src="logo.png"
+                                                height='100rem'
                                                 alt="Pure Cotton T-Shirt image"
                                             />
                                             <div class="w-full flex-col justify-start md:items-start items-center gap-3 inline-flex">
-                                                <h4 class="text-gray-900 text-xl font-medium leading-8">
+                                                <h4 class=" text-xl font-medium leading-8">
                                                     Pure Cotton Regular Fit
                                                     T-Shirt
                                                 </h4>
@@ -131,7 +132,7 @@ export const HistoryPage = () => {
                                             <h4 class="text-gray-500 text-xl font-semibold leading-8">
                                                 $40 x 2
                                             </h4>
-                                            <h4 class="text-gray-900 text-xl font-semibold leading-8">
+                                            <h4 class=" text-xl font-semibold leading-8">
                                                 $80
                                             </h4>
                                         </div>
@@ -140,11 +141,12 @@ export const HistoryPage = () => {
                                         <div class="md:col-span-8 col-span-12 w-full justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
                                             <img
                                                 class="rounded-md object-cover"
-                                                src="https://pagedone.io/asset/uploads/1718189265.png"
+                                                src="logo.png"
+                                                height='100rem'
                                                 alt="Men Stretchable Jeans image"
                                             />
                                             <div class="w-full flex-col justify-start md:items-start items-center gap-3 inline-flex">
-                                                <h4 class="text-gray-900 text-xl font-medium leading-8">
+                                                <h4 class=" text-xl font-medium leading-8">
                                                     Men Skinny Fit Stretchable
                                                     Jeans
                                                 </h4>
@@ -162,7 +164,7 @@ export const HistoryPage = () => {
                                             <h4 class="text-gray-500 text-xl font-semibold leading-8">
                                                 $52 x 1
                                             </h4>
-                                            <h4 class="text-gray-900 text-xl font-semibold leading-8">
+                                            <h4 class=" text-xl font-semibold leading-8">
                                                 $52
                                             </h4>
                                         </div>
@@ -171,11 +173,12 @@ export const HistoryPage = () => {
                                         <div class="md:col-span-8 col-span-12 justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
                                             <img
                                                 class="rounded-md object-cover"
-                                                src="https://pagedone.io/asset/uploads/1718189276.png"
+                                                src="logo.png"
+                                                height='100rem'
                                                 alt="Men Cotton Casual Shirt image"
                                             />
                                             <div class="flex-col justify-start md:items-start items-center gap-3 inline-flex">
-                                                <h4 class="text-gray-900 text-xl font-medium leading-8">
+                                                <h4 class=" text-xl font-medium leading-8">
                                                     Men Checked Cotton Casual
                                                     Shirt
                                                 </h4>
@@ -193,7 +196,7 @@ export const HistoryPage = () => {
                                             <h4 class="text-gray-500 text-xl font-semibold leading-8">
                                                 $22 x 1
                                             </h4>
-                                            <h4 class="text-gray-900 text-xl font-semibold leading-8">
+                                            <h4 class=" text-xl font-semibold leading-8">
                                                 $22
                                             </h4>
                                         </div>
@@ -202,11 +205,12 @@ export const HistoryPage = () => {
                                         <div class="md:col-span-8 col-span-12 justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
                                             <img
                                                 class="rounded-md object-cover"
-                                                src="https://pagedone.io/asset/uploads/1718189288.png"
+                                                src="logo.png"
+                                                height='100rem'
                                                 alt="Men Colourblocked PU Sneakers image"
                                             />
                                             <div class="flex-col justify-start md:items-start items-center gap-3 inline-flex">
-                                                <h4 class="text-gray-900 text-xl font-medium leading-8">
+                                                <h4 class=" text-xl font-medium leading-8">
                                                     Men Colourblocked PU
                                                     Sneakers
                                                 </h4>
@@ -224,7 +228,7 @@ export const HistoryPage = () => {
                                             <h4 class="text-gray-500 text-xl font-semibold leading-8">
                                                 $56 x 1
                                             </h4>
-                                            <h4 class="text-gray-900 text-xl font-semibold leading-8">
+                                            <h4 class=" text-xl font-semibold leading-8">
                                                 $56
                                             </h4>
                                         </div>
@@ -258,10 +262,10 @@ export const HistoryPage = () => {
                                         </div>
                                     </div>
                                     <div class="w-full justify-between items-start gap-6 inline-flex">
-                                        <h5 class="text-gray-900 text-lg font-semibold leading-relaxed">
+                                        <h5 class=" text-lg font-semibold leading-relaxed">
                                             Total
                                         </h5>
-                                        <h5 class="text-right text-gray-900 text-lg font-semibold leading-relaxed">
+                                        <h5 class="text-right  text-lg font-semibold leading-relaxed">
                                             $242.00
                                         </h5>
                                     </div>
