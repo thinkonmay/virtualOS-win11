@@ -165,31 +165,35 @@ export const login = async (
 ) => {
     const accounts = await POCKETBASE().collection('users').getFullList();
 
-    const w = window.open();
-    await POCKETBASE()
+    POCKETBASE()
         .collection('users')
         .authWithOAuth2({
             provider,
-            urlCallback: (url) => {
-                w.location.href = url;
+            createData: {
+                allowEmailNotifications: true
             }
-        });
-    await POCKETBASE()
-        .collection('users')
-        .update(POCKETBASE().authStore.model.id, {
-            emailVisibility: true
-        });
+        })
+        .then(async () => {
+            await POCKETBASE()
+                .collection('users')
+                .update(POCKETBASE().authStore.model.id, {
+                    emailVisibility: true
+                });
 
-    if (accounts.length == 0)
-        await POCKETBASE()
-            .collection('users')
-            .update(POCKETBASE().authStore.model.id, {
-                metadata: {
-                    reference: originalurl.searchParams.get('ref')
-                }
-            });
+            if (accounts.length == 0)
+                await POCKETBASE()
+                    .collection('users')
+                    .update(POCKETBASE().authStore.model.id, {
+                        metadata: {
+                            reference: originalurl.searchParams.get('ref')
+                        }
+                    });
+            await preload(update_ui);
+        })
 
-    await preload(update_ui);
+        .catch((err) => {
+            throw new Error('Failed to loign ' + err);
+        });
 };
 export const remotelogin = async (domain: string, email: string) => {
     const { data, error } = await GLOBAL().rpc('generate_account', {
