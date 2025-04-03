@@ -189,11 +189,8 @@ export function clickHandler(
             .collection('users')
             .authWithOAuth2({
                 provider: provider,
-                urlCallback: (url) => {
-                    window.location.href = url;
-                }
             })
-            .then(async (result) => {
+            .then(async () => {
                 const accounts = await POCKETBASE()
                     .collection('users')
                     .getFullList();
