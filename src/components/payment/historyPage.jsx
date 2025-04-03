@@ -110,7 +110,7 @@ export const HistoryPage = () => {
                                             <img
                                                 class="rounded-md object-cover"
                                                 src="logo.png"
-                                                height='100rem'
+                                                height="100rem"
                                                 alt="Pure Cotton T-Shirt image"
                                             />
                                             <div class="w-full flex-col justify-start md:items-start items-center gap-3 inline-flex">
@@ -142,7 +142,7 @@ export const HistoryPage = () => {
                                             <img
                                                 class="rounded-md object-cover"
                                                 src="logo.png"
-                                                height='100rem'
+                                                height="100rem"
                                                 alt="Men Stretchable Jeans image"
                                             />
                                             <div class="w-full flex-col justify-start md:items-start items-center gap-3 inline-flex">
@@ -174,7 +174,7 @@ export const HistoryPage = () => {
                                             <img
                                                 class="rounded-md object-cover"
                                                 src="logo.png"
-                                                height='100rem'
+                                                height="100rem"
                                                 alt="Men Cotton Casual Shirt image"
                                             />
                                             <div class="flex-col justify-start md:items-start items-center gap-3 inline-flex">
@@ -206,7 +206,7 @@ export const HistoryPage = () => {
                                             <img
                                                 class="rounded-md object-cover"
                                                 src="logo.png"
-                                                height='100rem'
+                                                height="100rem"
                                                 alt="Men Colourblocked PU Sneakers image"
                                             />
                                             <div class="flex-col justify-start md:items-start items-center gap-3 inline-flex">

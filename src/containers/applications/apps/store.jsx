@@ -1,17 +1,11 @@
-import { AiOutlineQuestionCircle } from 'react-icons/ai';
-import { MdArrowForward } from 'react-icons/md';
-import { login } from '../../../backend/actions';
 import {
     app_toggle,
     appDispatch,
-    open_game,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
-import { externalLink } from '../../../backend/utils/constant';
 import {
-    Icon,
     Image,
     LazyComponent,
     ToolBar
@@ -43,9 +37,12 @@ export const MicroStore = () => {
                 size={wnapp.size}
                 name={'Template'}
             />
-            <div className="windowScreen flex relative">
+            <div className="windowScreen win11Scroll">
                 <LazyComponent show={!wnapp.hide}>
-                    <div className="storeNav h-full w-20 flex flex-col">
+                    <DownPage
+                    // action={(app) => appDispatch(open_game(app))}
+                    />
+                    {/* <div className="storeNav h-full w-20 flex flex-col">
                         <Icon
                             icon="home"
                             onClick={() => appDispatch(open_game(null))}
@@ -53,17 +50,14 @@ export const MicroStore = () => {
                             width={20}
                             payload={game == null}
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="restWindow msfull win11Scroll">
+                    {/* <div className="restWindow msfull win11Scroll">
                         {game == null ? (
-                            <DownPage
-                                action={(app) => appDispatch(open_game(app))}
-                            />
                         ) : (
                             <DetailPage app={game} />
                         )}
-                    </div>
+                    </div> */}
                 </LazyComponent>
             </div>
         </div>
@@ -204,82 +198,194 @@ const DownPage = ({ action }) => {
     const isNewUser = false;
 
     return (
-        <div className="pagecont w-full absolute top-0 box-border pt-8">
-            <div className="max-w-[1200px] mx-auto">
-                <div className="max-w-screen-lg mx-auto flex flex-wrap items-center justify-center gap-y-2 md:justify-between px-3 mt-2 lg:px-16 lg:mt-4">
-                    <div className="">
-                        {isNewUser ? (
-                            <b className=" storeHeading capitalize font-bold">
-                                {t[Contents.TA_NEW_USER_CREATE_VOLUME]}
-                            </b>
-                        ) : (
-                            <b className=" storeHeading capitalize font-bold">
-                                {t[Contents.TA_TILE]}
-                            </b>
-                        )}
-
-                        <p className="storeSubHeading font-bold text-left mt-2">
-                            {t[Contents.TA_SUBTITLE]}
-                        </p>
-                    </div>
-                    <G4MarketBtn offset="bottom" />
-                </div>
-                <div className="appscont mt-16">
-                    {games.map((game, i) => (
-                        <div
-                            key={i}
-                            onClick={() => action(game)}
-                            className="ribcont p-4 ltShad prtclk"
-                            data-action="page2"
+        <div className="py-24 relative mx-3">
+            <div className="w-full x-6 lg:px-8 mx-auto">
+                <div className="flex items-center justify-center flex-col gap-5 mb-14">
+                    <h2 className="font-manrope font-bold text-4xl text-white text-center">
+                        Structural Elegance
+                    </h2>
+                    <p className="text-lg font-normal text-gray-500 max-w-3xl mx-auto text-center">
+                        In the world of architecture or organization, structure
+                        provides the backbone for a purposeful and harmonious
+                        existence.
+                    </p>
+                    <div class="flex justify-center items-center bg-gray-100 rounded-full p-1.5 max-w-sm mx-auto">
+                        <a
+                            href="javascript:void(0)"
+                            class="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-gray-400 font-semibold py-3 px-3 lg:px-11 hover:text-indigo-600 tab-active:bg-indigo-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap active"
+                            data-tab="tabs-with-background-1"
+                            role="tab"
                         >
-                            <Image
-                                className=" mb-2 rounded"
-                                src={game.metadata?.capsule_image}
-                                imgClass="w-[100px] h-[40px] lg:w-[150px] lg:h-[80px] object-cover"
-                                ext
-                            />
-                            <div className="name capitalize">{game.name}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const G4MarketBtn = ({ offset = 'top' }) => {
-    return (
-        <div className="g4MarketCtn">
-            <div className="flex items-center justify-between">
-                <p className="font-bold text-[10px]">
-                    G4<span className="text-[#99EE2D]">Market</span>
-                </p>
-                <div className="explainCtn">
-                    <AiOutlineQuestionCircle fontSize="0.7rem" />
-                    <div className={`explainText text-[8px] ${offset}`}>
-                        <p className="font-bold">
-                            Mua game bản quyền trên G4
-                            <span className="text-[#99EE2D]">Market</span>
-                        </p>
-                        <br />
-                        <p className="mt-2">
-                            G4Market là đối tác uy tín của Thinkmay, cung cấp
-                            tài khoản chơi game bản quyền với giá rẻ.
-                        </p>
-                        <br />
+                            Bill Yearly
+                        </a>
+                        <a
+                            href="javascript:void(0)"
+                            class="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-gray-400 font-semibold py-3 px-3 lg:px-11 hover:text-indigo-600 tab-active:bg-indigo-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap"
+                            data-tab="tabs-with-background-2"
+                            role="tab"
+                        >
+                            Bill Monthly
+                        </a>
                     </div>
                 </div>
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-14">
+                    <div
+                        className="sm:col-span-2 bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707712993.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            Architecture Designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            where knowledge meets innovation, and success is
+                            sculpted through a blend of skill and vision.
+                        </p>
+                    </div>
 
-            <a
-                href={externalLink.G4MARKET_LINK_STORE}
-                target="_blank"
-                className="wrapperBtn mt-1 bg-[#99EE2D] text-black  px-1 "
-            >
-                <span className="text-[8px]">Mua TK game</span>
-                <MdArrowForward fontSize={'0.8rem'} />
-                <div className="banner"></div>
-            </a>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                    <div
+                        className=" bg-cover rounded-lg max-sm:h-80 flex justify-start flex-col px-7 py-6 block"
+                        style={{
+                            backgroundImage: `url(https://pagedone.io/asset/uploads/1707713043.png)`
+                        }}
+                    >
+                        <h6 className="font-medium text-xl leading-8 text-white mb-4">
+                            interior designer
+                        </h6>
+                        <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white/70">
+                            crafting exceptional interiors, where aesthetics
+                            meet functionality for spaces that inspire and
+                            elevate.
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center justify-center flex-col gap-5 mb-14">
+                    <button className="w-200 rounded-lg py-4 px-6 text-center bg-blue-100 text-lg font-medium text-blue-600 transition-all duration-300 hover:text-white hover:bg-blue-600">
+                        Load More
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
