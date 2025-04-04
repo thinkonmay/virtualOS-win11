@@ -277,7 +277,9 @@ export const create_payment_qr = async ({ amount }: { amount: string }) => {
                     url: payment_url,
                     accountName: subdata?.accountName,
                     amount: actual_amount,
-                    description: subdata?.description?.split(' ')[1] ?? subdata?.description,
+                    description:
+                        subdata?.description?.split(' ')[1] ??
+                        subdata?.description,
                     discount_percent:
                         actual_amount != prediscount
                             ? Math.round(

@@ -7,9 +7,9 @@
 }
 
 .dskApp {
-  margin: 40px;
-  height: 84px;
-  width: 70px;
+  margin: 24px;
+  height: 40px;
+  width: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,6 +34,7 @@
     text-align: center;
     color: #fafafa;
     margin-top: 10px;
+    max-width: 10ch;
     width: max-content;
     font-weight: 700;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);

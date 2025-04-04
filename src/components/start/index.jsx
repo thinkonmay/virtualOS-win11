@@ -69,7 +69,7 @@ export const DesktopApp = () => {
                             <Icon
                                 className={`dskIcon ${app.id}`}
                                 click={'null'}
-                                width={Math.round(desk.size * 36)}
+                                width={Math.round(desk.size * 14)}
                                 src={app.image ?? app.id}
                                 mono={app.mono ?? false}
                                 pr
@@ -79,7 +79,7 @@ export const DesktopApp = () => {
                                 icon={app.icon}
                                 className={`dskIcon ${app.id}`}
                                 click={'null'}
-                                width={Math.round(desk.size * 36)}
+                                width={Math.round(desk.size * 14)}
                             />
                         )}
                         <div className="appName">{t[app.name]}</div>
