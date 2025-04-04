@@ -571,8 +571,8 @@ const SubscriptionPage = () => {
                             Purchase Plan
                         </a>
                     </div>
-                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-blue-200 transition-all duration-500 hover:bg-blue-100 ">
-                        <div class="uppercase bg-gradient-to-r from-indigo-600 to-violet-600 rounded-t-2xl p-3 text-center text-white">
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-blue-200 transition-all duration-500 hover:bg-blue-300 ">
+                        <div class="uppercase bg-gradient-to-r from-indigo-600 to-violet-600 rounded-t-2xl p-3 text-center text-white bg-blue-700">
                             MOST POPULAR
                         </div>
                         <div class="p-6 xl:py-9 xl:px-12">

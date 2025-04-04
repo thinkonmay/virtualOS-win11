@@ -95,16 +95,16 @@ export const HistoryPage = () => {
     };
 
     return (
-        <section class="py-24 relative justify-self-center text-white">
+        <section class="py-24 relative justify-self-center text-black   ">
             <div class="w-full  px-4 md:px-5 lg:px-5 mx-auto">
                 <div class="w-full flex-col justify-start items-start gap-12 inline-flex">
                     <div class="w-full justify-end items-start gap-8 inline-flex">
                         <div class="w-full flex-col justify-start items-start gap-8 inline-flex">
-                            <div class="w-full p-8 bg-gray-600 rounded-xl flex-col justify-start items-start gap-5 flex">
-                                <h2 class="w-full  text-2xl font-semibold font-manrope leading-9 pb-5 border-b border-gray-200">
+                            <div class="w-full p-8 bg-gray-100 rounded-xl flex-col justify-start items-start gap-5 flex">
+                                <h2 class="w-full  text-2xl font-semibold font-manrope leading-9 pb-5 border-b">
                                     Order Items
                                 </h2>
-                                <div class="w-full flex-col justify-start items-start gap-5 flex pb-5 border-b border-gray-200">
+                                <div class="w-full flex-col justify-start items-start gap-5 flex pb-5">
                                     <div class="w-full justify-start items-center lg:gap-8 gap-4 grid md:grid-cols-12 grid-cols-1">
                                         <div class="md:col-span-8 col-span-12 w-full justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
                                             <img

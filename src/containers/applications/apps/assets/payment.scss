@@ -6,12 +6,12 @@
 	--rib-bg: #ffffffb8;
 
 	//background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
-	background: var(--bg1);
+  	background: var(--fakeMica);
 
 
 	.wrapperPayment {
 		//background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
-		background: var(--page-bg);
+		// background: var(--page-bg);
 		border: 1px solid var(--page-bd-col);
 		display: flex;
 		gap: 1px;

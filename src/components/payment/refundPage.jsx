@@ -43,7 +43,7 @@ const RequestRefund = () => {
                                 <img
                                     src="logo.png"
                                     alt="ContactUs tailwind section"
-                                    class="w-full h-full lg:rounded-l-2xl rounded-2xl bg-blend-multiply bg-blue-700 object-cover"
+                                    class="w-full h-full lg:rounded-l-2xl rounded-2xl bg-blend-multiply bg-blue-200 object-cover"
                                 />
                                 <h1 class="font-manrope text-white text-4xl font-bold leading-10 absolute top-11 left-11">
                                     Contact us
@@ -164,18 +164,19 @@ const RequestRefund = () => {
                         </div>
                     </div>
 
-                    <div class="bg-gray-900 p-5 lg:p-11 lg:rounded-r-2xl rounded-2xl">
+                    <div class="bg-slate-800 p-5 lg:p-11 lg:rounded-r-2xl">
                         <h2 class="text-blue-600 font-manrope text-4xl font-semibold leading-10 mb-11">
                             Send Us A Message
                         </h2>
                         <input
                             type="text"
-                            class="w-full h-12 text-white placeholder-gray-400  shadow-sm bg-transparent text-lg font-normal leading-7 rounded-full  border-gray-200 focus:outline-none pl-4 mb-10"
+                            class="w-full h-12 text-white placeholder-gray-400 shadow-sm text-lg font-normal leading-7 rounded-2xl border-gray-200 focus:outline-none pl-4 mb-10 "
                             placeholder="Name"
                         />
+
                         <input
                             type="text"
-                            class="w-full h-48 text-white placeholder-gray-400 bg-transparent text-lg shadow-sm font-normal leading-7 rounded-full border-spacing-20 border-gray-900 focus:outline-none pl-4 mb-10"
+                            class="w-full h-48 text-white placeholder-gray-400 rounded-2xl text-lg shadow-sm font-normal leading-7 border-spacing-20 border-gray-900 focus:outline-none pl-4 mb-10"
                             placeholder="Message"
                         />
                         <button class="w-full h-12 text-white text-base font-semibold leading-6 rounded-full transition-all duration-700 hover:bg-blue-800 bg-blue-600 shadow-sm">
@@ -441,7 +442,7 @@ const RefundPolicy = () => {
                     <div class="w-full lg:w-1/2">
                         <div class="lg:max-w-xl">
                             <div class="mb-6 lg:mb-16">
-                                <h6 class="text-lg text-center font-medium text-indigo-600 mb-2 lg:text-left">
+                                <h6 class="text-lg text-center font-medium text-blue-600 mb-2 lg:text-left">
                                     faqs
                                 </h6>
                                 <h2 class="text-4xl text-center font-bold text-gray-900 leading-[3.25rem] mb-5 lg:text-left">
@@ -457,12 +458,12 @@ const RefundPolicy = () => {
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-indigo-600 accordion-active:font-medium accordion-active:text-indigo-600"
+                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
                                         <svg
-                                            class="text-gray-900 transition duration-500 group-hover:text-indigo-600 accordion-active:text-indigo-600 accordion-active:rotate-180"
+                                            class="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
                                             width="22"
                                             height="22"
                                             viewBox="0 0 22 22"
@@ -498,12 +499,12 @@ const RefundPolicy = () => {
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-indigo-600 accordion-active:font-medium accordion-active:text-indigo-600"
+                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
                                         <svg
-                                            class="text-gray-900 transition duration-500 group-hover:text-indigo-600 accordion-active:text-indigo-600 accordion-active:rotate-180"
+                                            class="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
                                             width="22"
                                             height="22"
                                             viewBox="0 0 22 22"
@@ -539,12 +540,12 @@ const RefundPolicy = () => {
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-indigo-600 accordion-active:font-medium accordion-active:text-indigo-600"
+                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
                                         <svg
-                                            class="text-gray-900 transition duration-500 group-hover:text-indigo-600 accordion-active:text-indigo-600 accordion-active:rotate-180"
+                                            class="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
                                             width="22"
                                             height="22"
                                             viewBox="0 0 22 22"
