@@ -157,21 +157,13 @@ export const PaymentApp = () => {
                         </div>
                         <div
                             className={
-                                page == 'deposit' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('deposit')}
-                        >
-                            Ví thinkmay
-                        </div>
-                        <div
-                            className={
                                 page == 'storage'
                                     ? 'item subActive'
                                     : 'item text-gray-500'
                             }
                             onClick={() => handleChangePage('storage')}
                         >
-                            Cấu hình
+                            Thanh toán
                         </div>
                         <div
                             className={
@@ -484,7 +476,7 @@ const SubscriptionPage = () => {
                     <DomainSelection onChangeDomain={() => {}} domain={''} />
                 </div>
                 <div class="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-8 lg:space-y-0 lg:items-center">
-                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-gray-50 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-100">
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl p-6 xl:py-9 xl:px-12 bg-blue-100 transition-all duration-500 hover:bg-blue-200 ">
                         <h3 class="font-manrope text-2xl font-bold mb-3">
                             Free
                         </h3>
@@ -571,7 +563,7 @@ const SubscriptionPage = () => {
                             Purchase Plan
                         </a>
                     </div>
-                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-blue-200 transition-all duration-500 hover:bg-blue-300 ">
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-blue-100 transition-all duration-500 hover:bg-blue-200 ">
                         <div class="uppercase bg-gradient-to-r from-indigo-600 to-violet-600 rounded-t-2xl p-3 text-center text-white bg-blue-700">
                             MOST POPULAR
                         </div>
@@ -682,7 +674,7 @@ const SubscriptionPage = () => {
                             </a>
                         </div>
                     </div>
-                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl bg-gray-50 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-100">
+                    <div class="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl p-6 xl:py-9 xl:px-12 bg-blue-100 transition-all duration-500 hover:bg-blue-200 ">
                         <h3 class="font-manrope text-2xl font-bold mb-3">
                             Team
                         </h3>

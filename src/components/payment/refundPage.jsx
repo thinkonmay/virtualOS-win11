@@ -26,9 +26,9 @@ export const RefundPage = () => {
         another_pending_req == undefined;
 
     return (
-        // <RefundPolicy/>
+        <RefundPolicy/>
         // <RequestRefund />
-        <RefundStatus />
+        // <RefundStatus />
     );
 };
 
@@ -165,7 +165,7 @@ const RequestRefund = () => {
                     </div>
 
                     <div class="bg-slate-800 p-5 lg:p-11 lg:rounded-r-2xl">
-                        <h2 class="text-blue-600 font-manrope text-4xl font-semibold leading-10 mb-11">
+                        <h2 class="text-white font-manrope text-4xl font-semibold leading-10 mb-11">
                             Send Us A Message
                         </h2>
                         <input
@@ -259,8 +259,8 @@ const RefundStatus = () => {
                                             />
                                         </svg>
                                     </a>
-                                    <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
-                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed">
+                                    <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6 ">
+                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed cursor-pointer hover:font-bold hover:text-blue-200 transition-all">
                                             Your request has been successfully
                                             received.
                                         </h4>
@@ -300,7 +300,7 @@ const RefundStatus = () => {
                                         </svg>
                                     </a>
                                     <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
-                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed">
+                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed cursor-pointer hover:font-bold hover:text-blue-200 transition-all">
                                             Collect Product from Your Location
                                         </h4>
                                         <ul>
@@ -439,7 +439,7 @@ const RefundPolicy = () => {
                             class="w-full rounded-xl object-cover"
                         />
                     </div>
-                    <div class="w-full lg:w-1/2">
+                    <div class="w-full lg:w-1/2 mt-5">
                         <div class="lg:max-w-xl">
                             <div class="mb-6 lg:mb-16">
                                 <h6 class="text-lg text-center font-medium text-blue-600 mb-2 lg:text-left">
@@ -453,12 +453,13 @@ const RefundPolicy = () => {
                                 class="accordion-group"
                                 data-accordion="default-accordion"
                             >
+
                                 <div
-                                    class="accordion py-8 "
+                                    class="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
+                                        class="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
@@ -484,7 +485,7 @@ const RefundPolicy = () => {
                                         class="accordion-content w-full px-0 overflow-hidden pr-4"
                                         aria-labelledby="basic-heading-four-with-arrow-always-open"
                                     >
-                                        <p class="text-base text-gray-500 font-normal">
+                                        <p class="text-base text-gray-500 font-normal group-hover:block hidden">
                                             Our focus on providing robust and
                                             user-friendly content management
                                             capabilities ensures that you can
@@ -494,12 +495,13 @@ const RefundPolicy = () => {
                                         </p>
                                     </div>
                                 </div>
+
                                 <div
-                                    class="accordion py-8 "
+                                    class="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
+                                        class="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
@@ -525,7 +527,7 @@ const RefundPolicy = () => {
                                         class="accordion-content w-full px-0 overflow-hidden pr-4"
                                         aria-labelledby="basic-heading-four-with-arrow-always-open"
                                     >
-                                        <p class="text-base text-gray-500 font-normal">
+                                        <p class="text-base text-gray-500 font-normal group-hover:block hidden">
                                             Our focus on providing robust and
                                             user-friendly content management
                                             capabilities ensures that you can
@@ -535,12 +537,13 @@ const RefundPolicy = () => {
                                         </p>
                                     </div>
                                 </div>
+
                                 <div
-                                    class="accordion py-8 "
+                                    class="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle group inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
+                                        class="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
@@ -566,7 +569,7 @@ const RefundPolicy = () => {
                                         class="accordion-content w-full px-0 overflow-hidden pr-4"
                                         aria-labelledby="basic-heading-four-with-arrow-always-open"
                                     >
-                                        <p class="text-base text-gray-500 font-normal">
+                                        <p class="text-base text-gray-500 font-normal group-hover:block hidden">
                                             Our focus on providing robust and
                                             user-friendly content management
                                             capabilities ensures that you can
@@ -576,6 +579,8 @@ const RefundPolicy = () => {
                                         </p>
                                     </div>
                                 </div>
+
+
                             </div>
                         </div>
                     </div>

@@ -367,7 +367,7 @@ const DownPage = ({ action }) => {
                 </div>
                 <div className="grid row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-14">
                     <div
-                        className="sm:col-span-2 bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
+                        className="sm:col-span-2 row-span-2 bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
                         style={{
                             backgroundImage: `url(https://pagedone.io/asset/uploads/1707712993.png)`
                         }}

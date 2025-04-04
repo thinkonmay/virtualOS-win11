@@ -39,25 +39,25 @@ export const StoragePage = () => {
                         <h2 class="font-manrope font-bold text-3xl leading-10 text-white">
                             Shopping Cart
                         </h2>
-                        <h2 class="font-manrope font-bold text-xl leading-8 text-gray-800">
+                        <h2 class="font-manrope font-bold text-xl leading-8 text-white">
                             3 Items
                         </h2>
                     </div>
                     <div class="grid grid-cols-12 mt-8 max-md:hidden pb-6 border-b border-gray-200">
-                        <div class="col-span-12 md:col-span-7">
+                        <div class="col-span-12 md:col-span-6">
                             <p class="font-normal text-lg leading-8 text-gray-400">
                                 Product Details
                             </p>
                         </div>
-                        <div class="col-span-12 md:col-span-5">
+                        <div class="col-span-12 md:col-span-6">
                             <div class="grid grid-cols-5">
                                 <div class="col-span-3">
-                                    <p class="font-normal text-lg leading-8 text-gray-400 text-center">
+                                    <p class="font-normal text-lg leading-8 text-gray-400 text-left">
                                         Quantity
                                     </p>
                                 </div>
                                 <div class="col-span-2">
-                                    <p class="font-normal text-lg leading-8 text-gray-400 text-center">
+                                    <p class="font-normal text-lg leading-8 text-gray-400 text-right">
                                         Total
                                     </p>
                                 </div>
@@ -81,7 +81,7 @@ export const StoragePage = () => {
                             </div>
                             <div class="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                                 <div class="flex items-center h-full">
-                                    <button class="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                    <button class="bg-gray-300 group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                         <svg
                                             class="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
                                             xmlns="http://www.w3.org/2000/svg"
@@ -114,10 +114,10 @@ export const StoragePage = () => {
                                     </button>
                                     <input
                                         type="text"
-                                        class="border-y bg-gray-500 border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[15px]  text-center bg-transparent"
+                                        class="border-y bg-gray-700 border-gray-200 outline-none text-white font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-white py-[15px]  text-center bg-transparent"
                                         placeholder="2"
                                     />
-                                    <button class="group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                                    <button class="bg-gray-300 group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                                         <svg
                                             class="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
                                             xmlns="http://www.w3.org/2000/svg"
