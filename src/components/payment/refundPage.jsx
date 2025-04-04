@@ -6,24 +6,37 @@ import {
 } from '../../backend/reducers';
 
 export const RefundPage = () => {
+    const refund = () => appDispatch(refund_request());
+
     const subscription = useAppSelector((state) => state.user.subscription);
-    const out_of_day =
-        Date.now() - new Date(subscription?.ended_at).getTime() >
-        5 * 24 * 3600 * 1000;
-    const out_of_time = subscription?.total_usage > 2;
+    const { total_usage, ended_at, plan_name } = subscription ?? {};
     const another_pending_req = useAppSelector(
         (state) => state.user.wallet.refundRequest?.[0]
     );
 
-    const refund = async () => {
-        await appDispatch(refund_request());
-    };
+    let applicable = false;
+    if (plan_name?.includes('week')) {
+        const out_of_day =
+            Date.now() - new Date(ended_at).getTime() > 3 * 24 * 3600 * 1000;
+        const out_of_time = total_usage > 2;
 
-    const applicable =
-        subscription != undefined &&
-        !out_of_day &&
-        !out_of_time &&
-        another_pending_req == undefined;
+        applicable =
+            subscription != undefined &&
+            !out_of_day &&
+            !out_of_time &&
+            another_pending_req == undefined;
+    } else if (plan_name?.includes('month')) {
+        const out_of_day =
+            Date.now() - new Date(ended_at).getTime() > 5 * 24 * 3600 * 1000;
+        const out_of_time = total_usage > 12;
+
+        applicable =
+            subscription != undefined &&
+            !out_of_day &&
+            !out_of_time &&
+            another_pending_req == undefined;
+    }
+
     return (
         <div className="refundPage">
             <div className="title">
