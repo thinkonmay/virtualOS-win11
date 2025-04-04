@@ -15,8 +15,9 @@ export const RefundPage = () => {
     );
 
     let applicable = false;
+    let out_of_day = 0;
     if (plan_name?.includes('week')) {
-        const out_of_day =
+        out_of_day =
             Date.now() - new Date(ended_at).getTime() > 3 * 24 * 3600 * 1000;
         const out_of_time = total_usage > 2;
 
@@ -26,7 +27,7 @@ export const RefundPage = () => {
             !out_of_time &&
             another_pending_req == undefined;
     } else if (plan_name?.includes('month')) {
-        const out_of_day =
+        out_of_day =
             Date.now() - new Date(ended_at).getTime() > 5 * 24 * 3600 * 1000;
         const out_of_time = total_usage > 12;
 
