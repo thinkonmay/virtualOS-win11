@@ -15,10 +15,7 @@ export const RefundPage = () => {
         (state) => state.user.wallet.refundRequest?.[0]
     );
 
-    const applicable =
-        subscription != undefined &&
-        !out_of_day &&
-        !out_of_time 
+    const applicable = subscription != undefined && !out_of_day && !out_of_time;
 
     return another_pending_req ? (
         <RefundStatus />
