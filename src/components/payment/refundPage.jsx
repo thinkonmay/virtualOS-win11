@@ -16,10 +16,11 @@ export const RefundPage = () => {
 
     let applicable = false;
     let out_of_day = 0;
+    let out_of_time = 0;
     if (plan_name?.includes('week')) {
         out_of_day =
             Date.now() - new Date(ended_at).getTime() > 3 * 24 * 3600 * 1000;
-        const out_of_time = total_usage > 2;
+        out_of_time = total_usage > 2;
 
         applicable =
             subscription != undefined &&
@@ -29,7 +30,7 @@ export const RefundPage = () => {
     } else if (plan_name?.includes('month')) {
         out_of_day =
             Date.now() - new Date(ended_at).getTime() > 5 * 24 * 3600 * 1000;
-        const out_of_time = total_usage > 12;
+        out_of_time = total_usage > 12;
 
         applicable =
             subscription != undefined &&
