@@ -15,20 +15,17 @@ export const RefundPage = () => {
         (state) => state.user.wallet.refundRequest?.[0]
     );
 
-    const refund = async () => {
-        await appDispatch(refund_request());
-    };
-
     const applicable =
         subscription != undefined &&
         !out_of_day &&
-        !out_of_time &&
-        another_pending_req == undefined;
+        !out_of_time 
 
-    return (
-        <RefundPolicy/>
-        // <RequestRefund />
-        // <RefundStatus />
+    return another_pending_req ? (
+        <RefundStatus />
+    ) : applicable ? (
+        <RequestRefund />
+    ) : (
+        <RefundPolicy />
     );
 };
 
@@ -398,10 +395,10 @@ const RefundStatus = () => {
                             />
                             <div class="w-full flex-col justify-center items-start gap-1.5 inline-flex">
                                 <h4 class="text-white-900 text-xl font-semibold leading-8">
-                                    APPLE iPhone 15 (128 GB) - Black
+                                    {/* APPLE iPhone 15 (128 GB) - Black */}
                                 </h4>
                                 <h6 class="text-white-900 text-base font-semibold leading-relaxed">
-                                    Return Reason:
+                                    {`Return Reason: `}
                                     <span class="text-gray-500 text-base font-medium leading-relaxed">
                                         Incorrect Product
                                     </span>
@@ -453,7 +450,6 @@ const RefundPolicy = () => {
                                 class="accordion-group"
                                 data-accordion="default-accordion"
                             >
-
                                 <div
                                     class="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
@@ -579,8 +575,6 @@ const RefundPolicy = () => {
                                         </p>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
