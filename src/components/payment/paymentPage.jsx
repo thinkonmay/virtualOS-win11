@@ -33,13 +33,32 @@ export const PaymentPage = ({ value }) => {
         }
     ];
 
+    const additionalPlans = [];
+    if (value.kickey)
+        additionalPlans.push({
+            title: 'Tài khoản chơi game kickey',
+            name: 'kickey',
+            amount: 50000
+        });
+    if (value.template)
+        additionalPlans.push({
+            title: `${value.template.name} đã được cài sẵn`,
+            name: value.template.code_name,
+            amount: 0
+        });
+
     const renderPlan = (plan, index) => {
         const [quantity, setQuantity] = useState(0);
 
         useEffect(() => {
-            if (value.plan == plan.name)
-                set(1)
-        },[])
+            if (value.plan == plan.name) set(1);
+        }, []);
+        useEffect(() => {
+            if ('kickey' == plan.name) set(1);
+        }, []);
+        useEffect(() => {
+            if (value.template?.code_name == plan.name) set(1);
+        }, []);
 
         const increase = (val) => {
             if (!Number.isInteger(val) || quantity + val < 0) return;
@@ -214,11 +233,13 @@ export const PaymentPage = ({ value }) => {
                         </div>
                     </div>
 
-                    {plans
-                        .map((x) => ({
+                    {[
+                        ...plans.map((x) => ({
                             ...x,
                             ...(subcontents.find((y) => y.name == x.name) ?? {})
-                        }))
+                        })),
+                        ...additionalPlans
+                    ]
                         .filter((val) => val.title != null)
                         .sort((a, b) => a.amount - b.amount)
                         .map(renderPlan)}

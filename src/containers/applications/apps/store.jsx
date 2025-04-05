@@ -52,7 +52,7 @@ const DetailPage = ({ app, close }) => {
         (state) => state.user.subscription?.metadata?.template?.code
     );
 
-    const { code_name, metadata } = app;
+    const { code_name, name, metadata } = app;
     const { short_description, screenshots, publishers } = metadata ?? {
         screenshots: [],
         publishers: []
@@ -75,37 +75,42 @@ const DetailPage = ({ app, close }) => {
         {
             code: 'payment',
             name: 'Game tải sẵn (free)',
-            clicked: false
+            clicked: true
         },
         {
             code: 'kickey',
-            name: 'Tài khoản kickey',
-            clicked: false
+            name: 'Tài khoản game',
+            clicked: true
         }
     ]);
 
     const handleDownload = () =>
         code == undefined
             ? appDispatch(
-                app_full({
-                    id: 'payment',
-                    page: 'subscription',
-                    value: {
-                        template: code_name
-                    }
-                })
-            )
+                  app_full({
+                      id: 'payment',
+                      page: 'subscription',
+                      value: {
+                          template: {
+                              name,
+                              code_name
+                          },
+                          kickey: options.find((x) => x.code == 'kickey')
+                              ?.clicked
+                      }
+                  })
+              )
             : appDispatch(
-                popup_open({
-                    type: 'yesNo',
-                    data: {
-                        template: code_name
-                    }
-                })
-            );
+                  popup_open({
+                      type: 'yesNo',
+                      data: {
+                          template: code_name
+                      }
+                  })
+              );
 
     const renderOption = (val, index) => {
-        const [clicked, setClicked] = useState(false);
+        const [clicked, setClicked] = useState(true);
         useEffect(() => {
             setOptions((old) => {
                 old[index].clicked = clicked;
@@ -116,8 +121,9 @@ const DetailPage = ({ app, close }) => {
             <button
                 key={index}
                 onClick={() => setClicked((old) => !old)}
-                className={`bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${clicked ? 'bg-gray-600 text-white ' : ''
-                    }`}
+                className={`col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${
+                    clicked ? 'bg-gray-600 text-white ' : ''
+                }`}
             >
                 {val.name}
             </button>
@@ -125,11 +131,11 @@ const DetailPage = ({ app, close }) => {
     };
 
     return (
-        <section className="relative text-white p-20">
+        <section className="relative text-white p-20 max-md:p-3">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mx-auto max-md:px-2">
-                    <div className="img flex justify-end">
-                        <div className="img-box h-full max-lg:mx-auto">
+                    <div className="img flex justify-end max-lg:justify-center">
+                        <div className="img-box h-[720px] max-lg:h-[480px] max-lg:mx-auto">
                             <img
                                 src={screenshots?.[index]?.path_full}
                                 alt="Yellow Tropical Printed Shirt image"
@@ -146,9 +152,15 @@ const DetailPage = ({ app, close }) => {
                                 {app.name}
                             </h2>
                             <div className="flex flex-col sm:flex-row sm:items-center mb-6">
-                                {/* <h6 className="font-manrope font-semibold text-2xl leading-9 text-pr-5 sm:border-r border-gray-200 mr-5">
-                                    $220
-                                </h6> */}
+                                {code == undefined ? (
+                                    <h6 className="font-manrope font-semibold text-2xl leading-9 text-pr-5 sm:border-r border-gray-200 mr-5">
+                                        Đăng kí thinkmay để chơi
+                                    </h6>
+                                ) : (
+                                    <h6 className="font-manrope font-semibold text-2xl leading-9 text-pr-5 sm:border-r border-gray-200 mr-5">
+                                        Tải game miễn phí
+                                    </h6>
+                                )}
                                 <div className="flex items-center gap-2">
                                     <div className="flex items-center gap-1">
                                         <svg
@@ -276,8 +288,11 @@ const DetailPage = ({ app, close }) => {
                                 {short_description}
                             </p>
                             <ul className="grid gap-y-4 mb-8">
-                                {publishers.map((x,index) => (
-                                    <li key={index} className="flex items-center gap-3">
+                                {publishers.map((x, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex items-center gap-3"
+                                    >
                                         <svg
                                             width="26"
                                             height="26"
@@ -307,7 +322,7 @@ const DetailPage = ({ app, close }) => {
                             {options.length > 0 ? (
                                 <>
                                     <p className="text-white text-lg leading-8 font-medium mb-4">
-                                        Option
+                                        Các gói dịch vụ đi kèm
                                     </p>
                                     <div className="w-full pb-8 border-b border-gray-100 flex-wrap">
                                         <div className="grid grid-cols-3 min-[400px]:grid-cols-6 gap-3 max-w-md">
@@ -328,7 +343,7 @@ const DetailPage = ({ app, close }) => {
                                     onClick={handleDownload}
                                     className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
                                 >
-                                    {code != undefined ? 'Cài đặt' : 'Mua ngay'}
+                                    {code != undefined ? 'Cài đặt' : 'Đăng kí'}
                                 </button>
                             </div>
                         </div>
@@ -383,12 +398,13 @@ const DownPage = ({ open }) => {
                                 <div
                                     key={index}
                                     onClick={() => open(game)}
-                                    className={`${index == 0
-                                        ? 'sm:col-span-2 sm:row-span-2'
-                                        : index == 1
-                                            ? 'sm:col-span-2'
-                                            : 'sm:col-span-1'
-                                        }  bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity`}
+                                    className={`${
+                                        index == 0
+                                            ? 'sm:col-span-2 sm:row-span-2'
+                                            : index == 1
+                                              ? 'sm:col-span-2'
+                                              : 'sm:col-span-1'
+                                    }  bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity`}
                                     style={{
                                         backgroundImage: `url(${game.metadata?.screenshots?.[0]?.path_full})`
                                     }}

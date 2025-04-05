@@ -1,6 +1,4 @@
-import {
-    useAppSelector
-} from '../../backend/reducers';
+import { useAppSelector } from '../../backend/reducers';
 
 export const RefundPage = () => {
     const subscription = useAppSelector((state) => state.user.subscription);
