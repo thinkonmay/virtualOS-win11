@@ -159,37 +159,40 @@ export const dispatchOutSide = (action: string, payload: any) => {
 
 export const loginWithEmail = async (email: string, password: string) => {};
 export const signUpWithEmail = async (email: string, password: string) => {};
-export const login = async (
+export const login = (
     provider: 'google' | 'facebook' | 'discord',
-    update_ui?: boolean
+    update_ui?: boolean,
+    finish_callback?: () => {}
 ) => {
-    const accounts = await POCKETBASE().collection('users').getFullList();
+    window.oncontextmenu = (ev) => ev.preventDefault();
 
     const w = window.open();
-    await POCKETBASE()
+    POCKETBASE()
         .collection('users')
         .authWithOAuth2({
-            provider,
+            provider: provider,
             urlCallback: (url) => {
                 w.location.href = url;
             }
-        });
-    await POCKETBASE()
-        .collection('users')
-        .update(POCKETBASE().authStore.model.id, {
-            emailVisibility: true
-        });
-
-    if (accounts.length == 0)
-        await POCKETBASE()
-            .collection('users')
-            .update(POCKETBASE().authStore.model.id, {
-                metadata: {
-                    reference: originalurl.searchParams.get('ref')
-                }
-            });
-
-    await preload(update_ui);
+        })
+        .then(() => {
+            preload(update_ui);
+            const isNewUser =
+                (new Date().getTime() -
+                    new Date(POCKETBASE().authStore.model.created).getTime()) /
+                    60000 <
+                5; //
+            POCKETBASE()
+                .collection('users')
+                .update(POCKETBASE().authStore.model.id, {
+                    metadata: {
+                        reference: isNewUser
+                            ? originalurl.searchParams.get('ref')
+                            : POCKETBASE().authStore.model.metadata.reference
+                    }
+                });
+        })
+        .finally(() => finish_callback());
 };
 export const remotelogin = async (domain: string, email: string) => {
     const { data, error } = await GLOBAL().rpc('generate_account', {

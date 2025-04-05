@@ -187,9 +187,9 @@ export const remoteAsync = {
         showConnect();
         appDispatch(
             remote_connect({
-                videoUrl: `wss://${address}/broadcasters/webrtc?token=${video}${opt}`,
-                audioUrl: `wss://${address}/broadcasters/webrtc?token=${audio}`,
-                dataUrl: `wss://${address}/broadcasters/websocket?token=${data}`
+                videoUrl: `wss://${address}:444/broadcasters/webrtc?token=${video}${opt}`,
+                audioUrl: `wss://${address}:444/broadcasters/webrtc?token=${audio}`,
+                dataUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
             })
         );
         if (!(await ready())) appDispatch(close_remote());
