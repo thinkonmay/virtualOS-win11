@@ -20,9 +20,7 @@ export const PaymentApp = () => {
     const val = wnapp.value;
 
     const handleChangePage = (input) =>
-        appDispatch(
-            app_payload({ id: 'payment', key: 'page', value: input })
-        );
+        appDispatch(app_payload({ id: 'payment', key: 'page', value: input }));
 
     const routing = {
         subscription: 'Đăng kí',
@@ -66,7 +64,10 @@ export const PaymentApp = () => {
                     </div>
                     <div className="win11Scroll w-full">
                         {curpage == 'subscription' ? (
-                            <SubscriptionPage value={val} />
+                            <SubscriptionPage
+                                value={val}
+                                switchPage={handleChangePage}
+                            />
                         ) : curpage == 'refund' ? (
                             <RefundPage value={val} />
                         ) : curpage == 'history' ? (

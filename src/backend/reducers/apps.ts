@@ -146,10 +146,7 @@ export const appSlice = createSlice({
                 obj.z = state.hz;
             }
         },
-        app_payload: (
-            state,
-            action: PayloadAction<{ id; key; value }>
-        ) => {
+        app_payload: (state, action: PayloadAction<{ id; key; value }>) => {
             const obj = state.apps.find((x) => x.id == action.payload.id);
             if (obj == undefined) return;
 

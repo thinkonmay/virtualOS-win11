@@ -86,15 +86,23 @@ const DetailPage = ({ app, close }) => {
 
     const handleDownload = () =>
         code == undefined
-            ? appDispatch(app_full({ id: 'payment', page: 'subscription' }))
+            ? appDispatch(
+                app_full({
+                    id: 'payment',
+                    page: 'subscription',
+                    value: {
+                        template: code_name
+                    }
+                })
+            )
             : appDispatch(
-                  popup_open({
-                      type: 'yesNo',
-                      data: {
-                          template: code_name
-                      }
-                  })
-              );
+                popup_open({
+                    type: 'yesNo',
+                    data: {
+                        template: code_name
+                    }
+                })
+            );
 
     const renderOption = (val, index) => {
         const [clicked, setClicked] = useState(false);
@@ -108,9 +116,8 @@ const DetailPage = ({ app, close }) => {
             <button
                 key={index}
                 onClick={() => setClicked((old) => !old)}
-                className={`bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${
-                    clicked ? 'bg-gray-600 text-white ' : ''
-                }`}
+                className={`bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${clicked ? 'bg-gray-600 text-white ' : ''
+                    }`}
             >
                 {val.name}
             </button>
@@ -151,7 +158,7 @@ const DetailPage = ({ app, close }) => {
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g clip-path="url(#clip0_12029_1640)">
+                                            <g clipPath="url(#clip0_12029_1640)">
                                                 <path
                                                     d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
                                                     fill="#FBBF24"
@@ -174,7 +181,7 @@ const DetailPage = ({ app, close }) => {
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g clip-path="url(#clip0_12029_1640)">
+                                            <g clipPath="url(#clip0_12029_1640)">
                                                 <path
                                                     d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
                                                     fill="#FBBF24"
@@ -197,7 +204,7 @@ const DetailPage = ({ app, close }) => {
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g clip-path="url(#clip0_12029_1640)">
+                                            <g clipPath="url(#clip0_12029_1640)">
                                                 <path
                                                     d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
                                                     fill="#FBBF24"
@@ -220,7 +227,7 @@ const DetailPage = ({ app, close }) => {
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g clip-path="url(#clip0_12029_1640)">
+                                            <g clipPath="url(#clip0_12029_1640)">
                                                 <path
                                                     d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
                                                     fill="#FBBF24"
@@ -243,7 +250,7 @@ const DetailPage = ({ app, close }) => {
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g clip-path="url(#clip0_8480_66029)">
+                                            <g clipPath="url(#clip0_8480_66029)">
                                                 <path
                                                     d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
                                                     fill="#F3F4F6"
@@ -269,8 +276,8 @@ const DetailPage = ({ app, close }) => {
                                 {short_description}
                             </p>
                             <ul className="grid gap-y-4 mb-8">
-                                {publishers.map((x) => (
-                                    <li className="flex items-center gap-3">
+                                {publishers.map((x,index) => (
+                                    <li key={index} className="flex items-center gap-3">
                                         <svg
                                             width="26"
                                             height="26"
@@ -287,8 +294,8 @@ const DetailPage = ({ app, close }) => {
                                             <path
                                                 d="M7.66669 12.629L10.4289 15.3913C10.8734 15.8357 11.0956 16.0579 11.3718 16.0579C11.6479 16.0579 11.8701 15.8357 12.3146 15.3913L18.334 9.37183"
                                                 stroke="white"
-                                                stroke-width="1.6"
-                                                stroke-linecap="round"
+                                                strokeWidth="1.6"
+                                                strokeLinecap="round"
                                             />
                                         </svg>
                                         <span className="font-normal text-base text-white ">
@@ -353,7 +360,6 @@ const DownPage = ({ open }) => {
                         <div className="bg-blue rounded-full w-20 absolute"></div>
 
                         <a
-                            href="javascript:void(0)"
                             className="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-white font-semibold py-3 px-3 lg:px-11 hover:text-blue-600 tab-active:bg-blue-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap active bg-blue-900 hover:bg-white"
                             data-tab="tabs-with-background-1"
                             role="tab"
@@ -361,7 +367,6 @@ const DownPage = ({ open }) => {
                             Có tài khoản
                         </a>
                         <a
-                            href="javascript:void(0)"
                             className="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-gray-400 font-semibold py-3 px-3 lg:px-11 hover:text-blue-600 tab-active:bg-blue-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap"
                             data-tab="tabs-with-background-2"
                             role="tab"
@@ -376,14 +381,14 @@ const DownPage = ({ open }) => {
                             .filter((x) => x.metadata?.screenshots?.length > 0)
                             .map((game, index) => (
                                 <div
+                                    key={index}
                                     onClick={() => open(game)}
-                                    className={`${
-                                        index == 0
-                                            ? 'sm:col-span-2 sm:row-span-2'
-                                            : index == 1
-                                              ? 'sm:col-span-2'
-                                              : 'sm:col-span-1'
-                                    }  bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity`}
+                                    className={`${index == 0
+                                        ? 'sm:col-span-2 sm:row-span-2'
+                                        : index == 1
+                                            ? 'sm:col-span-2'
+                                            : 'sm:col-span-1'
+                                        }  bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity`}
                                     style={{
                                         backgroundImage: `url(${game.metadata?.screenshots?.[0]?.path_full})`
                                     }}

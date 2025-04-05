@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import {
+    app_payload,
     appDispatch,
     popup_open,
     show_chat,
@@ -8,12 +9,11 @@ import {
 } from '../../backend/reducers';
 import { create_payment_pocket } from '../../backend/actions';
 
-const PaymentButton = ({ subInfo: sub, domain }) => {
+const PaymentButton = ({ sub, domain, switchPage }) => {
     const subscription = useAppSelector((state) => state.user.subscription);
     const money = useAppSelector((state) => state.user.wallet.money);
     const { plan_name, next_plan } = subscription ?? {};
 
-    const askSth = () => appDispatch(show_chat());
     const info = () => appDispatch(startogg());
     const onChooseSub = () => {
         const plan_name = sub.name;
@@ -49,6 +49,21 @@ const PaymentButton = ({ subInfo: sub, domain }) => {
             );
     };
 
+    const val = useAppSelector(
+        (state) => state.apps.apps.find((x) => x.id == 'payment')?.value ?? {}
+    );
+
+    const chooseAndswitch = () => {
+        appDispatch(
+            app_payload({
+                id: 'payment',
+                key: 'value',
+                value: { ...val, plan: sub.name }
+            })
+        );
+        switchPage('payment');
+    };
+
     return (
         <>
             {plan_name == sub.name ? (
@@ -66,7 +81,17 @@ const PaymentButton = ({ subInfo: sub, domain }) => {
                     </span>
                 </div>
             ) : null}
-            {next_plan == sub.name ? (
+            {switchPage != undefined ? (
+                <div className="flex gap-2">
+                    <button
+                        onClick={chooseAndswitch}
+                        type="button"
+                        className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-blue-700"
+                    >
+                        Chọn
+                    </button>
+                </div>
+            ) : next_plan == sub.name ? (
                 sub.amount <= money ? (
                     <div className="flex gap-2">
                         <button
@@ -146,18 +171,19 @@ function DomainSelection({ onChangeDomain, domain }) {
 
     return (
         <div className="block w-full content-center">
-            <label
-                for="countries"
-                className="block text-center mb-2 text-xl font-medium text-white w-full"
-            >
+            <label className="block text-center mb-2 text-xl font-medium text-white w-full">
                 Server
             </label>
             <select
                 id="countries"
                 className="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-50 py-2.5 px-4 focus:outline-none justify-self-center"
             >
-                {domains.map((domain) => (
-                    <option onSelect={chooseDomain} value={domain.domain}>
+                {domains.map((domain, index) => (
+                    <option
+                        key={index}
+                        onSelect={chooseDomain}
+                        value={domain.domain}
+                    >
                         {domain.domain}
                     </option>
                 ))}
@@ -166,7 +192,7 @@ function DomainSelection({ onChangeDomain, domain }) {
     );
 }
 
-export const SubscriptionPage = () => {
+export const SubscriptionPage = ({ value, switchPage }) => {
     const plans = useAppSelector((state) => state.user.plans);
     const subcontents = [
         {
@@ -224,8 +250,11 @@ export const SubscriptionPage = () => {
                         <span className="text-xl text-gray-500 ">/ month</span>
                     </div>
                     <ul className="mb-12 space-y-6 text-left text-lg ">
-                        {plan.bonus.map((x) => (
-                            <li className="flex items-center space-x-4">
+                        {plan.bonus.map((x, index) => (
+                            <li
+                                key={index}
+                                className="flex items-center space-x-4"
+                            >
                                 <svg
                                     className="flex-shrink-0 w-6 h-6 text-blue-600"
                                     viewBox="0 0 30 30"
@@ -235,7 +264,7 @@ export const SubscriptionPage = () => {
                                     <path
                                         d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
                                         stroke="currentColor"
-                                        stroke-width="1.6"
+                                        strokeWidth="1.6"
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                     />
@@ -244,11 +273,18 @@ export const SubscriptionPage = () => {
                             </li>
                         ))}
                     </ul>
-                    <PaymentButton subInfo={plan} domain={plan.domain} />
+                    <PaymentButton
+                        sub={plan}
+                        domain={plan.domain}
+                        switchPage={value != undefined ? switchPage : undefined}
+                    />
                 </div>
             </div>
         ) : (
-            <div className="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl p-6 xl:py-9 xl:px-12 bg-blue-100 transition-all duration-500 hover:bg-blue-200 ">
+            <div
+                key={index}
+                className="flex flex-col mx-auto max-w-sm text-gray-900 rounded-2xl p-6 xl:py-9 xl:px-12 bg-blue-100 transition-all duration-500 hover:bg-blue-200 "
+            >
                 <h3 className="font-manrope text-2xl font-bold mb-3">
                     {plan.title}
                 </h3>
@@ -259,8 +295,8 @@ export const SubscriptionPage = () => {
                     <span className="text-xl text-gray-500 ">/ month</span>
                 </div>
                 <ul className="mb-12 space-y-6 text-left text-lg text-gray-500">
-                    {plan?.bonus?.map((x) => (
-                        <li className="flex items-center space-x-4">
+                    {plan?.bonus?.map((x, index) => (
+                        <li key={index} className="flex items-center space-x-4">
                             <svg
                                 className="flex-shrink-0 w-6 h-6 text-blue-600"
                                 viewBox="0 0 30 30"
@@ -270,7 +306,7 @@ export const SubscriptionPage = () => {
                                 <path
                                     d="M10 14.7875L13.0959 17.8834C13.3399 18.1274 13.7353 18.1275 13.9794 17.8838L20.625 11.25M15 27.5C8.09644 27.5 2.5 21.9036 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5C21.9036 2.5 27.5 8.09644 27.5 15C27.5 21.9036 21.9036 27.5 15 27.5Z"
                                     stroke="currentColor"
-                                    stroke-width="1.6"
+                                    strokeWidth="1.6"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                 />
@@ -279,7 +315,11 @@ export const SubscriptionPage = () => {
                         </li>
                     ))}
                 </ul>
-                <PaymentButton subInfo={plan} domain={plan.domain} />
+                <PaymentButton
+                    sub={plan}
+                    domain={plan.domain}
+                    switchPage={value != undefined ? switchPage : undefined}
+                />
             </div>
         );
     };

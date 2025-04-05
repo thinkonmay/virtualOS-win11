@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { create_payment_qr } from '../../backend/actions';
 import { useAppSelector } from '../../backend/reducers';
 
-export const PaymentPage = () => {
+export const PaymentPage = ({ value }) => {
     const plans = useAppSelector((state) => state.user.plans);
     const [planAmount, setplanAmount] = useState({});
     const [planCount, setplanCount] = useState({});
@@ -35,6 +35,11 @@ export const PaymentPage = () => {
 
     const renderPlan = (plan, index) => {
         const [quantity, setQuantity] = useState(0);
+
+        useEffect(() => {
+            if (value.plan == plan.name)
+                set(1)
+        },[])
 
         const increase = (val) => {
             if (!Number.isInteger(val) || quantity + val < 0) return;
