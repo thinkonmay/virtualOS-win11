@@ -430,7 +430,7 @@ export const userAsync = {
                 );
                 if (resp instanceof Error) throw resp;
                 appDispatch(app_close('store'));
-                appDispatch(app_full({ id: 'connectPc', page: null }));
+                appDispatch(app_full({ id: 'connectPc' }));
             }
         }
     )

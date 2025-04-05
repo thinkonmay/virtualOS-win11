@@ -170,7 +170,7 @@ const Taskbar = () => {
                                     appDispatch(
                                         app_full({
                                             id: 'payment',
-                                            page: 'storage'
+                                            page: 'payment'
                                         })
                                     );
                                 }}

@@ -36,7 +36,7 @@ const apps: AppData[] = [
     {
         name: [Contents.PAYMENT_APP],
         id: 'payment',
-        page: 'sub',
+        page: 'subscription',
         action: 'apps/app_toggle',
         payload: 'payment'
     },

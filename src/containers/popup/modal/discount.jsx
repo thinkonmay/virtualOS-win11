@@ -1,11 +1,5 @@
 import { MdInfoOutline } from 'react-icons/md';
-import {
-    app_full,
-    appDispatch,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
-import { Contents } from '../../../backend/reducers/locales';
+import { app_full, appDispatch, popup_close } from '../../../backend/reducers';
 
 export function discount({ data: { from, to, percentage } }) {
     return (
@@ -33,7 +27,9 @@ export function discount({ data: { from, to, percentage } }) {
                 <a
                     style={{ padding: '6px 14px' }}
                     onClick={() => {
-                        appDispatch(app_full({ id: 'payment', page: 'sub' }));
+                        appDispatch(
+                            app_full({ id: 'payment', page: 'subscription' })
+                        );
                         appDispatch(popup_close(true));
                     }}
                     target="_self"

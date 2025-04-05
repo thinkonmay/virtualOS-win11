@@ -146,7 +146,7 @@ export const appSlice = createSlice({
                 obj.z = state.hz;
             }
         },
-        app_metadata_change: (
+        app_payload: (
             state,
             action: PayloadAction<{ id; key; value }>
         ) => {

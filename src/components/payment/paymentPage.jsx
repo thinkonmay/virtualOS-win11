@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { create_payment_qr } from '../../backend/actions';
 import { useAppSelector } from '../../backend/reducers';
 
-export const StoragePage = () => {
+export const PaymentPage = () => {
     const plans = useAppSelector((state) => state.user.plans);
     const [planAmount, setplanAmount] = useState({});
     const [planCount, setplanCount] = useState({});
@@ -225,7 +225,7 @@ export const StoragePage = () => {
                     <div className="mt-8 justify-self-center">
                         <div className="flex items-center justify-between pb-6">
                             <p className="font-normal text-lg leading-8 text-black">
-                                3 Items
+                                {count} Items
                             </p>
                             <p className="font-medium text-lg leading-8 text-black">
                                 {total / 1000}k

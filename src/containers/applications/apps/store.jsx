@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
     app_full,
-    app_toggle,
     appDispatch,
     popup_open,
     useAppSelector
@@ -59,7 +58,6 @@ const DetailPage = ({ app, close }) => {
         publishers: []
     };
 
-
     const [index, setIndex] = useState(
         Math.round(Math.random() * (screenshots.length - 1))
     );
@@ -75,7 +73,7 @@ const DetailPage = ({ app, close }) => {
 
     const [options, setOptions] = useState([
         {
-            code: 'storage',
+            code: 'payment',
             name: 'Game tải sẵn (free)',
             clicked: false
         },
@@ -88,7 +86,7 @@ const DetailPage = ({ app, close }) => {
 
     const handleDownload = () =>
         code == undefined
-            ? appDispatch(app_full({ id: 'payment', page: 'sub' }))
+            ? appDispatch(app_full({ id: 'payment', page: 'subscription' }))
             : appDispatch(
                   popup_open({
                       type: 'yesNo',
@@ -111,9 +109,7 @@ const DetailPage = ({ app, close }) => {
                 key={index}
                 onClick={() => setClicked((old) => !old)}
                 className={`bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${
-                    clicked
-                        ? 'bg-gray-600 text-white '
-                        : ''
+                    clicked ? 'bg-gray-600 text-white ' : ''
                 }`}
             >
                 {val.name}

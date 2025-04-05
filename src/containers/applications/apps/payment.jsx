@@ -1,40 +1,46 @@
-import { useEffect, useState } from 'react';
-import { MdCheck } from 'react-icons/md';
-import { create_payment_pocket } from '../../../backend/actions';
 import {
-    app_metadata_change,
+    app_payload,
     appDispatch,
-    popup_open,
-    show_chat,
-    startogg,
     useAppSelector
 } from '../../../backend/reducers';
-import DepositPage from '../../../components/payment/depositPage';
 import { HistoryPage } from '../../../components/payment/historyPage';
+import { PaymentPage } from '../../../components/payment/paymentPage';
 import { RefundPage } from '../../../components/payment/refundPage';
-import { StoragePage } from '../../../components/payment/storagePage';
-import {
-    Icon,
-    LazyComponent,
-    ToolBar
-} from '../../../components/shared/general';
+import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
+import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
-import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
 
 export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
 
-    const page = wnapp.page; //deposit-sub - refund - storage -history
+    const curpage = wnapp.page;
     const val = wnapp.value;
 
-    const handleChangePage = (input) => {
+    const handleChangePage = (input) =>
         appDispatch(
-            app_metadata_change({ id: 'payment', key: 'page', value: input })
+            app_payload({ id: 'payment', key: 'page', value: input })
         );
+
+    const routing = {
+        subscription: 'Đăng kí',
+        payment: 'Thanh toán',
+        history: 'Lịch sử',
+        refund: 'Hoàn tiền'
     };
+    const pages = ['subscription', 'payment', 'history', 'refund'];
+
+    const renderRoute = (page) => (
+        <div
+            className={page == curpage ? 'item subActive' : 'item'}
+            onClick={() => handleChangePage(page)}
+        >
+            {routing[page]}
+        </div>
+    );
+
     return (
         <div
             className="paymentApp wnstore floatTab dpShad"
@@ -56,54 +62,17 @@ export const PaymentApp = () => {
             <LazyComponent show={!wnapp.hide}>
                 <div className="windowScreen wrapperPayment">
                     <div className="navPayment text-left">
-                        <div
-                            className={
-                                page == 'sub' ? 'item subActive' : 'item'
-                            }
-                            onClick={() => handleChangePage('sub')}
-                        >
-                            Đăng kí
-                        </div>
-                        <div
-                            className={
-                                page == 'storage'
-                                    ? 'item subActive'
-                                    : 'item text-gray-500'
-                            }
-                            onClick={() => handleChangePage('storage')}
-                        >
-                            Thanh toán
-                        </div>
-                        <div
-                            className={
-                                page == 'history'
-                                    ? 'item subActive'
-                                    : 'item text-gray-500'
-                            }
-                            onClick={() => handleChangePage('history')}
-                        >
-                            Lịch sử
-                        </div>
-                        <div
-                            className={
-                                page == 'refund'
-                                    ? 'item subActive'
-                                    : 'item text-gray-500'
-                            }
-                            onClick={() => handleChangePage('refund')}
-                        >
-                            Hoàn tiền
-                        </div>
+                        {pages.map(renderRoute)}
                     </div>
                     <div className="win11Scroll w-full">
-                        {page == 'sub' ? (
-                            <SubscriptionPage />
-                        ) : page == 'refund' ? (
-                            <RefundPage />
-                        ) : page == 'history' ? (
-                            <HistoryPage />
+                        {curpage == 'subscription' ? (
+                            <SubscriptionPage value={val} />
+                        ) : curpage == 'refund' ? (
+                            <RefundPage value={val} />
+                        ) : curpage == 'history' ? (
+                            <HistoryPage value={val} />
                         ) : (
-                            <StoragePage />
+                            <PaymentPage value={val} />
                         )}
                     </div>
                 </div>
