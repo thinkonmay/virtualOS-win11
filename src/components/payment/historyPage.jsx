@@ -1,24 +1,4 @@
-import { useState } from 'react';
 import { useAppSelector } from '../../backend/reducers';
-import { current } from '@reduxjs/toolkit';
-const listHistoryNav = [
-    {
-        name: 'Tất cả',
-        id: 'all'
-    },
-    {
-        name: 'Nạp tiền',
-        id: 'deposit'
-    },
-    {
-        name: 'Đăng kí',
-        id: 'buy'
-    },
-    {
-        name: 'Nâng cấp',
-        id: 'upgrade'
-    }
-];
 
 export const HistoryPage = () => {
     const historyDeposit = useAppSelector(

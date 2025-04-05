@@ -93,7 +93,7 @@ const PaymentButton = ({ subInfo: sub, domain }) => {
                         </button>
                     </div>
                 )
-            ) : sub.active ? (
+            ) : (
                 <div className="flex gap-2">
                     <button
                         onClick={onChooseSub}
@@ -105,16 +105,6 @@ const PaymentButton = ({ subInfo: sub, domain }) => {
                                 ? 'Chuyển sang gói này'
                                 : `Nạp thêm`
                             : 'Đăng kí'}
-                    </button>
-                </div>
-            ) : (
-                <div className="flex gap-2">
-                    <button
-                        onClick={askSth}
-                        type="button"
-                        className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-blue-700"
-                    >
-                        Liên hệ
                     </button>
                 </div>
             )}

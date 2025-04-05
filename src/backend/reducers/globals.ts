@@ -272,8 +272,8 @@ export const globalAsync = {
         )?.map((x) => x.name.replaceAll('.template', ''));
         const { data, error } = await GLOBAL()
             .from('stores')
-            .select('code_name,name,metadata')
-            .in('code_name', samenodes ?? []);
+            .select('code_name,name,metadata');
+        // .in('code_name', samenodes ?? []);
         if (error) throw new Error(error.message);
 
         return data;

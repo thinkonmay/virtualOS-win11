@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
+    app_full,
     app_toggle,
     appDispatch,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
-import { Contents } from '../../../backend/reducers/locales';
-import {
-    Image,
-    LazyComponent,
-    ToolBar
-} from '../../../components/shared/general';
+import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 
 export const MicroStore = () => {
@@ -53,47 +49,77 @@ export const MicroStore = () => {
 
 const DetailPage = ({ app, close }) => {
     const t = useAppSelector((state) => state.globals.translation);
-    const { currentAddress, data } = useAppSelector((state) => state.worker);
-    const subscribed = useAppSelector(
-        (state) => state.user.subscription != undefined
-    );
-    const volume = data[currentAddress]?.Volumes?.find(
-        (x) => x.pool == 'user_data'
+    const code = useAppSelector(
+        (state) => state.user.subscription?.metadata?.template?.code
     );
 
-    const { name, code_name, metadata } = app;
-    const {
-        capsule_image,
-        short_description,
-        screenshots,
-        publishers: [publisher]
-    } = metadata ?? {
+    const { code_name, metadata } = app;
+    const { short_description, screenshots, publishers } = metadata ?? {
         screenshots: [],
         publishers: []
     };
 
-    const handleDownload = () => {
-        appDispatch(
-            popup_open({
-                type: 'yesNo',
-                data: {
-                    template: code_name
-                }
-            })
-        );
-    };
 
-    const [index,setIndex] = useState(Math.round(Math.random() * (screenshots.length - 1)));
+    const [index, setIndex] = useState(
+        Math.round(Math.random() * (screenshots.length - 1))
+    );
     useEffect(() => {
         const i = setInterval(() => {
-            setIndex(old => (old + 1 )% screenshots.length);
-            console.log(index)
-        },5000)
+            setIndex((old) => (old + 1) % screenshots.length);
+        }, 5000);
 
         return () => {
             clearInterval(i);
         };
     }, []);
+
+    const [options, setOptions] = useState([
+        {
+            code: 'storage',
+            name: 'Game tải sẵn (free)',
+            clicked: false
+        },
+        {
+            code: 'kickey',
+            name: 'Tài khoản kickey',
+            clicked: false
+        }
+    ]);
+
+    const handleDownload = () =>
+        code == undefined
+            ? appDispatch(app_full({ id: 'payment', page: 'sub' }))
+            : appDispatch(
+                  popup_open({
+                      type: 'yesNo',
+                      data: {
+                          template: code_name
+                      }
+                  })
+              );
+
+    const renderOption = (val, index) => {
+        const [clicked, setClicked] = useState(false);
+        useEffect(() => {
+            setOptions((old) => {
+                old[index].clicked = clicked;
+                return old;
+            });
+        }, [clicked]);
+        return (
+            <button
+                key={index}
+                onClick={() => setClicked((old) => !old)}
+                className={`bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${
+                    clicked
+                        ? 'bg-gray-600 text-white '
+                        : ''
+                }`}
+            >
+                {val.name}
+            </button>
+        );
+    };
 
     return (
         <section className="relative text-white p-20">
@@ -243,56 +269,63 @@ const DetailPage = ({ app, close }) => {
                                     </span>
                                 </div>
                             </div>
-                            <p className="text-gray-500 text-base font-normal mb-5">
+                            <p className="text-gray-300 text-base font-normal mb-5">
                                 {short_description}
                             </p>
                             <ul className="grid gap-y-4 mb-8">
-                                <li className="flex items-center gap-3">
-                                    <svg
-                                        width="26"
-                                        height="26"
-                                        viewBox="0 0 26 26"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <rect
+                                {publishers.map((x) => (
+                                    <li className="flex items-center gap-3">
+                                        <svg
                                             width="26"
                                             height="26"
-                                            rx="13"
-                                            fill="#4F46E5"
-                                        />
-                                        <path
-                                            d="M7.66669 12.629L10.4289 15.3913C10.8734 15.8357 11.0956 16.0579 11.3718 16.0579C11.6479 16.0579 11.8701 15.8357 12.3146 15.3913L18.334 9.37183"
-                                            stroke="white"
-                                            stroke-width="1.6"
-                                            stroke-linecap="round"
-                                        />
-                                    </svg>
-                                    <span className="font-normal text-base text-white ">
-                                        Branded shirt
-                                    </span>
-                                </li>
+                                            viewBox="0 0 26 26"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                width="26"
+                                                height="26"
+                                                rx="13"
+                                                fill="#4F46E5"
+                                            />
+                                            <path
+                                                d="M7.66669 12.629L10.4289 15.3913C10.8734 15.8357 11.0956 16.0579 11.3718 16.0579C11.6479 16.0579 11.8701 15.8357 12.3146 15.3913L18.334 9.37183"
+                                                stroke="white"
+                                                stroke-width="1.6"
+                                                stroke-linecap="round"
+                                            />
+                                        </svg>
+                                        <span className="font-normal text-base text-white ">
+                                            {x}
+                                        </span>
+                                    </li>
+                                ))}
                             </ul>
-                            <p className="text-white text-lg leading-8 font-medium mb-4">
-                                Hiện có
-                            </p>
-                            <div className="w-full pb-8 border-b border-gray-100 flex-wrap">
-                                <div className="grid grid-cols-3 min-[400px]:grid-cols-6 gap-3 max-w-md">
-                                    <button className="bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-100 hover:border-gray-300 visited:border-gray-300 visited:bg-gray-50">
-                                        Tài khoản steam
-                                    </button>
-                                    <button className="bg-white col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-100 hover:border-gray-300 visited:border-gray-300 visited:bg-gray-50">
-                                        Dữ liệu tải sẵn
-                                    </button>
-                                </div>
-                            </div>
+                            {options.length > 0 ? (
+                                <>
+                                    <p className="text-white text-lg leading-8 font-medium mb-4">
+                                        Option
+                                    </p>
+                                    <div className="w-full pb-8 border-b border-gray-100 flex-wrap">
+                                        <div className="grid grid-cols-3 min-[400px]:grid-cols-6 gap-3 max-w-md">
+                                            {options.map(renderOption)}
+                                        </div>
+                                    </div>
+                                </>
+                            ) : null}
 
                             <div className="flex items-center gap-3">
-                                <button onClick={close} className="group py-4 px-5 rounded-full bg-indigo-50 text-indigo-600 font-semibold text-lg w-full flex items-center justify-center gap-2 transition-all duration-500 hover:bg-indigo-100">
-                                    Close
+                                <button
+                                    onClick={close}
+                                    className="group py-4 px-5 rounded-full bg-blue-50 text-blue-600 font-semibold text-lg w-full flex items-center justify-center gap-2 transition-all duration-500 hover:bg-blue-100"
+                                >
+                                    Quay lại
                                 </button>
-                                <button onClick={handleDownload} className="text-center w-full px-5 py-4 rounded-[100px] bg-indigo-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-indigo-700 hover:shadow-indigo-400">
-                                    Buy Now
+                                <button
+                                    onClick={handleDownload}
+                                    className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                >
+                                    {code != undefined ? 'Cài đặt' : 'Mua ngay'}
                                 </button>
                             </div>
                         </div>
@@ -325,7 +358,7 @@ const DownPage = ({ open }) => {
 
                         <a
                             href="javascript:void(0)"
-                            className="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-white font-semibold py-3 px-3 lg:px-11 hover:text-indigo-600 tab-active:bg-indigo-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap active bg-blue-900 hover:bg-white"
+                            className="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-white font-semibold py-3 px-3 lg:px-11 hover:text-blue-600 tab-active:bg-blue-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap active bg-blue-900 hover:bg-white"
                             data-tab="tabs-with-background-1"
                             role="tab"
                         >
@@ -333,7 +366,7 @@ const DownPage = ({ open }) => {
                         </a>
                         <a
                             href="javascript:void(0)"
-                            className="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-gray-400 font-semibold py-3 px-3 lg:px-11 hover:text-indigo-600 tab-active:bg-indigo-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap"
+                            className="inline-block w-1/2 text-center transition-all duration-500 rounded-full text-gray-400 font-semibold py-3 px-3 lg:px-11 hover:text-blue-600 tab-active:bg-blue-600 tab-active:rounded-full tab-active:text-white tablink whitespace-nowrap"
                             data-tab="tabs-with-background-2"
                             role="tab"
                         >

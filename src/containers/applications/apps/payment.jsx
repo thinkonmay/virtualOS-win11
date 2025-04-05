@@ -100,8 +100,6 @@ export const PaymentApp = () => {
                             <SubscriptionPage />
                         ) : page == 'refund' ? (
                             <RefundPage />
-                        ) : page == 'deposit' ? (
-                            <DepositPage value={val} />
                         ) : page == 'history' ? (
                             <HistoryPage />
                         ) : (
