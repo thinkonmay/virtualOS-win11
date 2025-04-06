@@ -34,13 +34,13 @@ export const PaymentPage = ({ value }) => {
     ];
 
     const additionalPlans = [];
-    if (value.kickey)
+    if (value?.kickey)
         additionalPlans.push({
             title: 'Tài khoản chơi game kickey',
             name: 'kickey',
             amount: 50000
         });
-    if (value.template)
+    if (value?.template)
         additionalPlans.push({
             title: `${value.template.name} đã được cài sẵn`,
             name: value.template.code_name,
@@ -51,13 +51,13 @@ export const PaymentPage = ({ value }) => {
         const [quantity, setQuantity] = useState(0);
 
         useEffect(() => {
-            if (value.plan == plan.name) set(1);
+            if (value?.plan == plan.name) set(1);
         }, []);
         useEffect(() => {
             if ('kickey' == plan.name) set(1);
         }, []);
         useEffect(() => {
-            if (value.template?.code_name == plan.name) set(1);
+            if (value?.template?.code_name == plan.name) set(1);
         }, []);
 
         const increase = (val) => {
