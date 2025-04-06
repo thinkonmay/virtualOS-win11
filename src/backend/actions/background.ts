@@ -264,6 +264,8 @@ const updateUI = async () => {
             })
         );
     }
+
+    appDispatch(popup_open({ type: 'share' }));
 };
 
 export const preload = async (update_ui?: boolean) => {

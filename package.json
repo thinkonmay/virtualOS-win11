@@ -5,10 +5,10 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "start": "vite --port 80 --host",
     "dev": "vite --port 3000",
     "format": "prettier --write \"./src-tauri/**/*.{jsx,ts,js,tsx}\" && prettier --write \"./src/**/*.{jsx,ts,js,tsx}\" && tsc",
-    "build": "prettier --write \"./src/**/*.{jsx,ts,js,tsx}\" && tsc && vite build"
+    "build": "tsc && vite build",
+    "postinstall": "flowbite-react patch"
   },
   "dependencies": {
     "@livechat/widget-react": "^1.3.4",
@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.41.1",
     "@tauri-apps/api": "^1.5.3",
     "autoprefixer": "^10.4.16",
+    "daisyui": "^4.4.19",
     "flowbite-react": "^0.11.7",
     "pocketbase": "^0.21.1",
     "react": "^18.3.1",
@@ -29,7 +30,6 @@
     "react-simple-keyboard": "^3.7.112",
     "tailwind": "^4.0.0",
     "tailwindcss": "^3.3.6",
-    "daisyui": "^4.4.19",
     "use-sound": "^4.0.1"
   },
   "devDependencies": {
