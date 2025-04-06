@@ -7,6 +7,7 @@ import { Contents } from '../../backend/reducers/locales';
 import { formatDate } from '../../backend/utils/date';
 import DomainSwitch from '../../containers/applications/apps/assets/DomainSwitch';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
+import NodeSwitch from '../../containers/applications/apps/assets/NodeSwitch';
 import { Icon } from './general';
 import './index.scss';
 
@@ -16,30 +17,27 @@ function UserInfo() {
         cluster,
         created_at,
         last_payment,
+        plan_name,
         total_usage,
         ended_at,
-        metadata,
         policy
     } = subscription ?? {};
-    const { node } = metadata ?? {};
-    let { limit_hour, name: plan_name } = policy ?? {};
+    let { limit_hour } = policy ?? {};
 
     const t = useAppSelector((state) => state.globals.translation);
 
     const Paid = () => (
         <div className="restWindow w-full  flex flex-col mt-4">
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
+                <span className="text-left">Đăng kí gói</span>
+                <span>{plan_name}</span>
+            </div>
+            <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">{t[Contents.TIME]}</span>
                 <span>
                     {total_usage?.toFixed(1)} / {limit_hour}h
                 </span>
             </div>
-
-            <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                <span className="text-left">Gói</span>
-                <span>Gói {plan_name}</span>
-            </div>
-
             <div className="w-full flex gap-4 justify-between mt-1 items-end">
                 <span className="text-left">Dung lượng</span>
                 <span>150GB</span>
@@ -64,14 +62,8 @@ function UserInfo() {
             ) : null}
             {cluster ? (
                 <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">Server</span>
+                    <span className="text-left">Server đăng kí</span>
                     <span>{cluster}</span>
-                </div>
-            ) : null}
-            {node ? (
-                <div className="w-full flex gap-4 justify-between mt-1 items-end">
-                    <span className="text-left">Node</span>
-                    <span>{node}</span>
                 </div>
             ) : null}
         </div>
@@ -79,16 +71,11 @@ function UserInfo() {
 
     return (
         <div className="userManager">
-            <div className="stmenu  p-[14px] pt-2">
+            <div className="stmenu">
                 <div>
                     <div className="pinnedApps mt-[16px] text-center font-semibold pb-1 flex items-center justify-center gap-2">
                         <span>{email ?? 'Admin'}</span>
-                        <Icon
-                            className="quickIcon"
-                            //ui={true}
-                            src={'active'}
-                            width={14}
-                        />
+                        <Icon className="quickIcon" src={'active'} width={14} />
                     </div>
                 </div>
                 <div
@@ -99,27 +86,22 @@ function UserInfo() {
                         <span>Language</span>
                         <LangSwitch />
                     </div>
-                    <div className="w-full flex gap-4 justify-between my-[8px] ">
+                    <div className="w-full flex gap-4 justify-between">
                         <span>Server</span>
                         <DomainSwitch />
                     </div>
-                    <div className="w-full flex gap-4 justify-between mt-[1rem]">
-                        {subscription != undefined ? (
-                            <Paid />
-                        ) : (
-                            <div className="restWindow w-full  flex flex-col ">
-                                <div className="w-full flex gap-4 justify-between mt-2 items-end">
-                                    <span className="text-left">
-                                        You haven't paid yet
-                                    </span>
-                                </div>
-                                <p></p>
-                            </div>
-                        )}
+                    {subscription != undefined ? (
+                        <div className="w-full flex gap-4 justify-between">
+                            <span>Node</span>
+                            <NodeSwitch />
+                        </div>
+                    ) : null}
+                    <div className="w-full flex gap-4 justify-between">
+                        {subscription != undefined ? <Paid /> : null}
                     </div>
                 </div>
 
-                <div className="menuBar">
+                <div className="menuBar mt-10">
                     <div
                         className="w-full h-full flex cursor-pointer prtclk items-center justify-center gap-2"
                         onClick={() => appDispatch(user_delete())}

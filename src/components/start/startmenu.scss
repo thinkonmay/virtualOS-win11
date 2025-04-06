@@ -67,20 +67,20 @@
   max-width: 360px;
   width: 40%;
   min-width: 270px;
-  max-height: 460px;
-  height: calc(100% - 62px);
+  padding: 1rem;
 
   &[data-align="center"] {
-    bottom: 60px;
+    bottom: 4rem;
     margin-left: auto;
     margin-right: auto;
-    right: 0;
     text-align: center;
+    right: 0;
   }
 
   &[data-align="left"] {
-    left: 8px;
-    top: 50px;
+    height: 15rem;
+    left: 0.5rem;
+    top: 4rem;
   }
 
 

@@ -1,8 +1,8 @@
-import { preload } from '../../../../backend/actions/background';
 import { useAppSelector } from '../../../../backend/reducers';
 
 function DomainSwitch() {
     const domain = useAppSelector((state) => state.worker.currentAddress);
+    const availableDomains = useAppSelector((state) => state.globals.domains);
 
     const updateLanguage = (e) => {
         const domain = e.target.value;
@@ -18,9 +18,13 @@ function DomainSwitch() {
 
     return (
         <div className="langSwitcher langSwitcherTile">
-            <select value={domain} onChange={updateLanguage}>
-                <option value="play.2.thinkmay.net">play.2</option>
-                <option value="v4.thinkmay.net">v4</option>
+            <select value={domain} onChange={updateLanguage} className="w-28">
+                {availableDomains.map((domain, index) => (
+                    <option key={index} value={domain.domain}>
+                        {domain.domain.replaceAll('.thinkmay.net', '')}{' '}
+                        {domain.free}
+                    </option>
+                ))}
             </select>
         </div>
     );

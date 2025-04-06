@@ -25,7 +25,11 @@ function LangSwitch() {
     };
     return (
         <div className="langSwitcher langSwitcherTile">
-            <select value={languageValue} onChange={updateLanguage}>
+            <select
+                value={languageValue}
+                onChange={updateLanguage}
+                className="w-28"
+            >
                 <option value="ENG">English</option>
                 <option value="VN">Vietnamese</option>
                 <option value="ID">Indonesian</option>
