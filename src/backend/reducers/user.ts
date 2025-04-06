@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
 import { app_close, app_full, appDispatch, RootState, show_chat } from '.';
-import { ChangeTemplate, GLOBAL, POCKETBASE } from '../../../src-tauri/api';
+import {
+    APIError,
+    ChangeTemplate,
+    GLOBAL,
+    POCKETBASE
+} from '../../../src-tauri/api';
 import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
 
@@ -428,7 +433,7 @@ export const userAsync = {
                     template,
                     vol.name
                 );
-                if (resp instanceof Error) throw resp;
+                if (resp instanceof APIError) throw resp;
                 appDispatch(app_close('store'));
                 appDispatch(app_full({ id: 'connectPc' }));
             }

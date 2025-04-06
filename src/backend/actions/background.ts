@@ -35,7 +35,6 @@ import {
     worker_refresh
 } from '../reducers';
 import { Contents } from '../reducers/locales/index.ts';
-import { formatError } from '../utils/formatErr.ts';
 
 export const originalurl = new URL(window.location.href);
 
@@ -290,16 +289,6 @@ export const preload = async (update_ui?: boolean) => {
             type: 'preload/rejected',
             payload: e
         });
-
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    content: formatError(e),
-                    success: false
-                }
-            })
-        );
     }
 };
 

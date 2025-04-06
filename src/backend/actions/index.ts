@@ -1,4 +1,9 @@
-import { Computer, GetInfo, POCKETBASE } from '../../../src-tauri/api';
+import {
+    APIError,
+    Computer,
+    GetInfo,
+    POCKETBASE
+} from '../../../src-tauri/api';
 import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
@@ -370,7 +375,7 @@ export const create_payment_pocket = async ({
             while (!(info?.virtReady ?? false)) {
                 await new Promise((r) => setTimeout(r, 20000));
                 const result = await GetInfo(cluster_domain);
-                if (result instanceof Error) throw result;
+                if (result instanceof APIError) throw result;
                 else info = result;
             }
 

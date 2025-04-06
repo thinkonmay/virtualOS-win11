@@ -30,8 +30,9 @@ export const PaymentApp = () => {
     };
     const pages = ['subscription', 'payment', 'history', 'refund'];
 
-    const renderRoute = (page) => (
+    const renderRoute = (page, index) => (
         <div
+            key={index}
             className={page == curpage ? 'item subActive' : 'item'}
             onClick={() => handleChangePage(page)}
         >

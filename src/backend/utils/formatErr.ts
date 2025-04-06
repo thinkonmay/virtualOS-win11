@@ -1,6 +1,6 @@
 import { Contents } from '../reducers/locales';
 
-import { CAUSE } from '../../../src-tauri/api';
+import { APIError, CAUSE } from '../../../src-tauri/api';
 import { store } from '../reducers';
 
 const map: Map<CAUSE, Contents> = new Map<CAUSE, Contents>();
@@ -17,16 +17,11 @@ map.set(CAUSE.PERMISSION_REQUIRED, Contents.STORE_DESCRIPTIONR);
 map.set(CAUSE.NEED_WAIT, Contents.STORE_DESCRIPTIONR);
 map.set(CAUSE.INVALID_REQUEST, Contents.STORE_DESCRIPTIONR);
 
-export function formatError(error) {
-    if (error?.message && includesErr(error?.message) != '') {
-        return includesErr(error.message);
-    } else if (includesErr(error) !== '') {
-        return includesErr(error);
-    }
-    if (typeof error === 'object') {
-        return error.message;
-    }
-    return error;
+export function formatError(error: APIError | Error | any): string {
+    console.log(error);
+    if (error.code != undefined) return `${error.code} ${error.message}`;
+    else if (error instanceof Error) return error.message;
+    else return error.message;
 }
 
 const listErr = [

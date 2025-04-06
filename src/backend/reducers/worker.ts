@@ -11,6 +11,7 @@ import {
     worker_refresh
 } from '.';
 import {
+    APIError,
     CloseSession,
     Computer,
     GetInfo,
@@ -19,9 +20,9 @@ import {
     StartThinkmay
 } from '../../../src-tauri/api';
 import { ready } from '../../../src-tauri/singleton';
+import { showConnect } from '../actions';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
-import { showConnect } from '../actions';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
@@ -85,7 +86,7 @@ export const workerAsync = {
             } = getState() as RootState;
 
             const info = await GetInfo(currentAddress);
-            if (info instanceof Error) throw info;
+            if (info instanceof APIError) throw info;
             else if (!info.virtReady && !info.remoteReady)
                 throw new Error(`no remote capability on ${currentAddress}`);
 
@@ -102,7 +103,19 @@ export const workerAsync = {
                     info.virtReady ? { HideVM: HideVM } : undefined,
                     info.virtReady ? workerAsync.showPosition : undefined
                 );
-                if (resp instanceof Error) throw resp;
+                if (resp instanceof APIError) {
+                    appDispatch(
+                        popup_open({
+                            type: 'complete',
+                            data: {
+                                success: false,
+                                content: `${resp.code} ${resp.message}`
+                            }
+                        })
+                    );
+
+                    return;
+                }
                 appDispatch(
                     workerAsync.update_local_worker({
                         currentAddress,
@@ -116,7 +129,7 @@ export const workerAsync = {
                 high_mtu: HighMTU,
                 high_queue: HighQueue
             });
-            if (result instanceof Error) throw result;
+            if (result instanceof APIError) throw result;
             await appDispatch(save_reference(result));
 
             showConnect();
@@ -158,7 +171,7 @@ export const workerAsync = {
             const result = await GetInfo(address);
             await appDispatch(
                 workerAsync.update_local_worker(
-                    result instanceof Error
+                    result instanceof APIError
                         ? {
                               info: {},
                               currentAddress: address
@@ -189,7 +202,7 @@ export const workerAsync = {
             if (session == undefined)
                 throw new Error(`no session available on ${currentAddress}`);
             const info = await CloseSession(currentAddress, session);
-            if (info instanceof Error) throw info;
+            if (info instanceof APIError) throw info;
             await appDispatch(
                 workerAsync.update_local_worker({
                     info,
