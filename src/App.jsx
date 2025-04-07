@@ -22,8 +22,9 @@ import { DesktopApp, SidePane, StartMenu } from './components/start';
 import { ListQAs } from './components/start/listQa';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
-import { Background, BootScreen, LockScreen } from './containers/background';
+import { Background, BootScreen } from './containers/background';
 import Popup from './containers/popup';
+import { login as Login } from './containers/popup/modal/login';
 import { Remote } from './containers/remote';
 import { Status } from './containers/status';
 import { ErrorFallback } from './error';
@@ -41,7 +42,6 @@ function App() {
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
-    const [delayPayment, setDelayPayment] = useState(false);
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -86,10 +86,6 @@ function App() {
             setLockscreen(false);
         });
     }, []);
-
-    useEffect(() => {
-        if (id != 'unknown' && !booting) setDelayPayment(false);
-    }, [id, booting]);
 
     const fullscreen = async () => {
         const elem = document.documentElement;
@@ -174,10 +170,11 @@ function App() {
     return (
         <div className="App">
             <ErrorBoundary FallbackComponent={ErrorFallback}>
-                {booting ? <BootScreen loadingText={loadingText} /> : null}
-                {id == 'unknown' && !remote.active && !delayPayment ? (
-                    <LockScreen loading={setLockscreen} />
-                ) : null}
+                {booting ? (
+                    <BootScreen loadingText={loadingText} />
+                ) : (
+                    <Login loading={setLockscreen} />
+                )}
                 <div className="appwrap ">
                     {pointerLock ? null : (
                         <>
@@ -199,9 +196,7 @@ function App() {
                     )}
                     {remote.active && !pointerLock ? <Status /> : null}
                     {remote.active ? (
-                        <>
-                            <Remote />
-                        </>
+                        <Remote />
                     ) : (
                         <>
                             <Background />

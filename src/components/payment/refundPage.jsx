@@ -23,25 +23,25 @@ export const RefundPage = () => {
 
 const RequestRefund = () => {
     return (
-        <section class="py-24">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="grid lg:grid-cols-2 grid-cols-1">
-                    <div class="lg:mb-0 mb-10">
-                        <div class="group w-full h-full">
-                            <div class="relative h-full">
+        <section className="py-24">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="grid lg:grid-cols-2 grid-cols-1">
+                    <div className="lg:mb-0 mb-10">
+                        <div className="group w-full h-full">
+                            <div className="relative h-full">
                                 <img
                                     src="logo.png"
                                     alt="ContactUs tailwind section"
-                                    class="w-full h-full lg:rounded-l-2xl rounded-2xl bg-blend-multiply bg-blue-200 object-cover"
+                                    className="w-full h-full lg:rounded-l-2xl rounded-2xl bg-blend-multiply bg-blue-200 object-cover"
                                 />
-                                <h1 class="font-manrope text-white text-4xl font-bold leading-10 absolute top-11 left-11">
+                                <h1 className="font-manrope text-white text-4xl font-bold leading-10 absolute top-11 left-11">
                                     Contact us
                                 </h1>
-                                <div class="absolute bottom-0 w-full lg:p-11 p-5">
-                                    <div class="bg-white rounded-lg p-6     ">
+                                <div className="absolute bottom-0 w-full lg:p-11 p-5">
+                                    <div className="bg-white rounded-lg p-6     ">
                                         <a
                                             // href="javascript:;"
-                                            class="flex items-center mb-10"
+                                            className="flex items-center mb-10"
                                         >
                                             <svg
                                                 width="30"
@@ -61,88 +61,88 @@ const RequestRefund = () => {
                                                     strokeWidth="2"
                                                 />
                                             </svg>
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 Your account met our refund
                                                 policy
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
                                         </a>
                                         <a
                                             href="javascript:;"
-                                            class="flex items-center"
+                                            className="flex items-center"
                                         >
-                                            <h5 class="text-black text-base font-normal leading-6 ml-5">
+                                            <h5 className="text-black text-base font-normal leading-6 ml-5">
                                                 654 Sycamore Avenue,
                                                 Meadowville, WA 76543
                                             </h5>
@@ -153,22 +153,22 @@ const RequestRefund = () => {
                         </div>
                     </div>
 
-                    <div class="bg-slate-800 p-5 lg:p-11 lg:rounded-r-2xl">
-                        <h2 class="text-white font-manrope text-4xl font-semibold leading-10 mb-11">
+                    <div className="bg-slate-800 p-5 lg:p-11 lg:rounded-r-2xl">
+                        <h2 className="text-white font-manrope text-4xl font-semibold leading-10 mb-11">
                             Send Us A Message
                         </h2>
                         <input
                             type="text"
-                            class="w-full h-12 text-white placeholder-gray-400 shadow-sm text-lg font-normal leading-7 rounded-2xl border-gray-200 focus:outline-none pl-4 mb-10 "
+                            className="w-full h-12 text-white placeholder-gray-400 shadow-sm text-lg font-normal leading-7 rounded-2xl border-gray-200 focus:outline-none pl-4 mb-10 "
                             placeholder="Name"
                         />
 
                         <input
                             type="text"
-                            class="w-full h-48 text-white placeholder-gray-400 rounded-2xl text-lg shadow-sm font-normal leading-7 border-spacing-20 border-gray-900 focus:outline-none pl-4 mb-10"
+                            className="w-full h-48 text-white placeholder-gray-400 rounded-2xl text-lg shadow-sm font-normal leading-7 border-spacing-20 border-gray-900 focus:outline-none pl-4 mb-10"
                             placeholder="Message"
                         />
-                        <button class="w-full h-12 text-white text-base font-semibold leading-6 rounded-full transition-all duration-700 hover:bg-blue-800 bg-blue-600 shadow-sm">
+                        <button className="w-full h-12 text-white text-base font-semibold leading-6 rounded-full transition-all duration-700 hover:bg-blue-800 bg-blue-600 shadow-sm">
                             Send
                         </button>
                     </div>
@@ -180,50 +180,50 @@ const RequestRefund = () => {
 
 const RefundStatus = () => {
     return (
-        <section class="py-24 relative text-white">
-            <div class="w-full max-w-7xl px-4 md:px-5 lg:px-5 mx-auto">
-                <div class="w-full flex-col justify-start items-start lg:gap-14 gap-10 inline-flex">
-                    <h2 class="w-full text-white-900 text-3xl font-bold font-manrope leading-normal">
+        <section className="py-24 relative text-white">
+            <div className="w-full max-w-7xl px-4 md:px-5 lg:px-5 mx-auto">
+                <div className="w-full flex-col justify-start items-start lg:gap-14 gap-10 inline-flex">
+                    <h2 className="w-full text-white-900 text-3xl font-bold font-manrope leading-normal">
                         Refund Status
                     </h2>
-                    <div class="w-full flex-col justify-start items-start gap-9 flex">
-                        <div class="w-full p-5 rounded-xl border border-gray-200 sm:justify-start justify-center items-center gap-5 flex sm:flex-row flex-col">
-                            <div class="w-full flex-col justify-center sm:items-start items-center gap-5 inline-flex sm:pr-5 sm:pb-0 pb-5 sm:border-r sm:border-b-0 border-b border-gray-200">
-                                <h6 class="text-white-900 text-base font-semibold leading-relaxed">
+                    <div className="w-full flex-col justify-start items-start gap-9 flex">
+                        <div className="w-full p-5 rounded-xl border border-gray-200 sm:justify-start justify-center items-center gap-5 flex sm:flex-row flex-col">
+                            <div className="w-full flex-col justify-center sm:items-start items-center gap-5 inline-flex sm:pr-5 sm:pb-0 pb-5 sm:border-r sm:border-b-0 border-b border-gray-200">
+                                <h6 className="text-white-900 text-base font-semibold leading-relaxed">
                                     Oder Date:
-                                    <span class="text-gray-500 font-medium">
+                                    <span className="text-gray-500 font-medium">
                                         May 26, 2024
                                     </span>
                                 </h6>
-                                <h6 class="text-white-900 text-base font-semibold leading-relaxed">
+                                <h6 className="text-white-900 text-base font-semibold leading-relaxed">
                                     Refund Method:
-                                    <span class="text-gray-500 font-medium">
+                                    <span className="text-gray-500 font-medium">
                                         Bank Transfer
                                     </span>
                                 </h6>
                             </div>
-                            <div class="w-full flex-col justify-center sm:items-start items-center gap-5 inline-flex">
-                                <h6 class="text-white-900 text-base font-semibold leading-relaxed">
+                            <div className="w-full flex-col justify-center sm:items-start items-center gap-5 inline-flex">
+                                <h6 className="text-white-900 text-base font-semibold leading-relaxed">
                                     Refund Request:
-                                    <span class="text-gray-500 text-base font-medium leading-relaxed">
+                                    <span className="text-gray-500 text-base font-medium leading-relaxed">
                                         {' '}
                                         June 10, 2024
                                     </span>
                                 </h6>
-                                <h6 class="text-white-900 text-base font-semibold leading-relaxed">
+                                <h6 className="text-white-900 text-base font-semibold leading-relaxed">
                                     Refund Amount:
-                                    <span class="text-gray-500 text-base font-medium leading-relaxed">
+                                    <span className="text-gray-500 text-base font-medium leading-relaxed">
                                         $2500
                                     </span>
                                 </h6>
                             </div>
                         </div>
-                        <div class="w-full justify-start items-start gap-2.5 inline-flex">
-                            <ol class="w-full overflow-hidden flex flex-col gap-1.5">
-                                <li class="w-full relative h-48 after:content-[''] after:w-0.5 after:h-40 after:bg-blue-600 after:inline-block after:mt-2 after:-bottom-0 after:absolute after:left-2.5">
+                        <div className="w-full justify-start items-start gap-2.5 inline-flex">
+                            <ol className="w-full overflow-hidden flex flex-col gap-1.5">
+                                <li className="w-full relative h-48 after:content-[''] after:w-0.5 after:h-40 after:bg-blue-600 after:inline-block after:mt-2 after:-bottom-0 after:absolute after:left-2.5">
                                     <a
                                         href="https://pagedone.io/"
-                                        class="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
+                                        className="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -241,20 +241,20 @@ const RefundStatus = () => {
                                                 fill="#4F46E5"
                                             />
                                             <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
+                                                fillRule="evenodd"
+                                                clipRule="evenodd"
                                                 d="M8.94001 0.199707H11.0597C12.8945 0.19969 14.353 0.199676 15.4955 0.353289C16.6735 0.511662 17.6348 0.846394 18.394 1.6056C19.1532 2.3648 19.4879 3.32606 19.6463 4.50402C19.7999 5.64658 19.7999 7.10502 19.7999 8.93985V11.0596C19.7999 12.8944 19.7999 14.3528 19.6463 15.4954C19.4879 16.6734 19.1532 17.6346 18.394 18.3938C17.6348 19.153 16.6735 19.4878 15.4955 19.6461C14.353 19.7997 12.8945 19.7997 11.0597 19.7997H8.93999C7.10516 19.7997 5.64672 19.7997 4.50417 19.6461C3.3262 19.4878 2.36494 19.153 1.60574 18.3938C0.846539 17.6346 0.511807 16.6734 0.353434 15.4954C0.199821 14.3528 0.199835 12.8944 0.199852 11.0596V8.93986C0.199835 7.10503 0.199821 5.64658 0.353434 4.50402C0.511807 3.32606 0.846539 2.3648 1.60574 1.6056C2.36494 0.846394 3.3262 0.511662 4.50417 0.353289C5.64672 0.199676 7.10518 0.19969 8.94001 0.199707ZM15.236 7.96437C15.5484 7.65195 15.5484 7.14542 15.236 6.833C14.9236 6.52058 14.4171 6.52058 14.1046 6.833L9.79534 11.1423C9.44601 11.4916 9.23972 11.6955 9.07398 11.822C9.00748 11.8727 8.96734 11.8952 8.94681 11.9045C8.92628 11.8952 8.88613 11.8727 8.81964 11.822C8.65389 11.6955 8.44761 11.4916 8.09828 11.1423L6.56559 9.60962C6.25317 9.2972 5.74664 9.2972 5.43422 9.60962C5.1218 9.92204 5.1218 10.4286 5.43422 10.741L7.00002 12.3068C7.3047 12.6116 7.58742 12.8944 7.84911 13.094C8.13871 13.315 8.49446 13.508 8.94681 13.508C9.39916 13.508 9.7549 13.315 10.0445 13.094C10.3062 12.8944 10.5889 12.6116 10.8936 12.3068L15.236 7.96437Z"
                                                 fill="#4F46E5"
                                             />
                                         </svg>
                                     </a>
-                                    <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6 ">
-                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed cursor-pointer hover:font-bold hover:text-blue-200 transition-all">
+                                    <div className="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6 ">
+                                        <h4 className="text-lg text-white-900 font-semibold leading-relaxed cursor-pointer hover:font-bold hover:text-blue-200 transition-all">
                                             Your request has been successfully
                                             received.
                                         </h4>
                                         <ul>
-                                            <h6 class="text-gray-500 text-base font-normal leading-relaxed">
+                                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">
                                                 Your request has been
                                                 successfully received. Our team
                                                 is now reviewing the details
@@ -268,10 +268,10 @@ const RefundStatus = () => {
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="w-full relative h-48 after:content-[''] after:w-0.5 after:h-40 after:bg-blue-200 after:inline-block after:mt-2 after:-bottom-0 after:absolute after:left-2.5">
+                                <li className="w-full relative h-48 after:content-[''] after:w-0.5 after:h-40 after:bg-blue-200 after:inline-block after:mt-2 after:-bottom-0 after:absolute after:left-2.5">
                                     <a
                                         href="https://pagedone.io/"
-                                        class="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
+                                        className="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -288,12 +288,12 @@ const RefundStatus = () => {
                                             />
                                         </svg>
                                     </a>
-                                    <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
-                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed cursor-pointer hover:font-bold hover:text-blue-200 transition-all">
+                                    <div className="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
+                                        <h4 className="text-lg text-white-900 font-semibold leading-relaxed cursor-pointer hover:font-bold hover:text-blue-200 transition-all">
                                             Collect Product from Your Location
                                         </h4>
                                         <ul>
-                                            <h6 class="text-gray-500 text-base font-normal leading-relaxed">
+                                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">
                                                 We will arrange for our courier
                                                 to collect the product from your
                                                 location. Please ensure it is
@@ -304,10 +304,10 @@ const RefundStatus = () => {
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="w-full relative h-48 after:content-[''] after:w-0.5 after:h-40 after:bg-blue-200 after:inline-block after:mt-2 after:-bottom-0 after:absolute after:left-2.5">
+                                <li className="w-full relative h-48 after:content-[''] after:w-0.5 after:h-40 after:bg-blue-200 after:inline-block after:mt-2 after:-bottom-0 after:absolute after:left-2.5">
                                     <a
                                         href="https://pagedone.io/"
-                                        class="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
+                                        className="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -324,12 +324,12 @@ const RefundStatus = () => {
                                             />
                                         </svg>
                                     </a>
-                                    <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
-                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed">
+                                    <div className="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
+                                        <h4 className="text-lg text-white-900 font-semibold leading-relaxed">
                                             Product Verification
                                         </h4>
                                         <ul>
-                                            <h6 class="text-gray-500 text-base font-normal leading-relaxed">
+                                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">
                                                 Our team will conduct a thorough
                                                 product verification to ensure
                                                 it meets all quality standards.
@@ -339,10 +339,10 @@ const RefundStatus = () => {
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="w-full relative h-24">
+                                <li className="w-full relative h-24">
                                     <a
                                         href="https://pagedone.io/"
-                                        class="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
+                                        className="w-6 h-6 relative flex items-center justify-center font-medium gap-2.5"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -359,12 +359,12 @@ const RefundStatus = () => {
                                             />
                                         </svg>
                                     </a>
-                                    <div class="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
-                                        <h4 class="text-lg text-white-900 font-semibold leading-relaxed">
+                                    <div className="w-full block flex flex-col gap-2.5 pl-3 absolute top-0 left-6">
+                                        <h4 className="text-lg text-white-900 font-semibold leading-relaxed">
                                             Credit the Amount Back
                                         </h4>
                                         <ul>
-                                            <h6 class="text-gray-500 text-base font-normal leading-relaxed">
+                                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">
                                                 We will credit the amount back
                                                 to your account, depending on
                                                 the chosen option, within 5-7
@@ -378,34 +378,34 @@ const RefundStatus = () => {
                                 </li>
                             </ol>
                         </div>
-                        <div class="w-full sm:p-5 p-3.5 rounded-xl border border-gray-200 justify-start items-center sm:gap-5 gap-3.5 inline-flex">
+                        <div className="w-full sm:p-5 p-3.5 rounded-xl border border-gray-200 justify-start items-center sm:gap-5 gap-3.5 inline-flex">
                             <img
-                                class="rounded-lg object-cover"
+                                className="rounded-lg object-cover"
                                 src="logo_white.png"
                                 width="50rem"
                                 alt="APPLE iPhone 15 Black image"
                             />
-                            <div class="w-full flex-col justify-center items-start gap-1.5 inline-flex">
-                                <h4 class="text-white-900 text-xl font-semibold leading-8">
+                            <div className="w-full flex-col justify-center items-start gap-1.5 inline-flex">
+                                <h4 className="text-white-900 text-xl font-semibold leading-8">
                                     {/* APPLE iPhone 15 (128 GB) - Black */}
                                 </h4>
-                                <h6 class="text-white-900 text-base font-semibold leading-relaxed">
+                                <h6 className="text-white-900 text-base font-semibold leading-relaxed">
                                     {`Return Reason: `}
-                                    <span class="text-gray-500 text-base font-medium leading-relaxed">
+                                    <span className="text-gray-500 text-base font-medium leading-relaxed">
                                         Incorrect Product
                                     </span>
                                 </h6>
                             </div>
                         </div>
                     </div>
-                    <div class="w-full justify-center items-center gap-5 flex sm:flex-row flex-col">
-                        <button class="md:w-fit w-full px-5 py-2.5 bg-blue-50 hover:bg-blue-100 transition-all duration-700 ease-in-out rounded-xl justify-center items-center flex">
-                            <span class="px-2 py-px text-blue-600 text-base font-semibold leading-relaxed">
+                    <div className="w-full justify-center items-center gap-5 flex sm:flex-row flex-col">
+                        <button className="md:w-fit w-full px-5 py-2.5 bg-blue-50 hover:bg-blue-100 transition-all duration-700 ease-in-out rounded-xl justify-center items-center flex">
+                            <span className="px-2 py-px text-blue-600 text-base font-semibold leading-relaxed">
                                 Back to Shopping
                             </span>
                         </button>
-                        <button class="md:w-fit w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-800 transition-all duration-700 ease-in-out shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] rounded-xl justify-center items-center flex">
-                            <span class="px-2 py-px text-white text-base font-semibold leading-relaxed">
+                        <button className="md:w-fit w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-800 transition-all duration-700 ease-in-out shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] rounded-xl justify-center items-center flex">
+                            <span className="px-2 py-px text-white text-base font-semibold leading-relaxed">
                                 Cancel Refund
                             </span>
                         </button>
@@ -418,41 +418,41 @@ const RefundStatus = () => {
 
 const RefundPolicy = () => {
     return (
-        <section class="py-24">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-200 rounded-xl">
-                <div class="flex flex-col justify-center items-center gap-x-16 gap-y-5 xl:gap-28 lg:flex-row lg:justify-between max-lg:max-w-2xl mx-auto max-w-full">
-                    <div class="w-full lg:w-1/2">
+        <section className="py-24">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-200 rounded-xl">
+                <div className="flex flex-col justify-center items-center gap-x-16 gap-y-5 xl:gap-28 lg:flex-row lg:justify-between max-lg:max-w-2xl mx-auto max-w-full">
+                    <div className="w-full lg:w-1/2">
                         <img
                             src="logo.png"
                             alt="FAQ tailwind section"
-                            class="w-full rounded-xl object-cover"
+                            className="w-full rounded-xl object-cover"
                         />
                     </div>
-                    <div class="w-full lg:w-1/2 mt-5">
-                        <div class="lg:max-w-xl">
-                            <div class="mb-6 lg:mb-16">
-                                <h6 class="text-lg text-center font-medium text-blue-600 mb-2 lg:text-left">
+                    <div className="w-full lg:w-1/2 mt-5">
+                        <div className="lg:max-w-xl">
+                            <div className="mb-6 lg:mb-16">
+                                <h6 className="text-lg text-center font-medium text-blue-600 mb-2 lg:text-left">
                                     faqs
                                 </h6>
-                                <h2 class="text-4xl text-center font-bold text-gray-900 leading-[3.25rem] mb-5 lg:text-left">
+                                <h2 className="text-4xl text-center font-bold text-gray-900 leading-[3.25rem] mb-5 lg:text-left">
                                     Looking for answers?
                                 </h2>
                             </div>
                             <div
-                                class="accordion-group"
+                                className="accordion-group"
                                 data-accordion="default-accordion"
                             >
                                 <div
-                                    class="accordion py-8 group"
+                                    className="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
+                                        className="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
                                         <svg
-                                            class="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
+                                            className="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
                                             width="22"
                                             height="22"
                                             viewBox="0 0 22 22"
@@ -470,10 +470,10 @@ const RefundPolicy = () => {
                                     </button>
                                     <div
                                         id="basic-collapse-four-with-arrow-always-open"
-                                        class="accordion-content w-full px-0 overflow-hidden pr-4"
+                                        className="accordion-content w-full px-0 overflow-hidden pr-4"
                                         aria-labelledby="basic-heading-four-with-arrow-always-open"
                                     >
-                                        <p class="text-base text-gray-500 font-normal group-hover:block hidden">
+                                        <p className="text-base text-gray-500 font-normal group-hover:block hidden">
                                             Our focus on providing robust and
                                             user-friendly content management
                                             capabilities ensures that you can
@@ -485,16 +485,16 @@ const RefundPolicy = () => {
                                 </div>
 
                                 <div
-                                    class="accordion py-8 group"
+                                    className="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
+                                        className="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
                                         <svg
-                                            class="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
+                                            className="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
                                             width="22"
                                             height="22"
                                             viewBox="0 0 22 22"
@@ -512,10 +512,10 @@ const RefundPolicy = () => {
                                     </button>
                                     <div
                                         id="basic-collapse-four-with-arrow-always-open"
-                                        class="accordion-content w-full px-0 overflow-hidden pr-4"
+                                        className="accordion-content w-full px-0 overflow-hidden pr-4"
                                         aria-labelledby="basic-heading-four-with-arrow-always-open"
                                     >
-                                        <p class="text-base text-gray-500 font-normal group-hover:block hidden">
+                                        <p className="text-base text-gray-500 font-normal group-hover:block hidden">
                                             Our focus on providing robust and
                                             user-friendly content management
                                             capabilities ensures that you can
@@ -527,16 +527,16 @@ const RefundPolicy = () => {
                                 </div>
 
                                 <div
-                                    class="accordion py-8 group"
+                                    className="accordion py-8 group"
                                     id="basic-heading-four-with-arrow-always-open"
                                 >
                                     <button
-                                        class="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
+                                        className="accordion-toggle inline-flex items-center justify-between text-xl font-normal leading-8 text-gray-600 w-full transition duration-500 hover:text-blue-600 accordion-active:font-medium accordion-active:text-blue-600"
                                         aria-controls="basic-collapse-four-with-arrow-always-open"
                                     >
                                         <h5>What is the payment process?</h5>
                                         <svg
-                                            class="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
+                                            className="text-gray-900 transition duration-500 group-hover:text-blue-600 accordion-active:text-blue-600 accordion-active:rotate-180"
                                             width="22"
                                             height="22"
                                             viewBox="0 0 22 22"
@@ -554,10 +554,10 @@ const RefundPolicy = () => {
                                     </button>
                                     <div
                                         id="basic-collapse-four-with-arrow-always-open"
-                                        class="accordion-content w-full px-0 overflow-hidden pr-4"
+                                        className="accordion-content w-full px-0 overflow-hidden pr-4"
                                         aria-labelledby="basic-heading-four-with-arrow-always-open"
                                     >
-                                        <p class="text-base text-gray-500 font-normal group-hover:block hidden">
+                                        <p className="text-base text-gray-500 font-normal group-hover:block hidden">
                                             Our focus on providing robust and
                                             user-friendly content management
                                             capabilities ensures that you can

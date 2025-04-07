@@ -28,10 +28,15 @@ const Popup = () => {
             : null;
     };
 
+    const v1popup =
+        popup != undefined
+            ? Object.keys(modalsv1).filter((x) => x == popup.type)
+            : null;
+
     const Modalv1 = () => {
         return (
             <ReactModal
-                isOpen={popup != undefined}
+                isOpen={v1popup?.length > 0}
                 contentLabel="Modal"
                 className="modalContent"
                 overlayClassName="modalOverlay"
@@ -39,14 +44,10 @@ const Popup = () => {
                 style={{ 'backdrop-filter': 'blur(3px) brightness(0.5)' }}
             >
                 <div className="selectText d-flex min-h-full">
-                    {popup != undefined
-                        ? Object.keys(modalsv1)
-                              .filter((x) => x == popup.type)
-                              .map((key, idx) => {
-                                  const Modal = modalsv1[key];
-                                  return <Modal key={idx} data={popup.data} />;
-                              })
-                        : null}
+                    {v1popup?.map((key, idx) => {
+                        const Modal = modalsv1[key];
+                        return <Modal key={idx} data={popup.data} />;
+                    })}
                 </div>
             </ReactModal>
         );
@@ -64,7 +65,7 @@ const Popup = () => {
 
     return (
         <>
-            {/* <Modalv1 /> */}
+            <Modalv1 />
             <Modalv2 />
         </>
     );

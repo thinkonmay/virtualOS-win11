@@ -208,7 +208,6 @@ const updateUI = async () => {
 
         // TODO
         // if (true) appDispatch(popup_open({ type: 'share' }));
-        if (true) appDispatch(popup_open({ type: 'login', data: {} }));
         // if (true)
         //     appDispatch(
         //         popup_open({
