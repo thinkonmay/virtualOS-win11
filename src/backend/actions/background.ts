@@ -206,9 +206,16 @@ const updateUI = async () => {
                 })
             );
 
-
         // TODO
-        if (true) appDispatch(popup_open({ type: 'share' }));
+        // if (true) appDispatch(popup_open({ type: 'share' }));
+        if (true) appDispatch(popup_open({ type: 'login', data: {} }));
+        // if (true)
+        //     appDispatch(
+        //         popup_open({
+        //             type: 'discount',
+        //             data: { percentage: 1.1, to: '', from: '' }
+        //         })
+        //     );
     } else if (
         originalurl.searchParams.get('tutorial') == 'on' &&
         email != undefined &&
@@ -268,7 +275,6 @@ const updateUI = async () => {
             })
         );
     }
-
 };
 
 export const preload = async (update_ui?: boolean) => {

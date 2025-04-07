@@ -11,5 +11,3 @@ export { serversInfo } from './serversInfo';
 export { shareLink } from './shareLink';
 export { paymentQR } from './paymentQR';
 export { yesNo } from './yesNo';
-export { discount } from './discount';
-export { share } from './share';

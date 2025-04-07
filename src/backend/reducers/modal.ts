@@ -53,6 +53,10 @@ type PopupData =
           type: 'share';
       }
     | {
+          type: 'login';
+          data: {};
+      }
+    | {
           type: 'discount';
           data: {
               from: string;
@@ -151,6 +155,7 @@ export const modalSlice = createSlice({
                 'redirectDomain',
                 'share',
                 'discount',
+                'login',
                 'maintain'
             ];
             if (action.payload) preferred = [];

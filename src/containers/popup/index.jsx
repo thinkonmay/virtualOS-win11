@@ -5,7 +5,8 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import './index.scss';
-import * as modals from './modal';
+import * as modalsv1 from './modal/v1';
+import * as modalsv2 from './modal/v2';
 
 const Popup = () => {
     const popup = useAppSelector(
@@ -26,8 +27,9 @@ const Popup = () => {
             ? appDispatch(popup_close())
             : null;
     };
-    return (
-        <>
+
+    const Modalv1 = () => {
+        return (
             <ReactModal
                 isOpen={popup != undefined}
                 contentLabel="Modal"
@@ -38,15 +40,32 @@ const Popup = () => {
             >
                 <div className="selectText d-flex min-h-full">
                     {popup != undefined
-                        ? Object.keys(modals)
+                        ? Object.keys(modalsv1)
                               .filter((x) => x == popup.type)
                               .map((key, idx) => {
-                                  const Modal = modals[key];
+                                  const Modal = modalsv1[key];
                                   return <Modal key={idx} data={popup.data} />;
                               })
                         : null}
                 </div>
             </ReactModal>
+        );
+    };
+    const Modalv2 = () => {
+        return popup != undefined
+            ? Object.keys(modalsv2)
+                  .filter((x) => x == popup.type)
+                  .map((key, idx) => {
+                      const Modal = modalsv2[key];
+                      return <Modal key={idx} data={popup.data} />;
+                  })
+            : null;
+    };
+
+    return (
+        <>
+            {/* <Modalv1 /> */}
+            <Modalv2 />
         </>
     );
 };
