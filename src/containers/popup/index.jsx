@@ -31,14 +31,10 @@ const Popup = () => {
             <ReactModal
                 isOpen={popup != undefined}
                 contentLabel="Modal"
-                className="modalContent "
+                className="modalContent"
                 overlayClassName="modalOverlay"
                 onRequestClose={closeModal}
-                style={
-                    popup?.type == 'guidance'
-                        ? { 'backdrop-filter': '' }
-                        : { 'backdrop-filter': 'blur(3px) brightness(0.5)' }
-                }
+                style={{ 'backdrop-filter': 'blur(3px) brightness(0.5)' }}
             >
                 <div className="selectText d-flex min-h-full">
                     {popup != undefined

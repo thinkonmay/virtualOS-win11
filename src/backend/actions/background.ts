@@ -205,6 +205,10 @@ const updateUI = async () => {
                     }
                 })
             );
+
+
+        // TODO
+        if (true) appDispatch(popup_open({ type: 'share' }));
     } else if (
         originalurl.searchParams.get('tutorial') == 'on' &&
         email != undefined &&
@@ -265,7 +269,6 @@ const updateUI = async () => {
         );
     }
 
-    appDispatch(popup_open({ type: 'share' }));
 };
 
 export const preload = async (update_ui?: boolean) => {

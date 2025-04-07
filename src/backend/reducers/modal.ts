@@ -23,12 +23,6 @@ type PopupData =
           };
       }
     | {
-          type: 'guidance';
-          data: {
-              content: string;
-          };
-      }
-    | {
           type: 'notify';
           data: {
               title?: string;

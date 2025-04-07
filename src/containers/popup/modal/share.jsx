@@ -13,34 +13,39 @@ export function share() {
 
     return (
         <Modal
-            dismissible
             show={true}
-            onClose={() => appDispatch(popup_close(true))}
+            onClose={close}
+            style={{
+                backdropFilter: 'blur(3px) brightness(0.5)',
+                padding: '0px'
+            }}
         >
-            <ModalHeader>Share Thinkmay to your friends</ModalHeader>
-            <ModalBody>
-                <div className="space-y-6">
-                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        Share this code to your friends
-                    </p>
-                </div>
-                <div className="space-y-6 mt-10">
-                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        How do you rate your experience at thinkmay
-                    </p>
-                </div>
-            </ModalBody>
-            <ModalFooter className="justify-between">
-                <div class="flex items-center">
-                    <Button className="text-black" onClick={close}>
-                        Copy coupon code: {`abc`}
+            <div className="bg-gray-600">
+                <ModalHeader>Share Thinkmay to your friends</ModalHeader>
+                <ModalBody>
+                    <div className="space-y-6">
+                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                            Share this code to your friends
+                        </p>
+                    </div>
+                    <div className="space-y-6 mt-10">
+                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                            How do you rate your experience at thinkmay
+                        </p>
+                    </div>
+                </ModalBody>
+                <ModalFooter className="justify-between">
+                    <div class="flex items-center">
+                        <Button className="text-black" onClick={close}>
+                            Copy coupon code: {`abc`}
+                        </Button>
+                        <RatingSection />
+                    </div>
+                    <Button className="relative bg-gray-700" onClick={close}>
+                        Decline
                     </Button>
-                    <RatingSection />
-                </div>
-                <Button className="relative" color="gray" onClick={close}>
-                    Decline
-                </Button>
-            </ModalFooter>
+                </ModalFooter>
+            </div>
         </Modal>
     );
 }
