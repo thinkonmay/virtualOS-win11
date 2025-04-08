@@ -1,4 +1,3 @@
-
 export function discount({ data: { from, to, percentage } }) {
     return (
         <div

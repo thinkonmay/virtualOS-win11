@@ -1,24 +1,25 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import flowbiteReact from "flowbite-react/plugin/vite";
+import flowbiteReact from 'flowbite-react/plugin/vite';
 
-const ReactCompilerConfig = { /* ... */ };
+const ReactCompilerConfig = {
+    /* ... */
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: "/play",
+    base: '/play',
     build: { outDir: '../public/play' },
     define: {
-        'import.meta.env.__BUILD__' :  `"${new Date().toUTCString()}"`
+        'import.meta.env.__BUILD__': `"${new Date().toUTCString()}"`
     },
-    plugins: [react(
-        {
+    plugins: [
+        react({
             //@ts-expect-error
             babel: {
-                plugins: [
-                    ["babel-plugin-react-compiler", ReactCompilerConfig],
-                ],
-            },
-        }
-    ), flowbiteReact()]
+                plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]]
+            }
+        }),
+        flowbiteReact()
+    ]
 });
