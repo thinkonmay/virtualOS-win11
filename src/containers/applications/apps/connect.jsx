@@ -100,12 +100,11 @@ export const ConnectApp = () => {
                                     </div>
                                 </div>
                             ) : null}
-
                             {available == 'ready' || available == 'started' ? (
                                 <>
                                     <button
                                         onClick={connect}
-                                        className="instbtn connectBtn12 connectBtn"
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full"
                                     >
                                         {available == 'ready'
                                             ? t[Contents.CA_TURN_ON_PC]
@@ -116,12 +115,24 @@ export const ConnectApp = () => {
                                         <br />
                                         {t[Contents.CA_CONNECT_EXPLAIN_1]}
                                     </p>
+                                    <button
+                                        onClick={() =>
+                                            appDispatch(
+                                                popup_open({
+                                                    type: 'customize'
+                                                })
+                                            )
+                                        }
+                                        className="text-gray-400 text-l font-light bg-transparent underline mt-4 cursor-pointer"
+                                    >
+                                        Tùy chỉnh cấu hình
+                                    </button>
                                 </>
                             ) : available == 'no_node' ? (
                                 <>
                                     <button
                                         onClick={reload}
-                                        className="instbtn connectBtn12 connectBtn"
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
                                     >
                                         {t[Contents.CA_RELOAD_TRY_AGAIN]}
                                     </button>
@@ -135,7 +146,7 @@ export const ConnectApp = () => {
                                         <>
                                             <button
                                                 onClick={redirect}
-                                                className="instbtn connectBtn12 connectBtn"
+                                                className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
                                             >
                                                 {t[Contents.CA_WRONG_SERVER]}
                                             </button>
@@ -155,7 +166,7 @@ export const ConnectApp = () => {
                                                 onClick={() =>
                                                     appDispatch(show_chat())
                                                 }
-                                                className="instbtn connectBtn12 connectBtn"
+                                                className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
                                             >
                                                 {t[Contents.CA_MISSING_VOLUME]}
                                             </button>
@@ -174,7 +185,7 @@ export const ConnectApp = () => {
                                     <>
                                         <button
                                             onClick={pay}
-                                            className="instbtn connectBtn12 connectBtn"
+                                            className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
                                         >
                                             {t[Contents.PAYMENT_APP]}
                                         </button>
@@ -184,7 +195,7 @@ export const ConnectApp = () => {
                                     </>
                                 )
                             ) : (
-                                <button className="instbtn connectBtn12 connectBtn">
+                                <button className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl">
                                     Very weird bug happened
                                 </button>
                             )}

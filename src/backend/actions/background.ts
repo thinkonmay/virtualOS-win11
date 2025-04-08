@@ -207,7 +207,7 @@ const updateUI = async () => {
             );
 
         // TODO
-        // if (true) appDispatch(popup_open({ type: 'share' }));
+        if (true) appDispatch(popup_open({ type: 'customize' }));
         // if (true)
         //     appDispatch(
         //         popup_open({

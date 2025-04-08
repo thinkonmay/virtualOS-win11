@@ -172,7 +172,10 @@ function App() {
                 {booting ? (
                     <BootScreen loadingText={loadingText} />
                 ) : (
-                    <Login loading={setLockscreen} />
+                    <>
+                        <Login loading={setLockscreen} />
+                        <Popup />
+                    </>
                 )}
                 <div className="appwrap ">
                     {pointerLock ? null : (
@@ -182,7 +185,6 @@ function App() {
                             <StartMenu />
                             <SidePane />
                             <ListQAs />
-                            <Popup />
                             <Tutorial />
                             <Toaster
                                 position={

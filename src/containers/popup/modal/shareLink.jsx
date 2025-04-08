@@ -59,8 +59,7 @@ export function shareLink({ data: { link } }) {
             ) : null}
 
             <p className="mt-6">
-                <b>Lưu ý:</b> Máy sẽ tắt sau 10' nếu chính chủ không hoạt
-                động{' '}
+                <b>Lưu ý:</b> Máy sẽ tắt sau 10' nếu chính chủ không hoạt động
             </p>
         </div>
     );
