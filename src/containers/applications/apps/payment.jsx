@@ -396,7 +396,7 @@ function DomainSelection({ onChangeDomain, domain }) {
             await fetch(`https://${x.domain}/`, { method: 'POST' });
             return {
                 latency:
-                    x.domain == 'play.2.thinkmay.net'
+                    x.domain == 'v4.thinkmay.net'
                         ? 10
                         : new Date().getTime() - start,
                 ...x
