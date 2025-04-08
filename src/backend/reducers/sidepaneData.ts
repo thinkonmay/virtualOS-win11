@@ -238,33 +238,6 @@ export const listDesktopSettings = [
         action: 'shutDownVm',
         style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
     },
-    {
-        ui: true,
-        id: 'loggerBtn',
-        src: 'MdHighQuality',
-        name: [Contents.MAXIMUM_QUALITY],
-        state: 'hq',
-        action: 'toggle_hq',
-        explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
-    },
-    {
-        src: 'MdVideogameAsset',
-        name: [Contents.HIDE_VM],
-        state: 'HideVM',
-        action: 'worker/toggle_hide_vm'
-    },
-    {
-        src: 'MdOutlineNetworkWifi',
-        name: [Contents.HIGH_QUEUE],
-        state: 'HighQueue',
-        action: 'worker/toggle_high_queue'
-    },
-    {
-        src: 'MdOutlineNetworkWifi',
-        name: [Contents.HIGH_MTU],
-        state: 'HighMTU',
-        action: 'worker/toggle_high_mtu'
-    },
     ...(!DevEnv
         ? []
         : [

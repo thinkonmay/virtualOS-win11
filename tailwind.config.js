@@ -22,7 +22,7 @@ module.exports = {
             }
         }
     },
-    plugins: [require('daisyui'), flowbiteReact],
+    plugins: [flowbiteReact],
     fontFamily: {
         body: [
             'Inter',

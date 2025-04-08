@@ -160,16 +160,15 @@ i[data-flip="true"] {
   width: 100vw;
   height: calc(100vh - 48px);
   bottom: 5rem;
-
-  &[data-align="center"] {
-    top: 0;
-  }
-  &[data-align="left"] {
-    top: 3rem;
-  }
   overflow: hidden;
 }
 
+.desktop[data-align="center"] {
+  top: 0;
+}
+.desktop[data-align="left"] {
+  top: 3rem;
+}
 .desktop[data-mobile="true"] {
   width: calc(100vw - 52px);
   height: 100vh;
