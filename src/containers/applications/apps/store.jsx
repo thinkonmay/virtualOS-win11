@@ -73,16 +73,24 @@ const DetailPage = ({ app, close }) => {
     }, []);
 
     const [options, setOptions] = useState([
-        {
-            code: 'payment',
-            name: 'Game tải sẵn (free)',
-            clicked: true
-        },
-        {
-            code: 'kickey',
-            name: 'Tài khoản game',
-            clicked: true
-        }
+        ...(app.code_name != null
+            ? [
+                  {
+                      code: 'payment',
+                      name: 'Game tải sẵn (free)',
+                      clicked: true
+                  }
+              ]
+            : []),
+        ...(app.tag.hasaccount 
+            ? [
+                  {
+                      code: 'kickey',
+                      name: 'Tài khoản game',
+                      clicked: true
+                  }
+              ]
+            : [])
     ]);
 
     const handleDownload = () =>
@@ -358,11 +366,17 @@ const DetailPage = ({ app, close }) => {
 const DownPage = ({ open }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const games = useAppSelector((state) => state.globals.games);
+    const [filtered, setFilter] = useState([]);
     const [opened, setOpen] = useState(false);
 
     return (
         <>
-            <SearchBar opened={opened} close={() => setOpen(false)} />
+            <SearchBar
+                opened={opened}
+                close={() => setOpen(false)}
+                games={games}
+                setFilter={setFilter}
+            />
             <div className="py-24 relative mx-3 max-w-50">
                 <div className="w-full x-6 lg:px-8 mx-auto">
                     <div className="flex items-center justify-center flex-col gap-5 mb-14">
@@ -385,7 +399,7 @@ const DownPage = ({ open }) => {
                     </div>
                     <div className="flex items-center justify-center flex-col gap-5 mb-14">
                         <div className="grid row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-14 max-w-screen-2xl">
-                            {games
+                            {filtered
                                 .filter(
                                     (x) => x.metadata?.screenshots?.length > 0
                                 )
@@ -397,8 +411,8 @@ const DownPage = ({ open }) => {
                                             index == 0
                                                 ? 'sm:col-span-2 sm:row-span-2'
                                                 : index == 1
-                                                  ? 'sm:col-span-2'
-                                                  : 'sm:col-span-1'
+                                                  ? 'sm:col-span-2 sm:row-span-1'
+                                                  : 'sm:col-span-1 sm:row-span-1'
                                         }  bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity`}
                                         style={{
                                             backgroundImage: `url(${game.metadata?.screenshots?.[0]?.path_full})`
@@ -414,18 +428,74 @@ const DownPage = ({ open }) => {
                                 ))}
                         </div>
                     </div>
-                    <div className="flex items-center justify-center flex-col gap-5 mb-14">
-                        <button className="w-200 rounded-lg py-4 px-6 text-center bg-blue-100 text-lg font-medium text-blue-600 transition-all duration-300 hover:text-white hover:bg-blue-600">
-                            Load More
-                        </button>
-                    </div>
                 </div>
             </div>
         </>
     );
 };
 
-const SearchBar = ({ close, opened }) => {
+const SearchBar = ({ close, opened, games, setFilter }) => {
+    const filter = [
+        {
+            name: 'has account',
+            func: (arr) => arr.filter((x) => x)
+        },
+        {
+            name: 'predownload',
+            func: (arr) => arr.filter((x) => x)
+        }
+    ];
+
+    const [activeFilter, setActiveFilter] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const cancel = () => {
+        setActiveFilter([]);
+        setSearchText('');
+    };
+
+    useEffect(() => {
+        let final = games.filter((x) => x.name != null);
+        for (const filter of activeFilter) final = filter.func(final);
+        setFilter(
+            final.filter((x) =>
+                x.name.toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
+    }, [activeFilter, searchText]);
+
+    const renderFilter = (filter, index) => {
+        const click = () =>
+            setActiveFilter((x) =>
+                x.find((y) => y.name == filter.name)
+                    ? x.filter((y) => y.name != filter.name)
+                    : [...x, filter]
+            );
+        const css = activeFilter.find((x) => x.name == filter.name)
+            ? 'after:left-5 bg-blue-600'
+            : 'after:left-1 bg-gray-200 dark:bg-gray-700';
+
+        return (
+            <div key={index} className="flex items-center justify-between">
+                <div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            value=""
+                            className="sr-only peer"
+                        />
+                        <div
+                            onClick={click}
+                            className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4  rounded-full peer  after:content-[''] after:absolute after:top-[2px]  after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 ${css}`}
+                        ></div>
+                        <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                            {filter.name}
+                        </span>
+                    </label>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <Modal
             show={opened}
@@ -440,125 +510,70 @@ const SearchBar = ({ close, opened }) => {
                 <ModalBody>
                     <div className="relative w-full h-full">
                         <div className="px-4 space-y-4 md:px-6">
+                            {filter.map(renderFilter)}
                             <div className="flex items-center justify-between">
-                                <div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                        <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            The last rate
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <select
-                                        id="last-rate-select"
-                                        className="bg-white border pr-10 pl-2 py-1.5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    >
-                                        <option>Min</option>
-                                        <option>Max</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                            onChange={() => {}}
-                                            checked
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                        <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Number of vehicles
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <select
-                                        id="vehicles-select"
-                                        className="bg-white border pr-10 pl-2 py-1.5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    >
-                                        <option>Min</option>
-                                        <option>Max</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                        <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Number of trips with us
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <select
-                                        id="trips-select"
-                                        className="bg-white border pr-10 pl-2 py-1.5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        defaultValue={'Max'}
-                                    >
-                                        <option>Min</option>
-                                        <option>Max</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
-                                        <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Number of cars
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <select
-                                        id="cars-select"
-                                        className="bg-white border pr-10 pl-2 py-1.5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    >
-                                        <option>Min</option>
-                                        <option>Max</option>
-                                    </select>
+                                <div class="w-full">
+                                    <form class="flex items-center">
+                                        <label
+                                            for="simple-search"
+                                            class="sr-only"
+                                        >
+                                            Search
+                                        </label>
+                                        <div class="relative w-full">
+                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg
+                                                    aria-hidden="true"
+                                                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                    fill="currentColor"
+                                                    viewbox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        fill-rule="evenodd"
+                                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                        clip-rule="evenodd"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                id="simple-search"
+                                                class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                placeholder="Search"
+                                                value={searchText}
+                                                onChange={(x) =>
+                                                    setSearchText(
+                                                        x.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center p-6 space-x-4 rounded-b dark:border-gray-600">
                             <button
                                 type="submit"
-                                className="text-black bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                                className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                                onClick={close}
                             >
                                 Apply
                             </button>
                             <button
                                 type="reset"
-                                className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                className="py-2.5 px-5 text-sm font-medium text-black focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-500 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                onClick={cancel}
                             >
                                 Reset
+                            </button>
+                            <button
+                                type="reset"
+                                className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                onClick={close}
+                            >
+                                Cancel
                             </button>
                         </div>
                     </div>

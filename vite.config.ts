@@ -9,8 +9,5 @@ export default defineConfig({
     define: {
         'import.meta.env.__BUILD__': `"${new Date().toUTCString()}"`
     },
-    plugins: [
-        react(),
-        flowbiteReact()
-    ]
+    plugins: [react(), flowbiteReact()]
 });

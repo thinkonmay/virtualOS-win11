@@ -13,6 +13,10 @@ export type TranslationResult = {
 type IGame = {
     name: string;
     code_name: string;
+    tag: {
+        samenode: boolean;
+        hasaccount: boolean;
+    };
     metadata: {
         name: string;
         type: string;
@@ -273,10 +277,15 @@ export const globalAsync = {
         const { data, error } = await GLOBAL()
             .from('stores')
             .select('code_name,name,metadata');
-        // .in('code_name', samenodes ?? []);
         if (error) throw new Error(error.message);
 
-        return data;
+        return data.map((x) => ({
+            ...x,
+            tag: {
+                samenode: samenodes.includes(x.code_name),
+                hasaccount: false
+            }
+        }));
     })
 };
 

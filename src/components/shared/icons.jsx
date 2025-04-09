@@ -68,9 +68,6 @@ export const pause = (props) => {
     );
 };
 
-
-
-
 export const refresh = (props) => {
     return (
         <svg viewBox="0 0 64 64" {...props}>
@@ -82,7 +79,6 @@ export const refresh = (props) => {
         </svg>
     );
 };
-
 
 export const display = (props) => {
     return (
@@ -112,7 +108,6 @@ export const info = (props) => {
         </svg>
     );
 };
-
 
 export const share = (props) => {
     return (
