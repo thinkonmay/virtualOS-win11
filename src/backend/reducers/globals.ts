@@ -282,8 +282,8 @@ export const globalAsync = {
         return data.map((x) => ({
             ...x,
             tag: {
-                samenode: samenodes.includes(x.code_name),
-                hasaccount: false
+                samenode: samenodes?.includes(x.code_name) ?? false,
+                hasaccount: true
             }
         }));
     })
