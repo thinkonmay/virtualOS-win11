@@ -3,9 +3,7 @@ import {
     appDispatch,
     useAppSelector
 } from '../../../backend/reducers';
-import { HistoryPage } from '../../../components/payment/historyPage';
 import { PaymentPage } from '../../../components/payment/paymentPage';
-import { RefundPage } from '../../../components/payment/refundPage';
 import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/payment.scss';
@@ -28,7 +26,7 @@ export const PaymentApp = () => {
         history: 'Lịch sử',
         refund: 'Hoàn tiền'
     };
-    const pages = ['subscription', 'payment', 'history', 'refund'];
+    const pages = ['subscription', 'payment'];
 
     const renderRoute = (page, index) => (
         <div
@@ -69,10 +67,6 @@ export const PaymentApp = () => {
                                 value={val}
                                 switchPage={handleChangePage}
                             />
-                        ) : curpage == 'refund' ? (
-                            <RefundPage value={val} />
-                        ) : curpage == 'history' ? (
-                            <HistoryPage value={val} />
                         ) : (
                             <PaymentPage value={val} />
                         )}
