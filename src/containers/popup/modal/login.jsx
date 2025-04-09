@@ -25,7 +25,7 @@ export function login({ loading }) {
                             className="flex items-center text-xl font-semibold text-gray-900 dark:text-white"
                         >
                             <img
-                                src="/logo_white.png"
+                                src="logo_white.png"
                                 className="h-12 mr-4"
                             ></img>
                             Đăng nhập Thinkmay
