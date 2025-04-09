@@ -232,7 +232,10 @@ export const SubscriptionPage = ({ value, switchPage }) => {
     ];
     const renderPlan = (plan, index) => {
         return (
-            <div key={index} className="flex flex-col p-6 mx-auto max-w-xl text-center bg-white rounded-lg border shadow xl:max-w-lg border-primary-600 dark:bg-gray-800 xl:p-8">
+            <div
+                key={index}
+                className="flex flex-col p-6 mx-auto max-w-xl text-center bg-white rounded-lg border shadow xl:max-w-lg border-primary-600 dark:bg-gray-800 xl:p-8"
+            >
                 {plan.highlight ? (
                     <div className="mb-2">
                         <span className="py-1 px-3 text-sm text-primary-800 bg-primary-100 rounded dark:bg-primary-200 dark:text-primary-800">
