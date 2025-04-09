@@ -3,6 +3,7 @@ import { create_payment_qr } from '../../backend/actions';
 import { useAppSelector } from '../../backend/reducers';
 
 export const PaymentPage = ({ value }) => {
+    const email = useAppSelector((state) => state.user.email);
     const plans = useAppSelector((state) => state.user.plans);
     const [planAmount, setplanAmount] = useState({});
     const [planCount, setplanCount] = useState({});
@@ -91,106 +92,96 @@ export const PaymentPage = ({ value }) => {
         return (
             <div
                 key={index}
-                className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200 group cursor-pointer"
+                className="flex flex-wrap items-center space-y-6 p-6 sm:gap-6 sm:space-y-0 md:justify-between"
             >
-                <div className="grid grid-cols-1 md:grid-cols-4 w-full">
-                    <div className="md:col-span-2">
-                        <div className="flex flex-col max-[500px]:items-center gap-3">
-                            <h6 className="font-semibold text-base leading-7 text-white">
-                                {plan.title}
-                            </h6>
-                            <h6 className="font-normal text-base leading-7 text-gray-500">
-                                {plan.name}
-                            </h6>
-                            <h6 className="font-medium text-base leading-7 text-gray-400 transition-all duration-300 group-hover:text-blue-600">
-                                {plan.amount / 1000}k
-                            </h6>
-                        </div>
+                <div className="w-64 items-center space-y-4 sm:flex sm:space-x-6 sm:space-y-0 md:max-w-md lg:max-w-lg">
+                    <a href="#" className="block aspect-square w-10 shrink-0">
+                        <img
+                            className="h-full w-full dark:hidden"
+                            src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
+                            alt="imac image"
+                        />
+                        <img
+                            className="hidden h-full w-full dark:block"
+                            src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
+                            alt="imac image"
+                        />
+                    </a>
+
+                    <div className="w-full md:max-w-sm lg:max-w-md">
+                        <a
+                            href="#"
+                            className="font-medium text-gray-900 hover:underline dark:text-white"
+                        >
+                            {plan.title}
+                        </a>
                     </div>
-                    <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
-                        <div className="flex items-center h-full">
-                            <button
-                                onClick={() => increase(-1)}
-                                className="bg-gray-300 group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
-                            >
-                                <svg
-                                    className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="22"
-                                    height="22"
-                                    viewBox="0 0 22 22"
-                                    fill="none"
-                                >
-                                    <path
-                                        d="M16.5 11H5.5"
-                                        stroke=""
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                    />
-                                    <path
-                                        d="M16.5 11H5.5"
-                                        stroke=""
-                                        strokeOpacity="0.2"
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                    />
-                                    <path
-                                        d="M16.5 11H5.5"
-                                        stroke=""
-                                        strokeOpacity="0.2"
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                            </button>
-                            <input
-                                type="text"
-                                className="border-y bg-gray-900 outline-none text-white font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-white py-[15px]  text-center bg-transparent"
-                                placeholder="0"
-                                value={quantity}
-                                onChange={(x) => set(x.target.value)}
+                </div>
+
+                <div className="w-8 shrink-0">
+                    <p className="text-base font-normal text-gray-900 dark:text-white">
+                        {plan.amount / 1000}k
+                    </p>
+                </div>
+
+                <div className="items-center w-8 mx-8">
+                    <button
+                        onClick={() => increase(1)}
+                        className="bg-gray-300 group rounded-t-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                    >
+                        <svg
+                            className="w-8 h-8 text-black"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="m5 15 7-7 7 7"
                             />
-                            <button
-                                onClick={() => increase(1)}
-                                className="bg-gray-300 group rounded-r-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
-                            >
-                                <svg
-                                    className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="22"
-                                    height="22"
-                                    viewBox="0 0 22 22"
-                                    fill="none"
-                                >
-                                    <path
-                                        d="M11 5.5V16.5M16.5 11H5.5"
-                                        stroke=""
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                    />
-                                    <path
-                                        d="M11 5.5V16.5M16.5 11H5.5"
-                                        stroke=""
-                                        strokeOpacity="0.2"
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                    />
-                                    <path
-                                        d="M11 5.5V16.5M16.5 11H5.5"
-                                        stroke=""
-                                        strokeOpacity="0.2"
-                                        strokeWidth="1.6"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="flex items-center max-[500px]:justify-center md:justify-end max-md:mt-3 h-full">
-                        <p className="font-bold text-lg leading-8 text-gray-300 text-center transition-all duration-300 group-hover:text-blue-600">
-                            {(plan.amount * quantity) / 1000}k
-                        </p>
-                    </div>
+                        </svg>
+                    </button>
+                    <input
+                        type="text"
+                        className="border-y bg-gray-900 outline-none text-white font-semibold text-lg w-full placeholder:text-white py-1  text-center bg-transparent"
+                        placeholder="0"
+                        value={quantity}
+                        onChange={(x) => set(x.target.value)}
+                    />
+                    <button
+                        onClick={() => increase(-1)}
+                        className="bg-gray-300 group rounded-b-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                    >
+                        <svg
+                            className="w-8 h-8 text-black"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="m19 9-7 7-7-7"
+                            />
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="md:w-24 md:text-right">
+                    <p className="text-base font-bold text-gray-900 dark:text-white">
+                        {(plan.amount * quantity) / 1000}k
+                    </p>
                 </div>
             </div>
         );
@@ -201,98 +192,176 @@ export const PaymentPage = ({ value }) => {
             className="w-full h-full px-4 md:px-5 lg-6 mx-auto relative z-10 rounded"
             style={{ color: `var(--dark-txt)` }}
         >
-            <div className="grid grid-cols-12">
-                <div className="col-span-12 xl:col-span-8 lg:pr-8 pt-14 pb-8 lg:py-24 w-full max-xl:max-w-3xl max-xl:mx-auto">
-                    <div className="flex items-center justify-between pb-8 border-b border-gray-300">
-                        <h2 className="font-manrope font-bold text-3xl leading-10 text-white">
-                            Shopping Cart
-                        </h2>
-                        <h2 className="font-manrope font-bold text-xl leading-8 text-white">
-                            {count} Items
-                        </h2>
-                    </div>
-                    <div className="grid grid-cols-12 mt-8 max-md:hidden pb-6 border-b border-gray-200">
-                        <div className="col-span-12 md:col-span-6">
-                            <p className="font-normal text-lg leading-8 text-gray-400">
-                                Product Details
-                            </p>
+            <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+                <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-8">
+                    <div className="min-w-0 flex-1 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white shadow-sm dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
+                        <div className="p-6 mt-6 flex justify-left">
+                            <h2 className=" text-2xl font-semibold text-gray-900 dark:text-white">
+                                Order Details
+                            </h2>
                         </div>
-                        <div className="col-span-12 md:col-span-6">
-                            <div className="grid grid-cols-5">
-                                <div className="col-span-3">
-                                    <p className="font-normal text-lg leading-8 text-gray-400 text-left">
-                                        Quantity
-                                    </p>
-                                </div>
-                                <div className="col-span-2">
-                                    <p className="font-normal text-lg leading-8 text-gray-400 text-right">
-                                        Total
-                                    </p>
+                        {[
+                            ...plans.map((x) => ({
+                                ...x,
+                                ...(subcontents.find((y) => y.name == x.name) ??
+                                    {})
+                            })),
+                            ...additionalPlans
+                        ]
+                            .filter((val) => val.title != null)
+                            .sort((a, b) => a.amount - b.amount)
+                            .map(renderPlan)}
+                    </div>
+
+                    <div className="mt-6 w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+                        <div className="p-6">
+                            <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
+                                Order Details
+                            </h4>
+
+                            <div className="flow-root">
+                                <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <dl className="pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+                                        <dt className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                            Order date
+                                        </dt>
+                                        <dd className="mt-2 text-gray-500 dark:text-gray-400 sm:mt-0 sm:text-right">
+                                            {new Date().toLocaleDateString()}
+                                        </dd>
+                                    </dl>
+
+                                    <dl className="py-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+                                        <dt className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                            Email
+                                        </dt>
+                                        <dd className="mt-2 text-gray-500 dark:text-gray-400 sm:mt-0 sm:text-right">
+                                            {email}
+                                        </dd>
+                                    </dl>
+                                    <dl className="py-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+                                        <dt className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                            Payment method
+                                        </dt>
+                                        <dd className="mt-2 flex items-center gap-2 sm:mt-0 sm:justify-end">
+                                            <img
+                                                className="h-auto w-5"
+                                                src="img/icon/payment.png"
+                                            />
+                                            <span className="text-right text-gray-500 dark:text-gray-400">
+                                                VietQR
+                                            </span>
+                                        </dd>
+                                    </dl>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    {[
-                        ...plans.map((x) => ({
-                            ...x,
-                            ...(subcontents.find((y) => y.name == x.name) ?? {})
-                        })),
-                        ...additionalPlans
-                    ]
-                        .filter((val) => val.title != null)
-                        .sort((a, b) => a.amount - b.amount)
-                        .map(renderPlan)}
-                </div>
-                <div className="mt-10 rounded-xl col-span-12 xl:col-span-4 bg-gray-50 w-full max-xl:px-6 max-w-3xl xl:max-w-lg mx-auto  py-24 p-10">
-                    <h2 className="font-manrope font-bold text-3xl leading-10 text-black pb-8 border-b border-gray-300 justify-self-center">
-                        Order Summary
-                    </h2>
-                    <div className="mt-8 justify-self-center">
-                        <div className="flex items-center justify-between pb-6">
-                            <p className="font-normal text-lg leading-8 text-black">
-                                {count} Items
-                            </p>
-                            <p className="font-medium text-lg leading-8 text-black">
-                                {total / 1000}k
-                            </p>
-                        </div>
-                        <label className="flex  items-center mb-1.5 text-whtie text-sm font-medium">
-                            Shipping
-                        </label>
-                        <div className="flex pb-6"></div>
-                        <label className="flex items-center mb-1.5 text-gray-400 text-sm font-medium">
-                            Promo Code
-                        </label>
-                        <div className="flex pb-4 w-full">
+                        <div className="flex space-y-4 p-6">
                             <div className="relative w-full ">
                                 <div className=" absolute left-0 top-0 py-2.5 px-4 text-gray-300"></div>
                                 <input
                                     type="text"
                                     className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
-                                    placeholder="xxxx xxxx xxxx"
+                                    placeholder="Enter your promotion code"
                                 />
                             </div>
                         </div>
-                        <div className="flex items-center border-b border-gray-200">
-                            <button className="rounded-lg w-full bg-black py-2.5 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-black/80">
-                                Apply
+
+                        <div className="space-y-4 p-6">
+                            <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                Order amount
+                            </h4>
+
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <dl className="flex items-center justify-between gap-4">
+                                        <dt className="text-gray-500 dark:text-gray-400">
+                                            Original price
+                                        </dt>
+                                        <dd className="font-medium text-gray-900 dark:text-white">
+                                            {total / 1000}k
+                                        </dd>
+                                    </dl>
+
+                                    <dl className="flex items-center justify-between gap-4">
+                                        <dt className="text-gray-500 dark:text-gray-400">
+                                            Savings
+                                        </dt>
+                                        <dd className="font-medium text-green-500">
+                                            -{0}k
+                                        </dd>
+                                    </dl>
+                                    <dl className="flex items-center justify-between gap-4">
+                                        <dt className="text-gray-500 dark:text-gray-400">
+                                            Tax
+                                        </dt>
+                                        <dd className="font-medium text-gray-900 dark:text-white">
+                                            {total / 1000}k
+                                        </dd>
+                                    </dl>
+                                </div>
+
+                                <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                                    <dt className="font-bold text-gray-900 dark:text-white">
+                                        Total
+                                    </dt>
+                                    <dd className="font-bold text-gray-900 dark:text-white">
+                                        {total / 1000}k
+                                    </dd>
+                                </dl>
+                            </div>
+
+                            <button
+                                onClick={pay}
+                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >
+                                Place your order
                             </button>
-                        </div>
-                        <div className="flex items-center justify-between py-8">
-                            <p className="font-medium text-xl leading-8 text-black">
-                                {count} Items
+
+                            <p className="max-w-xs text-sm font-normal text-gray-500 dark:text-gray-400">
+                                By placing your order, you agree to Flowbite's{' '}
+                                <a
+                                    href="#"
+                                    title=""
+                                    className="text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
+                                >
+                                    privacy note
+                                </a>{' '}
+                                and{' '}
+                                <a
+                                    href="#"
+                                    title=""
+                                    className="text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
+                                >
+                                    terms of use
+                                </a>
+                                .
                             </p>
-                            <p className="font-semibold text-xl leading-8 text-blue-600">
-                                {total / 1000}k
+                        </div>
+
+                        <div className="space-y-4 bg-gray-50 p-6 dark:bg-gray-700">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                Your benefits:
+                            </p>
+                            <ul className="list-outside list-disc space-y-1 pl-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                                <li>Pre-order guarantee</li>
+                                <li>Free shipping</li>
+                                <li>Best price</li>
+                            </ul>
+
+                            <a
+                                href="#"
+                                title=""
+                                className="inline-block text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
+                            >
+                                {' '}
+                                How are shipping costs calculated?{' '}
+                            </a>
+
+                            <p className="max-w-xs text-sm font-normal text-gray-500 dark:text-gray-400">
+                                Flowbite PRO shipping benefits have been applied
+                                to your order.
                             </p>
                         </div>
-                        <button
-                            onClick={pay}
-                            className="w-full text-center bg-blue-600 rounded-xl py-3 px-6 font-semibold text-lg text-white transition-all duration-500 hover:bg-blue-700"
-                        >
-                            Checkout
-                        </button>
                     </div>
                 </div>
             </div>
