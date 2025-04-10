@@ -321,7 +321,7 @@ export function language() {
     id.set(Contents.QA_FIXLAG, 'How to reduce lagging?');
 
     en.set(Contents.MAXIMUM_QUALITY, 'Maximum quality');
-    vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng tối đa');
+    vn.set(Contents.MAXIMUM_QUALITY, 'Chất lượng cao');
     id.set(Contents.MAXIMUM_QUALITY, 'Kualitas maksimal');
 
     en.set(Contents.G4MARKET_APP, 'G4 MARKET');

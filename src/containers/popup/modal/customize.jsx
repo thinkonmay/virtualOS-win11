@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
     appDispatch,
     popup_close,
@@ -11,10 +12,14 @@ import { Contents } from '../../../backend/reducers/locales';
 
 export function customize() {
     const t = useAppSelector((state) => state.globals.translation);
-    const { HideVM, HighQueue, HighMTU } = useAppSelector(
+    const { HideVM, HighQueue, HighMTU, metadata } = useAppSelector(
         (state) => state.worker
     );
+
+    const { configuration } = metadata ?? { configuration: {} };
+
     const hq = useAppSelector((state) => state.remote.hq);
+
     const actions = [
         {
             name: t[Contents.HIDE_VM],
@@ -38,23 +43,55 @@ export function customize() {
         }
     ];
 
-    const hwOptions = [
+    const [hwOptions, setHWOption] = useState([
         {
-            name: 'RAM',
-            value: 0,
-            action: () => {}
+            name: 'ram',
+            min: 16,
+            max: 24,
+            step: 4,
+            value: 16
         },
         {
-            name: 'CPU',
-            value: 0,
-            action: () => {}
+            name: 'cpu',
+            min: 8,
+            max: 12,
+            step: 2,
+            value: 8
         },
         {
-            name: 'Volume',
-            value: 0,
-            action: () => {}
+            name: 'disk',
+            min: 150,
+            max: 400,
+            step: 50,
+            value: 150
         }
-    ];
+    ]);
+
+    useEffect(() => {
+        setHWOption([
+            {
+                name: 'ram',
+                min: 16,
+                max: 24,
+                step: 4,
+                value: configuration?.ram ?? 16
+            },
+            {
+                name: 'cpu',
+                min: 8,
+                max: 12,
+                step: 2,
+                value: configuration?.cpu ?? 8
+            },
+            {
+                name: 'disk',
+                min: 150,
+                max: 400,
+                step: 50,
+                value: configuration?.disk ?? 150
+            }
+        ]);
+    }, [configuration]);
 
     const games = [
         {
@@ -70,13 +107,13 @@ export function customize() {
         >
             <div
                 onClick={option.action}
-                className={`flex items-center pl-3 m-3 rounded-xl  cursor-pointer ${
+                className={`flex items-center mx-1 my-3 rounded-xl  cursor-pointer ${
                     option.state ? 'bg-blue-950' : 'bg-gray-600'
                 }`}
             >
                 <label
                     htmlFor="account-moderator"
-                    className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                    className="w-full p-3 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer text-center"
                 >
                     {option.name}
                 </label>
@@ -102,28 +139,76 @@ export function customize() {
         </li>
     );
 
-    const renderHWOption = (hw, index) => (
-        <div key={index} className="w-full">
-            <label
-                htmlFor="min-age-input"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-                {hw.name}
-            </label>
+    const increment = (hw, up) =>
+        setHWOption((old) => {
+            const index = old.findIndex((x) => x.name == hw.name);
+            if (index == -1) return old;
+            const dup = [...old];
+            const newval = dup[index].value + (up ? hw.step : -hw.step);
+            if (newval > hw.max || newval < hw.min) return old;
+            dup[index].value = newval;
+            return dup;
+        });
 
-            <input
-                type="number"
-                id="min-age-input"
-                value={hw.value}
-                onChange={hw.action}
-                min="8"
-                max="24"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 "
-                placeholder=""
-                required
-            />
-        </div>
-    );
+    const renderHWOption = (hw, index) => {
+        return (
+            <div key={index} className="w-full">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    {hw.name}
+                </label>
+
+                <div className="flex">
+                    <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
+                        {hw.value}
+                    </div>
+                    <div
+                        onClick={() => increment(hw, false)}
+                        className="bg-gray-600 ml-1 rounded-full w-8 h-8 my-auto cursor-pointer"
+                    >
+                        <svg
+                            className="w-8 h-8 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 12h14"
+                            />
+                        </svg>
+                    </div>
+                    <div
+                        onClick={() => increment(hw, true)}
+                        className="bg-gray-600 ml-1 rounded-full w-8 h-8 my-auto cursor-pointer"
+                    >
+                        <svg
+                            className="w-8 h-8 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 12h14m-7 7V5"
+                            />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div
