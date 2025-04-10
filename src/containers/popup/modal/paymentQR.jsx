@@ -11,6 +11,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
+import { fetchPayment } from '../../../backend/actions/background';
 
 export function paymentQR({
     data: { id, code, url, accountName, amount, description, discount_percent }
@@ -24,6 +25,7 @@ export function paymentQR({
 
     const verify = async () => {
         if (await verify_transaction({ id })) {
+            await fetchPayment();
             appDispatch(popup_close(true));
             appDispatch(
                 popup_open({

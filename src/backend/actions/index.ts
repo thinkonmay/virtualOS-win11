@@ -247,8 +247,8 @@ export const showConnect = () => {
 
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const { email, discounts } = store.getState().user;
-    const discount_code = discounts.find(
-        (x) => x.apply_for?.includes('deposit')
+    const discount_code = discounts.find((x) =>
+        x.apply_for?.includes('deposit')
     )?.code;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,
@@ -314,11 +314,7 @@ export const verify_transaction = async ({ id }: { id: number }) => {
         throw new Error(
             'Error when try to verify transaction:' + error.message
         );
-    else if (data == 'PAID') {
-        await GLOBAL().rpc('verify_all_deposits');
-        await appDispatch(fetch_wallet());
-        return true;
-    } else return false;
+    else return data == 'PAID';
 };
 
 export const create_payment_pocket = async ({

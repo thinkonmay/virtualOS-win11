@@ -49,9 +49,7 @@ export const MicroStore = () => {
 
 const DetailPage = ({ app, close }) => {
     const t = useAppSelector((state) => state.globals.translation);
-    const code = useAppSelector(
-        (state) => state.worker.metadata?.code
-    );
+    const code = useAppSelector((state) => state.worker.metadata?.code);
 
     const { code_name, name, metadata } = app;
     const { short_description, screenshots, publishers } = metadata ?? {
