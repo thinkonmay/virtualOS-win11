@@ -180,8 +180,7 @@ export const loginAction = (
                 w.location.href = url;
             }
         })
-        .then(() => {
-            preload();
+        .then(async () => {
             const isNewUser =
                 (new Date().getTime() -
                     new Date(POCKETBASE().authStore.model.created).getTime()) /
@@ -197,7 +196,10 @@ export const loginAction = (
                     }
                 });
         })
-        .finally(() => finish_callback());
+        .finally(async () => {
+            await preload();
+            finish_callback();
+        });
 };
 export const remotelogin = async (domain: string, email: string) => {
     const { data, error } = await GLOBAL().rpc('generate_account', {

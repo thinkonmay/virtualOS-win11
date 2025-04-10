@@ -65,7 +65,7 @@ const Popup = () => {
 
     return (
         <>
-            <Modalv1 />
+            {/* <Modalv1 /> */}
             <Modalv2 />
         </>
     );

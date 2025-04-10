@@ -1,10 +1,11 @@
+import { preload } from '../../../../backend/actions/background';
 import { useAppSelector } from '../../../../backend/reducers';
 
 function DomainSwitch() {
     const domain = useAppSelector((state) => state.worker.currentAddress);
     const availableDomains = useAppSelector((state) => state.globals.domains);
 
-    const updateLanguage = (e) => {
+    const updateLanguage = async (e) => {
         const domain = e.target.value;
         const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
         const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
@@ -12,7 +13,7 @@ function DomainSwitch() {
             window.open(`https://${domain}`, '_self');
         else if (v2_domain.includes(domain)) {
             localStorage.setItem('thinkmay_domain', domain);
-            window.location.reload();
+            await preload();
         }
     };
 

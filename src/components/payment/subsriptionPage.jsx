@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
     app_payload,
     appDispatch,
@@ -8,6 +8,7 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import { create_payment_pocket } from '../../backend/actions';
+import { preloadSilent } from '../../backend/actions/background';
 
 const PaymentButton = ({ sub, domain, switchPage }) => {
     const subscription = useAppSelector((state) => state.user.subscription);
@@ -58,7 +59,7 @@ const PaymentButton = ({ sub, domain, switchPage }) => {
             app_payload({
                 id: 'payment',
                 key: 'value',
-                value: { ...val, plan: sub.name }
+                value: { ...val, plan: sub.name, cluster: domain }
             })
         );
         switchPage('payment');
@@ -137,37 +138,23 @@ const PaymentButton = ({ sub, domain, switchPage }) => {
     );
 };
 
-function DomainSelection({ onChangeDomain, domain }) {
+function DomainSelection({ onChangeDomain }) {
     const domains = useAppSelector((state) => state.globals.domains);
-
-    const getLatency = async (x) => {
-        try {
-            const start = new Date();
-            await fetch(`https://${x.domain}/`, { method: 'POST' });
-            return {
-                latency:
-                    x.domain == 'play.2.thinkmay.net'
-                        ? 10
-                        : new Date().getTime() - start,
-                ...x
-            };
-        } catch {
-            return {
-                latency: 9999,
-                ...x
-            };
-        }
-    };
+    const currentAddress = useAppSelector(
+        (state) => state.worker.currentAddress
+    );
 
     useEffect(() => {
-        Promise.all(domains.map(getLatency)).then((x) => {
-            onChangeDomain(
-                x.sort((a, b) => a.latency - b.latency)?.[0]?.domain
-            );
-        });
-    }, [domains]);
+        onChangeDomain(currentAddress);
+    }, []);
 
-    const chooseDomain = (e) => onChangeDomain(e.target.value);
+    const chooseDomain = async (e) => {
+        const domain = e.target.value;
+        if (domain == currentAddress) return;
+        onChangeDomain(domain);
+        localStorage.setItem('thinkmay_domain', domain);
+        await preloadSilent();
+    };
 
     return (
         <div className="block w-full content-center">
@@ -176,14 +163,12 @@ function DomainSelection({ onChangeDomain, domain }) {
             </label>
             <select
                 id="countries"
+                defaultValue={currentAddress}
+                onChange={chooseDomain}
                 className="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-50 py-2.5 px-4 focus:outline-none justify-self-center cursor-pointer"
             >
                 {domains.map((domain, index) => (
-                    <option
-                        key={index}
-                        onSelect={chooseDomain}
-                        value={domain.domain}
-                    >
+                    <option key={index} value={domain.domain}>
                         {domain.domain}
                     </option>
                 ))}
@@ -194,6 +179,7 @@ function DomainSelection({ onChangeDomain, domain }) {
 
 export const SubscriptionPage = ({ value, switchPage }) => {
     const plans = useAppSelector((state) => state.user.plans);
+    const [domain, setDomain] = useState('');
     const subcontents = [
         {
             title: 'Gói 2 tuần',
@@ -253,7 +239,7 @@ export const SubscriptionPage = ({ value, switchPage }) => {
                 </span>
                 <PaymentButton
                     sub={plan}
-                    domain={plan.domain}
+                    domain={domain}
                     switchPage={value != undefined ? switchPage : undefined}
                 />
 
@@ -395,7 +381,9 @@ export const SubscriptionPage = ({ value, switchPage }) => {
                     <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
                         *chưa bao gồm tài khoản game và các nâng cấp khác
                     </p>
-                    <DomainSelection onChangeDomain={() => {}} domain={''} />
+                    <DomainSelection
+                        onChangeDomain={setDomain}
+                    />
                 </div>
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
                     {plans

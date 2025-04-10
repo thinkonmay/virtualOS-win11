@@ -16,6 +16,7 @@ import {
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
+import { preload } from '../../../backend/actions/background';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const wnapp = useAppSelector((state) =>
@@ -49,9 +50,9 @@ export const ConnectApp = () => {
 
     const pay = () => appDispatch(app_toggle('payment'));
     const reload = () => appDispatch(worker_refresh_ui());
-    const redirect = () => {
+    const redirect = async () => {
         localStorage.setItem('thinkmay_domain', cluster);
-        window.location.reload();
+        await preload();
     };
 
     return (

@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { create_payment_qr, verify_transaction } from '../../backend/actions';
-import { useAppSelector } from '../../backend/reducers';
+import {
+    appDispatch,
+    popup_close,
+    popup_open,
+    useAppSelector
+} from '../../backend/reducers';
 import QRCode from 'react-qr-code';
 import { GLOBAL } from '../../../src-tauri/api';
 import { fetchPayment } from '../../backend/actions/background';
@@ -55,6 +60,7 @@ const subcontents = [
 ];
 
 export const PaymentPage = ({ value }) => {
+    console.log(value);
     const [initial, setInitialValue] = useState(value);
     const picked_plan = initial?.plan;
     const email = useAppSelector((state) => state.user.email);
@@ -393,6 +399,9 @@ export const PaymentPage = ({ value }) => {
 
                             <PaymentFlow
                                 reset={() => setInitialValue({})}
+                                template={value?.template?.code_name}
+                                cluster_domain={value?.cluster}
+                                plan={picked_plan}
                                 instant_deduction={instant_deduction}
                                 gradual_deduction={gradual_deduction}
                                 total={total}
@@ -453,8 +462,11 @@ export const PaymentPage = ({ value }) => {
 
 const PaymentFlow = ({
     promotion,
+    template,
     reset,
     total,
+    plan: plan_name,
+    cluster_domain,
     gradual_deduction,
     instant_deduction
 }) => {
@@ -497,14 +509,48 @@ const PaymentFlow = ({
             setID(id);
             setQRCode(qrcode);
             setURL(payment_url);
-            setData(sdata)
+            setData(sdata);
             setStep('showQR');
         }
     };
 
     const register = async () => {
-        
+        const { error } = await GLOBAL().rpc('create_or_replace_payment', {
+            email,
+            plan_name,
+            cluster_domain,
+            template
+        });
 
+        if (error) {
+            appDispatch(popup_close(true));
+            appDispatch(
+                popup_open({
+                    type: 'complete',
+                    data: {
+                        success: false,
+                        content: error.message
+                    }
+                })
+            );
+            return;
+        }
+
+        await GLOBAL().rpc('verify_all_payment');
+        if (store.getState().worker.currentAddress != cluster_domain) {
+            localStorage.setItem('thinkmay_domain', domain);
+            await preload();
+        }
+
+        let info = undefined;
+        while (!(info?.virtReady ?? false)) {
+            await new Promise((r) => setTimeout(r, 20000));
+            const result = await GetInfo(cluster_domain);
+            if (result instanceof APIError) throw result;
+            else info = result;
+        }
+
+        await preload();
     };
 
     const verify = async () => {

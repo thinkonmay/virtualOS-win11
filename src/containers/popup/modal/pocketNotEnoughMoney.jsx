@@ -10,13 +10,11 @@ import { create_payment_qr } from '../../../backend/actions';
 export function pocketNotEnoughMoney({ data: { plan_price } }) {
     const t = useAppSelector((state) => state.globals.translation);
     const wallet = useAppSelector((state) => state.user.wallet);
-    const handleContinue = () => {
+    const handleContinue = async () => {
         appDispatch(popup_close());
-        appDispatch(
-            create_payment_qr({
-                amount: plan_price - (wallet?.money ?? 0)
-            })
-        );
+        await create_payment_qr({
+            amount: plan_price - (wallet?.money ?? 0)
+        });
     };
 
     return (

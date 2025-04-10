@@ -41,20 +41,20 @@ import { Contents } from '../reducers/locales/index.ts';
 export const originalurl = new URL(window.location.href);
 
 const loadSettings = async () => {
-    let thm = localStorage.getItem('theme');
-    thm = thm == 'light' ? 'light' : 'dark';
-    var icon = thm == 'light' ? 'sun' : 'moon';
+    // let thm = localStorage.getItem('theme');
+    // thm = thm == 'light' ? 'light' : 'dark';
+    // var icon = thm == 'light' ? 'sun' : 'moon';
 
-    if (
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-        thm = 'dark';
-    }
+    // if (
+    //     window.matchMedia &&
+    //     window.matchMedia('(prefers-color-scheme: dark)').matches
+    // ) {
+    //     thm = 'dark';
+    // }
+    // appDispatch(setting_theme(thm));
+    // appDispatch(sidepane_panethem(icon));
 
-    document.body.dataset.theme = thm;
-    appDispatch(setting_theme(thm));
-    appDispatch(sidepane_panethem(icon));
+    document.body.dataset.theme = 'dark';
 };
 
 const fetchSetting = async () => {
@@ -254,24 +254,28 @@ const updateUI = async () => {
     }
 };
 
+export const preloadSilent = async () => {
+    await setDomain();
+    await fetchUser();
+    await Promise.all([
+        fetchSubscription(),
+        fetchDiscounts(),
+        fetchConfiguration(),
+        loadSettings(),
+        fetchPayment(),
+        startAnalytics(),
+        fetchDomains(),
+        fetchSetting(),
+        fetchApp(),
+        fetchPlans(),
+        fetchResources()
+    ]);
+    await Promise.all([fetchSubMetadata(), fetchStore()]);
+};
+
 export const preload = async () => {
     try {
-        await setDomain();
-        await fetchUser();
-        await Promise.all([
-            fetchSubscription(),
-            fetchDiscounts(),
-            fetchConfiguration(),
-            loadSettings(),
-            fetchPayment(),
-            startAnalytics(),
-            fetchDomains(),
-            fetchSetting(),
-            fetchApp(),
-            fetchPlans(),
-            fetchResources()
-        ]);
-        await Promise.all([fetchSubMetadata(), fetchStore()]);
+        await preloadSilent();
         await updateUI();
     } catch (e) {
         UserEvents({
