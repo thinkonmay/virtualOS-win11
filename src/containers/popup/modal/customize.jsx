@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
     appDispatch,
     popup_close,
+    popup_open,
     toggle_hide_vm,
     toggle_high_mtu,
     toggle_high_queue,
@@ -9,6 +10,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
+import { create_or_replace_resources } from '../../../backend/actions';
 
 export function customize() {
     const t = useAppSelector((state) => state.globals.translation);
@@ -67,31 +69,70 @@ export function customize() {
         }
     ]);
 
+    const defaultVal = (configuration) => [
+        {
+            name: 'ram',
+            min: 16,
+            max: 24,
+            step: 4,
+            value: configuration?.ram ?? 16
+        },
+        {
+            name: 'cpu',
+            min: 8,
+            max: 12,
+            step: 2,
+            value: configuration?.cpu ?? 8
+        },
+        {
+            name: 'disk',
+            min: 150,
+            max: 400,
+            step: 50,
+            value: configuration?.disk ?? 150
+        }
+    ];
+
+    const [reset, setReset] = useState(false);
     useEffect(() => {
-        setHWOption([
-            {
-                name: 'ram',
-                min: 16,
-                max: 24,
-                step: 4,
-                value: configuration?.ram ?? 16
-            },
-            {
-                name: 'cpu',
-                min: 8,
-                max: 12,
-                step: 2,
-                value: configuration?.cpu ?? 8
-            },
-            {
-                name: 'disk',
-                min: 150,
-                max: 400,
-                step: 50,
-                value: configuration?.disk ?? 150
+        setHWOption(defaultVal(configuration));
+    }, [configuration, reset]);
+
+    const apply = async () => {
+        for (const option of hwOptions) {
+            for (const def of defaultVal(configuration)) {
+                if (option.name == def.name && option.value != def.value) {
+                    const error = await create_or_replace_resources(
+                        `${option.name}${option.value}`
+                    );
+                    if (error instanceof Error) {
+                        appDispatch(popup_close(true));
+                        appDispatch(
+                            popup_open({
+                                type: 'complete',
+                                data: {
+                                    success: false,
+                                    content: error.message
+                                }
+                            })
+                        );
+                        return;
+                    }
+                }
             }
-        ]);
-    }, [configuration]);
+        }
+
+        appDispatch(popup_close(true));
+        appDispatch(
+            popup_open({
+                type: 'complete',
+                data: {
+                    success: true,
+                    content: 'success'
+                }
+            })
+        );
+    };
 
     const games = [
         {
@@ -214,16 +255,16 @@ export function customize() {
         <div
             id="auth-pop-up"
             tabIndex="-1"
-            className="flex justify-center items-center fixed bottom-0 top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+            className="flex overflow-x-auto justify-center items-center fixed bottom-0 top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
             style={{ backdropFilter: 'blur(3px) brightness(0.5)' }}
         >
             <div
-                className="fixed w-full h-full max-w-2xl md:h-auto p-12 rounded-2xl"
+                className="fixed w-full h-full max-h-[800px] max-w-[700px] md:h-auto p-8 rounded-2xl"
                 style={{ background: 'var(--fakeMica' }}
             >
-                <div className="px-4 space-y-4 md:px-6 mt-12">
+                <div className="px-4 space-y-4 md:px-6">
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div className="flex items-center justify-between col-span-2 space-x-3">
+                        <div className="flex flex-col md:flex-row items-center justify-between col-span-2 space-x-3">
                             {hwOptions.map(renderHWOption)}
                         </div>
                     </div>
@@ -248,12 +289,14 @@ export function customize() {
                     <button
                         type="submit"
                         className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                        onClick={apply}
                     >
                         Apply
                     </button>
                     <button
                         type="reset"
                         className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        onClick={() => setReset((old) => !old)}
                     >
                         Reset
                     </button>

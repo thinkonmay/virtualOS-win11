@@ -17,6 +17,7 @@ import {
     desk_size,
     desk_sort,
     dispatch_generic,
+    fetch_configuration,
     fetch_wallet,
     menu_chng,
     menu_hide,
@@ -29,7 +30,7 @@ import {
     worker_refresh
 } from '../reducers/index';
 import { Contents } from '../reducers/locales';
-import { originalurl, preload } from './background';
+import { fetchPayment, originalurl, preload } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -377,4 +378,17 @@ export const create_payment_pocket = async ({
             await preload();
         }
     }
+};
+
+export const create_or_replace_resources = async (resource_name: string) => {
+    const email = store.getState().user.email;
+    const { error } = await GLOBAL().rpc('create_or_replace_resource_payment', {
+        email,
+        resource_name
+    });
+    if (error) return new Error(error.message);
+
+    await appDispatch(fetch_configuration());
+    await fetchPayment();
+    return undefined;
 };

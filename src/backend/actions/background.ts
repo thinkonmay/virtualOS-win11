@@ -107,7 +107,7 @@ const startAnalytics = async () => {
     (window as any).LiveChatWidget.call('set_customer_email', email);
     await UserSession(email);
 };
-const fetchPayment = () =>
+export const fetchPayment = () =>
     Promise.all([
         appDispatch(fetch_wallet()),
         appDispatch(fetch_payment_history()),

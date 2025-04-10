@@ -34,8 +34,10 @@ type Metadata = {
     configuration?: {
         ram: number;
         cpu: number;
+        disk: number;
         template: string;
     };
+    pbid: string;
     local_id: string;
     image?: string;
     code?: string;
@@ -206,15 +208,30 @@ export const workerAsync = {
             const volumes = await POCKETBASE()
                 .collection('volumes')
                 .getFullList<{
-                    local_id: String;
-                    configuration?: { template: string };
+                    id: string;
+                    local_id: string;
+                    configuration?: {
+                        template: string;
+                        cpu: string;
+                        ram: string;
+                        disk: string;
+                    };
                 }>();
 
             if (volumes.length == 0) return;
 
-            const [{ local_id: _local_id, configuration }] = volumes;
-            const local_id = _local_id as string;
-            const code = configuration?.template?.replaceAll('.template', '');
+            const [{ id: pbid, local_id, configuration: _configuration }] =
+                volumes;
+            const code = _configuration?.template?.replaceAll('.template', '');
+            const configuration = {
+                cpu: parseInt(_configuration?.cpu),
+                ram: parseInt(_configuration?.ram),
+                disk: parseInt(_configuration?.disk),
+                template: _configuration.template
+            };
+            if (Number.isNaN(configuration.cpu)) configuration.cpu = 8;
+            if (Number.isNaN(configuration.ram)) configuration.ram = 16;
+            if (Number.isNaN(configuration.disk)) configuration.disk = 150;
 
             if (code != undefined) {
                 const { data: stores, error: err } = await GLOBAL()
@@ -235,7 +252,8 @@ export const workerAsync = {
                         ]?.path_full ?? undefined;
 
                     return {
-                        configuration: configuration as any,
+                        pbid,
+                        configuration,
                         local_id,
                         image,
                         code,
@@ -243,13 +261,15 @@ export const workerAsync = {
                     };
                 } else
                     return {
-                        configuration: configuration as any,
+                        pbid,
+                        configuration,
                         local_id,
                         code
                     };
             } else
                 return {
-                    configuration: configuration as any,
+                    pbid,
+                    configuration,
                     local_id
                 };
         }

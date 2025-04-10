@@ -16,6 +16,12 @@ const filterActions = [
     'fetch_subscription',
     'fetch_store',
     'get_plans',
+    'get_wallet',
+    'fetch_configuration',
+    'fetch_payment_history',
+    'fetch_refund_request',
+    'get_payment_pocket',
+    'get_deposit_status',
     'get_resources',
     'save_reference',
     'fetch_domain'
