@@ -50,7 +50,7 @@ export const MicroStore = () => {
 const DetailPage = ({ app, close }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const code = useAppSelector(
-        (state) => state.user.subscription?.metadata?.template?.code
+        (state) => state.worker.metadata?.code
     );
 
     const { code_name, name, metadata } = app;

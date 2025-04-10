@@ -86,7 +86,7 @@ export function customize() {
         },
         {
             name: 'disk',
-            min: 150,
+            min: configuration?.disk ?? 150,
             max: 400,
             step: 50,
             value: configuration?.disk ?? 150
