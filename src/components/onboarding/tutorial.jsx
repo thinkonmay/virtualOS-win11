@@ -176,7 +176,7 @@ const desktopGuide = [
 
 const ContinueButton = ({ primaryProps, isLastStep }) => {
     return (
-        <button className="tooltipContinue" {...primaryProps}>
+        <button className="tooltipContinue bg-cyan-400" {...primaryProps}>
             {isLastStep ? (
                 <>
                     Xong <MdCheck fontSize={'1.2rem'} />{' '}

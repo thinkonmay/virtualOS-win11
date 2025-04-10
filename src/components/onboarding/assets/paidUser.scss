@@ -1,7 +1,7 @@
 .tooltipBody {
 	position: relative;
 	max-width: 480px;
-	background-color: #7B61FF;
+	background: var(--fakeMica);
 	color: white;
 	border-top-left-radius: 8px;
 	border-bottom-right-radius: 8px;
@@ -34,7 +34,7 @@
 		padding: 4px;
 		border-radius: 999px;
 		color: white;
-		background-color: #BE0B0B;
+		background-color: #707070;
 
 
 	}
@@ -66,7 +66,7 @@
 
 		font-size: 13px;
 		padding: 6px 24px;
-		background-color: #8e8150;
+		background-color: #bc8d50;
 		color: black;
 
 
@@ -82,12 +82,8 @@
 
 		font-size: 13px;
 		padding: 6px 24px;
-		background-color: #17E558;
 		color: black;
-
 	}
-
-
 }
 
 
