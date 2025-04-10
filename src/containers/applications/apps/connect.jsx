@@ -27,9 +27,11 @@ export const ConnectApp = () => {
     const { cluster, metadata } = useAppSelector(
         (state) => state.user.subscription ?? {}
     );
+    const { image, name } = useAppSelector(
+        (state) => state.worker.metadata ?? {}
+    );
     const addr = useAppSelector((state) => state.worker.currentAddress);
-    const { reach_time_limit, reach_date_limit, template } = metadata ?? {};
-    const { image, name } = template ?? {};
+    const { reach_time_limit, reach_date_limit } = metadata ?? {};
     const { browser } = detectBrowserAndOS();
 
     const limit = (type) =>

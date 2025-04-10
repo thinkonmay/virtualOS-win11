@@ -16,12 +16,6 @@ type Metadata = {
     reach_date_limit: boolean;
     nearly_reach_time_limit?: number;
     nearly_reach_date_limit?: number;
-    template: {
-        local_id?: string;
-        image?: string;
-        code?: string;
-        name?: string;
-    };
 };
 
 export type Subscription = {
@@ -232,63 +226,8 @@ export const userAsync = {
                 plans?.find((x) => x.name == next_plan)?.amount <=
                 wallet?.money;
 
-            // TODO : fetch template
-            const volume = (
-                await POCKETBASE().collection('volumes').getFullList<{
-                    local_id: String;
-                    configuration?: { template: string };
-                }>()
-            )?.[0];
-
-            const local_id = volume?.local_id;
-            const code = volume?.configuration?.template?.replaceAll(
-                '.template',
-                ''
-            );
-
-            let template = null;
-            if (code != undefined) {
-                const { data: stores, error: err } = await GLOBAL()
-                    .from('stores')
-                    .select('metadata->screenshots,name')
-                    .eq('code_name', code)
-                    .limit(1);
-
-                if (err) throw err;
-                else if (stores.length > 0) {
-                    const [{ screenshots, name }] = stores;
-                    template =
-                        screenshots == null
-                            ? {
-                                  code,
-                                  local_id,
-                                  name
-                              }
-                            : {
-                                  image:
-                                      screenshots[
-                                          Math.round(
-                                              Math.random() *
-                                                  ((screenshots as any[])
-                                                      .length -
-                                                      1)
-                                          )
-                                      ]?.path_full ?? undefined,
-                                  code,
-                                  local_id,
-                                  name
-                              };
-                } else
-                    template = {
-                        code,
-                        local_id,
-                        name: code
-                    };
-            } else template = { local_id };
-
             return {
                 node,
-                template,
 
                 reach_time_limit: sufficient ? false : total_usage > limit_hour,
                 reach_date_limit: sufficient

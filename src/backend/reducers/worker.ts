@@ -16,7 +16,9 @@ import {
     Computer,
     GetInfo,
     getRemoteSession,
+    GLOBAL,
     ParseRequest,
+    POCKETBASE,
     StartThinkmay
 } from '../../../src-tauri/api';
 import { ready } from '../../../src-tauri/singleton';
@@ -28,6 +30,18 @@ type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
 };
 
+type Metadata = {
+    configuration?: {
+        ram: number;
+        cpu: number;
+        template: string;
+    };
+    local_id: string;
+    image?: string;
+    code?: string;
+    name?: string;
+};
+
 type WorkerType = {
     data: {
         [address: string]: innerComputer;
@@ -37,6 +51,8 @@ type WorkerType = {
     HideVM: boolean;
     HighMTU: boolean;
     HighQueue: boolean;
+
+    metadata?: Metadata;
 };
 
 const initialState: WorkerType = {
@@ -184,6 +200,60 @@ export const workerAsync = {
             );
         }
     ),
+    fetch_configuration: createAsyncThunk(
+        'fetch_configuration',
+        async (): Promise<Metadata | undefined> => {
+            const volumes = await POCKETBASE()
+                .collection('volumes')
+                .getFullList<{
+                    local_id: String;
+                    configuration?: { template: string };
+                }>();
+
+            if (volumes.length == 0) return;
+
+            const [{ local_id: _local_id, configuration }] = volumes;
+            const local_id = _local_id as string;
+            const code = configuration?.template?.replaceAll('.template', '');
+
+            if (code != undefined) {
+                const { data: stores, error: err } = await GLOBAL()
+                    .from('stores')
+                    .select('metadata->screenshots,name')
+                    .eq('code_name', code)
+                    .limit(1);
+
+                if (err) throw err;
+                else if (stores.length > 0) {
+                    const [{ screenshots, name }] = stores;
+                    const image =
+                        screenshots?.[
+                            Math.round(
+                                Math.random() *
+                                    ((screenshots as any[]).length - 1)
+                            )
+                        ]?.path_full ?? undefined;
+
+                    return {
+                        configuration: configuration as any,
+                        local_id,
+                        image,
+                        code,
+                        name
+                    };
+                } else
+                    return {
+                        configuration: configuration as any,
+                        local_id,
+                        code
+                    };
+            } else
+                return {
+                    configuration: configuration as any,
+                    local_id
+                };
+        }
+    ),
     unclaim_volume: createAsyncThunk(
         'unclaim_volume',
         async (_: void, { getState }): Promise<any> => {
@@ -249,6 +319,12 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.worker_refresh_ui,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.fetch_configuration,
+                hander: (state, action) => {
+                    state.metadata = action.payload;
+                }
             },
             {
                 fetch: workerAsync.wait_and_claim_volume,

@@ -12,6 +12,7 @@ import {
     check_worker,
     desk_remove,
     fetch_active_discounts,
+    fetch_configuration,
     fetch_domain,
     fetch_payment_history,
     fetch_refund_request,
@@ -118,6 +119,7 @@ const fetchPayment = () =>
 const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
 const fetchSubMetadata = () => appDispatch(fetch_subscription_metadata());
+const fetchConfiguration = () => appDispatch(fetch_configuration());
 const fetchDomains = () => appDispatch(fetch_domain());
 const fetchUser = () => appDispatch(fetch_user());
 const fetchDiscounts = () => appDispatch(fetch_active_discounts());
@@ -203,10 +205,10 @@ const updateUI = async () => {
     rms.forEach((x) => appDispatch(desk_remove(x)));
 
     const domain = store.getState().worker.currentAddress;
+    const metadata = store.getState().user.subscription?.metadata;
+    const template = store.getState().worker.metadata;
     const version = import.meta.env.__BUILD__;
     const device = getOS() + ' ' + getBrowser();
-    const metadata = store.getState().user.subscription?.metadata;
-    const template = metadata?.template;
     const node = metadata?.node;
     const nodetext = node ? `\nNode ${node}` : '';
     const templatetext = template?.name ? `\nTemplate ${template.name}` : '';
@@ -259,6 +261,7 @@ export const preload = async () => {
         await Promise.all([
             fetchSubscription(),
             fetchDiscounts(),
+            fetchConfiguration(),
             loadSettings(),
             fetchPayment(),
             startAnalytics(),

@@ -162,6 +162,7 @@ export const { showQa, hideQa, toggleQa } = qaSlices.actions;
 export const {
     worker_refresh,
     worker_refresh_ui,
+    fetch_configuration,
     wait_and_claim_volume,
     unclaim_volume
 } = workerAsync;
