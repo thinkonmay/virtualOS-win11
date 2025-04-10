@@ -287,13 +287,77 @@ export const PaymentPage = ({ value }) => {
                             </div>
                         </div>
                         <div className="flex space-y-4 p-6">
-                            <div className="relative w-full ">
+                            <div className="flex justify-between relative w-full ">
                                 <div className=" absolute left-0 top-0 py-2.5 px-4 text-gray-300"></div>
                                 <input
                                     type="text"
                                     className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
                                     placeholder="Enter your promotion code"
                                 />
+                                <button className=" bg-gray-700 text-white p-2 rounded-md flex justify-center items-center hover:opacity-80 ml-3">
+                                    {false ? (
+                                        <>
+                                            Apply
+                                            <svg
+                                                className="w-6 h-6 text-gray-800 dark:text-white ml-1"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke="currentColor"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M18.5 12A2.5 2.5 0 0 1 21 9.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v2.5a2.5 2.5 0 0 1 0 5V17a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                                                />
+                                            </svg>
+                                        </>
+                                    ) : false ? (
+                                        <>
+                                            Applied
+                                            <svg
+                                                className="w-6 h-6 text-gray-800 dark:text-white"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                                    clip-rule="evenodd"
+                                                />
+                                            </svg>
+                                        </>
+                                    ) : (
+                                        <>
+                                            Denied
+                                            <svg
+                                                className="w-6 h-6 text-gray-800 dark:text-white"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke="currentColor"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
+                                                />
+                                            </svg>
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
 
