@@ -23,6 +23,7 @@ import {
     get_deposit_status,
     get_payment_pocket,
     get_plans,
+    get_resources,
     have_focus,
     loose_focus,
     popup_open,
@@ -100,25 +101,10 @@ const setDomain = async () => {
         appDispatch(set_current_address(defaultDomain));
     } else appDispatch(set_current_address(address));
 };
-const fetchStore = async () => {
-    await appDispatch(fetch_store());
-};
 const startAnalytics = async () => {
     const email = store.getState().user.email;
     (window as any).LiveChatWidget.call('set_customer_email', email);
     await UserSession(email);
-};
-const fetchSubscription = async () => {
-    await appDispatch(fetch_subscription());
-};
-const fetchSubMetadata = async () => {
-    await appDispatch(fetch_subscription_metadata());
-};
-const fetchDomains = async () => {
-    await appDispatch(fetch_domain());
-};
-const fetchUser = async () => {
-    await appDispatch(fetch_user());
 };
 const fetchPayment = () =>
     Promise.all([
@@ -129,15 +115,15 @@ const fetchPayment = () =>
         appDispatch(get_deposit_status())
     ]);
 
-const fetchDiscounts = async () => {
-    await appDispatch(fetch_active_discounts());
-};
-const fetchApp = async () => {
-    await appDispatch(worker_refresh());
-};
-const fetchPlans = async () => {
-    await appDispatch(get_plans());
-};
+const fetchStore = () => appDispatch(fetch_store());
+const fetchSubscription = () => appDispatch(fetch_subscription());
+const fetchSubMetadata = () => appDispatch(fetch_subscription_metadata());
+const fetchDomains = () => appDispatch(fetch_domain());
+const fetchUser = () => appDispatch(fetch_user());
+const fetchDiscounts = () => appDispatch(fetch_active_discounts());
+const fetchApp = () => appDispatch(worker_refresh());
+const fetchPlans = () => appDispatch(get_plans());
+const fetchResources = () => appDispatch(get_resources());
 
 const updateUI = async () => {
     const {
@@ -266,7 +252,7 @@ const updateUI = async () => {
     }
 };
 
-export const preload = async (update_ui?: boolean) => {
+export const preload = async () => {
     try {
         await setDomain();
         await fetchUser();
@@ -279,11 +265,11 @@ export const preload = async (update_ui?: boolean) => {
             fetchDomains(),
             fetchSetting(),
             fetchApp(),
-            fetchPlans()
+            fetchPlans(),
+            fetchResources()
         ]);
         await Promise.all([fetchSubMetadata(), fetchStore()]);
-
-        if (update_ui ?? true) await updateUI();
+        await updateUI();
     } catch (e) {
         UserEvents({
             type: 'preload/rejected',
@@ -292,8 +278,8 @@ export const preload = async (update_ui?: boolean) => {
     }
 };
 
-export const PreloadBackground = async (update_ui?: boolean) => {
-    await preload(update_ui);
+export const PreloadBackground = async () => {
+    await preload();
     setInterval(check_worker, 10 * 1000);
     setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 300);

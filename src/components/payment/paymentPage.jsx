@@ -5,6 +5,7 @@ import { useAppSelector } from '../../backend/reducers';
 export const PaymentPage = ({ value }) => {
     const email = useAppSelector((state) => state.user.email);
     const plans = useAppSelector((state) => state.user.plans);
+    const resources = useAppSelector((state) => state.user.resources);
     const [planAmount, setplanAmount] = useState({});
     const [planCount, setplanCount] = useState({});
     let total = 0;
@@ -12,8 +13,7 @@ export const PaymentPage = ({ value }) => {
     for (const key in planAmount) total += planAmount[key];
     for (const key in planCount) count += planCount[key];
 
-    const pay = (e) =>
-        total > 0 ? create_payment_qr({ amount: total }) : null;
+    const pay = () => (total > 0 ? create_payment_qr({ amount: total }) : null);
 
     const subcontents = [
         {
@@ -31,16 +31,36 @@ export const PaymentPage = ({ value }) => {
         {
             title: 'Gói cao cấp',
             name: 'month2'
+        },
+
+        {
+            title: '12 vCPUs 1 tháng',
+            multiply: 30,
+            name: 'cpu12'
+        },
+        {
+            title: '10 vCPUs 1 tháng',
+            multiply: 30,
+            name: 'cpu10'
+        },
+        {
+            title: '24GB RAM 1 tháng',
+            multiply: 30,
+            name: 'ram24'
+        },
+        {
+            title: 'Tài khoản game 1 tháng',
+            multiply: 30,
+            name: 'kickey'
+        },
+        {
+            title: '20GB RAM 1 tháng',
+            multiply: 30,
+            name: 'ram20'
         }
     ];
 
     const additionalPlans = [];
-    if (value?.kickey)
-        additionalPlans.push({
-            title: 'Tài khoản chơi game kickey',
-            name: 'kickey',
-            amount: 50000
-        });
     if (value?.template)
         additionalPlans.push({
             title: `${value.template.name} đã được cài sẵn`,
@@ -52,13 +72,13 @@ export const PaymentPage = ({ value }) => {
         const [quantity, setQuantity] = useState(0);
 
         useEffect(() => {
-            if (value?.plan == plan.name) set(1);
-        }, []);
-        useEffect(() => {
-            if ('kickey' == plan.name) set(1);
-        }, []);
-        useEffect(() => {
-            if (value?.template?.code_name == plan.name) set(1);
+            set(
+                value?.plan == plan.name ||
+                    value?.additional?.includes(plan.name) ||
+                    value?.template?.code_name == plan.name
+                    ? 1
+                    : 0
+            );
         }, []);
 
         const increase = (val) => {
@@ -206,10 +226,21 @@ export const PaymentPage = ({ value }) => {
                                 ...(subcontents.find((y) => y.name == x.name) ??
                                     {})
                             })),
+                            ...resources.map((x) => ({
+                                ...x,
+                                ...(subcontents.find((y) => y.name == x.name) ??
+                                    {})
+                            })),
                             ...additionalPlans
                         ]
+                            .map((x) => ({
+                                ...x,
+                                ...(x.multiply
+                                    ? { amount: x.amount * x.multiply }
+                                    : {})
+                            }))
                             .filter((val) => val.title != null)
-                            .sort((a, b) => a.amount - b.amount)
+                            .sort((a, b) => b.amount - a.amount)
                             .map(renderPlan)}
                     </div>
 

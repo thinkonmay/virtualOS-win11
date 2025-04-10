@@ -1,12 +1,7 @@
-import { useState } from 'react';
-import { POCKETBASE } from '../../../src-tauri/api';
-import { appDispatch, useAppSelector } from '../../backend/reducers';
-import { externalLink } from '../../backend/utils/constant';
-import Battery from '../../components/shared/Battery';
-import { Icon, Image } from '../../components/shared/general';
+import { useAppSelector } from '../../backend/reducers';
+import { Image } from '../../components/shared/general';
 import './back.scss';
 import './getstarted.scss';
-import { login } from '../../backend/actions';
 
 export const Background = () => {
     const src = useAppSelector((state) => state.wallpaper.src);

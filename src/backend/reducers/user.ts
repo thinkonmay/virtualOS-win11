@@ -50,6 +50,15 @@ type Plan = {
     allow_payment: boolean;
 };
 
+type Resource = {
+    name: string;
+    amount: number;
+    configuration: {
+        cpu?: string;
+        ram?: string;
+    };
+};
+
 type Discount = {
     code: string;
     start_at: string;
@@ -103,6 +112,7 @@ type Data = RecordModel & {
     subscription?: Subscription;
     bucket_name?: string;
     plans: Plan[];
+    resources: Resource[];
     discounts: Discount[];
     wallet: Wallet;
 };
@@ -116,6 +126,7 @@ const initialState: Data = {
     created: '',
     updated: '',
     plans: [],
+    resources: [],
     discounts: [],
 
     wallet: {
@@ -307,7 +318,7 @@ export const userAsync = {
             const { id, email } = (getState() as RootState).user;
             if (id == 'unknown') return undefined;
 
-            const { data, error } = await GLOBAL().rpc('get_subscription', {
+            const { data, error } = await GLOBAL().rpc('get_subscription_v2', {
                 email
             });
 
@@ -315,6 +326,20 @@ export const userAsync = {
             else if (data.length == 0)
                 throw new Error('no subscription available');
             else return data?.[0];
+        }
+    ),
+    get_resources: createAsyncThunk(
+        'get_resources',
+        async (_: void): Promise<Resource[]> => {
+            const { data, error } = await GLOBAL()
+                .from('resources')
+                .select('price->>amount,name,configuration,type')
+                .eq('active', true);
+            if (error != null)
+                throw new Error(
+                    `Failed to query plan table + ${error.message}`
+                );
+            else return data.map((x) => ({ ...x, amount: parseInt(x.amount) }));
         }
     ),
     get_plans: createAsyncThunk(
@@ -517,6 +542,12 @@ export const userSlice = createSlice({
                 fetch: userAsync.fetch_subscription,
                 hander: (state, action) => {
                     state.subscription = action.payload;
+                }
+            },
+            {
+                fetch: userAsync.get_resources,
+                hander: (state, action) => {
+                    state.resources = action.payload;
                 }
             },
             {

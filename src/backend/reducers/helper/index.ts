@@ -16,6 +16,7 @@ const filterActions = [
     'fetch_subscription',
     'fetch_store',
     'get_plans',
+    'get_resources',
     'save_reference',
     'fetch_domain'
 ];

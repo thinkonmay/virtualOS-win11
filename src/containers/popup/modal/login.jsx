@@ -1,13 +1,13 @@
-import { login as loginFunc } from '../../../backend/actions';
+import { loginAction } from '../../../backend/actions';
 import { useAppSelector } from '../../../backend/reducers';
 
 export function login({ loading }) {
     const id = useAppSelector((state) => state.user.id);
     if (!(id == 'unknown' || id == undefined || id == null)) return null;
 
-    function proceed(provider, update_ui) {
+    function proceed(provider) {
         loading(true);
-        loginFunc(provider, update_ui, () => loading(false));
+        loginAction(provider, () => loading(false));
     }
 
     return (
@@ -50,7 +50,7 @@ export function login({ loading }) {
                                 Github
                             </a>
                             <a
-                                onClick={() => proceed('google', true)}
+                                onClick={() => proceed('google')}
                                 className="w-full inline-flex items-center justify-center text-white bg-[#4284F4] hover:bg-[#3372df] dark:focus:ring-[#0f53c9] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer"
                             >
                                 <svg

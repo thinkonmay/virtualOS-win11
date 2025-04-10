@@ -164,9 +164,8 @@ export const dispatchOutSide = (action: string, payload: any) => {
 
 export const loginWithEmail = async (email: string, password: string) => {};
 export const signUpWithEmail = async (email: string, password: string) => {};
-export const login = (
+export const loginAction = (
     provider: 'google' | 'facebook' | 'discord',
-    update_ui?: boolean,
     finish_callback?: () => {}
 ) => {
     window.oncontextmenu = (ev) => ev.preventDefault();
@@ -181,7 +180,7 @@ export const login = (
             }
         })
         .then(() => {
-            preload(update_ui);
+            preload();
             const isNewUser =
                 (new Date().getTime() -
                     new Date(POCKETBASE().authStore.model.created).getTime()) /
@@ -323,12 +322,10 @@ export const verify_transaction = async ({ id }: { id: number }) => {
 
 export const create_payment_pocket = async ({
     plan_name,
-    cluster_domain = 'unknown',
-    synchronous
+    cluster_domain = 'unknown'
 }: {
     plan_name: string;
     cluster_domain?: string;
-    synchronous?: boolean;
 }) => {
     appDispatch(
         popup_open({
@@ -357,8 +354,6 @@ export const create_payment_pocket = async ({
         );
     } else {
         await GLOBAL().rpc('verify_all_payment');
-        if (!synchronous) return await preload(false);
-
         appDispatch(app_close('payment'));
         if (store.getState().worker.currentAddress != cluster_domain) {
             await new Promise((r) => setTimeout(r, 90 * 1000));

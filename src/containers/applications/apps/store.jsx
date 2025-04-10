@@ -104,8 +104,12 @@ const DetailPage = ({ app, close }) => {
                               name,
                               code_name
                           },
-                          kickey: options.find((x) => x.code == 'kickey')
-                              ?.clicked
+                          additional: [
+                              ...(options.find((x) => x.code == 'kickey')
+                                  ?.clicked
+                                  ? ['kickey']
+                                  : [])
+                          ]
                       }
                   })
               )
@@ -526,7 +530,7 @@ const SearchBar = ({ close, opened, games, setFilter }) => {
                                                     aria-hidden="true"
                                                     className="w-5 h-5 text-gray-500 dark:text-gray-400"
                                                     fill="currentColor"
-                                                    viewbox="0 0 20 20"
+                                                    viewBox="0 0 20 20"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                 >
                                                     <path

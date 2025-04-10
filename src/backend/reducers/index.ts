@@ -175,6 +175,7 @@ export const {
     fetch_refund_request,
     refund_request,
     get_plans,
+    get_resources,
     change_template,
     get_payment_pocket,
     get_deposit_status

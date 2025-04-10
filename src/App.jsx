@@ -35,7 +35,6 @@ const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
 
 function App() {
     ReactModal.setAppElement('#root');
-    const { id } = useAppSelector((state) => state.user);
     const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
     const tutorial = useAppSelector((state) => state.globals.tutorial);
@@ -78,7 +77,7 @@ function App() {
 
         const now = () => new Date().getTime();
         const start_fetch = now();
-        PreloadBackground(true).finally(async () => {
+        PreloadBackground().finally(async () => {
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
             UserEvents({ type: 'preload/finish', payload: { interval } });
