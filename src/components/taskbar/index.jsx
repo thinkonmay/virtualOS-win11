@@ -16,8 +16,6 @@ import {
     appDispatch,
     show_chat,
     startogg,
-    task_hide,
-    task_show,
     toggleQa,
     useAppSelector
 } from '../../backend/reducers';
@@ -47,39 +45,6 @@ const Taskbar = () => {
             .filter((x) => !x.hide)
             .filter((x) => defaultapps.find((y) => y.id == x.id) == undefined)
     );
-
-    const showPrev = (event) => {
-        var ele = event.target;
-        while (ele && ele.getAttribute('value') == null)
-            ele = ele.parentElement;
-
-        var appPrev = ele.getAttribute('value');
-        var xpos = window.scrollX + ele.getBoundingClientRect().left;
-
-        var offsetx = Math.round((xpos * 10000) / window.innerWidth) / 100;
-
-        dispatch(
-            task_show({
-                app: appPrev,
-                pos: offsetx
-            })
-        );
-    };
-
-    const hidePrev = () => {
-        dispatch(task_hide());
-    };
-
-    const [time, setTime] = useState(new Date());
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTime(new Date());
-        }, 1000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
 
     const [play] = useSound(ringSound, { volume: 0.1 });
 
@@ -181,7 +146,7 @@ const Taskbar = () => {
                         </div>
                     </div>
                     <div className="tasksCont" data-side={tasks.align}>
-                        <div className="tsbar" onMouseOut={hidePrev}>
+                        <div className="tsbar">
                             <div
                                 style={{ '--prefix': 'START' }}
                                 className="settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight"
@@ -202,12 +167,6 @@ const Taskbar = () => {
                                 return (
                                     <div
                                         key={i}
-                                        onMouseOver={
-                                            (!isActive &&
-                                                !isHidden &&
-                                                showPrev) ||
-                                            null
-                                        }
                                         value={task.id}
                                     >
                                         <Icon
@@ -225,13 +184,7 @@ const Taskbar = () => {
                             {tempapps.map((key, i) => {
                                 const isActive = key.z == apps.hz;
                                 return (
-                                    <div
-                                        key={i}
-                                        onMouseOver={
-                                            (!isActive && showPrev) || null
-                                        }
-                                        value={key.icon}
-                                    >
+                                    <div key={i} value={key.icon}>
                                         <Icon
                                             className="tsIcon"
                                             width={24}

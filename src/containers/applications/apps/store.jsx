@@ -515,7 +515,7 @@ const SearchBar = ({ close, opened, games, setFilter }) => {
                                 <div className="w-full">
                                     <form className="flex items-center">
                                         <label
-                                            for="simple-search"
+                                            htmlFor="simple-search"
                                             className="sr-only"
                                         >
                                             Search

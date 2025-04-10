@@ -75,7 +75,7 @@ export function customize() {
                 }`}
             >
                 <label
-                    for="account-moderator"
+                    htmlFor="account-moderator"
                     className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
                 >
                     {option.name}
@@ -94,7 +94,7 @@ export function customize() {
                 className="hidden peer"
             />
             <label
-                for="frontend-developer"
+                htmlFor="frontend-developer"
                 className="inline-flex items-center justify-center w-full p-2 text-sm font-medium text-center bg-white border-2 rounded-lg cursor-pointer text-primary-600 border-primary-600 dark:hover:text-white dark:border-primary-500 dark:peer-checked:border-primary-500 peer-checked:border-primary-600 peer-checked:bg-primary-600 hover:text-white peer-checked:text-white hover:bg-primary-500 dark:text-primary-500 dark:bg-gray-800 dark:hover:bg-primary-600 dark:hover:border-primary-600 dark:peer-checked:bg-primary-500"
             >
                 {game.name}
@@ -105,7 +105,7 @@ export function customize() {
     const renderHWOption = (hw, index) => (
         <div key={index} className="w-full">
             <label
-                for="min-age-input"
+                htmlFor="min-age-input"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
                 {hw.name}
