@@ -438,11 +438,11 @@ const SearchBar = ({ close, opened, games, setFilter }) => {
     const filter = [
         {
             name: 'has account',
-            func: (arr) => arr.filter((x) => x)
+            func: (arr) => arr.filter((x) => x.tag.hasaccount)
         },
         {
             name: 'predownload',
-            func: (arr) => arr.filter((x) => x)
+            func: (arr) => arr.filter((x) => x.code_name != null)
         }
     ];
 

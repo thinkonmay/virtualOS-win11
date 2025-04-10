@@ -276,14 +276,14 @@ export const globalAsync = {
         )?.map((x) => x.name.replaceAll('.template', ''));
         const { data, error } = await GLOBAL()
             .from('stores')
-            .select('code_name,name,metadata');
+            .select('code_name,name,metadata,management->>kickey');
         if (error) throw new Error(error.message);
 
         return data.map((x) => ({
             ...x,
             tag: {
                 samenode: samenodes?.includes(x.code_name) ?? false,
-                hasaccount: true
+                hasaccount: x.kickey == 'true'
             }
         }));
     })
