@@ -165,10 +165,7 @@ const Taskbar = () => {
                                 const isHidden = task.hide;
                                 const isActive = task.z == apps.hz;
                                 return (
-                                    <div
-                                        key={i}
-                                        value={task.id}
-                                    >
+                                    <div key={i} value={task.id}>
                                         <Icon
                                             className="tsIcon"
                                             width={18}

@@ -51,6 +51,9 @@ type PopupData =
       }
     | {
           type: 'share';
+          data: {
+              url: string;
+          };
       }
     | {
           type: 'customize';
