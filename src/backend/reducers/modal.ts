@@ -98,12 +98,6 @@ type PopupData =
           };
       }
     | {
-          type: 'showQa';
-          data: {
-              key: string;
-          };
-      }
-    | {
           type: 'serversInfo';
           data: {
               domains: any[];

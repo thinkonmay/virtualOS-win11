@@ -112,41 +112,6 @@
 		}
 	}
 
-	.showQa {
-		position: relative;
-
-		.continueBtn {
-
-			position: absolute;
-			top: -14px;
-			right: 32px;
-
-			display: flex;
-			gap: 8px;
-			align-items: center;
-			border-radius: 99px;
-
-			font-size: 13px;
-			padding: 6px 24px;
-			background-color: #17E558;
-			color: black;
-		}
-
-		.backBtn {
-
-			display: flex;
-			gap: 8px;
-			align-items: center;
-			border-radius: 99px;
-
-			font-size: 13px;
-			padding: 6px 24px;
-			background-color: #8e8150;
-			color: black;
-
-		}
-	}
-
 	.serversInfo {
 
 		max-width: 1000px;

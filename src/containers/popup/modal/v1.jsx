@@ -1,13 +1,12 @@
+export { notify } from './notify';
 export { complete } from './complete';
 export { extendService } from './extend';
-export { info } from './info';
-export { maintain } from './maintain';
-export { notify } from './notify';
+
 export { pocketBuyConfirm } from './pocketBuyConfirm';
 export { pocketNotEnoughMoney } from './pocketNotEnoughMoney';
-export { showQa } from './qa';
-export { redirectDomain } from './redirect';
-export { serversInfo } from './serversInfo';
-export { shareLink } from './shareLink';
 export { paymentQR } from './paymentQR';
+
 export { yesNo } from './yesNo';
+
+export { redirectDomain } from './redirect';
+export { shareLink } from './shareLink';

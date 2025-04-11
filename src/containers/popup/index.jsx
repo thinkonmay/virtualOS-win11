@@ -20,10 +20,7 @@ const Popup = () => {
     );
 
     const closeModal = () => {
-        popup.type == 'complete' ||
-        popup.type == 'showQa' ||
-        popup.type == 'maintain' ||
-        popup.type == 'shareLink'
+        popup.type == 'complete' || popup.type == 'shareLink'
             ? appDispatch(popup_close())
             : null;
     };

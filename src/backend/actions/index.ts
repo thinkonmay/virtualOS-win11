@@ -44,7 +44,7 @@ export const afterMath = (event: any) => {
         ['BAND', 'sidepane/sidepane_bandhide', 'sidepane.banhide'],
         ['PANE', 'sidepane/sidepane_panehide', 'sidepane.hide'],
         ['MENU', 'menu/menu_hide', 'menus.hide'],
-        ['QA', 'listQa/hideQa', 'listQa.hide']
+        ['QA', 'startmenu/hideQa', 'startmenu.qahide']
     ];
 
     var actionType = '';

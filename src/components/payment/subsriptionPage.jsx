@@ -381,9 +381,7 @@ export const SubscriptionPage = ({ value, switchPage }) => {
                     <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
                         *chưa bao gồm tài khoản game và các nâng cấp khác
                     </p>
-                    <DomainSelection
-                        onChangeDomain={setDomain}
-                    />
+                    <DomainSelection onChangeDomain={setDomain} />
                 </div>
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
                     {plans
