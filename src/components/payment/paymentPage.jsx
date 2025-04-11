@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { verify_transaction } from '../../backend/actions';
 import {
-    appDispatch,
-    popup_close,
-    useAppSelector
-} from '../../backend/reducers';
+    create_payment_pocket,
+    verify_transaction
+} from '../../backend/actions';
+import { useAppSelector } from '../../backend/reducers';
 import QRCode from 'react-qr-code';
 import { GLOBAL } from '../../../src-tauri/api';
-import { fetchPayment } from '../../backend/actions/background';
+import { fetchPayment, preloadSilent } from '../../backend/actions/background';
 
 const subcontents = [
     {
@@ -59,13 +58,12 @@ const subcontents = [
 ];
 
 export const PaymentPage = ({ value }) => {
-    const [initial, setInitialValue] = useState(value);
-    const picked_plan = initial?.plan;
     const email = useAppSelector((state) => state.user.email);
     const plans = useAppSelector((state) => state.user.plans);
     const resources = useAppSelector((state) => state.user.resources);
     const [planAmount, setplanAmount] = useState({});
-    const [promotion, setPromotion] = useState(null);
+    const [promotion, setPromotion] = useState('');
+    const [step, setStep] = useState(value?.plan != undefined ? 2 : 1);
 
     let total = 0;
     let instant_deduction = 0;
@@ -86,6 +84,17 @@ export const PaymentPage = ({ value }) => {
         )
             gradual_deduction +=
                 resources.find((x) => x.name == key)?.amount * 30;
+
+    let picked_plan = value?.plan;
+    if (picked_plan == undefined)
+        for (const key in planAmount)
+            if (
+                subcontents.find((x) => x.name == key)?.type == 'plan' &&
+                planAmount[key] > 0
+            ) {
+                picked_plan = key;
+                break;
+            }
 
     const additionalPlans = [];
     if (value?.template)
@@ -128,7 +137,7 @@ export const PaymentPage = ({ value }) => {
             });
         };
 
-        const enableEdit = picked_plan == undefined;
+        const enableEdit = step == 1;
         if (!enableEdit && quantity == 0) return null;
         return (
             <div
@@ -165,14 +174,14 @@ export const PaymentPage = ({ value }) => {
                     </p>
                 </div>
 
-                <div className="items-center w-8 mx-8">
+                <div className="flex flex-row items-center w-8 mx-8">
                     {enableEdit ? (
                         <button
-                            onClick={() => increase(1)}
-                            className="bg-gray-300 group rounded-t-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                            onClick={() => increase(-1)}
+                            className="bg-gray-600 group rounded-l-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
                         >
                             <svg
-                                className="w-8 h-8 text-black"
+                                className="w-8 h-8 text-white"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -185,25 +194,25 @@ export const PaymentPage = ({ value }) => {
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth="2"
-                                    d="m5 15 7-7 7 7"
+                                    d="M5 12h14"
                                 />
                             </svg>
                         </button>
                     ) : null}
                     <input
                         type="text"
-                        className="border-y bg-gray-900 outline-none text-white font-semibold text-lg w-full placeholder:text-white py-1  text-center bg-transparent"
+                        className="border-y bg-gray-900 outline-none text-white font-semibold text-lg  placeholder:text-white py-1  text-center bg-transparent w-6"
                         placeholder="0"
                         value={quantity}
                         onChange={(x) => set(x.target.value)}
                     />
                     {enableEdit ? (
                         <button
-                            onClick={() => increase(-1)}
-                            className="bg-gray-300 group rounded-b-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                            onClick={() => increase(1)}
+                            className="bg-gray-600 group rounded-r-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
                         >
                             <svg
-                                className="w-8 h-8 text-black"
+                                className="w-8 h-8 text-white"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -216,7 +225,7 @@ export const PaymentPage = ({ value }) => {
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth="2"
-                                    d="m19 9-7 7-7-7"
+                                    d="M5 12h14m-7 7V5"
                                 />
                             </svg>
                         </button>
@@ -238,11 +247,12 @@ export const PaymentPage = ({ value }) => {
             style={{ color: `var(--dark-txt)` }}
         >
             <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+                <Stage step={step} />
                 <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-8">
                     <div className="min-w-0 flex-1 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white shadow-sm dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
                         <div className="p-6 mt-6 flex justify-left">
                             <h2 className=" text-2xl font-semibold text-gray-900 dark:text-white">
-                                Order Details
+                                Lựa chọn
                             </h2>
                         </div>
                         {[
@@ -272,7 +282,7 @@ export const PaymentPage = ({ value }) => {
                     <div className="mt-6 w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
                         <div className="p-6">
                             <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-                                Order Details
+                                Phương thức thanh toán
                             </h4>
 
                             <div className="flow-root">
@@ -345,7 +355,7 @@ export const PaymentPage = ({ value }) => {
                                                 />
                                             </svg>
                                         </>
-                                    ) : false ? (
+                                    ) : true ? (
                                         <>
                                             Applied
                                             <svg
@@ -358,9 +368,9 @@ export const PaymentPage = ({ value }) => {
                                                 viewBox="0 0 24 24"
                                             >
                                                 <path
-                                                    fill-rule="evenodd"
+                                                    fillRule="evenodd"
                                                     d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
-                                                    clip-rule="evenodd"
+                                                    clipRule="evenodd"
                                                 />
                                             </svg>
                                         </>
@@ -389,21 +399,23 @@ export const PaymentPage = ({ value }) => {
                                 </button>
                             </div>
                         </div>
-
                         <div className="space-y-4 p-6">
                             <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                Order amount
+                                Tổng hợp
                             </h4>
 
                             <PaymentFlow
-                                reset={() => setInitialValue({})}
+                                total={total}
+                                initialStep={
+                                    step == 2 ? 'requestQR' : 'picking'
+                                }
+                                setStep={setStep}
+                                plan={picked_plan}
+                                promotion={promotion}
                                 template={value?.template?.code_name}
                                 cluster_domain={value?.cluster}
-                                plan={picked_plan}
                                 instant_deduction={instant_deduction}
                                 gradual_deduction={gradual_deduction}
-                                total={total}
-                                promotion={promotion}
                             />
 
                             <p className="max-w-xs text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -461,21 +473,30 @@ export const PaymentPage = ({ value }) => {
 const PaymentFlow = ({
     promotion,
     template,
-    reset,
     total,
+    setStep: stepCallback,
     plan: plan_name,
+    initialStep,
     cluster_domain,
     gradual_deduction,
     instant_deduction
 }) => {
     const email = useAppSelector((state) => state.user.email);
     const wallet = useAppSelector((state) => state.user.wallet.money);
-    const subscription = useAppSelector((state) => state.user.subscription);
-    const [step, setStep] = useState('requestQR');
+    const has_subscription = useAppSelector(
+        (state) => state.user.subscription != undefined
+    );
+    const [step, setStep] = useState(initialStep);
     const [qrcode, setQRCode] = useState('');
     const [url, setURL] = useState('');
     const [id, setID] = useState('');
     const [data, setData] = useState({});
+
+    useEffect(() => {
+        if (step == 'picking') stepCallback(1);
+        else if (step == 'requestQR' || step == 'showQR') stepCallback(2);
+        else if (step == 'deduct') stepCallback(3);
+    }, [step]);
 
     const requestQR = async () => {
         const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
@@ -512,39 +533,26 @@ const PaymentFlow = ({
         }
     };
 
+    const currentAddress = useAppSelector(
+        (state) => state.worker.currentAddress
+    );
     const register = async () => {
-        const { error } = await GLOBAL().rpc('create_or_replace_payment', {
+        if (currentAddress != cluster_domain) {
+            localStorage.setItem('thinkmay_domain', domain);
+            await preloadSilent();
+        }
+
+        await create_payment_pocket({
             email,
             plan_name,
             cluster_domain,
             template
         });
-
-        if (error) {
-            appDispatch(popup_close());
-            toast(`Failed ${error.message}`);
-            return;
-        }
-
-        await GLOBAL().rpc('verify_all_payment');
-        if (store.getState().worker.currentAddress != cluster_domain) {
-            localStorage.setItem('thinkmay_domain', domain);
-            await preload();
-        }
-
-        let info = undefined;
-        while (!(info?.virtReady ?? false)) {
-            await new Promise((r) => setTimeout(r, 20000));
-            const result = await GetInfo(cluster_domain);
-            if (result instanceof APIError) throw result;
-            else info = result;
-        }
-
-        await preload();
     };
 
     const verify = async () => {
         if (await verify_transaction({ id })) {
+            await GLOBAL().rpc('verify_all_deposits');
             await fetchPayment();
             setStep('deduct');
         }
@@ -553,7 +561,7 @@ const PaymentFlow = ({
     useEffect(() => {
         if (step != 'showQR') return;
 
-        const interval = setInterval(verify, 2000);
+        const interval = setInterval(verify, 1000);
         return async () => {
             clearInterval(interval);
         };
@@ -675,31 +683,20 @@ const PaymentFlow = ({
                             </dd>
                         </dl>
                     ) : null}
-                    {wallet >= total ? (
-                        <div className="flex flex-row gap-4">
-                            <button
-                                onClick={requestQR}
-                                className="flex w-full items-center justify-center rounded-lg bg-gray-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4   focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-                            >
-                                Nạp số tiền trên
-                            </button>
-                            <button
-                                onClick={() => setStep('deduct')}
-                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                            >
-                                Thanh toán từ ví
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="flex flex-row gap-4">
-                            <button
-                                onClick={requestQR}
-                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                            >
-                                Thanh toán
-                            </button>
-                        </div>
-                    )}
+                    <div className="flex flex-row gap-4">
+                        <button
+                            onClick={() => setStep('picking')}
+                            className="flex w-full items-center justify-center rounded-lg bg-gray-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4   focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                        >
+                            Chọn lại
+                        </button>
+                        <button
+                            onClick={requestQR}
+                            className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                        >
+                            Thanh toán
+                        </button>
+                    </div>
                 </>
             );
         case 'deduct':
@@ -754,34 +751,183 @@ const PaymentFlow = ({
                         </div>
                     </div>
                     <div className="flex flex-row gap-4">
-                        <button
+                        {/* <button
                             onClick={() => setStep('requestQR')}
                             className="flex w-full items-center justify-center rounded-lg bg-gray-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4   focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
                         >
                             Nạp vào ví
-                        </button>
-                        <button
-                            onClick={register}
-                            className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                        >
-                            Đăng kí và sử dụng
-                        </button>
+                        </button> */}
+                        {plan_name != undefined && !has_subscription ? (
+                            <button
+                                onClick={register}
+                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >
+                                Đăng kí và sử dụng
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setStep('picking')}
+                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >
+                                Hoàn tất
+                            </button>
+                        )}
                     </div>
+                </>
+            );
+        case 'picking':
+            return (
+                <>
+                    <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                        <dt className="font-bold text-gray-900 dark:text-white">
+                            Số tiền phải trả
+                        </dt>
+                        <dd className="font-bold text-gray-900 dark:text-white">
+                            {total / 1000}k
+                        </dd>
+                    </dl>
+                    <dl className="flex items-center justify-between gap-4  pt-10">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                            Số dư trong ví (hiện tại)
+                        </dt>
+                        <dd className="font-medium text-gray-900 dark:text-white">
+                            {wallet / 1000}k
+                        </dd>
+                    </dl>
+                    {false ? (
+                        <dl className="flex items-center justify-between gap-4">
+                            <dt className="text-gray-500 dark:text-gray-400">
+                                Tiết kiệm
+                            </dt>
+                            <dd className="font-medium text-green-500">
+                                -{0}k
+                            </dd>
+                        </dl>
+                    ) : null}
+                    <button
+                        onClick={() =>
+                            total > 50000 ? setStep('requestQR') : null
+                        }
+                        className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    >
+                        Tiếp tục
+                    </button>
                 </>
             );
         default:
             return (
-                <>
-                    <button
-                        onClick={() => {
-                            setStep('requestQR');
-                            reset();
-                        }}
-                        className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    >
-                        {step}
-                    </button>
-                </>
+                <button
+                    onClick={() => setStep('requestQR')}
+                    className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                >
+                    {step}
+                </button>
             );
     }
+};
+
+const Stage = ({ step }) => {
+    return (
+        <div className="mt-6 sm:mt-8 lg:mt-12">
+            <div className="grid grid-cols-3 divide-y divide-gray-200 text-start dark:divide-gray-700 lg:gap-8 lg:divide-y-0 lg:text-center">
+                <div
+                    className={`py-0 ${
+                        step >= 1 ? 'text-blue-500' : 'text-gray-400'
+                    }`}
+                >
+                    <svg
+                        className="w-6 h-6"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 3v4a1 1 0 0 1-1 1H5m4 6 2 2 4-4m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"
+                        />
+                    </svg>
+
+                    <p className="mt-1 text-base font-medium leading-tight lg:text-sm xl:text-base">
+                        Lựa chọn
+                    </p>
+                </div>
+                <div
+                    className={`py-0 ${
+                        step >= 2 ? 'text-blue-500' : 'text-gray-400'
+                    }`}
+                >
+                    <svg
+                        className="w-6 h-6"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"
+                        />
+                    </svg>
+
+                    <p className="mt-1 text-base font-medium leading-tight lg:text-sm xl:text-base">
+                        Nạp tiền
+                    </p>
+                </div>
+
+                <div
+                    className={`py-0 ${
+                        step >= 3 ? 'text-blue-500' : 'text-gray-400'
+                    }`}
+                >
+                    <svg
+                        className="w-6 h-6"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M12 2c-.791 0-1.55.314-2.11.874l-.893.893a.985.985 0 0 1-.696.288H7.04A2.984 2.984 0 0 0 4.055 7.04v1.262a.986.986 0 0 1-.288.696l-.893.893a2.984 2.984 0 0 0 0 4.22l.893.893a.985.985 0 0 1 .288.696v1.262a2.984 2.984 0 0 0 2.984 2.984h1.262c.261 0 .512.104.696.288l.893.893a2.984 2.984 0 0 0 4.22 0l.893-.893a.985.985 0 0 1 .696-.288h1.262a2.984 2.984 0 0 0 2.984-2.984V15.7c0-.261.104-.512.288-.696l.893-.893a2.984 2.984 0 0 0 0-4.22l-.893-.893a.985.985 0 0 1-.288-.696V7.04a2.984 2.984 0 0 0-2.984-2.984h-1.262a.985.985 0 0 1-.696-.288l-.893-.893A2.984 2.984 0 0 0 12 2Zm3.683 7.73a1 1 0 1 0-1.414-1.413l-4.253 4.253-1.277-1.277a1 1 0 0 0-1.415 1.414l1.985 1.984a1 1 0 0 0 1.414 0l4.96-4.96Z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+
+                    <p className="mt-1 text-base font-medium leading-tight lg:text-sm xl:text-base">
+                        Đăng kí
+                    </p>
+                </div>
+            </div>
+
+            <div className="mt-6 h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700 sm:mt-8">
+                <div
+                    className="h-3 rounded-full bg-primary-700 dark:bg-primary-600"
+                    style={{
+                        width: `${
+                            step == 1
+                                ? 15
+                                : step == 2
+                                  ? 50
+                                  : step == 3
+                                    ? 85
+                                    : 100
+                        }%`
+                    }}
+                ></div>
+            </div>
+        </div>
+    );
 };

@@ -214,16 +214,17 @@ export const workerAsync = {
 
             const [{ id: pbid, local_id, configuration: _configuration }] =
                 volumes;
-            const code = _configuration?.template?.replaceAll('.template', '');
             const configuration = {
                 cpu: parseInt(_configuration?.cpu),
                 ram: parseInt(_configuration?.ram),
                 disk: parseInt(_configuration?.disk),
-                template: _configuration.template
+                template: _configuration?.template
             };
             if (Number.isNaN(configuration.cpu)) configuration.cpu = 8;
             if (Number.isNaN(configuration.ram)) configuration.ram = 16;
             if (Number.isNaN(configuration.disk)) configuration.disk = 150;
+            if (configuration.template == undefined) configuration.template = 'win11.template'
+            const code = configuration.template.replaceAll('.template', '');
 
             if (code != undefined) {
                 const { data: stores, error: err } = await GLOBAL()
@@ -231,7 +232,6 @@ export const workerAsync = {
                     .select('metadata->screenshots,name')
                     .eq('code_name', code)
                     .limit(1);
-
                 if (err) throw err;
                 else if (stores.length > 0) {
                     const [{ screenshots, name }] = stores;

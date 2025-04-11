@@ -2,30 +2,52 @@ import { useEffect, useState } from 'react';
 import {
     app_payload,
     appDispatch,
-    popup_open,
-    show_chat,
     startogg,
     useAppSelector
 } from '../../backend/reducers';
-import { replace_payment_pocket } from '../../backend/actions';
+import {
+    create_payment_pocket,
+    replace_payment_pocket
+} from '../../backend/actions';
 import { preloadSilent } from '../../backend/actions/background';
 
-const PaymentButton = ({ sub, domain, switchPage }) => {
+const PaymentButton = ({ template, domain, sub, switchPage }) => {
+    const email = useAppSelector((state) => state.user.email);
     const subscription = useAppSelector((state) => state.user.subscription);
     const money = useAppSelector((state) => state.user.wallet.money);
-    const { plan_name, next_plan } = subscription ?? {};
+    const currentAddress = useAppSelector(
+        (state) => state.worker.currentAddress
+    );
+    const { next_plan } = subscription ?? {};
 
     const info = () => appDispatch(startogg());
     const onChooseSub = async () => {
+        if (
+            currentAddress != domain &&
+            domain != '' &&
+            domain != undefined &&
+            domain != null
+        ) {
+            localStorage.setItem('thinkmay_domain', domain);
+            await preloadSilent();
+        }
+
         const plan_name = sub.name;
-        const cluster_domain = domain;
+        const cluster_domain = domain ?? currentAddress;
         const plan_price = sub.amount;
-        if (money < plan_price || subscription == undefined) chooseAndswitch();
-        else
-            await replace_payment_pocket({
-                plan_name,
-                cluster_domain
-            });
+        const result =
+            subscription != undefined
+                ? money >= plan_price
+                    ? await replace_payment_pocket({ email, plan_name })
+                    : chooseAndswitch()
+                : money >= plan_price
+                  ? await create_payment_pocket({
+                        email,
+                        plan_name,
+                        cluster_domain,
+                        template
+                    })
+                  : chooseAndswitch();
     };
 
     const val = useAppSelector(
@@ -83,7 +105,9 @@ const PaymentButton = ({ sub, domain, switchPage }) => {
                             ? money >= sub.amount
                                 ? 'Chuyển sang gói này'
                                 : `Nạp thêm`
-                            : 'Đăng kí'}
+                            : money >= sub.amount
+                              ? 'Đăng kí'
+                              : 'Thanh toán'}
                     </button>
                 </div>
             )}
@@ -193,6 +217,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                 </span>
                 <PaymentButton
                     sub={plan}
+                    template={value?.template?.code_name}
                     domain={domain}
                     switchPage={switchPage}
                 />

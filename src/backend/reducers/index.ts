@@ -187,7 +187,7 @@ export const {
     save_reference,
     load_setting,
     cache_setting,
-    toggle_remote_async,
+    toggle_remote_async
 } = remoteAsync;
 
 export const { fetch_store, fetch_domain } = globalAsync;

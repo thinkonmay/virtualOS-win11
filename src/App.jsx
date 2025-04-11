@@ -29,9 +29,6 @@ import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
 
-const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
-const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
-
 function App() {
     const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
@@ -68,9 +65,7 @@ function App() {
         };
 
         const domain = originalurl.searchParams.get('server');
-        if (listDomain.includes(domain))
-            window.open(`https://${domain}`, '_self');
-        else if (v2_domain.includes(domain))
+        if (domain != '' && domain != null)
             localStorage.setItem('thinkmay_domain', domain);
 
         const now = () => new Date().getTime();

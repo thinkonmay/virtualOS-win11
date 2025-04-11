@@ -31,7 +31,12 @@ import {
     worker_refresh
 } from '../reducers/index';
 import { Contents } from '../reducers/locales';
-import { fetchPayment, originalurl, preload } from './background';
+import {
+    fetchPayment,
+    originalurl,
+    preload,
+    preloadSilent
+} from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -320,56 +325,48 @@ export const verify_transaction = async ({ id }: { id: number }) => {
     else return data == 'PAID';
 };
 
-export const create_payment_pocket = async ({
-    plan_name,
-    cluster_domain = 'unknown'
-}: {
+export const create_payment_pocket = async (args: {
+    email: string;
     plan_name: string;
-    cluster_domain?: string;
+    cluster_domain: string;
+    template?: string;
 }) => {
-    if (store.getState().worker.currentAddress != cluster_domain)
-        return toast(`Domain selection must match current domain`);
-
-    const email = store.getState().user.email;
     appDispatch(
         popup_open({
             type: 'notify',
-            data: { loading: true }
+            data: {
+                loading: true
+            }
         })
     );
-
-    const { error } = await GLOBAL().rpc('create_or_replace_payment', {
-        email,
-        plan_name,
-        cluster_domain
-    });
-
+    const { error } = await GLOBAL().rpc('create_or_replace_payment', args);
     if (error) {
         appDispatch(popup_close());
         toast(`Failed ${error.message}`);
-    } else {
-        await GLOBAL().rpc('verify_all_payment');
-        let info: Computer | undefined = undefined;
-        while (!(info?.virtReady ?? false)) {
-            await new Promise((r) => setTimeout(r, 20000));
-            const result = await GetInfo(cluster_domain);
-            if (result instanceof APIError) throw result;
-            else info = result;
-        }
-
-        await preload();
+        return;
     }
 
+    await GLOBAL().rpc('verify_all_payment');
+
+    let info = undefined;
+    while (!(info?.virtReady ?? false)) {
+        await new Promise((r) => setTimeout(r, 20000));
+        const result = await GetInfo(args?.cluster_domain);
+        if (result instanceof APIError) throw result;
+        else info = result;
+    }
+
+    await preload();
     appDispatch(popup_close());
 };
 
 export const replace_payment_pocket = async ({
+    email,
     plan_name
 }: {
+    email: string;
     plan_name: string;
 }) => {
-    const email = store.getState().user.email;
-
     appDispatch(
         popup_open({
             type: 'notify',
@@ -390,7 +387,7 @@ export const replace_payment_pocket = async ({
     }
 
     await GLOBAL().rpc('verify_all_payment');
-    await preload();
+    await preloadSilent();
     appDispatch(popup_close());
 };
 

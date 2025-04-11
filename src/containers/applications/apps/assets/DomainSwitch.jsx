@@ -1,4 +1,4 @@
-import { preload } from '../../../../backend/actions/background';
+import { preloadSilent } from '../../../../backend/actions/background';
 import { useAppSelector } from '../../../../backend/reducers';
 
 function DomainSwitch() {
@@ -13,7 +13,7 @@ function DomainSwitch() {
             window.open(`https://${domain}`, '_self');
         else if (v2_domain.includes(domain)) {
             localStorage.setItem('thinkmay_domain', domain);
-            await preload();
+            await preloadSilent();
         }
     };
 

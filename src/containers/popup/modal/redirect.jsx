@@ -5,7 +5,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
-import { preload } from '../../../backend/actions/background';
+import { preloadSilent } from '../../../backend/actions/background';
 
 export function redirectDomain({ data: { domain } }) {
     const t = useAppSelector((state) => state.globals.translation);
@@ -13,7 +13,7 @@ export function redirectDomain({ data: { domain } }) {
 
     const updateDomain = async () => {
         localStorage.setItem('thinkmay_domain', domain);
-        await preload();
+        await preloadSilent();
         appDispatch(popup_close());
     };
 
