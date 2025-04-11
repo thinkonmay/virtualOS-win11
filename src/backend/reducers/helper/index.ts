@@ -8,46 +8,20 @@ import {
 
 import { appDispatch, popup_close, popup_open } from '..';
 import { formatError } from '../../utils/formatErr';
-const filterActions = [
-    'update_local_worker',
-    'fetch_local_worker',
-    'fetch_user',
-    'fetch_subscription_metadata',
-    'fetch_subscription',
-    'fetch_store',
-    'get_plans',
-    'get_wallet',
-    'fetch_configuration',
-    'fetch_payment_history',
-    'fetch_refund_request',
-    'get_payment_pocket',
-    'get_deposit_status',
-    'get_resources',
-    'save_reference',
-    'fetch_domain'
-];
 
-const isFilterAction = (acctionType: string) => {
+const filterActions = [];
+const uiAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));
 };
 
 const isPending = (action: UnknownAction) =>
-    action.type.endsWith('/pending') &&
-    !action.type.includes('setting') &&
-    !action.type.includes('ping') &&
-    !isFilterAction(action.type);
+    action.type.endsWith('/pending') && uiAction(action.type);
 
 const isFulfilled = (action: UnknownAction) =>
-    action.type.endsWith('/fulfilled') &&
-    !action.type.includes('setting') &&
-    !action.type.includes('ping') &&
-    !isFilterAction(action.type);
+    action.type.endsWith('/fulfilled') && uiAction(action.type);
 
 const isRejected = (action: UnknownAction) =>
-    action.type.endsWith('/rejected') &&
-    !action.type.includes('setting') &&
-    !action.type.includes('ping') &&
-    !isFilterAction(action.type);
+    action.type.endsWith('/rejected') && uiAction(action.type);
 
 export const isPendingAction =
     (prefixs: string[]) =>

@@ -41,7 +41,9 @@ export const MicroStore = () => {
                 name={'Template'}
             />
             <div
-                className={`windowScreen relative ${opened ? '' : 'win11Scroll '}`}
+                className={`windowScreen relative ${
+                    opened ? '' : 'win11Scroll '
+                }`}
             >
                 {opened ? (
                     <SearchBar
