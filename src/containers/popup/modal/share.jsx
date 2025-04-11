@@ -3,7 +3,7 @@ import { appDispatch, popup_close } from '../../../backend/reducers';
 import { useState } from 'react';
 
 export function share({ data: { ref, discount_code } }) {
-    const close = () => appDispatch(popup_close(true));
+    const close = () => appDispatch(popup_close());
     const [isSuccess, setSuccess] = useState(false);
     const [url, setURL] = useState('');
 

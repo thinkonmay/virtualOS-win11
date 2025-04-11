@@ -24,17 +24,17 @@ export function extendService({ data: { type, available_time } }) {
         state.user.plans.find((x) => x.name == next_plan_name)
     );
 
-    const deny = () => appDispatch(popup_close(true));
+    const deny = () => appDispatch(popup_close());
     const support = () => {
-        appDispatch(popup_close(true));
+        appDispatch(popup_close());
         appDispatch(show_chat());
     };
     const qr = async () => {
-        appDispatch(popup_close(true));
+        appDispatch(popup_close());
         await create_payment_qr({ amount: next_plan?.amount - money });
     };
     const changePlan = () => {
-        appDispatch(popup_close(true));
+        appDispatch(popup_close());
         appDispatch(app_toggle('payment'));
     };
 

@@ -59,7 +59,6 @@ const subcontents = [
 ];
 
 export const PaymentPage = ({ value }) => {
-    console.log(value);
     const [initial, setInitialValue] = useState(value);
     const picked_plan = initial?.plan;
     const email = useAppSelector((state) => state.user.email);
@@ -522,7 +521,7 @@ const PaymentFlow = ({
         });
 
         if (error) {
-            appDispatch(popup_close(true));
+            appDispatch(popup_close());
             toast(`Failed ${error.message}`);
             return;
         }

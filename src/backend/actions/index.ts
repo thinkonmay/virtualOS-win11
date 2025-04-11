@@ -345,7 +345,7 @@ export const create_payment_pocket = async ({
     });
 
     if (error) {
-        appDispatch(popup_close(true));
+        appDispatch(popup_close());
         toast(`Failed ${error.message}`);
     } else {
         await GLOBAL().rpc('verify_all_payment');
@@ -360,7 +360,7 @@ export const create_payment_pocket = async ({
         await preload();
     }
 
-    appDispatch(popup_close(true));
+    appDispatch(popup_close());
 };
 
 export const replace_payment_pocket = async ({
@@ -384,14 +384,14 @@ export const replace_payment_pocket = async ({
     });
 
     if (error) {
-        appDispatch(popup_close(true));
+        appDispatch(popup_close());
         toast(`Failed ${error.message}`);
         return;
     }
 
     await GLOBAL().rpc('verify_all_payment');
     await preload();
-    appDispatch(popup_close(true));
+    appDispatch(popup_close());
 };
 
 export const create_or_replace_resources = async (resource_name: string) => {

@@ -18,7 +18,6 @@ map.set(CAUSE.NEED_WAIT, Contents.STORE_DESCRIPTIONR);
 map.set(CAUSE.INVALID_REQUEST, Contents.STORE_DESCRIPTIONR);
 
 export function formatError(error: APIError | Error | any): string {
-    console.log(error);
     if (error.code != undefined) return `${error.code} ${error.message}`;
     else if (error instanceof Error) return error.message;
     else return error.message;

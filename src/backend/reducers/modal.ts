@@ -117,19 +117,8 @@ export const modalSlice = createSlice({
         popup_open: (state, action: PayloadAction<PopupData>) => {
             state.data_stack = [...state.data_stack, action.payload];
         },
-        popup_close: (state, action: PayloadAction<boolean | undefined>) => {
-            let preferred = [
-                'extendService',
-                'redirectDomain',
-                'share',
-                'discount',
-                'maintain'
-            ];
-            if (action.payload) preferred = [];
-
-            state.data_stack = state.data_stack.filter((x) =>
-                preferred.includes(x.type)
-            );
+        popup_close: (state) => {
+            state.data_stack = [];
         }
     }
 });

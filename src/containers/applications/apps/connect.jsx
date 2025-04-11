@@ -314,7 +314,7 @@ function Customize({ onClose: close }) {
                         `${option.name}${option.value}`
                     );
                     if (error instanceof Error) {
-                        appDispatch(popup_close(true));
+                        appDispatch(popup_close());
                         toast(`Failed to apply your changes`, {});
                         return;
                     }

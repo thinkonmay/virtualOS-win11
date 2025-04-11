@@ -6,10 +6,10 @@ import {
     UnknownAction
 } from '@reduxjs/toolkit';
 
-import { appDispatch, popup_open } from '..';
+import { appDispatch, popup_close, popup_open } from '..';
 import toast from 'react-hot-toast';
 
-const filterActions = ['wait_and_claim_volume','change_template'];
+const filterActions = ['wait_and_claim_volume', 'change_template'];
 const uiAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));
 };
@@ -78,27 +78,30 @@ export async function BuilderHelper<T, U, V>(
         .addMatcher(
             isPendingAction(handlers.map((x) => x.fetch.typePrefix)),
             (state, action) => {
-                const notify = async () =>
-                    appDispatch(
-                        popup_open({
-                            type: 'notify',
-                            data: { loading: true }
-                        })
-                    );
-
-                setTimeout(notify, 100);
+                setTimeout(
+                    () =>
+                        appDispatch(
+                            popup_open({
+                                type: 'notify',
+                                data: { loading: true }
+                            })
+                        ),
+                    100
+                );
             }
         )
         .addMatcher(
             isRejectedAction(handlers.map((x) => x.fetch.typePrefix)),
             (state, action) => {
-                toast(`Fail`);
+                setTimeout(() => appDispatch(popup_close()), 1000);
+                toast(`${action.type} failed`);
             }
         )
         .addMatcher(
             isFulfilledAction(handlers.map((x) => x.fetch.typePrefix)),
             (state, action) => {
-                toast(`Success`);
+                setTimeout(() => appDispatch(popup_close()), 1000);
+                toast(`${action.type} success`);
             }
         );
 }

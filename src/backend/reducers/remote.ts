@@ -226,23 +226,6 @@ export const remoteAsync = {
         async (_: void, {}) => {
             appDispatch(toggle_remote());
         }
-    ),
-    hard_reset_async: createAsyncThunk(
-        'hard_reset_async',
-        async (_: void, { getState }) => {
-            if (CLIENT == undefined) return;
-
-            appDispatch(
-                popup_open({
-                    type: 'notify',
-                    data: { loading: true, title: 'Reset video & audio' }
-                })
-            );
-            await CLIENT.HardReset();
-            await new Promise((r) => setTimeout(r, 3000));
-            await ready();
-            appDispatch(popup_close());
-        }
     )
 };
 
@@ -397,10 +380,6 @@ export const remoteSlice = createSlice({
             },
             {
                 fetch: remoteAsync.toggle_remote_async,
-                hander: (state, action: PayloadAction<void>) => {}
-            },
-            {
-                fetch: remoteAsync.hard_reset_async,
                 hander: (state, action: PayloadAction<void>) => {}
             },
             {

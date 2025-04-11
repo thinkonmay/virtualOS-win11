@@ -14,7 +14,7 @@ export function redirectDomain({ data: { domain } }) {
     const updateDomain = async () => {
         localStorage.setItem('thinkmay_domain', domain);
         await preload();
-        appDispatch(popup_close(true));
+        appDispatch(popup_close());
     };
 
     return (
@@ -44,7 +44,7 @@ export function redirectDomain({ data: { domain } }) {
                         <button
                             style={{ padding: '6px 14px' }}
                             className=" text-base font-medium rounded-md"
-                            onClick={() => appDispatch(popup_close(true))}
+                            onClick={() => appDispatch(popup_close())}
                         >
                             {t[Contents.CONTINUE]}
                         </button>
