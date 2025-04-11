@@ -7,7 +7,7 @@ import {
     startogg,
     useAppSelector
 } from '../../backend/reducers';
-import { create_payment_pocket } from '../../backend/actions';
+import { replace_payment_pocket } from '../../backend/actions';
 import { preloadSilent } from '../../backend/actions/background';
 
 const PaymentButton = ({ sub, domain, switchPage }) => {
@@ -16,38 +16,16 @@ const PaymentButton = ({ sub, domain, switchPage }) => {
     const { plan_name, next_plan } = subscription ?? {};
 
     const info = () => appDispatch(startogg());
-    const onChooseSub = () => {
+    const onChooseSub = async () => {
         const plan_name = sub.name;
         const cluster_domain = domain;
         const plan_price = sub.amount;
-        const plan_title = sub.title;
-        if (money < plan_price)
-            appDispatch(
-                popup_open({
-                    type: 'pocketNotEnoughMoney',
-                    data: {
-                        plan_name: plan_title,
-                        plan_price: plan_price
-                    }
-                })
-            );
-        else if (subscription != undefined)
-            appDispatch(
-                create_payment_pocket({
-                    plan_name,
-                    cluster_domain
-                })
-            );
+        if (money < plan_price || subscription == undefined) chooseAndswitch();
         else
-            appDispatch(
-                popup_open({
-                    type: 'pocketBuyConfirm',
-                    data: {
-                        plan_name,
-                        cluster_domain
-                    }
-                })
-            );
+            await replace_payment_pocket({
+                plan_name,
+                cluster_domain
+            });
     };
 
     const val = useAppSelector(
@@ -67,32 +45,7 @@ const PaymentButton = ({ sub, domain, switchPage }) => {
 
     return (
         <>
-            {/* {plan_name == sub.name ? (
-                <div className="flex flex-col mb-3">
-                    <span className="w-full mx-auto shadow-sm font-bold text-center">
-                        {`Có giá trị đến ${new Date(
-                            subscription?.ended_at
-                        ).toLocaleDateString()}`}
-                    </span>
-                    <span className="w-full mx-auto shadow-sm font-bold text-center">
-                        {`còn lại ${
-                            subscription?.policy?.limit_hour -
-                            subscription?.total_usage
-                        }h sử dụng`}
-                    </span>
-                </div>
-            ) : null} */}
-            {switchPage != undefined ? (
-                <div className="flex gap-2">
-                    <button
-                        onClick={chooseAndswitch}
-                        type="button"
-                        className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-blue-700"
-                    >
-                        Chọn
-                    </button>
-                </div>
-            ) : next_plan == sub.name ? (
+            {next_plan == sub.name ? (
                 sub.amount <= money ? (
                     <div className="flex gap-2">
                         <button
@@ -179,6 +132,7 @@ function DomainSelection({ onChangeDomain }) {
 
 export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
     const plans = useAppSelector((state) => state.user.plans);
+    const subscription = useAppSelector((state) => state.user.subscription);
     const [domain, setDomain] = useState('');
     const subcontents = [
         {
@@ -240,7 +194,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                 <PaymentButton
                     sub={plan}
                     domain={domain}
-                    switchPage={value != undefined ? switchPage : undefined}
+                    switchPage={switchPage}
                 />
 
                 <ul
@@ -382,7 +336,9 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                         <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
                             *chưa bao gồm tài khoản game và các nâng cấp khác
                         </p>
-                        <DomainSelection onChangeDomain={setDomain} />
+                        {subscription == undefined ? (
+                            <DomainSelection onChangeDomain={setDomain} />
+                        ) : null}
                     </div>
                 ) : null}
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">

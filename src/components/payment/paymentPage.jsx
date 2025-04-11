@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { create_payment_qr, verify_transaction } from '../../backend/actions';
+import { verify_transaction } from '../../backend/actions';
 import {
     appDispatch,
     popup_close,
-    popup_open,
     useAppSelector
 } from '../../backend/reducers';
 import QRCode from 'react-qr-code';

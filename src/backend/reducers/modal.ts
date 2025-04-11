@@ -89,13 +89,6 @@ type PopupData =
           };
       }
     | {
-          type: 'pocketBuyConfirm';
-          data: {
-              plan_name: string;
-              cluster_domain: string;
-          };
-      }
-    | {
           type: 'pocketNotEnoughMoney';
           data: {
               plan_name: string;

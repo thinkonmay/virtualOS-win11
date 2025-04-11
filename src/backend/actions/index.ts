@@ -327,6 +327,10 @@ export const create_payment_pocket = async ({
     plan_name: string;
     cluster_domain?: string;
 }) => {
+    if (store.getState().worker.currentAddress != cluster_domain)
+        return toast(`Domain selection must match current domain`);
+
+    const email = store.getState().user.email;
     appDispatch(
         popup_open({
             type: 'notify',
@@ -334,7 +338,6 @@ export const create_payment_pocket = async ({
         })
     );
 
-    const email = store.getState().user.email;
     const { error } = await GLOBAL().rpc('create_or_replace_payment', {
         email,
         plan_name,
@@ -346,29 +349,49 @@ export const create_payment_pocket = async ({
         toast(`Failed ${error.message}`);
     } else {
         await GLOBAL().rpc('verify_all_payment');
-        appDispatch(app_close('payment'));
-        if (store.getState().worker.currentAddress != cluster_domain) {
-            await new Promise((r) => setTimeout(r, 90 * 1000));
-            appDispatch(
-                popup_open({
-                    type: 'redirectDomain',
-                    data: {
-                        domain: cluster_domain
-                    }
-                })
-            );
-        } else {
-            let info: Computer | undefined = undefined;
-            while (!(info?.virtReady ?? false)) {
-                await new Promise((r) => setTimeout(r, 20000));
-                const result = await GetInfo(cluster_domain);
-                if (result instanceof APIError) throw result;
-                else info = result;
-            }
-
-            await preload();
+        let info: Computer | undefined = undefined;
+        while (!(info?.virtReady ?? false)) {
+            await new Promise((r) => setTimeout(r, 20000));
+            const result = await GetInfo(cluster_domain);
+            if (result instanceof APIError) throw result;
+            else info = result;
         }
+
+        await preload();
     }
+
+    appDispatch(popup_close(true));
+};
+
+export const replace_payment_pocket = async ({
+    plan_name
+}: {
+    plan_name: string;
+}) => {
+    const email = store.getState().user.email;
+
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: { loading: true }
+        })
+    );
+
+    const { error } = await GLOBAL().rpc('create_or_replace_payment', {
+        email,
+        plan_name,
+        cluster_domain: 'unknown'
+    });
+
+    if (error) {
+        appDispatch(popup_close(true));
+        toast(`Failed ${error.message}`);
+        return;
+    }
+
+    await GLOBAL().rpc('verify_all_payment');
+    await preload();
+    appDispatch(popup_close(true));
 };
 
 export const create_or_replace_resources = async (resource_name: string) => {
