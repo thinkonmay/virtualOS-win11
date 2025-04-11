@@ -41,17 +41,11 @@ export const ListQAs = () => {
             data-align={align}
             className="listQAs"
         >
-            {Object.keys(list).map((key) => (
-                <div className="mb-4">
-                    <div
-                        className="font-bold text-xl"
-                        key={key}
-                        onClick={() => {}}
-                    >
-                        {t[key]}
-                    </div>
-                    {list[key].map((x) => (
-                        <div>
+            {Object.keys(list).map((key, index) => (
+                <div key={index} className="mb-4">
+                    <div className="font-bold text-xl">{t[key]}</div>
+                    {list[key].map((x, index) => (
+                        <div key={index}>
                             <div className="font-medium text-l">{x.ques}</div>
                             <div className="font-light text-sm">{x.ans}</div>
                         </div>

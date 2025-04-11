@@ -7,7 +7,6 @@ import {
 } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
-import { Modal, ModalBody, ModalHeader } from 'flowbite-react';
 
 export const MicroStore = () => {
     const wnapp = useAppSelector((state) =>
@@ -15,6 +14,13 @@ export const MicroStore = () => {
     );
 
     const [game, setGame] = useState(null);
+
+    const games = useAppSelector((state) => state.globals.games);
+    const [filtered, setFilter] = useState([]);
+    useEffect(() => {
+        setFilter(games);
+    }, [games]);
+    const [opened, setOpen] = useState(false);
 
     return (
         <div
@@ -34,14 +40,32 @@ export const MicroStore = () => {
                 size={wnapp.size}
                 name={'Template'}
             />
-            <div className="windowScreen win11Scroll">
-                <LazyComponent show={!wnapp.hide}>
-                    {game != null ? (
-                        <DetailPage app={game} close={() => setGame(null)} />
-                    ) : (
-                        <DownPage open={setGame} />
-                    )}
-                </LazyComponent>
+            <div
+                className={`windowScreen relative ${opened ? '' : 'win11Scroll '}`}
+            >
+                {opened ? (
+                    <SearchBar
+                        close={() => setOpen(false)}
+                        games={games}
+                        setFilter={setFilter}
+                    />
+                ) : null}
+                <div className="">
+                    <LazyComponent show={!wnapp.hide}>
+                        {game != null ? (
+                            <DetailPage
+                                app={game}
+                                close={() => setGame(null)}
+                            />
+                        ) : (
+                            <DownPage
+                                open={setGame}
+                                filtered={filtered}
+                                openSearch={() => setOpen(true)}
+                            />
+                        )}
+                    </LazyComponent>
+                </div>
             </div>
         </div>
     );
@@ -365,20 +389,11 @@ const DetailPage = ({ app, close }) => {
     );
 };
 
-const DownPage = ({ open }) => {
+const DownPage = ({ open, openSearch, filtered }) => {
     const t = useAppSelector((state) => state.globals.translation);
-    const games = useAppSelector((state) => state.globals.games);
-    const [filtered, setFilter] = useState([]);
-    const [opened, setOpen] = useState(false);
 
     return (
         <>
-            <SearchBar
-                opened={opened}
-                close={() => setOpen(false)}
-                games={games}
-                setFilter={setFilter}
-            />
             <div className="py-24 relative mx-3 max-w-50">
                 <div className="w-full x-6 lg:px-8 mx-auto">
                     <div className="flex items-center justify-center flex-col gap-5 mb-14">
@@ -394,7 +409,7 @@ const DownPage = ({ open }) => {
                         <button
                             type="button"
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xl px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-900 dark:hover:bg-blue-900 dark:focus:ring-blue-800"
-                            onClick={() => setOpen(true)}
+                            onClick={openSearch}
                         >
                             Click để tìm game
                         </button>
@@ -436,7 +451,7 @@ const DownPage = ({ open }) => {
     );
 };
 
-const SearchBar = ({ close, opened, games, setFilter }) => {
+const SearchBar = ({ close, games, setFilter }) => {
     const filter = [
         {
             name: 'has account',
@@ -499,88 +514,83 @@ const SearchBar = ({ close, opened, games, setFilter }) => {
     };
 
     return (
-        <Modal
-            show={opened}
-            onClose={close}
+        <div
+            id="promo-popup"
+            tabIndex="-1"
+            className="flex overflow-y-auto overflow-x-hidden absolute top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-full md:inset-0 max-h-full"
             style={{
-                backdropFilter: 'blur(3px) brightness(0.5)',
-                padding: '0px'
+                backdropFilter: 'blur(3px) brightness(0.5)'
             }}
         >
-            <div className="bg-gray-600">
-                <ModalHeader>Select your categories</ModalHeader>
-                <ModalBody>
-                    <div className="relative w-full h-full">
-                        <div className="px-4 space-y-4 md:px-6">
-                            {filter.map(renderFilter)}
-                            <div className="flex items-center justify-between">
-                                <div className="w-full">
-                                    <form className="flex items-center">
-                                        <label
-                                            htmlFor="simple-search"
-                                            className="sr-only"
-                                        >
-                                            Search
-                                        </label>
-                                        <div className="relative w-full">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg
-                                                    aria-hidden="true"
-                                                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </div>
-                                            <input
-                                                type="text"
-                                                id="simple-search"
-                                                className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                placeholder="Search"
-                                                value={searchText}
-                                                onChange={(x) =>
-                                                    setSearchText(
-                                                        x.target.value
-                                                    )
-                                                }
-                                            />
+            <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800">
+                <div className="relative p-4 w-full max-w-md max-h-full">
+                    <div className="px-4 space-y-4 md:px-6">
+                        {filter.map(renderFilter)}
+                        <div className="flex items-center justify-between">
+                            <div className="w-full">
+                                <form className="flex items-center">
+                                    <label
+                                        htmlFor="simple-search"
+                                        className="sr-only"
+                                    >
+                                        Search
+                                    </label>
+                                    <div className="relative w-full">
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <svg
+                                                aria-hidden="true"
+                                                className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
                                         </div>
-                                    </form>
-                                </div>
+                                        <input
+                                            type="text"
+                                            id="simple-search"
+                                            className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="Search"
+                                            value={searchText}
+                                            onChange={(x) =>
+                                                setSearchText(x.target.value)
+                                            }
+                                        />
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div className="flex items-center p-6 space-x-4 rounded-b dark:border-gray-600">
-                            <button
-                                type="submit"
-                                className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
-                                onClick={close}
-                            >
-                                Apply
-                            </button>
-                            <button
-                                type="reset"
-                                className="py-2.5 px-5 text-sm font-medium text-black focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-500 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                onClick={cancel}
-                            >
-                                Reset
-                            </button>
-                            <button
-                                type="reset"
-                                className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                onClick={close}
-                            >
-                                Cancel
-                            </button>
-                        </div>
                     </div>
-                </ModalBody>
+                    <div className="flex items-center p-6 space-x-4 rounded-b dark:border-gray-600">
+                        <button
+                            type="submit"
+                            className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                            onClick={close}
+                        >
+                            Apply
+                        </button>
+                        <button
+                            type="reset"
+                            className="py-2.5 px-5 text-sm font-medium text-black focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-500 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                            onClick={cancel}
+                        >
+                            Reset
+                        </button>
+                        <button
+                            type="reset"
+                            className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                            onClick={close}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
             </div>
-        </Modal>
+        </div>
     );
 };

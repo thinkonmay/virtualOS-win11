@@ -223,9 +223,9 @@ export const clickShortCut = (keys = []) => {
 export const showLinkShare = () =>
     appDispatch(
         popup_open({
-            type: 'shareLink',
+            type: 'share',
             data: {
-                link: store.getState().remote.ref
+                ref: store.getState().remote.ref
             }
         })
     );

@@ -252,6 +252,8 @@ const updateUI = async () => {
             })
         );
     }
+
+    appDispatch(popup_open({ type: 'share', data: {} }));
 };
 
 export const preloadSilent = async () => {

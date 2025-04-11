@@ -52,11 +52,9 @@ type PopupData =
     | {
           type: 'share';
           data: {
-              url: string;
+              ref?: string;
+              discount_code?: string;
           };
-      }
-    | {
-          type: 'customize';
       }
     | {
           type: 'discount';
@@ -64,12 +62,6 @@ type PopupData =
               from: string;
               to: string;
               percentage: number;
-          };
-      }
-    | {
-          type: 'shareLink';
-          data: {
-              link: string;
           };
       }
     | {
@@ -150,7 +142,6 @@ export const modalSlice = createSlice({
                 'extendService',
                 'redirectDomain',
                 'share',
-                'customize',
                 'discount',
                 'maintain'
             ];

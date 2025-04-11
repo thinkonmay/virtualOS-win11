@@ -2,9 +2,11 @@ import { MdCheckCircleOutline, MdContentCopy } from 'react-icons/md';
 import { appDispatch, popup_close } from '../../../backend/reducers';
 import { useState } from 'react';
 
-export function share({ data: { url } }) {
+export function share({ data: { ref, discount_code } }) {
     const close = () => appDispatch(popup_close(true));
     const [isSuccess, setSuccess] = useState(false);
+    const [url, setURL] = useState('');
+
     const handleCopy = () => {
         setSuccess(true);
         navigator.clipboard.writeText(url);
@@ -20,12 +22,12 @@ export function share({ data: { url } }) {
         <div
             id="promo-popup"
             tabIndex="-1"
-            className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+            className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-full md:inset-0 max-h-full"
             style={{
                 backdropFilter: 'blur(3px) brightness(0.5)'
             }}
         >
-            <div className="relative p-4 w-full max-w-sm max-h-full">
+            <div className="relative p-4 w-full max-w-md max-h-full">
                 <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800">
                     <img
                         src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg"
@@ -49,11 +51,13 @@ export function share({ data: { url } }) {
                     </span>
                     <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
                         <h3 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
-                            20% Off All Gaming Gear
+                            Mời bạn bè đăng kí Thinkmay
+                            <br />
+                            để nhận được mã khuyến mại
                         </h3>
                         <p className="text-sm">
-                            Simply enter your email to unlock this deal and stay
-                            in the loop for future promotions.
+                            Chia sẻ Thinkmay tới bạn bè bằng cách share đường
+                            link sau
                         </p>
                     </div>
                     <div className="mb-4 space-y-2">

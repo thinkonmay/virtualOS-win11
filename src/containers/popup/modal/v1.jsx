@@ -7,6 +7,4 @@ export { pocketNotEnoughMoney } from './pocketNotEnoughMoney';
 export { paymentQR } from './paymentQR';
 
 export { yesNo } from './yesNo';
-
 export { redirectDomain } from './redirect';
-export { shareLink } from './shareLink';

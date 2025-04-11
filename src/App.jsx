@@ -2,7 +2,6 @@ import { LiveChatWidget } from '@livechat/widget-react';
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
-import ReactModal from 'react-modal';
 import { UserEvents } from '../src-tauri/api';
 import { originalurl, PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
@@ -34,7 +33,6 @@ const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
 const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
 
 function App() {
-    ReactModal.setAppElement('#root');
     const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
     const tutorial = useAppSelector((state) => state.globals.tutorial);
