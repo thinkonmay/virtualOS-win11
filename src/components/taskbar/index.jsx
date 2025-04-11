@@ -24,13 +24,11 @@ import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
-import { numberFormat } from '../../backend/utils/format';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);
-    const dispatch = appDispatch;
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
     const align = useAppSelector((state) => state.taskbar.align);
@@ -57,6 +55,16 @@ const Taskbar = () => {
         afterMath(e);
     };
 
+    const pay = () =>
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment'
+            })
+        );
+
+    const numberFormat = (num) => new Intl.NumberFormat().format(num);
+
     const customDispatch = customClickDispatch((e) => afterMath(e));
     return (
         <>
@@ -76,7 +84,6 @@ const Taskbar = () => {
                             ></MdArrowBackIos>
                         )}
                     </button>
-
                     <div
                         id="supportNow"
                         className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight flex rounded "
@@ -129,20 +136,13 @@ const Taskbar = () => {
                                     width={24}
                                 />
                                 {numberFormat(wallet.money)}
+                                <button
+                                    onClick={pay}
+                                    className="depositBtn bg-slate-600 text-xl text-white"
+                                >
+                                    +
+                                </button>
                             </div>
-                            <button
-                                onClick={() => {
-                                    appDispatch(
-                                        app_full({
-                                            id: 'payment',
-                                            page: 'payment'
-                                        })
-                                    );
-                                }}
-                                className="depositBtn"
-                            >
-                                +
-                            </button>
                         </div>
                     </div>
                     <div className="tasksCont" data-side={tasks.align}>

@@ -223,7 +223,8 @@ export const workerAsync = {
             if (Number.isNaN(configuration.cpu)) configuration.cpu = 8;
             if (Number.isNaN(configuration.ram)) configuration.ram = 16;
             if (Number.isNaN(configuration.disk)) configuration.disk = 150;
-            if (configuration.template == undefined) configuration.template = 'win11.template'
+            if (configuration.template == undefined)
+                configuration.template = 'win11.template';
             const code = configuration.template.replaceAll('.template', '');
 
             if (code != undefined) {
