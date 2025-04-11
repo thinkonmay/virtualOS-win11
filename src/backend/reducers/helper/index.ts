@@ -6,10 +6,10 @@ import {
     UnknownAction
 } from '@reduxjs/toolkit';
 
-import { appDispatch, popup_close, popup_open } from '..';
-import { formatError } from '../../utils/formatErr';
+import { appDispatch, popup_open } from '..';
+import toast from 'react-hot-toast';
 
-const filterActions = [];
+const filterActions = ['wait_and_claim_volume'];
 const uiAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));
 };
@@ -92,45 +92,13 @@ export async function BuilderHelper<T, U, V>(
         .addMatcher(
             isRejectedAction(handlers.map((x) => x.fetch.typePrefix)),
             (state, action) => {
-                const notify = async () => {
-                    appDispatch(
-                        popup_open({
-                            type: 'complete',
-                            data: {
-                                success: false,
-                                content: formatError(action.error)
-                            }
-                        })
-                    );
-
-                    await new Promise((r) => setTimeout(r, 10000));
-                    appDispatch(popup_close());
-                    appDispatch(popup_close());
-                };
-
-                setTimeout(notify, 100);
+                toast(`Fail`);
             }
         )
         .addMatcher(
             isFulfilledAction(handlers.map((x) => x.fetch.typePrefix)),
             (state, action) => {
-                const notify = async () => {
-                    appDispatch(
-                        popup_open({
-                            type: 'complete',
-                            data: {
-                                success: true,
-                                content: 'Request completed!'
-                            }
-                        })
-                    );
-
-                    await new Promise((r) => setTimeout(r, 2000));
-                    appDispatch(popup_close());
-                    appDispatch(popup_close());
-                };
-
-                setTimeout(notify, 100);
+                toast(`Success`);
             }
         );
 }

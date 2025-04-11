@@ -1,6 +1,7 @@
 import {
     appDispatch,
     app_toggle,
+    fetch_configuration,
     popup_open,
     show_chat,
     useAppSelector,
@@ -12,7 +13,7 @@ import {
     LazyComponent,
     ToolBar
 } from '../../../components/shared/general';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     popup_close,
     toggle_hide_vm,
@@ -26,6 +27,7 @@ import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 import { preload } from '../../../backend/actions/background';
+import toast from 'react-hot-toast';
 
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -300,6 +302,9 @@ function Customize({ onClose: close }) {
     ];
 
     const reset = () => setHWOption(defaultVal(configuration));
+    useEffect(() => {
+        reset();
+    }, [configuration]);
 
     const apply = async () => {
         for (const option of hwOptions) {
@@ -310,31 +315,16 @@ function Customize({ onClose: close }) {
                     );
                     if (error instanceof Error) {
                         appDispatch(popup_close(true));
-                        appDispatch(
-                            popup_open({
-                                type: 'complete',
-                                data: {
-                                    success: false,
-                                    content: error.message
-                                }
-                            })
-                        );
+                        toast(`Failed to apply your changes`, {});
                         return;
                     }
                 }
             }
         }
 
-        appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: true,
-                    content: 'success'
-                }
-            })
-        );
+        await appDispatch(fetch_configuration());
+        toast(`Your changes is applied`, {});
+        close();
     };
 
     const games = [

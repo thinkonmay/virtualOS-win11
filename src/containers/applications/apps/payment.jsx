@@ -66,6 +66,7 @@ export const PaymentApp = () => {
                             <SubscriptionPage
                                 value={val}
                                 switchPage={handleChangePage}
+                                onlyPlan={false}
                             />
                         ) : (
                             <PaymentPage value={val} />

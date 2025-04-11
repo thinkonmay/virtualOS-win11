@@ -177,7 +177,7 @@ function DomainSelection({ onChangeDomain }) {
     );
 }
 
-export const SubscriptionPage = ({ value, switchPage }) => {
+export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
     const plans = useAppSelector((state) => state.user.plans);
     const [domain, setDomain] = useState('');
     const subcontents = [
@@ -374,15 +374,17 @@ export const SubscriptionPage = ({ value, switchPage }) => {
     return (
         <section className="h-full">
             <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-                <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
-                    <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-                        Đăng kí dịch vụ Cloud PC
-                    </h2>
-                    <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
-                        *chưa bao gồm tài khoản game và các nâng cấp khác
-                    </p>
-                    <DomainSelection onChangeDomain={setDomain} />
-                </div>
+                {!onlyPlan ? (
+                    <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
+                        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                            Đăng kí dịch vụ Cloud PC
+                        </h2>
+                        <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">
+                            *chưa bao gồm tài khoản game và các nâng cấp khác
+                        </p>
+                        <DomainSelection onChangeDomain={setDomain} />
+                    </div>
+                ) : null}
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
                     {plans
                         .map((x) => ({

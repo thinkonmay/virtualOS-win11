@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import {
     APIError,
     Computer,
@@ -342,15 +343,7 @@ export const create_payment_pocket = async ({
 
     if (error) {
         appDispatch(popup_close(true));
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: error.message
-                }
-            })
-        );
+        toast(`Failed ${error.message}`);
     } else {
         await GLOBAL().rpc('verify_all_payment');
         appDispatch(app_close('payment'));

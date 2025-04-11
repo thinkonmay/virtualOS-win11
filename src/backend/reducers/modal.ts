@@ -16,13 +16,6 @@ export type ExtendMsg =
 
 type PopupData =
     | {
-          type: 'complete';
-          data: {
-              success: boolean;
-              content: string | Contents;
-          };
-      }
-    | {
           type: 'notify';
           data: {
               title?: string;

@@ -25,6 +25,7 @@ import { ready } from '../../../src-tauri/singleton';
 import { showConnect } from '../actions';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
+import toast from 'react-hot-toast';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
@@ -122,16 +123,7 @@ export const workerAsync = {
                     info.virtReady ? workerAsync.showPosition : undefined
                 );
                 if (resp instanceof APIError) {
-                    appDispatch(
-                        popup_open({
-                            type: 'complete',
-                            data: {
-                                success: false,
-                                content: `${resp.code} ${resp.message}`
-                            }
-                        })
-                    );
-
+                    toast(`Failed ${resp.message}`);
                     return;
                 }
                 appDispatch(

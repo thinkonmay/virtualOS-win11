@@ -26,6 +26,7 @@ import {
 import { showConnect } from '../actions';
 import { BuilderHelper } from './helper';
 import { originalurl } from '../actions/background';
+import toast from 'react-hot-toast';
 
 export type Metric = {
     receivefps: number[];
@@ -117,16 +118,16 @@ export const remoteAsync = {
             worker: { data, currentAddress }
         } = store.getState();
         if (data[currentAddress].availability != 'started') {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content: 'Your PC was shutdown!'
-                    }
-                })
-            );
             appDispatch(close_remote());
+            toast(`Your PC was shutted down`, {
+                icon: 'ℹ️',
+                duration: 5000,
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff'
+                }
+            });
         }
     },
     sync: () => {

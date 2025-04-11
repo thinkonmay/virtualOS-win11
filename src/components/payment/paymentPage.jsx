@@ -524,15 +524,7 @@ const PaymentFlow = ({
 
         if (error) {
             appDispatch(popup_close(true));
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        success: false,
-                        content: error.message
-                    }
-                })
-            );
+            toast(`Failed ${error.message}`);
             return;
         }
 
