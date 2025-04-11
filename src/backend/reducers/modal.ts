@@ -77,12 +77,6 @@ type PopupData =
           };
       }
     | {
-          type: 'yesNo';
-          data: {
-              template: string;
-          };
-      }
-    | {
           type: 'serversInfo';
           data: {
               domains: any[];

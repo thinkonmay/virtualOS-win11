@@ -9,7 +9,7 @@ import {
 import { appDispatch, popup_open } from '..';
 import toast from 'react-hot-toast';
 
-const filterActions = ['wait_and_claim_volume'];
+const filterActions = ['wait_and_claim_volume','change_template'];
 const uiAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));
 };
@@ -101,8 +101,4 @@ export async function BuilderHelper<T, U, V>(
                 toast(`Success`);
             }
         );
-}
-
-export async function Confirms(): Promise<void> {
-    throw 'not confirmed';
 }

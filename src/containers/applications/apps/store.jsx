@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import {
     app_full,
     appDispatch,
+    change_template,
     popup_open,
     useAppSelector
 } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
+import { MdInfoOutline } from 'react-icons/md';
+import { Contents } from '../../../backend/reducers/locales';
 
 export const MicroStore = () => {
     const wnapp = useAppSelector((state) =>
@@ -20,7 +23,9 @@ export const MicroStore = () => {
     useEffect(() => {
         setFilter(games);
     }, [games]);
+
     const [opened, setOpen] = useState(false);
+    const [confirm, openConfirm] = useState(undefined);
 
     return (
         <div
@@ -42,7 +47,7 @@ export const MicroStore = () => {
             />
             <div
                 className={`windowScreen relative ${
-                    opened ? '' : 'win11Scroll '
+                    opened || confirm != undefined ? '' : 'win11Scroll '
                 }`}
             >
                 {opened ? (
@@ -51,6 +56,11 @@ export const MicroStore = () => {
                         games={games}
                         setFilter={setFilter}
                     />
+                ) : confirm != undefined ? (
+                    <Confirmation
+                        args={confirm}
+                        onClose={() => openConfirm(undefined)}
+                    />
                 ) : null}
                 <div className="">
                     <LazyComponent show={!wnapp.hide}>
@@ -58,6 +68,7 @@ export const MicroStore = () => {
                             <DetailPage
                                 app={game}
                                 close={() => setGame(null)}
+                                onConfirmation={(arg) => openConfirm(arg)}
                             />
                         ) : (
                             <DownPage
@@ -73,7 +84,7 @@ export const MicroStore = () => {
     );
 };
 
-const DetailPage = ({ app, close }) => {
+const DetailPage = ({ app, onConfirmation, close }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const code = useAppSelector((state) => state.worker.metadata?.code);
 
@@ -137,14 +148,9 @@ const DetailPage = ({ app, close }) => {
                       }
                   })
               )
-            : appDispatch(
-                  popup_open({
-                      type: 'yesNo',
-                      data: {
-                          template: code_name
-                      }
-                  })
-              );
+            : onConfirmation({
+                  template: code_name
+              });
 
     const renderOption = (val, index) => {
         const [clicked, setClicked] = useState(true);
@@ -171,16 +177,7 @@ const DetailPage = ({ app, close }) => {
         <section className="relative text-white p-20 max-md:p-3">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mx-auto max-md:px-2">
-                    <div className="img flex justify-end max-lg:justify-center">
-                        <div className="img-box h-[720px] max-lg:h-[480px] max-lg:mx-auto">
-                            <img
-                                src={screenshots?.[index]?.path_full}
-                                alt="Yellow Tropical Printed Shirt image"
-                                className="max-lg:mx-auto lg:ml-auto h-full object-cover rounded-3xl transition-all"
-                            ></img>
-                        </div>
-                    </div>
-                    <div className="data w-full lg:pr-8 pr-0 xl:justify-start justify-center flex items-center max-lg:pb-10 xl:my-2 lg:my-5 my-0">
+                    <div className="data w-full lg:pr-8 pr-0 xl:justify-end justify-center flex items-center max-lg:pb-10 xl:my-2 lg:my-5 my-0">
                         <div className="data w-full max-w-xl">
                             <p className="text-lg font-medium leading-8 text-blue-600 mb-4">
                                 Game
@@ -385,6 +382,15 @@ const DetailPage = ({ app, close }) => {
                             </div>
                         </div>
                     </div>
+                    <div className="img flex justify-start max-lg:justify-center">
+                        <div className="img-box h-[720px] max-lg:h-[480px] max-lg:mx-auto">
+                            <img
+                                src={screenshots?.[index]?.path_full}
+                                alt="Yellow Tropical Printed Shirt image"
+                                className="max-lg:mx-auto lg:ml-auto h-full object-cover rounded-3xl transition-all"
+                            ></img>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -392,8 +398,6 @@ const DetailPage = ({ app, close }) => {
 };
 
 const DownPage = ({ open, openSearch, filtered }) => {
-    const t = useAppSelector((state) => state.globals.translation);
-
     return (
         <>
             <div className="py-24 relative mx-3 max-w-50">
@@ -591,6 +595,54 @@ const SearchBar = ({ close, games, setFilter }) => {
                             Cancel
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const Confirmation = ({ onClose, args }) => {
+    const t = useAppSelector((state) => state.globals.translation);
+    const confirm = () => {
+        appDispatch(change_template(args));
+        onClose();
+    };
+
+    return (
+        <div
+            id="promo-popup"
+            tabIndex="-1"
+            className="flex overflow-y-auto overflow-x-hidden absolute top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-full md:inset-0 max-h-full"
+            style={{
+                backdropFilter: 'blur(3px) brightness(0.5)'
+            }}
+        >
+            <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800 text-white">
+                <div className="relative p-4 w-full max-w-md max-h-full"></div>
+                <div className="flex flex-col justify-center items-center gap-2 text-[#B0D0EF]">
+                    <MdInfoOutline className="text-4xl text-orange-600"></MdInfoOutline>
+                    <h2>{t[Contents.TA_POPUP_TITLE]}</h2>
+                </div>
+                <div>
+                    <p className="mt-[8px] text-lg text-center">
+                        {t[Contents.TA_POPUP_SUBTITLE]}
+                    </p>
+                </div>
+                <div className="flex gap-3 justify-end mt-3 mb-2">
+                    <button
+                        style={{ padding: '6px 14px' }}
+                        className="text-base font-medium rounded-md"
+                        onClick={onClose}
+                    >
+                        {t[Contents.TA_POPUP_CLOSE]}
+                    </button>
+                    <button
+                        style={{ padding: '6px 14px' }}
+                        onClick={confirm}
+                        className="cursor-pointer justify-center  text-base font-medium instbtn rounded-md"
+                    >
+                        {t[Contents.TA_POPUP_CONTINUE]}
+                    </button>
                 </div>
             </div>
         </div>

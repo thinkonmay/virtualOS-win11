@@ -1,1 +1,0 @@
-export { yesNo } from './yesNo';
