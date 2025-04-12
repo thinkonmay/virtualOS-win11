@@ -18,7 +18,6 @@ import { Contents } from './backend/reducers/locales';
 import ActMenu from './components/menu';
 import { Tutorial } from './components/onboarding/tutorial';
 import { DesktopApp, SidePane, StartMenu } from './components/start';
-import { ListQAs } from './components/start/listQa';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
 import { Background, BootScreen } from './containers/background';
@@ -30,6 +29,7 @@ import { ErrorFallback } from './error';
 import './index.css';
 
 function App() {
+    document.body.dataset.theme = 'dark';
     const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
     const tutorial = useAppSelector((state) => state.globals.tutorial);
@@ -55,7 +55,6 @@ function App() {
     };
 
     useEffect(() => {
-        document.body.dataset.theme = 'dark';
         window.LiveChatWidget.call('minimize');
         appDispatch(direct_access(originalurl));
         window.onbeforeunload = (e) => {
@@ -177,7 +176,6 @@ function App() {
                             <ActMenu />
                             <StartMenu />
                             <SidePane />
-                            <ListQAs />
                             <Tutorial />
                             <Toaster
                                 position={

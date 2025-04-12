@@ -75,10 +75,7 @@ export const {
     startogg,
     startpwc,
     startshw,
-    startsrc,
-    showQa,
-    hideQa,
-    toggleQa
+    startsrc
 } = menuSlice.actions;
 export const {
     app_toggle,

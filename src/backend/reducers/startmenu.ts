@@ -30,18 +30,6 @@ export const menuSlice = createSlice({
             // state.showAll = false
             // state.pwctrl = false
         },
-        showQa: (state) => {
-            state.qahide = false;
-            // state.pwctrl = false
-        },
-        hideQa: (state) => {
-            state.qahide = true;
-            // state.pwctrl = false
-        },
-        toggleQa: (state) => {
-            state.qahide = !state.qahide;
-            // state.pwctrl = false
-        },
         startogg: (state) => {
             state.hide = !state.hide;
             // state.hide = !(state.hide || !state.menu)

@@ -16,7 +16,6 @@ import {
     appDispatch,
     show_chat,
     startogg,
-    toggleQa,
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
@@ -93,16 +92,6 @@ const Taskbar = () => {
                     >
                         <BiSupport fontSize={'1.5rem'} />
                         <span className="hidden md:block">Hỗ trợ</span>
-                    </div>
-                    <div
-                        className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
-                        // onClick={clickDispatch}
-                        onClick={customDispatch}
-                        data-action="toggleQa"
-                        style={{ '--prefix': 'QA' }}
-                    >
-                        <RiBookLine fontSize={'1.4rem'} />
-                        <span className="hidden md:block">Hướng dẫn</span>
                     </div>
                     <div
                         className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] items-center rounded"
@@ -216,17 +205,6 @@ const Taskbar = () => {
                             />
                             <span className="hidden md:block">
                                 {t[Contents.SUPPORT]}
-                            </span>
-                        </div>
-                        <div
-                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold rounded "
-                            onClick={() => appDispatch(toggleQa())}
-                            data-action="sidepane/sidepane_bandtogg"
-                            style={{ '--prefix': 'QA' }}
-                        >
-                            <RiBookLine fontSize={'1.4rem'} />
-                            <span className="hidden md:block">
-                                {t[Contents.GUIDELINE]}
                             </span>
                         </div>
                         <div
