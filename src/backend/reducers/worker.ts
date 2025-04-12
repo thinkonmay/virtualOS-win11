@@ -337,6 +337,12 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.worker_refresh_ui,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.fetch_configuration,
+                hander: (state, action) => {
+                    state.metadata = action.payload;
+                }
             }
         );
     }

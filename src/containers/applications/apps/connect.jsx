@@ -304,7 +304,7 @@ function Customize({ onClose: close }) {
     const reset = () => setHWOption(defaultVal(configuration));
     useEffect(() => {
         reset();
-    }, [configuration]);
+    }, [metadata]);
 
     const apply = async () => {
         appDispatch(
