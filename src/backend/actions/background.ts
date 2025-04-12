@@ -26,12 +26,11 @@ import {
     get_plans,
     get_resources,
     have_focus,
+    load_setting,
     loose_focus,
     popup_open,
     set_current_address,
-    setting_theme,
     show_tutorial,
-    sidepane_panethem,
     store,
     sync,
     worker_refresh
@@ -39,41 +38,6 @@ import {
 import { Contents } from '../reducers/locales/index.ts';
 
 export const originalurl = new URL(window.location.href);
-
-const loadSettings = async () => {
-    // let thm = localStorage.getItem('theme');
-    // thm = thm == 'light' ? 'light' : 'dark';
-    // var icon = thm == 'light' ? 'sun' : 'moon';
-
-    // if (
-    //     window.matchMedia &&
-    //     window.matchMedia('(prefers-color-scheme: dark)').matches
-    // ) {
-    //     thm = 'dark';
-    // }
-    // appDispatch(setting_theme(thm));
-    // appDispatch(sidepane_panethem(icon));
-
-    document.body.dataset.theme = 'dark';
-};
-
-const fetchSetting = async () => {
-    let bitrateLocal: number = +localStorage.getItem('bitrate');
-    let framerateLocal: number = +localStorage.getItem('framerate');
-
-    if (
-        bitrateLocal > 100 ||
-        bitrateLocal <= 0 ||
-        framerateLocal > 100 ||
-        framerateLocal <= 0
-    ) {
-        bitrateLocal = 35;
-        framerateLocal = 25;
-    }
-
-    appDispatch(change_bitrate(bitrateLocal));
-    appDispatch(change_framerate(framerateLocal));
-};
 
 let old_clipboard = '';
 const handleClipboard = async () => {
@@ -104,9 +68,16 @@ const setDomain = async () => {
 };
 const startAnalytics = async () => {
     const email = store.getState().user.email;
-    (window as any).LiveChatWidget.call('set_customer_email', email);
+    if (
+        email != 'unknown' &&
+        email != '' &&
+        email != undefined &&
+        email != null
+    )
+        (window as any).LiveChatWidget.call('set_customer_email', email);
     await UserSession(email);
 };
+
 export const fetchPayment = () =>
     Promise.all([
         appDispatch(fetch_wallet()),
@@ -126,6 +97,7 @@ const fetchDiscounts = () => appDispatch(fetch_active_discounts());
 const fetchApp = () => appDispatch(worker_refresh());
 const fetchPlans = () => appDispatch(get_plans());
 const fetchResources = () => appDispatch(get_resources());
+const loadSettings = () => appDispatch(load_setting());
 
 const updateUI = async () => {
     const {
@@ -265,7 +237,6 @@ export const preloadSilent = async () => {
         fetchPayment(),
         startAnalytics(),
         fetchDomains(),
-        fetchSetting(),
         fetchApp(),
         fetchPlans(),
         fetchResources()
@@ -288,6 +259,6 @@ export const preload = async () => {
 export const PreloadBackground = async () => {
     await preload();
     setInterval(check_worker, 10 * 1000);
-    setInterval(sync, 2 * 1000);
     setInterval(handleClipboard, 300);
+    setInterval(sync, 2 * 1000);
 };

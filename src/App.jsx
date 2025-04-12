@@ -55,6 +55,7 @@ function App() {
     };
 
     useEffect(() => {
+        document.body.dataset.theme = 'dark';
         window.LiveChatWidget.call('minimize');
         appDispatch(direct_access(originalurl));
         window.onbeforeunload = (e) => {

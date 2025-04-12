@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
+    change_bitrate,
+    change_framerate,
     close_remote,
     popup_close,
     popup_open,
@@ -215,11 +217,24 @@ export const remoteAsync = {
     cache_setting: createAsyncThunk(
         'cache_setting',
         async (_: void, { getState }) => {
-            // TODO
         }
     ),
     load_setting: createAsyncThunk('load_setting', async (_: void) => {
-        // TODO
+        let bitrateLocal: number = +localStorage.getItem('bitrate');
+        let framerateLocal: number = +localStorage.getItem('framerate');
+
+        if (
+            bitrateLocal > 100 ||
+            bitrateLocal <= 0 ||
+            framerateLocal > 100 ||
+            framerateLocal <= 0
+        ) {
+            bitrateLocal = 35;
+            framerateLocal = 25;
+        }
+
+        appDispatch(change_bitrate(bitrateLocal));
+        appDispatch(change_framerate(framerateLocal));
     }),
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
