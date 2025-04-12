@@ -8,11 +8,17 @@ import {
     popup_open,
     remote_connect,
     remote_ready,
+    RootState,
+    scancode,
     store,
+    toggle_hide_vm,
+    toggle_high_mtu,
+    toggle_high_queue,
+    toggle_hq,
     toggle_remote,
     worker_refresh
 } from '.';
-import { RemoteCredential } from '../../../src-tauri/api';
+import { POCKETBASE, RemoteCredential } from '../../../src-tauri/api';
 import { isMobile } from '../../../src-tauri/core';
 import {
     Assign,
@@ -216,10 +222,37 @@ export const remoteAsync = {
     ),
     cache_setting: createAsyncThunk(
         'cache_setting',
-        async (_: void, { getState }) => {
+        async (_: {}, { getState }) => {
+            const user = (getState() as RootState).user.id;
+            const { HideVM, HighMTU, HighQueue } = (getState() as RootState)
+                .worker;
+            const { hq, bitrate, framerate, scancode } = (
+                getState() as RootState
+            ).remote;
+
+            const setting = {
+                hq,
+                HideVM,
+                HighMTU,
+                scancode,
+                HighQueue,
+                bitrate,
+                framerate
+            };
+            const settings = await POCKETBASE()
+                .collection('setting')
+                .getFullList();
+            if (settings.length == 0)
+                await POCKETBASE()
+                    .collection('setting')
+                    .create({ user, setting });
+            else
+                await POCKETBASE()
+                    .collection('setting')
+                    .update(settings[0]?.id, { setting });
         }
     ),
-    load_setting: createAsyncThunk('load_setting', async (_: void) => {
+    _load_setting: createAsyncThunk('load_setting', async (_: void) => {
         let bitrateLocal: number = +localStorage.getItem('bitrate');
         let framerateLocal: number = +localStorage.getItem('framerate');
 
@@ -235,7 +268,43 @@ export const remoteAsync = {
 
         appDispatch(change_bitrate(bitrateLocal));
         appDispatch(change_framerate(framerateLocal));
+
+        const settings = await POCKETBASE().collection('setting').getFullList<{
+            setting: {
+                hq?: boolean;
+                HideVM?: boolean;
+                HighMTU?: boolean;
+                HighQueue?: boolean;
+                scancode?: boolean;
+                bitrate?: number;
+                framerate?: number;
+            };
+        }>();
+        if (settings.length > 0) {
+            const [
+                {
+                    setting: {
+                        hq,
+                        HideVM,
+                        HighMTU,
+                        HighQueue,
+                        scancode: _scancode
+                    }
+                }
+            ] = settings;
+            appDispatch(toggle_hide_vm(HideVM));
+            appDispatch(toggle_high_mtu(HighMTU));
+            appDispatch(toggle_high_queue(HighQueue));
+            appDispatch(toggle_hq(hq));
+            if (_scancode) appDispatch(scancode(_scancode));
+        }
     }),
+    get load_setting() {
+        return this._load_setting;
+    },
+    set load_setting(value) {
+        this._load_setting = value;
+    },
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
         async (_: void, {}) => {
@@ -260,9 +329,10 @@ export const remoteSlice = createSlice({
         remote_ready: (state) => {
             state.ready = true;
         },
-        toggle_hq: (state) => {
-            set_hq(!state.hq);
-            state.hq = !state.hq;
+        toggle_hq: (state, action: PayloadAction<boolean | undefined>) => {
+            const newstate = action.payload ?? !state.hq;
+            set_hq(newstate);
+            state.hq = newstate;
         },
         loose_focus: (state) => {
             state.focus = false;
@@ -296,6 +366,7 @@ export const remoteSlice = createSlice({
         },
         scancode: (state, action: PayloadAction<boolean>) => {
             state.scancode = action.payload;
+            if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         framedrop: (state, action: PayloadAction<boolean>) => {
             if (state.active) state.frame_drop = action.payload;
@@ -377,11 +448,7 @@ export const remoteSlice = createSlice({
             builder,
             {
                 fetch: remoteAsync.load_setting,
-                hander: (state, action: PayloadAction<any>) => {
-                    const { bitrate, framerate } = action.payload;
-                    state.bitrate = bitrate;
-                    state.framerate = framerate;
-                }
+                hander: (state, action: PayloadAction<any>) => {}
             },
             {
                 fetch: remoteAsync.cache_setting,

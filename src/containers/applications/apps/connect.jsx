@@ -1,8 +1,10 @@
 import {
     appDispatch,
     app_toggle,
+    cache_setting,
     fetch_configuration,
     popup_open,
+    scancode_toggle,
     show_chat,
     useAppSelector,
     wait_and_claim_volume,
@@ -228,7 +230,7 @@ function Customize({ onClose: close }) {
 
     const { configuration } = metadata ?? { configuration: {} };
 
-    const hq = useAppSelector((state) => state.remote.hq);
+    const { scancode, hq } = useAppSelector((state) => state.remote);
 
     const actions = [
         {
@@ -247,9 +249,14 @@ function Customize({ onClose: close }) {
             action: () => appDispatch(toggle_high_queue())
         },
         {
-            name: t[Contents.MAXIMUM_QUALITY],
+            name: `High quality`,
             state: hq,
             action: () => appDispatch(toggle_hq())
+        },
+        {
+            name: `Scan code`,
+            state: scancode,
+            action: () => appDispatch(scancode_toggle())
         }
     ];
 
@@ -315,9 +322,12 @@ function Customize({ onClose: close }) {
                 }
             })
         );
+
+        let refresh_conf = false;
         for (const option of hwOptions) {
             for (const def of defaultVal(configuration)) {
                 if (option.name == def.name && option.value != def.value) {
+                    refresh_conf = true;
                     const error = await create_or_replace_resources(
                         `${option.name}${option.value}`
                     );
@@ -330,7 +340,8 @@ function Customize({ onClose: close }) {
             }
         }
 
-        await appDispatch(fetch_configuration());
+        if (refresh_conf) await appDispatch(fetch_configuration());
+        appDispatch(cache_setting());
         toast(`Your changes is applied`, {});
         appDispatch(popup_close());
         close();
@@ -474,7 +485,7 @@ function Customize({ onClose: close }) {
                         <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                             Advanced setting
                         </h6>
-                        <ul className="flex flex-col items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:flex-row dark:bg-gray-700 dark:border-gray-600 dark:text-white list-none ">
+                        <ul className="grid grid-cols-3 items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:flex-row dark:bg-gray-700 dark:border-gray-600 dark:text-white list-none ">
                             {actions.map(renderOption)}
                         </ul>
                     </div>

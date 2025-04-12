@@ -305,14 +305,20 @@ export const workerSlice = createSlice({
     name: 'worker',
     initialState,
     reducers: {
-        toggle_high_queue: (state) => {
-            state.HighQueue = !state.HighQueue;
+        toggle_high_queue: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            state.HighQueue = action.payload ?? !state.HighQueue;
         },
-        toggle_high_mtu: (state) => {
-            state.HighMTU = !state.HighMTU;
+        toggle_high_mtu: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            state.HighMTU = action.payload ?? !state.HighMTU;
         },
-        toggle_hide_vm: (state) => {
-            state.HideVM = !state.HideVM;
+        toggle_hide_vm: (state, action: PayloadAction<boolean | undefined>) => {
+            state.HideVM = action.payload ?? !state.HideVM;
         },
         set_current_address: (state, payload: PayloadAction<string>) => {
             state.currentAddress = payload.payload;
