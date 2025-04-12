@@ -104,6 +104,10 @@ export const workerAsync = {
                 worker: { HideVM, HighMTU, HighQueue, currentAddress }
             } = getState() as RootState;
 
+            appDispatch(
+                popup_open({ type: 'notify', data: { loading: true } })
+            );
+
             const info = await GetInfo(currentAddress);
             if (info instanceof APIError) throw info;
             else if (!info.virtReady && !info.remoteReady)
@@ -123,7 +127,8 @@ export const workerAsync = {
                     info.virtReady ? workerAsync.showPosition : undefined
                 );
                 if (resp instanceof APIError) {
-                    toast(`Failed ${resp.message}`);
+                    toast(`Failed ${resp.code} ${resp.message}`);
+                    appDispatch(popup_close());
                     return;
                 }
                 appDispatch(
@@ -331,16 +336,6 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: workerAsync.fetch_configuration,
-                hander: (state, action) => {
-                    state.metadata = action.payload;
-                }
-            },
-            {
-                fetch: workerAsync.wait_and_claim_volume,
                 hander: (state, action) => {}
             }
         );

@@ -307,6 +307,14 @@ function Customize({ onClose: close }) {
     }, [configuration]);
 
     const apply = async () => {
+        appDispatch(
+            popup_open({
+                type: 'notify',
+                data: {
+                    loading: true
+                }
+            })
+        );
         for (const option of hwOptions) {
             for (const def of defaultVal(configuration)) {
                 if (option.name == def.name && option.value != def.value) {
@@ -324,6 +332,7 @@ function Customize({ onClose: close }) {
 
         await appDispatch(fetch_configuration());
         toast(`Your changes is applied`, {});
+        appDispatch(popup_close());
         close();
     };
 

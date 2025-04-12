@@ -9,7 +9,7 @@ import {
 import { appDispatch, popup_close, popup_open } from '..';
 import toast from 'react-hot-toast';
 
-const filterActions = ['wait_and_claim_volume', 'change_template'];
+const filterActions = ['change_template', 'unclaim_volume'];
 const uiAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));
 };
@@ -92,16 +92,22 @@ export async function BuilderHelper<T, U, V>(
         )
         .addMatcher(
             isRejectedAction(handlers.map((x) => x.fetch.typePrefix)),
-            (state, action) => {
+            (state, action: any) => {
                 setTimeout(() => appDispatch(popup_close()), 1000);
-                toast(`${action.type} failed`);
+                toast(`${action.type} failed ${action?.error?.message}`, {
+                    className: 'bg-red-200',
+                    duration: 10000
+                });
             }
         )
         .addMatcher(
             isFulfilledAction(handlers.map((x) => x.fetch.typePrefix)),
             (state, action) => {
                 setTimeout(() => appDispatch(popup_close()), 1000);
-                toast(`${action.type} success`);
+                toast(`${action.type} success`, {
+                    className: 'bg-blue-200',
+                    duration: 3000
+                });
             }
         );
 }
