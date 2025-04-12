@@ -12,6 +12,7 @@ import {
     change_framerate,
     check_worker,
     desk_remove,
+    direct_access,
     fetch_active_discounts,
     fetch_configuration,
     fetch_domain,
@@ -174,7 +175,28 @@ const updateUI = async () => {
     )
         appDispatch(show_tutorial('open'));
 
-    if (originalurl.searchParams.get('app') != null && !unknown_user) {
+    if (originalurl.searchParams.get('plan') != null && !unknown_user) {
+        ops.pop();
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment',
+                value: {
+                    plan: originalurl.searchParams.get('plan'),
+                    cluster: currentAddress,
+                    ...(originalurl.searchParams.get('app') != null
+                        ? {
+                              template: {
+                                  code_name:
+                                      originalurl.searchParams.get('app'),
+                                  name: originalurl.searchParams.get('app')
+                              }
+                          }
+                        : {})
+                }
+            })
+        );
+    } else if (originalurl.searchParams.get('app') != null && !unknown_user) {
         ops.pop();
         appDispatch(
             app_full({
@@ -270,6 +292,11 @@ export const preload = async () => {
 };
 
 export const PreloadBackground = async () => {
+    appDispatch(direct_access(originalurl));
+    const domain = originalurl.searchParams.get('server');
+    if (domain != '' && domain != null)
+        localStorage.setItem('thinkmay_domain', domain);
+
     await preload();
     setInterval(check_worker, 10 * 1000);
     setInterval(handleClipboard, 300);

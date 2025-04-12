@@ -56,17 +56,12 @@ function App() {
 
     useEffect(() => {
         window.LiveChatWidget.call('minimize');
-        appDispatch(direct_access(originalurl));
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
             e = e || window.event;
             if (e) e.returnValue = text;
             return text;
         };
-
-        const domain = originalurl.searchParams.get('server');
-        if (domain != '' && domain != null)
-            localStorage.setItem('thinkmay_domain', domain);
 
         const now = () => new Date().getTime();
         const start_fetch = now();
