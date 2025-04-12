@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { UserEvents } from '../src-tauri/api/database.ts';
-import { store } from './backend/reducers/index.ts';
 import { externalLink } from './backend/utils/constant.ts';
 
 export function ErrorFallback({ error }) {

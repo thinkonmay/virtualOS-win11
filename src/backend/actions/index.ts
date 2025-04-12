@@ -169,8 +169,19 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => {};
-export const signUpWithEmail = async (email: string, password: string) => {};
+export const loginWithEmail = (email: string, password: string) => {
+    return POCKETBASE().collection('users').authWithPassword(email, password);
+};
+export const signUpWithEmail = async (
+    email: string,
+    password: string,
+    passwordConfirm: string
+) => {
+    return POCKETBASE()
+        .collection('users')
+        .create({ email, password, passwordConfirm });
+};
+
 export const loginAction = (
     provider: 'google' | 'facebook' | 'discord',
     finish_callback?: () => {}
@@ -255,8 +266,8 @@ export const showConnect = () => {
 
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const { email, discounts } = store.getState().user;
-    const discount_code = discounts.find(
-        (x) => x.apply_for?.includes('deposit')
+    const discount_code = discounts.find((x) =>
+        x.apply_for?.includes('deposit')
     )?.code;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,

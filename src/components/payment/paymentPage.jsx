@@ -169,7 +169,7 @@ export const PaymentPage = ({ value }) => {
                 </div>
 
                 <div className="w-8 shrink-0">
-                    <p className="text-base font-normal text-gray-900 dark:text-white">
+                    <p className="text-base font-normal text-white">
                         {plan.amount / 1000}k
                     </p>
                 </div>
@@ -178,10 +178,10 @@ export const PaymentPage = ({ value }) => {
                     {enableEdit ? (
                         <button
                             onClick={() => increase(-1)}
-                            className="bg-gray-600 group rounded-l-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                            className="bg-gray-600 group rounded-l-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 text-white hover:text-black hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
                         >
                             <svg
-                                className="w-8 h-8 text-white"
+                                className="w-8 h-8"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -201,7 +201,7 @@ export const PaymentPage = ({ value }) => {
                     ) : null}
                     <input
                         type="text"
-                        className="border-y bg-gray-900 outline-none text-white font-semibold text-lg  placeholder:text-white py-1  text-center bg-transparent w-6"
+                        className="border-y outline-none text-black dard:text-white font-semibold text-lg py-1  text-center bg-transparent w-6"
                         placeholder="0"
                         value={quantity}
                         onChange={(x) => set(x.target.value)}
@@ -209,10 +209,10 @@ export const PaymentPage = ({ value }) => {
                     {enableEdit ? (
                         <button
                             onClick={() => increase(1)}
-                            className="bg-gray-600 group rounded-r-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
+                            className="bg-gray-600 group rounded-r-full w-full py-0 border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 text-white hover:text-black hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
                         >
                             <svg
-                                className="w-8 h-8 text-white"
+                                className="w-8 h-8"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -233,7 +233,7 @@ export const PaymentPage = ({ value }) => {
                 </div>
 
                 <div className="md:w-24 md:text-right">
-                    <p className="text-base font-bold text-gray-900 dark:text-white">
+                    <p className="text-base font-bold text-white">
                         {(plan.amount * quantity) / 1000}k
                     </p>
                 </div>
@@ -251,7 +251,7 @@ export const PaymentPage = ({ value }) => {
                 <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-8">
                     <div className="min-w-0 flex-1 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white shadow-sm dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800">
                         <div className="p-6 mt-6 flex justify-left">
-                            <h2 className=" text-2xl font-semibold text-gray-900 dark:text-white">
+                            <h2 className=" text-2xl font-semibold text-white">
                                 Lựa chọn
                             </h2>
                         </div>
@@ -281,14 +281,14 @@ export const PaymentPage = ({ value }) => {
 
                     <div className="mt-6 w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
                         <div className="p-6">
-                            <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
+                            <h4 className="mb-4 text-xl font-semibold text-white">
                                 Phương thức thanh toán
                             </h4>
 
                             <div className="flow-root">
                                 <div className="divide-y divide-gray-200 dark:divide-gray-700">
                                     <dl className="pb-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-                                        <dt className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                        <dt className="whitespace-nowrap font-semibold text-white">
                                             Order date
                                         </dt>
                                         <dd className="mt-2 text-gray-500 dark:text-gray-400 sm:mt-0 sm:text-right">
@@ -297,7 +297,7 @@ export const PaymentPage = ({ value }) => {
                                     </dl>
 
                                     <dl className="py-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-                                        <dt className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                        <dt className="whitespace-nowrap font-semibold text-white">
                                             Email
                                         </dt>
                                         <dd className="mt-2 text-gray-500 dark:text-gray-400 sm:mt-0 sm:text-right">
@@ -305,7 +305,7 @@ export const PaymentPage = ({ value }) => {
                                         </dd>
                                     </dl>
                                     <dl className="py-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
-                                        <dt className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                                        <dt className="whitespace-nowrap font-semibold text-white">
                                             Payment method
                                         </dt>
                                         <dd className="mt-2 flex items-center gap-2 sm:mt-0 sm:justify-end">
@@ -400,7 +400,7 @@ export const PaymentPage = ({ value }) => {
                             </div>
                         </div>
                         <div className="space-y-4 p-6">
-                            <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
+                            <h4 className="text-xl font-semibold text-white">
                                 Tổng hợp
                             </h4>
 
@@ -440,7 +440,7 @@ export const PaymentPage = ({ value }) => {
                         </div>
 
                         <div className="space-y-4 bg-gray-50 p-6 dark:bg-gray-700">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            <p className="text-sm font-medium text-white">
                                 Your benefits:
                             </p>
                             <ul className="list-outside list-disc space-y-1 pl-4 text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -598,7 +598,7 @@ const PaymentFlow = ({
                         <dt className="text-gray-500 dark:text-gray-400">
                             Người nhận
                         </dt>
-                        <dd className="font-medium text-gray-900 dark:text-white">
+                        <dd className="font-medium text-white">
                             {data?.accountName}
                         </dd>
                     </dl>
@@ -606,7 +606,7 @@ const PaymentFlow = ({
                         <dt className="text-gray-500 dark:text-gray-400">
                             Nội dung
                         </dt>
-                        <dd className="font-medium text-gray-900 dark:text-white">
+                        <dd className="font-medium text-white">
                             {data?.description}
                         </dd>
                     </dl>
@@ -614,7 +614,7 @@ const PaymentFlow = ({
                         <dt className="text-gray-500 dark:text-gray-400">
                             Số tiền
                         </dt>
-                        <dd className="font-medium text-gray-900 dark:text-white">
+                        <dd className="font-medium text-white">
                             {data?.amount / 1000}k
                         </dd>
                     </dl>
@@ -643,7 +643,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Tổng thanh toán
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     {total / 1000}k
                                 </dd>
                             </dl>
@@ -651,7 +651,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Đăng kí dịch vụ
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     {instant_deduction / 1000}k
                                 </dd>
                             </dl>
@@ -659,17 +659,17 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Nâng cấp cấu hình
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     {gradual_deduction / 1000}k
                                 </dd>
                             </dl>
                         </div>
                     </div>
                     <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                        <dt className="font-bold text-gray-900 dark:text-white">
+                        <dt className="font-bold text-white">
                             Số tiền phải trả
                         </dt>
-                        <dd className="font-bold text-gray-900 dark:text-white">
+                        <dd className="font-bold text-white">
                             {total / 1000}k
                         </dd>
                     </dl>
@@ -708,7 +708,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Số dư trong ví (hiện tại)
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     {wallet / 1000}k
                                 </dd>
                             </dl>
@@ -716,7 +716,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Trừ từ ví (sau khi thanh toán)
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     -{instant_deduction / 1000}k
                                 </dd>
                             </dl>
@@ -724,7 +724,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Số dư trong ví (sau khi thanh toán)
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     {(wallet - instant_deduction) / 1000}k
                                 </dd>
                             </dl>
@@ -732,7 +732,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Trừ từ ví (trong 1 tháng)
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     -{gradual_deduction / 1000}k
                                 </dd>
                             </dl>
@@ -740,7 +740,7 @@ const PaymentFlow = ({
                                 <dt className="text-gray-500 dark:text-gray-400">
                                     Số dư trong ví (sau 1 tháng)
                                 </dt>
-                                <dd className="font-medium text-gray-900 dark:text-white">
+                                <dd className="font-medium text-white">
                                     {(wallet -
                                         instant_deduction -
                                         gradual_deduction) /
@@ -779,10 +779,10 @@ const PaymentFlow = ({
             return (
                 <>
                     <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                        <dt className="font-bold text-gray-900 dark:text-white">
+                        <dt className="font-bold text-white">
                             Số tiền phải trả
                         </dt>
-                        <dd className="font-bold text-gray-900 dark:text-white">
+                        <dd className="font-bold text-white">
                             {total / 1000}k
                         </dd>
                     </dl>
@@ -790,7 +790,7 @@ const PaymentFlow = ({
                         <dt className="text-gray-500 dark:text-gray-400">
                             Số dư trong ví (hiện tại)
                         </dt>
-                        <dd className="font-medium text-gray-900 dark:text-white">
+                        <dd className="font-medium text-white">
                             {wallet / 1000}k
                         </dd>
                     </dl>

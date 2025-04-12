@@ -8,7 +8,6 @@ import { afterMath } from './backend/actions/index';
 
 import {
     appDispatch,
-    direct_access,
     menu_show,
     pointer_lock,
     set_fullscreen,

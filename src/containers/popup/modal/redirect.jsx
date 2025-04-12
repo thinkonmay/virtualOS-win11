@@ -26,7 +26,7 @@ export function redirectDomain({ data: { domain } }) {
                 backdropFilter: 'blur(3px) brightness(0.5)'
             }}
         >
-            <div className="relative p-4 w-full max-w-xs max-h-full text-white">
+            <div className="relative p-4 w-full max-w-xs max-h-full dark:text-white text-black">
                 <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800">
                     <div className="flex justify-center items-center gap-2 ">
                         <MdInfoOutline className="text-3xl"></MdInfoOutline>
