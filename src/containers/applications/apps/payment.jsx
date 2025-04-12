@@ -13,9 +13,7 @@ export const PaymentApp = () => {
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'payment')
     );
-
-    const curpage = wnapp.page;
-    const val = wnapp.value;
+    const { page: curpage, value: val } = wnapp;
 
     const handleChangePage = (input) =>
         appDispatch(app_payload({ id: 'payment', key: 'page', value: input }));

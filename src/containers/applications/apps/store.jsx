@@ -4,6 +4,7 @@ import {
     appDispatch,
     change_template,
     popup_open,
+    store,
     useAppSelector
 } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
@@ -16,16 +17,18 @@ export const MicroStore = () => {
         state.apps.apps.find((x) => x.id == 'store')
     );
 
-    const [game, setGame] = useState(null);
-
     const games = useAppSelector((state) => state.globals.games);
-    const [filtered, setFilter] = useState([]);
+    const [game, setGame] = useState(null);
+    const [search, openSearch] = useState(false);
+    const [confirm, openConfirm] = useState(undefined);
+    const [filtered, setFilter] = useState(games);
     useEffect(() => {
         setFilter(games);
     }, [games]);
-
-    const [opened, setOpen] = useState(false);
-    const [confirm, openConfirm] = useState(undefined);
+    useEffect(() => {
+        if (wnapp.value?.app)
+            setGame(games.find((x) => x.code_name == wnapp.value?.app));
+    }, [wnapp]);
 
     return (
         <div
@@ -47,13 +50,12 @@ export const MicroStore = () => {
             />
             <div
                 className={`windowScreen relative ${
-                    opened || confirm != undefined ? '' : 'win11Scroll '
+                    search || confirm != undefined ? '' : 'win11Scroll '
                 }`}
             >
-                {opened ? (
+                {search ? (
                     <SearchBar
-                        close={() => setOpen(false)}
-                        games={games}
+                        close={() => openSearch(false)}
                         setFilter={setFilter}
                     />
                 ) : confirm != undefined ? (
@@ -62,23 +64,21 @@ export const MicroStore = () => {
                         onClose={() => openConfirm(undefined)}
                     />
                 ) : null}
-                <div className="">
-                    <LazyComponent show={!wnapp.hide}>
-                        {game != null ? (
-                            <DetailPage
-                                app={game}
-                                close={() => setGame(null)}
-                                onConfirmation={(arg) => openConfirm(arg)}
-                            />
-                        ) : (
-                            <DownPage
-                                open={setGame}
-                                filtered={filtered}
-                                openSearch={() => setOpen(true)}
-                            />
-                        )}
-                    </LazyComponent>
-                </div>
+                <LazyComponent show={!wnapp.hide}>
+                    {game != null ? (
+                        <DetailPage
+                            app={game}
+                            close={() => setGame(null)}
+                            onConfirmation={(arg) => openConfirm(arg)}
+                        />
+                    ) : (
+                        <DownPage
+                            open={setGame}
+                            filtered={filtered}
+                            openSearch={() => openSearch(true)}
+                        />
+                    )}
+                </LazyComponent>
             </div>
         </div>
     );
@@ -457,7 +457,8 @@ const DownPage = ({ open, openSearch, filtered }) => {
     );
 };
 
-const SearchBar = ({ close, games, setFilter }) => {
+const SearchBar = ({ close, setFilter }) => {
+    const games = useAppSelector((state) => state.globals.games);
     const filter = [
         {
             name: 'has account',

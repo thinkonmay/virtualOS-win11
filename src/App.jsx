@@ -105,10 +105,10 @@ function App() {
 
     useEffect(() => {
         if (tutorial) window.onclick = null;
-        else if (remote.fullscreen) {
+        else if (remote.active) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
-        } else if (!remote.active) {
+        } else {
             window.oncontextmenu = ctxmenu;
             window.onclick = afterMath;
         }

@@ -6,6 +6,7 @@ import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
+    app_full,
     app_toggle,
     change_bitrate,
     change_framerate,
@@ -105,6 +106,8 @@ const updateUI = async () => {
         worker: { currentAddress }
     } = store.getState();
 
+    const unknown_user = email == undefined || email == 'unkown' || email == '';
+
     const rms = [];
     const ops = [];
     if (subscription != undefined) {
@@ -167,11 +170,21 @@ const updateUI = async () => {
             );
     } else if (
         originalurl.searchParams.get('tutorial') == 'on' &&
-        email != undefined &&
-        email != 'unkown' &&
-        email != ''
+        !unknown_user
     )
         appDispatch(show_tutorial('open'));
+
+    if (originalurl.searchParams.get('app') != null && !unknown_user) {
+        ops.pop();
+        appDispatch(
+            app_full({
+                id: 'store',
+                value: {
+                    app: originalurl.searchParams.get('app')
+                }
+            })
+        );
+    }
 
     ops.forEach((x) => appDispatch(app_toggle(x)));
     rms.forEach((x) => appDispatch(desk_remove(x)));
