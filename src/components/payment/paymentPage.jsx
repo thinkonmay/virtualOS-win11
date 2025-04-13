@@ -3,10 +3,14 @@ import {
     create_payment_pocket,
     verify_transaction
 } from '../../backend/actions';
-import { useAppSelector } from '../../backend/reducers';
+import {
+    appDispatch,
+    fetch_wallet,
+    useAppSelector
+} from '../../backend/reducers';
 import QRCode from 'react-qr-code';
 import { GLOBAL } from '../../../src-tauri/api';
-import { fetchPayment, preloadSilent } from '../../backend/actions/background';
+import { preloadSilent } from '../../backend/actions/background';
 
 const subcontents = [
     {
@@ -482,7 +486,7 @@ const PaymentFlow = ({
     instant_deduction
 }) => {
     const email = useAppSelector((state) => state.user.email);
-    const wallet = useAppSelector((state) => state.user.wallet.money);
+    const balance = useAppSelector((state) => state.user.balance);
     const has_subscription = useAppSelector(
         (state) => state.user.subscription != undefined
     );
@@ -553,7 +557,7 @@ const PaymentFlow = ({
     const verify = async () => {
         if (await verify_transaction({ id })) {
             await GLOBAL().rpc('verify_all_deposits');
-            await fetchPayment();
+            await appDispatch(fetch_wallet());
             setStep('deduct');
         }
     };
@@ -709,7 +713,7 @@ const PaymentFlow = ({
                                     Số dư trong ví (hiện tại)
                                 </dt>
                                 <dd className="font-medium text-white">
-                                    {wallet / 1000}k
+                                    {balance / 1000}k
                                 </dd>
                             </dl>
                             <dl className="flex items-center justify-between gap-4">
@@ -725,7 +729,7 @@ const PaymentFlow = ({
                                     Số dư trong ví (sau khi thanh toán)
                                 </dt>
                                 <dd className="font-medium text-white">
-                                    {(wallet - instant_deduction) / 1000}k
+                                    {(balance - instant_deduction) / 1000}k
                                 </dd>
                             </dl>
                             <dl className="flex items-center justify-between gap-4">
@@ -741,7 +745,7 @@ const PaymentFlow = ({
                                     Số dư trong ví (sau 1 tháng)
                                 </dt>
                                 <dd className="font-medium text-white">
-                                    {(wallet -
+                                    {(balance -
                                         instant_deduction -
                                         gradual_deduction) /
                                         1000}
@@ -791,7 +795,7 @@ const PaymentFlow = ({
                             Số dư trong ví (hiện tại)
                         </dt>
                         <dd className="font-medium text-white">
-                            {wallet / 1000}k
+                            {balance / 1000}k
                         </dd>
                     </dl>
                     {false ? (

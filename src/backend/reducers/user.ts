@@ -7,7 +7,6 @@ import {
     GLOBAL,
     POCKETBASE
 } from '../../../src-tauri/api';
-import { PlanName } from './../utils/constant';
 import { BuilderHelper } from './helper';
 
 type Metadata = {
@@ -63,52 +62,13 @@ type Discount = {
     apply_for: string[];
 };
 
-interface Deposit {
-    amount: number;
-    created_at: string;
-    id: number;
-    plan_name: PlanName;
-}
-interface Order {
-    id: string;
-    pay_at: string;
-    plan_name: PlanName;
-}
-
-type RefundRequest = {
-    id: number;
-    created_at: string;
-    amount: string;
-};
-
-interface DepositStatus {
-    created_at: string;
-    amount: number;
-    status: string;
-}
-
-interface PlanStatus {
-    created_at: string;
-    amount: number;
-    plan_name: string;
-}
-
-interface Wallet {
-    money: number;
-    historyDeposit: Deposit[];
-    historyPayment: Deposit[];
-    currentOrders?: Order[];
-    depositStatus?: DepositStatus[];
-    refundRequest?: RefundRequest[];
-    planStatus?: PlanStatus[];
-}
 type Data = RecordModel & {
     subscription?: Subscription;
     bucket_name?: string;
     plans: Plan[];
     resources: Resource[];
     discounts: Discount[];
-    wallet: Wallet;
+    balance: number;
 };
 
 const initialState: Data = {
@@ -117,20 +77,12 @@ const initialState: Data = {
 
     id: 'unknown',
     email: '',
+    balance: 0,
     created: '',
     updated: '',
     plans: [],
     resources: [],
-    discounts: [],
-
-    wallet: {
-        money: 0,
-        historyPayment: [],
-        historyDeposit: [],
-        currentOrders: [],
-        depositStatus: [],
-        planStatus: []
-    }
+    discounts: []
 };
 
 export const userAsync = {
@@ -172,48 +124,14 @@ export const userAsync = {
             if (error) throw error;
             else if (data.length == 0) throw new Error('pocket not exist');
             const [{ amount }] = data;
-            return { amount };
+            return amount;
         }
     ),
-
-    fetch_payment_history: createAsyncThunk(
-        'fetch_payment_history',
-        async (
-            _,
-            { getState }
-        ): Promise<{
-            paymentData: Deposit[];
-            depositData: Deposit[];
-        }> => {
-            const { email } = (getState() as RootState).user;
-            const { error: depositErr, data: depositData } = await GLOBAL().rpc(
-                'get_deposit_history',
-                {
-                    email: email
-                }
-            );
-            if (depositErr) throw depositErr;
-
-            const { error: paymentErr, data: paymentData } = await GLOBAL().rpc(
-                'get_payment_history',
-                {
-                    email: email
-                }
-            );
-            if (paymentErr) throw paymentErr;
-
-            return {
-                paymentData,
-                depositData
-            };
-        }
-    ),
-
     fetch_subscription_metadata: createAsyncThunk(
         'fetch_subscription_metadata',
         async (_, { getState }): Promise<Metadata | undefined> => {
             const {
-                user: { subscription, wallet, plans },
+                user: { subscription, balance, plans },
                 worker: { data, currentAddress }
             } = getState() as RootState;
             if (subscription == undefined) return undefined;
@@ -223,8 +141,7 @@ export const userAsync = {
                 (x) => x.pool == 'user_data'
             )?.node;
             const sufficient =
-                plans?.find((x) => x.name == next_plan)?.amount <=
-                wallet?.money;
+                plans?.find((x) => x.name == next_plan)?.amount <= balance;
 
             return {
                 node,
@@ -309,70 +226,6 @@ export const userAsync = {
                 );
         }
     ),
-
-    get_deposit_status: createAsyncThunk(
-        'get_deposit_status',
-        async (_, { getState }) => {
-            const { email } = (getState() as RootState).user;
-
-            const { data: get_deposit_status, error: err } = await GLOBAL().rpc(
-                'get_deposit_status',
-                {
-                    email
-                }
-            );
-
-            if (err)
-                throw new Error('Error when create payment link' + err.message);
-
-            if (get_deposit_status != null) {
-                return get_deposit_status;
-            }
-        }
-    ),
-    get_payment_pocket: createAsyncThunk(
-        'get_payment_pocket',
-        async (_, { getState }): Promise<string> => {
-            const { email } = (getState() as RootState).user;
-            const { data, error: err } = await GLOBAL().rpc(
-                'get_payment_pocket',
-                {
-                    email
-                }
-            );
-
-            if (err) throw new Error(err.message);
-            else if (data != null) return data;
-        }
-    ),
-    fetch_refund_request: createAsyncThunk(
-        'fetch_refund_request',
-        async (_, { getState }): Promise<RefundRequest[]> => {
-            const { email } = (getState() as RootState).user;
-            const { data, error: err } = await GLOBAL()
-                .from('refund_request')
-                .select('id,created_at,amount')
-                .eq('user', email);
-
-            if (err) throw new Error(err.message);
-            return data;
-        }
-    ),
-    refund_request: createAsyncThunk(
-        'refund_request',
-        async (_, { getState }): Promise<void> => {
-            const { email } = (getState() as RootState).user;
-            const { error: err } = await GLOBAL()
-                .from('refund_request')
-                .insert({
-                    user: email
-                });
-
-            if (err) throw new Error(err.message);
-            appDispatch(show_chat());
-            await appDispatch(userAsync.fetch_refund_request());
-        }
-    ),
     change_template: createAsyncThunk(
         'change_template',
         async (
@@ -443,31 +296,14 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.fetch_wallet,
-                hander: (state, action) => {
-                    state.wallet.money = action.payload.amount;
-                }
-            },
-            {
-                fetch: userAsync.refund_request,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: userAsync.fetch_refund_request,
-                hander: (state, action) => {
-                    state.wallet.refundRequest = action.payload;
+                hander: (state, action: PayloadAction<number>) => {
+                    state.balance = action.payload;
                 }
             },
             {
                 fetch: userAsync.fetch_active_discounts,
                 hander: (state, action) => {
                     state.discounts = action.payload;
-                }
-            },
-            {
-                fetch: userAsync.fetch_payment_history,
-                hander: (state, action) => {
-                    state.wallet.historyDeposit = action.payload.depositData;
-                    state.wallet.historyPayment = action.payload.paymentData;
                 }
             },
             {
@@ -494,23 +330,6 @@ export const userSlice = createSlice({
                 hander: (state, action) => {
                     state.plans = action.payload;
                 }
-            },
-            {
-                fetch: userAsync.get_deposit_status,
-                hander: (state, action) => {
-                    state.wallet.depositStatus = action.payload;
-                }
-            },
-            {
-                fetch: userAsync.get_payment_pocket,
-                hander: (state, action) => {
-                    state.wallet.currentOrders = action.payload;
-                }
-            },
-
-            {
-                fetch: userAsync.change_template,
-                hander: (state, action) => {}
             }
         );
     }

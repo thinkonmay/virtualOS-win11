@@ -16,15 +16,11 @@ import {
     fetch_active_discounts,
     fetch_configuration,
     fetch_domain,
-    fetch_payment_history,
-    fetch_refund_request,
     fetch_store,
     fetch_subscription,
     fetch_subscription_metadata,
     fetch_user,
     fetch_wallet,
-    get_deposit_status,
-    get_payment_pocket,
     get_plans,
     get_resources,
     have_focus,
@@ -80,15 +76,7 @@ const startAnalytics = async () => {
     await UserSession(email);
 };
 
-export const fetchPayment = () =>
-    Promise.all([
-        appDispatch(fetch_wallet()),
-        appDispatch(fetch_payment_history()),
-        appDispatch(fetch_refund_request()),
-        appDispatch(get_payment_pocket()),
-        appDispatch(get_deposit_status())
-    ]);
-
+const fetchPayment = () => appDispatch(fetch_wallet());
 const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
 const fetchSubMetadata = () => appDispatch(fetch_subscription_metadata());

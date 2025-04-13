@@ -31,12 +31,7 @@ import {
     worker_refresh
 } from '../reducers/index';
 import { Contents } from '../reducers/locales';
-import {
-    fetchPayment,
-    originalurl,
-    preload,
-    preloadSilent
-} from './background';
+import { originalurl, preload, preloadSilent } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -411,6 +406,6 @@ export const create_or_replace_resources = async (resource_name: string) => {
     if (error) return new Error(error.message);
 
     await appDispatch(fetch_configuration());
-    await fetchPayment();
+    await appDispatch(fetch_wallet());
     return undefined;
 };

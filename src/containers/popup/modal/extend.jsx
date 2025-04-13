@@ -10,7 +10,7 @@ import {
 import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
 
 export function extendService({ data: { type, available_time } }) {
-    const money = useAppSelector((state) => state.user.wallet.money);
+    const money = useAppSelector((state) => state.user.balance);
     const next_plan_name = useAppSelector(
         (state) => state.user.subscription?.next_plan
     );

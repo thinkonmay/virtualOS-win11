@@ -166,16 +166,11 @@ export const {
     fetch_user,
     fetch_wallet,
     fetch_active_discounts,
-    fetch_payment_history,
     fetch_subscription,
     fetch_subscription_metadata,
-    fetch_refund_request,
-    refund_request,
     get_plans,
     get_resources,
-    change_template,
-    get_payment_pocket,
-    get_deposit_status
+    change_template
 } = userAsync;
 export const {
     check_worker,

@@ -14,7 +14,7 @@ import { preloadSilent } from '../../backend/actions/background';
 const PaymentButton = ({ template, domain, sub, switchPage }) => {
     const email = useAppSelector((state) => state.user.email);
     const subscription = useAppSelector((state) => state.user.subscription);
-    const money = useAppSelector((state) => state.user.wallet.money);
+    const money = useAppSelector((state) => state.user.balance);
     const currentAddress = useAppSelector(
         (state) => state.worker.currentAddress
     );

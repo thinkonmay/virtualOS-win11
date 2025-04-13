@@ -32,7 +32,7 @@ const Taskbar = () => {
     const tasks = useAppSelector((state) => state.taskbar);
     const align = useAppSelector((state) => state.taskbar.align);
     const apps = useAppSelector((state) => state.apps);
-    const wallet = useAppSelector((state) => state.user.wallet);
+    const money = useAppSelector((state) => state.user.balance);
     const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
@@ -124,7 +124,7 @@ const Taskbar = () => {
                                     src="vnd"
                                     width={24}
                                 />
-                                {numberFormat(wallet.money)}
+                                {numberFormat(money)}
                                 <button
                                     onClick={pay}
                                     className="depositBtn bg-slate-600 text-xl text-white"
