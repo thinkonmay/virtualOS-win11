@@ -170,6 +170,7 @@ export const {
     fetch_subscription_metadata,
     get_plans,
     get_resources,
+    change_node,
     change_template
 } = userAsync;
 export const {

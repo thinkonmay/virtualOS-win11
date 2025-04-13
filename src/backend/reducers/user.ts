@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_close, app_full, appDispatch, RootState, show_chat } from '.';
+import { app_close, app_full, appDispatch, RootState, show_chat, worker_refresh } from '.';
 import {
     APIError,
+    ChangeNode,
     ChangeTemplate,
     GLOBAL,
     POCKETBASE
@@ -226,6 +227,36 @@ export const userAsync = {
                 );
         }
     ),
+    change_node: createAsyncThunk(
+        'change_node',
+        async (
+            { node }: { node: string },
+            { getState }
+        ): Promise<void> => {
+            const {
+                worker: { currentAddress, data, metadata }
+            } = getState() as RootState;
+
+            const vol = data[currentAddress]?.Volumes?.find(
+                (x) => x.pool == 'user_data'
+            );
+
+            if (vol == undefined) throw new Error('volume is not available');
+            else if (vol.inuse)
+                throw new Error(
+                    'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
+                );
+            else {
+                const resp = await ChangeNode(
+                    currentAddress,
+                    node,
+                    vol.name
+                );
+                if (resp instanceof APIError) throw resp;
+                appDispatch(worker_refresh())
+            }
+        }
+    ),
     change_template: createAsyncThunk(
         'change_template',
         async (
@@ -333,6 +364,10 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.change_template,
+                hander: (state, action) => { }
+            },
+            {
+                fetch: userAsync.change_node,
                 hander: (state, action) => { }
             }
         );

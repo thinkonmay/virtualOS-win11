@@ -9,7 +9,7 @@ import {
 import { appDispatch, popup_close, popup_open } from '..';
 import toast from 'react-hot-toast';
 
-const filterActions = ['change_template', 'unclaim_volume'];
+const filterActions = ['change_template', 'change_node', 'unclaim_volume'];
 const uiAction = (acctionType: string) => {
     return filterActions.some((act) => acctionType.includes(act));
 };

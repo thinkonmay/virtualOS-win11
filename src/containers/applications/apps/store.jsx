@@ -3,8 +3,6 @@ import {
     app_full,
     appDispatch,
     change_template,
-    popup_open,
-    store,
     useAppSelector
 } from '../../../backend/reducers';
 import { LazyComponent, ToolBar } from '../../../components/shared/general';
