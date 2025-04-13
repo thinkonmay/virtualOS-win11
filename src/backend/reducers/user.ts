@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_close, app_full, appDispatch, RootState, show_chat, worker_refresh } from '.';
+import { app_close, app_full, appDispatch, RootState, worker_refresh } from '.';
 import {
     APIError,
     ChangeNode,
@@ -229,10 +229,7 @@ export const userAsync = {
     ),
     change_node: createAsyncThunk(
         'change_node',
-        async (
-            { node }: { node: string },
-            { getState }
-        ): Promise<void> => {
+        async (node: string, { getState }): Promise<void> => {
             const {
                 worker: { currentAddress, data, metadata }
             } = getState() as RootState;
@@ -247,13 +244,9 @@ export const userAsync = {
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
                 );
             else {
-                const resp = await ChangeNode(
-                    currentAddress,
-                    node,
-                    vol.name
-                );
+                const resp = await ChangeNode(currentAddress, node, vol.name);
                 if (resp instanceof APIError) throw resp;
-                appDispatch(worker_refresh())
+                appDispatch(worker_refresh());
             }
         }
     ),
@@ -364,11 +357,11 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.change_template,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: userAsync.change_node,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }

@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { appDispatch, change_node, useAppSelector } from '../../../../backend/reducers';
+import {
+    appDispatch,
+    change_node,
+    useAppSelector
+} from '../../../../backend/reducers';
 import { ChangeNode } from '../../../../../src-tauri/api';
 
 function NodeSwitch() {
@@ -21,7 +25,7 @@ function NodeSwitch() {
         setNodes(nodemaps);
     }, [worker]);
 
-    const updateNode = (e) => appDispatch(change_node(e.target.value))
+    const updateNode = (e) => appDispatch(change_node(e.target.value));
 
     return (
         <div className="langSwitcher langSwitcherTile">
