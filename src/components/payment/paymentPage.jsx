@@ -205,7 +205,7 @@ export const PaymentPage = ({ value }) => {
                     ) : null}
                     <input
                         type="text"
-                        className="border-y outline-none text-black dard:text-white font-semibold text-lg py-1  text-center bg-transparent w-6"
+                        className="border-y outline-none text-black dark:text-white font-semibold text-lg py-1  text-center bg-transparent w-6"
                         placeholder="0"
                         value={quantity}
                         onChange={(x) => set(x.target.value)}
