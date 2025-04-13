@@ -31,6 +31,7 @@ function App() {
     document.body.dataset.theme = 'dark';
     const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
+    const loggedIn = useAppSelector((state) => state.user.email != '');
     const tutorial = useAppSelector((state) => state.globals.tutorial);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
@@ -181,7 +182,7 @@ function App() {
                         </>
                     )}
                     {remote.active && !pointerLock ? <Status /> : null}
-                    {remote.active ? (
+                    {remote.active && loggedIn ? (
                         <Remote />
                     ) : (
                         <>

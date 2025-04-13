@@ -379,7 +379,9 @@ const DetailPage = ({
                                         </button>
                                     ) : (
                                         <button
-                                            onClick={() => appDispatch(show_chat())}
+                                            onClick={() =>
+                                                appDispatch(show_chat())
+                                            }
                                             className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
                                         >
                                             Liên hệ để cài đặt

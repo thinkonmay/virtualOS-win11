@@ -22,7 +22,6 @@ import {
     StartThinkmay
 } from '../../../src-tauri/api';
 import { ready } from '../../../src-tauri/singleton';
-import { showConnect } from '../actions';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 import toast from 'react-hot-toast';
@@ -147,11 +146,9 @@ export const workerAsync = {
             if (result instanceof APIError) throw result;
             await appDispatch(save_reference(result));
 
-            showConnect();
             appDispatch(remote_connect(result));
             if (!(await ready())) appDispatch(close_remote());
             else appDispatch(remote_ready());
-            appDispatch(popup_close());
         }
     ),
     update_local_worker: createAsyncThunk(

@@ -1,21 +1,30 @@
 import { MdCheckCircleOutline, MdContentCopy } from 'react-icons/md';
 import { appDispatch, popup_close } from '../../../backend/reducers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { originalurl } from '../../../backend/actions/background';
 
 export function share({ data: { ref, discount_code } }) {
     const close = () => appDispatch(popup_close());
     const [isSuccess, setSuccess] = useState(false);
     const [url, setURL] = useState('');
 
+    useEffect(() => {
+        const url = ref != undefined ? new URL(ref) : new URL(originalurl.href);
+        url.searchParams.set('ref', discount_code);
+        setURL(url.toString());
+    }, []);
+
     const handleCopy = () => {
         setSuccess(true);
         navigator.clipboard.writeText(url);
-        setTimeout(() => {
-            setSuccess(false);
-        }, 1500);
     };
-    const finishShare = () => {
+
+    const finishShare = async () => {
         close();
+        await navigator.share({
+            title: 'Chơi game ngay trên Thinkmay',
+            url
+        });
     };
 
     return (
@@ -61,16 +70,15 @@ export function share({ data: { ref, discount_code } }) {
                         </p>
                     </div>
                     <div className="mb-4 space-y-2">
-                        <div className="flex justify-between gap-3 items-center rounded-lg p-2 bg-gray-600">
-                            <div className="text-white">
-                                <p className="line-clamp-1 text-sm">{url}</p>
-                            </div>
-                            <button className=" bg-slate-300 p-2 rounded-md flex justify-center items-center hover:opacity-80">
+                        <div className="flex justify-between gap-3 items-center rounded-lg p-2 bg-gray-200 dark:bg-gray-600">
+                            <button
+                                onClick={handleCopy}
+                                className=" bg-slate-300 p-2 rounded-md flex justify-center items-center hover:opacity-80"
+                            >
                                 {!isSuccess ? (
                                     <MdContentCopy
                                         fontSize={'1.3rem'}
                                         className="text-gray-700"
-                                        onClick={handleCopy}
                                     />
                                 ) : (
                                     <MdCheckCircleOutline
@@ -79,6 +87,11 @@ export function share({ data: { ref, discount_code } }) {
                                     />
                                 )}
                             </button>
+                            <div className="text-black dark:text-white">
+                                <p className="line-clamp-1 text-left text-sm">
+                                    {url}
+                                </p>
+                            </div>
                         </div>
                         {isSuccess ? (
                             <button

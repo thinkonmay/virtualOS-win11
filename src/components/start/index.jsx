@@ -579,7 +579,7 @@ function MobileComponent({
     data: { pnstates, sidepane, shutdownable, active }
 }) {
     let blacklist = [];
-    if (shutdownable != 'started') blacklist = ['shutDownVm', 'showLinkShare'];
+    if (shutdownable != 'started') blacklist = ['shutDownVm'];
 
     const renderList = sidepane.mobileControl.buttons.filter(
         (x) => !blacklist.includes(x.action)
@@ -606,7 +606,7 @@ function DesktopComponent({
     const t = useAppSelector((state) => state.globals.translation);
 
     let blacklist = [];
-    if (shutdownable != 'started') blacklist = ['shutDownVm', 'showLinkShare'];
+    if (shutdownable != 'started') blacklist = ['shutDownVm'];
 
     const renderList = sidepane.desktopControl.buttons.filter(
         (x) => !blacklist.includes(x.action)

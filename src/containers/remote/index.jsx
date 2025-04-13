@@ -6,9 +6,15 @@ import {
     VideoWrapper,
     isMobile
 } from '../../../src-tauri/core';
-import { Assign, CLIENT, virtMouseWheel } from '../../../src-tauri/singleton';
+import {
+    Assign,
+    CLIENT,
+    ready,
+    virtMouseWheel
+} from '../../../src-tauri/singleton';
 import {
     appDispatch,
+    popup_close,
     set_fullscreen,
     toggle_gamepad,
     toggle_keyboard,
@@ -20,6 +26,7 @@ import { VirtualGamepad } from './control/gamepad';
 import GamingKeyboard from './control/gamingKeyboard';
 import { VirtKeyboard } from './control/keyboard';
 import './remote.scss';
+import { showConnect } from '../../backend/actions';
 
 export const Remote = () => {
     const keyboard = useAppSelector(
@@ -43,7 +50,9 @@ export const Remote = () => {
         if (!active || auth == undefined) return;
         if (isMobile()) appDispatch(toggle_objectfit());
 
+        showConnect();
         setupWebRTC();
+        ready().then(() => appDispatch(popup_close()));
     }, [active]);
 
     useEffect(() => {

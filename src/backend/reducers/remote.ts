@@ -31,7 +31,6 @@ import {
     set_hq,
     SIZE
 } from '../../../src-tauri/singleton';
-import { showConnect } from '../actions';
 import { BuilderHelper } from './helper';
 import { originalurl } from '../actions/background';
 import toast from 'react-hot-toast';
@@ -193,7 +192,6 @@ export const remoteAsync = {
         const opt = `&queue_size=${high_queue ? 16 : 4}&mtu=${
             high_mtu ? 1400 : 1200
         }`;
-        showConnect();
         appDispatch(
             remote_connect({
                 videoUrl: `wss://${address}:444/broadcasters/webrtc?token=${video}${opt}`,
@@ -203,7 +201,6 @@ export const remoteAsync = {
         );
         if (!(await ready())) appDispatch(close_remote());
         else appDispatch(remote_ready());
-        appDispatch(popup_close());
         return true;
     }),
     save_reference: createAsyncThunk(
@@ -212,12 +209,14 @@ export const remoteAsync = {
             const audio = new URL(info.audioUrl).searchParams.get('token');
             const video = new URL(info.videoUrl).searchParams.get('token');
             const data = new URL(info.dataUrl).searchParams.get('token');
-            const host = new URL(info.dataUrl).host;
-            originalurl.searchParams.set('audio', audio);
-            originalurl.searchParams.set('video', video);
-            originalurl.searchParams.set('data', data);
-            originalurl.searchParams.set('host', host);
-            return originalurl.toString();
+            const host = new URL(info.dataUrl).hostname;
+
+            const url = new URL(originalurl.toString());
+            url.searchParams.set('audio', audio);
+            url.searchParams.set('video', video);
+            url.searchParams.set('data', data);
+            url.searchParams.set('host', host);
+            return url.toString();
         }
     ),
     cache_setting: createAsyncThunk(

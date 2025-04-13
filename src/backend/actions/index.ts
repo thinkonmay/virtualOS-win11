@@ -237,6 +237,8 @@ export const showLinkShare = () =>
         popup_open({
             type: 'share',
             data: {
+                discount_code:
+                    store.getState().user.email?.split('@')?.[0] ?? 'share',
                 ref: store.getState().remote.ref
             }
         })
