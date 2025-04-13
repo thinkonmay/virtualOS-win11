@@ -470,12 +470,12 @@ const SearchBar = ({ close, setFilter }) => {
     const games = useAppSelector((state) => state.globals.games);
     const filter = [
         {
-            name: 'has account',
+            name: 'Có sẵn account',
             func: (arr) => arr.filter((x) => x.tag.hasaccount)
         },
         {
-            name: 'predownload',
-            func: (arr) => arr.filter((x) => x.code_name != null)
+            name: 'Đã được download',
+            func: (arr) => arr.filter((x) => x.tag.samenode)
         }
     ];
 
