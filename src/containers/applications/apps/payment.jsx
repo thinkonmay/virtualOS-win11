@@ -24,6 +24,13 @@ export const PaymentApp = () => {
         history: 'Lịch sử',
         refund: 'Hoàn tiền'
     };
+
+    const external = {
+        history: '/history',
+        refund: '/refund'
+    };
+
+    const pages2 = ['history', 'refund'];
     const pages = ['subscription', 'payment'];
 
     const renderRoute = (page, index) => (
@@ -31,6 +38,15 @@ export const PaymentApp = () => {
             key={index}
             className={page == curpage ? 'item subActive' : 'item'}
             onClick={() => handleChangePage(page)}
+        >
+            {routing[page]}
+        </div>
+    );
+    const renderExternal = (page, index) => (
+        <div
+            key={index}
+            onClick={() => window.open(external[page])}
+            className='item'
         >
             {routing[page]}
         </div>
@@ -58,6 +74,7 @@ export const PaymentApp = () => {
                 <div className="windowScreen wrapperPayment">
                     <div className="navPayment text-left">
                         {pages.map(renderRoute)}
+                        {pages2.map(renderExternal)}
                     </div>
                     <div className="win11Scroll w-full">
                         {curpage == 'subscription' ? (
