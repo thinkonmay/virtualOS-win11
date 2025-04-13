@@ -235,20 +235,12 @@ export const workerAsync = {
             if (code != undefined) {
                 const { data: stores, error: err } = await GLOBAL()
                     .from('stores')
-                    .select('metadata->screenshots,name')
+                    .select('metadata->screenshots->0->>path_full,name')
                     .eq('code_name', code)
                     .limit(1);
                 if (err) throw err;
                 else if (stores.length > 0) {
-                    const [{ screenshots, name }] = stores;
-                    const image =
-                        screenshots?.[
-                            Math.round(
-                                Math.random() *
-                                    ((screenshots as any[]).length - 1)
-                            )
-                        ]?.path_full ?? undefined;
-
+                    const [{ path_full: image, name }] = stores;
                     return {
                         pbid,
                         configuration,

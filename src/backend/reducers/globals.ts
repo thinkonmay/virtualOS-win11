@@ -13,51 +13,12 @@ export type TranslationResult = {
 type IGame = {
     name: string;
     code_name: string;
+    publishers: any;
+    short_description: any;
+    path_full: any;
     tag: {
         samenode: boolean;
         hasaccount: boolean;
-    };
-    metadata: {
-        name: string;
-        type: string;
-        genres: {
-            id: string;
-            description: string;
-        }[];
-        movies: {
-            id: number;
-            webm: {
-                max: string;
-            };
-            mp4: {
-                max: string;
-            };
-            name: string;
-            thumbnail: string;
-        }[];
-        website: string;
-        background: string;
-        categories: {
-            id: number;
-            description: string;
-        }[];
-        developers: string[];
-        drm_notice: string;
-        publishers: string[];
-        screenshots: {
-            id: number;
-            path_full: string;
-            path_thumbnail: string;
-        }[];
-        header_image: string;
-        release_date: {
-            date: string;
-        };
-        capsule_image: string;
-        about_the_game: string;
-        background_raw: string;
-        capsule_imagev5: string;
-        short_description: string;
     };
 };
 
@@ -276,7 +237,10 @@ export const globalAsync = {
         )?.map((x) => x.name.replaceAll('.template', ''));
         const { data, error } = await GLOBAL()
             .from('stores')
-            .select('code_name,name,metadata,management->>kickey');
+            .select(
+                'code_name,name,metadata->publishers,metadata->short_description,metadata->screenshots->0->>path_full,management->>kickey'
+            )
+            .not('metadata->screenshots->0->>path_full', 'is', null);
         if (error) throw new Error(error.message);
 
         return data.map((x) => ({

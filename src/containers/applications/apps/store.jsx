@@ -84,31 +84,22 @@ export const MicroStore = () => {
     );
 };
 
-const DetailPage = ({ app, onConfirmation, close }) => {
+const DetailPage = ({
+    app: {
+        code_name,
+        tag: { hasaccount },
+        name,
+        short_description,
+        path_full,
+        publishers
+    },
+    onConfirmation,
+    close
+}) => {
     const t = useAppSelector((state) => state.globals.translation);
     const code = useAppSelector((state) => state.worker.metadata?.code);
-
-    const { code_name, name, metadata } = app;
-    const { short_description, screenshots, publishers } = metadata ?? {
-        screenshots: [],
-        publishers: []
-    };
-
-    const [index, setIndex] = useState(
-        Math.round(Math.random() * (screenshots.length - 1))
-    );
-    useEffect(() => {
-        const i = setInterval(() => {
-            setIndex((old) => (old + 1) % screenshots.length);
-        }, 5000);
-
-        return () => {
-            clearInterval(i);
-        };
-    }, []);
-
     const [options, setOptions] = useState([
-        ...(app.code_name != null
+        ...(code_name != null
             ? [
                   {
                       code: 'payment',
@@ -117,7 +108,7 @@ const DetailPage = ({ app, onConfirmation, close }) => {
                   }
               ]
             : []),
-        ...(app.tag.hasaccount
+        ...(hasaccount
             ? [
                   {
                       code: 'kickey',
@@ -183,7 +174,7 @@ const DetailPage = ({ app, onConfirmation, close }) => {
                                 Game
                             </p>
                             <h2 className="font-manrope font-bold text-3xl leading-10 text-white mb-2 capitalize">
-                                {app.name}
+                                {name}
                             </h2>
                             <div className="flex flex-col sm:flex-row sm:items-center mb-6">
                                 {code == undefined ? (
@@ -385,7 +376,7 @@ const DetailPage = ({ app, onConfirmation, close }) => {
                     <div className="img flex justify-start max-lg:justify-center">
                         <div className="img-box h-[720px] max-lg:h-[480px] max-lg:mx-auto">
                             <img
-                                src={screenshots?.[index]?.path_full}
+                                src={path_full}
                                 alt="Yellow Tropical Printed Shirt image"
                                 className="max-lg:mx-auto lg:ml-auto h-full object-cover rounded-3xl transition-all"
                             ></img>
@@ -423,9 +414,7 @@ const DownPage = ({ open, openSearch, filtered }) => {
                     <div className="flex items-center justify-center flex-col gap-5 mb-14">
                         <div className="grid row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-14 max-w-screen-2xl">
                             {filtered
-                                .filter(
-                                    (x) => x.metadata?.screenshots?.length > 0
-                                )
+                                .filter((x) => x.path_full != null)
                                 .map((game, index) => (
                                     <div
                                         key={index}
@@ -438,14 +427,14 @@ const DownPage = ({ open, openSearch, filtered }) => {
                                                   : 'sm:col-span-1 sm:row-span-1'
                                         }  bg-cover bg-center max-md:h-80 rounded-lg flex justify-end flex-col px-7 py-6 cursor-pointer opacity-70 hover:opacity-100 transition-opacity`}
                                         style={{
-                                            backgroundImage: `url(${game.metadata?.screenshots?.[0]?.path_full})`
+                                            backgroundImage: `url(${game.path_full})`
                                         }}
                                     >
                                         <h6 className="font-bold text-3xl leading-8 text-white mb-4">
                                             {game.name}
                                         </h6>
                                         <p className="opacity-0 hover:opacity-100 transition-opacity text-base font-normal text-white h-30">
-                                            {game.metadata?.short_description}
+                                            {game.short_description}
                                         </p>
                                     </div>
                                 ))}

@@ -46,7 +46,7 @@ export const PaymentApp = () => {
         <div
             key={index}
             onClick={() => window.open(external[page])}
-            className='item'
+            className="item"
         >
             {routing[page]}
         </div>
