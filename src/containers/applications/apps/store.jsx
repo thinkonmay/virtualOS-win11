@@ -396,17 +396,14 @@ const DownPage = ({ open, openSearch, filtered }) => {
                             Thinkmay game store
                         </h2>
                         <p className="text-lg font-normal text-gray-500 max-w-3xl mx-auto text-center">
-                            Explore a wide range of games, from action-packed
-                            adventures to immersive RPGs, all at your
-                            fingertips. Join our community of gamers and
-                            discover your next favorite title today!
+                            Khám phá kho game trên Thinkmay cloudPC.
                         </p>
                         <button
                             type="button"
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xl px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-900 dark:hover:bg-blue-900 dark:focus:ring-blue-800"
                             onClick={openSearch}
                         >
-                            Click để tìm game
+                            Tìm game theo yêu cầu
                         </button>
                     </div>
                     <div className="flex items-center justify-center flex-col gap-5 mb-14">
