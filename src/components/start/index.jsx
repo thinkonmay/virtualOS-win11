@@ -55,7 +55,7 @@ export const DesktopApp = () => {
                     <div
                         key={i}
                         id={app.id}
-                        className="dskApp prtclk relative"
+                        className="dskApp prtclk relative sm:m-4 m-0"
                         tabIndex={0}
                         data-action={app.action}
                         data-menu={app.menu}
@@ -67,9 +67,9 @@ export const DesktopApp = () => {
                     >
                         {app.icon == undefined ? (
                             <Icon
-                                className={`dskIcon ${app.id}`}
+                                className={`${app.id}`}
                                 click={'null'}
-                                width={Math.round(desk.size * 36)}
+                                width={Math.round(desk.size * 30)}
                                 src={app.image ?? app.id}
                                 mono={app.mono ?? false}
                                 pr
@@ -77,9 +77,9 @@ export const DesktopApp = () => {
                         ) : (
                             <Icon
                                 icon={app.icon}
-                                className={`dskIcon ${app.id}`}
+                                className={`${app.id}`}
                                 click={'null'}
-                                width={Math.round(desk.size * 36)}
+                                width={Math.round(desk.size * 30)}
                             />
                         )}
                         <div className="appName">{t[app.name]}</div>
