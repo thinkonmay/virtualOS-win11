@@ -85,7 +85,7 @@ export const MicroStore = () => {
 const DetailPage = ({
     app: {
         code_name,
-        tag: { hasaccount },
+        tag: { hasaccount, samenode },
         name,
         short_description,
         path_full,
@@ -96,6 +96,9 @@ const DetailPage = ({
 }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const code = useAppSelector((state) => state.worker.metadata?.code);
+    const has_subscription = useAppSelector(
+        (state) => state.user.subscription != undefined
+    );
     const [options, setOptions] = useState([
         ...(code_name != null
             ? [
@@ -118,28 +121,27 @@ const DetailPage = ({
     ]);
 
     const handleDownload = () =>
-        code == undefined
-            ? appDispatch(
-                  app_full({
-                      id: 'payment',
-                      page: 'subscription',
-                      value: {
-                          template: {
-                              name,
-                              code_name
-                          },
-                          additional: [
-                              ...(options.find((x) => x.code == 'kickey')
-                                  ?.clicked
-                                  ? ['kickey']
-                                  : [])
-                          ]
-                      }
-                  })
-              )
-            : onConfirmation({
-                  template: code_name
-              });
+        onConfirmation({
+            template: code_name
+        });
+    const handlePayment = () =>
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'subscription',
+                value: {
+                    template: {
+                        name,
+                        code_name
+                    },
+                    additional: [
+                        ...(options.find((x) => x.code == 'kickey')?.clicked
+                            ? ['kickey']
+                            : [])
+                    ]
+                }
+            })
+        );
 
     const renderOption = (val, index) => {
         const [clicked, setClicked] = useState(true);
@@ -362,12 +364,27 @@ const DetailPage = ({
                                 >
                                     Quay lại
                                 </button>
-                                <button
-                                    onClick={handleDownload}
-                                    className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
-                                >
-                                    {code != undefined ? 'Cài đặt' : 'Đăng kí'}
-                                </button>
+                                {has_subscription ? (
+                                    code_name == code ? (
+                                        <button className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400">
+                                            Bạn đã cài đặt game này
+                                        </button>
+                                    ) : samenode ? (
+                                        <button
+                                            onClick={handleDownload}
+                                            className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                        >
+                                            Cài đặt
+                                        </button>
+                                    ) : null
+                                ) : (
+                                    <button
+                                        onClick={handlePayment}
+                                        className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                    >
+                                        Đăng kí
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

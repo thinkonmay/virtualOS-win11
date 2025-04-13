@@ -8,8 +8,6 @@ import {
     appDispatch,
     app_full,
     app_toggle,
-    change_bitrate,
-    change_framerate,
     check_worker,
     desk_remove,
     direct_access,
@@ -18,7 +16,7 @@ import {
     fetch_domain,
     fetch_store,
     fetch_subscription,
-    fetch_subscription_metadata,
+    update_subscription_metadata,
     fetch_user,
     fetch_wallet,
     get_plans,
@@ -31,7 +29,8 @@ import {
     show_tutorial,
     store,
     sync,
-    worker_refresh
+    worker_refresh,
+    update_game_tag
 } from '../reducers';
 import { Contents } from '../reducers/locales/index.ts';
 
@@ -79,7 +78,6 @@ const startAnalytics = async () => {
 const fetchPayment = () => appDispatch(fetch_wallet());
 const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
-const fetchSubMetadata = () => appDispatch(fetch_subscription_metadata());
 const fetchConfiguration = () => appDispatch(fetch_configuration());
 const fetchDomains = () => appDispatch(fetch_domain());
 const fetchUser = () => appDispatch(fetch_user());
@@ -88,6 +86,8 @@ const fetchApp = () => appDispatch(worker_refresh());
 const fetchPlans = () => appDispatch(get_plans());
 const fetchResources = () => appDispatch(get_resources());
 const loadSettings = () => appDispatch(load_setting());
+const updateSubmetadata = () => appDispatch(update_subscription_metadata());
+const updateGametag = () => appDispatch(update_game_tag());
 
 const updateUI = async () => {
     const {
@@ -262,9 +262,10 @@ export const preloadSilent = async () => {
         fetchDomains(),
         fetchApp(),
         fetchPlans(),
+        fetchStore(),
         fetchResources()
     ]);
-    await Promise.all([fetchSubMetadata(), fetchStore()]);
+    await Promise.all([updateSubmetadata(), updateGametag()]);
 };
 
 export const preload = async () => {

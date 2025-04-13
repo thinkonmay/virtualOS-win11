@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { store } from '.';
+import { RootState, store } from '.';
 import { GLOBAL, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
@@ -227,14 +227,24 @@ export const globalAsync = {
             else return domains_v3;
         }
     ),
+    update_game_tag: createAsyncThunk(
+        'update_game_tag',
+        async (): Promise<string[]> => {
+            const { data: tree, currentAddress } = store.getState().worker;
+            const volumes = tree[currentAddress]?.Volumes;
+            if (volumes == undefined || volumes.length == 0) return [];
+
+            const node = volumes.find((x) => x.pool == 'user_data')?.node;
+            if (node == undefined) return [];
+
+            const samenodes = volumes
+                .filter((x) => x.node == node && x.pool == 'app_data')
+                .map((x) => x.name);
+
+            return samenodes;
+        }
+    ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
-        const { data: tree, currentAddress } = store.getState().worker;
-        const node = tree[currentAddress]?.Volumes?.find(
-            (x) => x.pool == 'user_data'
-        ).node;
-        const samenodes = tree[currentAddress]?.Volumes?.filter(
-            (x) => x.node == node
-        )?.map((x) => x.name.replaceAll('.template', ''));
         const { data, error } = await GLOBAL()
             .from('stores')
             .select(
@@ -246,7 +256,7 @@ export const globalAsync = {
         return data.map((x) => ({
             ...x,
             tag: {
-                samenode: samenodes?.includes(x.code_name) ?? false,
+                samenode: false,
                 hasaccount: x.kickey == 'true'
             }
         }));
@@ -288,6 +298,20 @@ export const globalSlice = createSlice({
                 fetch: globalAsync.fetch_store,
                 hander: (state, action: PayloadAction<IGame[]>) => {
                     state.games = action.payload;
+                }
+            },
+            {
+                fetch: globalAsync.update_game_tag,
+                hander: (state, action: PayloadAction<string[]>) => {
+                    state.games = state.games.map((x) => ({
+                        ...x,
+                        tag: {
+                            ...x.tag,
+                            samenode: action.payload.includes(
+                                `${x.code_name}.template`
+                            )
+                        }
+                    }));
                 }
             },
             {

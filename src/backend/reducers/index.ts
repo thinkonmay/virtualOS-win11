@@ -167,7 +167,7 @@ export const {
     fetch_wallet,
     fetch_active_discounts,
     fetch_subscription,
-    fetch_subscription_metadata,
+    update_subscription_metadata,
     get_plans,
     get_resources,
     change_node,
@@ -183,7 +183,7 @@ export const {
     toggle_remote_async
 } = remoteAsync;
 
-export const { fetch_store, fetch_domain } = globalAsync;
+export const { fetch_store, fetch_domain, update_game_tag } = globalAsync;
 
 export const dispatch_generic = async ({
     type,

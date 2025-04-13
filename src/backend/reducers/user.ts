@@ -128,8 +128,8 @@ export const userAsync = {
             return amount;
         }
     ),
-    fetch_subscription_metadata: createAsyncThunk(
-        'fetch_subscription_metadata',
+    update_subscription_metadata: createAsyncThunk(
+        'update_subscription_metadata',
         async (_, { getState }): Promise<Metadata | undefined> => {
             const {
                 user: { subscription, balance, plans },
@@ -331,7 +331,7 @@ export const userSlice = createSlice({
                 }
             },
             {
-                fetch: userAsync.fetch_subscription_metadata,
+                fetch: userAsync.update_subscription_metadata,
                 hander: (state, action) => {
                     if (state.subscription != undefined)
                         state.subscription.metadata = action.payload;
