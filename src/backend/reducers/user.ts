@@ -330,6 +330,10 @@ export const userSlice = createSlice({
                 hander: (state, action) => {
                     state.plans = action.payload;
                 }
+            },
+            {
+                fetch: userAsync.change_template,
+                hander: (state, action) => { }
             }
         );
     }
