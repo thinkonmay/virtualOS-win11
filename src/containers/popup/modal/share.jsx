@@ -1,5 +1,9 @@
 import { MdCheckCircleOutline, MdContentCopy } from 'react-icons/md';
-import { appDispatch, popup_close, useAppSelector } from '../../../backend/reducers';
+import {
+    appDispatch,
+    popup_close,
+    useAppSelector
+} from '../../../backend/reducers';
 import { useEffect, useState } from 'react';
 import { originalurl } from '../../../backend/actions/background';
 
@@ -7,7 +11,7 @@ export function share({ data: { ref, discount_code } }) {
     const close = () => appDispatch(popup_close());
     const [isSuccess, setSuccess] = useState(false);
     const [url, setURL] = useState('');
-    const email = useAppSelector(state => state.user.email)
+    const email = useAppSelector((state) => state.user.email);
 
     useEffect(() => {
         const url = ref != undefined ? new URL(ref) : new URL(originalurl.href);

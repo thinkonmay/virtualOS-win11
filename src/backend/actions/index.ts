@@ -174,7 +174,7 @@ const tagref = async () => {
             new Date(POCKETBASE().authStore.model.created).getTime()) /
             60000 <
         5; //
-    POCKETBASE()
+    await POCKETBASE()
         .collection('users')
         .update(POCKETBASE().authStore.model.id, {
             metadata: {
@@ -273,8 +273,8 @@ export const showConnect = () => {
 
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const { email, discounts } = store.getState().user;
-    const discount_code = discounts.find(
-        (x) => x.apply_for?.includes('deposit')
+    const discount_code = discounts.find((x) =>
+        x.apply_for?.includes('deposit')
     )?.code;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,
