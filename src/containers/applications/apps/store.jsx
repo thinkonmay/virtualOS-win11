@@ -629,9 +629,9 @@ const Confirmation = ({ onClose, args }) => {
                 backdropFilter: 'blur(3px) brightness(0.5)'
             }}
         >
-            <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800 text-white">
+            <div className="relative rounded-lg p-4 text-center shadow bg-gray-300 dark:bg-gray-800 dark:text-white text-black">
                 <div className="relative p-4 w-full max-w-md max-h-full"></div>
-                <div className="flex flex-col justify-center items-center gap-2 text-[#B0D0EF]">
+                <div className="flex flex-col justify-center items-center gap-3 text-black dark:text-[#B0D0EF]">
                     <MdInfoOutline className="text-4xl text-orange-600"></MdInfoOutline>
                     <h2>{t[Contents.TA_POPUP_TITLE]}</h2>
                 </div>
