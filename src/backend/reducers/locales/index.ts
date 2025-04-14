@@ -416,10 +416,7 @@ export function language() {
     id.set(Contents.CA_POS_PLEASE, 'Please do not close the app');
 
     en.set(Contents.CA_RELOAD_TRY_AGAIN, 'Unable to find your node, try again');
-    vn.set(
-        Contents.CA_RELOAD_TRY_AGAIN,
-        'Không tìm thấy node'
-    );
+    vn.set(Contents.CA_RELOAD_TRY_AGAIN, 'Không tìm thấy node');
     id.set(Contents.CA_RELOAD_TRY_AGAIN, 'Unable to find your node, try again');
 
     en.set(

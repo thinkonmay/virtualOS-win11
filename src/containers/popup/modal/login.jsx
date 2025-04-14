@@ -63,9 +63,7 @@ export function login({ loading }) {
             <div className="relative p-4 w-full max-w-lg h-full md:h-auto overflow-y-auto overflow-x-hidden">
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-900 md:p-6 ">
                     <div className="flex items-center mb-2">
-                        <a
-                            className="flex items-center text-xl font-semibold text-gray-900 dark:text-white mr-2"
-                        >
+                        <a className="flex items-center text-xl font-semibold text-gray-900 dark:text-white mr-2">
                             <img
                                 src="logo_white.png"
                                 className="h-12 mr-4 hidden dark:block"
@@ -76,7 +74,7 @@ export function login({ loading }) {
                             ></img>
                             Đăng nhập Thinkmay
                         </a>
-                        <DomainSwitch/>
+                        <DomainSwitch />
                     </div>
                     <div className="flex items-center mb-2 space-x-4 ">
                         <a
@@ -233,6 +231,10 @@ export function login({ loading }) {
                             </a>
                         </p>
                     )}
+                    <p className="text-sm font-light text-center text-gray-500 dark:text-gray-400">
+                        Lưu ý: bạn cần sử dụng một tài khoản riêng cho mỗi
+                        server
+                    </p>
                 </div>
             </div>
         </div>
