@@ -375,7 +375,7 @@ export function language() {
         Contents.CA_WRONG_SERVER,
         'Click to go back to the server you registered'
     );
-    vn.set(Contents.CA_WRONG_SERVER, 'Click để chuyển về đúng server');
+    vn.set(Contents.CA_WRONG_SERVER, 'Chuyển về đúng server');
     id.set(
         Contents.CA_WRONG_SERVER,
         'Click to go back to the server you registered'
