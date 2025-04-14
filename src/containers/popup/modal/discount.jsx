@@ -1,4 +1,27 @@
+import {
+    app_full,
+    appDispatch,
+    popup_close,
+    useAppSelector
+} from '../../../backend/reducers';
+
 export function discount({ data: { from, to, percentage } }) {
+    const has_subscription = useAppSelector(
+        (state) => state.user.subscription != undefined
+    );
+    const accept = () => {
+        appDispatch(
+            has_subscription
+                ? app_full({
+                      id: 'payment',
+                      page: 'payment'
+                  })
+                : app_full({
+                      id: 'store'
+                  })
+        );
+        appDispatch(popup_close());
+    };
     return (
         <div
             id="pro-version-popup"
@@ -17,32 +40,31 @@ export function discount({ data: { from, to, percentage } }) {
                         >
                             <img
                                 src="logo.png"
-                                className="me-2 sm:h-8"
-                                alt="Flowbite Logo"
+                                className="me-2 h-8"
+                                alt="thinkmay Logo"
                             />
                             <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
                                 Thinkmay CloudPC
                             </span>
                         </a>
                         <span className="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-sm font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
-                            discount
+                            giảm giá
                         </span>
                     </div>
                     <p className="mb-4 border-b border-t border-gray-200 py-4 text-lg text-gray-500 dark:border-gray-700 dark:text-white md:mb-6 md:py-6 md:text-xl">
-                        You know that a{' '}
+                        {has_subscription ? `Gia hạn` : `Đăng kí`}
                         <span className="font-bold text-gray-900 dark:text-white">
-                            Flowbite PRO
-                        </span>{' '}
-                        customer saves more than{' '}
+                            {` Thinkmay CloudPC `}
+                        </span>
+                        ngay hôm nay để nhận được khuyến mãi lên tới
                         <span className="font-bold text-gray-900 dark:text-white">
-                            $200
+                            {` ${percentage * 100}%`}
                         </span>{' '}
-                        on average per year from transport costs?
                     </p>
-                    <h3 className="mb-4 text-xl font-semibold leading-none text-gray-900 dark:text-white md:mb-6">
-                        PRO plan benefits
-                    </h3>
-                    <ul role="list" className="mb-4 space-y-3 md:mb-6">
+                    {/* <h3 className="mb-4 text-xl font-semibold leading-none text-gray-900 dark:text-white md:mb-6">
+                        Lợi 
+                    </h3> */}
+                    {/* <ul role="list" className="mb-4 space-y-3 md:mb-6">
                         <li className="flex items-center space-x-1.5">
                             <svg
                                 className="h-5 w-5 shrink-0 text-green-500"
@@ -142,20 +164,21 @@ export function discount({ data: { from, to, percentage } }) {
                                 at thousands of local restaurants
                             </span>
                         </li>
-                    </ul>
+                    </ul> */}
                     <div className="sn:flex items-center space-y-4 sm:space-x-4 sm:space-y-0">
-                        <a
-                            href="#"
+                        <div
+                            onClick={accept}
                             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white  hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 sm:w-auto"
                         >
-                            Try it free for 3 months
-                        </a>
+                            Đăng kí ngay
+                        </div>
                         <button
                             type="button"
                             id="closeModal"
+                            onClick={() => appDispatch(popup_close())}
                             className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 sm:w-auto"
                         >
-                            Not today
+                            Lúc khác
                         </button>
                     </div>
                 </div>
