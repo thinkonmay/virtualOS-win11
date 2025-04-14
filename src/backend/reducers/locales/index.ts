@@ -418,7 +418,7 @@ export function language() {
     en.set(Contents.CA_RELOAD_TRY_AGAIN, 'Unable to find your node, try again');
     vn.set(
         Contents.CA_RELOAD_TRY_AGAIN,
-        'Không thể tìm thấy node của bạn, thử lại'
+        'Không tìm thấy node'
     );
     id.set(Contents.CA_RELOAD_TRY_AGAIN, 'Unable to find your node, try again');
 

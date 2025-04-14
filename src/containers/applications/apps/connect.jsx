@@ -150,7 +150,7 @@ export const ConnectApp = () => {
                             ) : available == 'no_node' ? (
                                 <>
                                     <button
-                                        onClick={reload}
+                                        onClick={() => appDispatch(show_chat())}
                                         className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
                                     >
                                         {t[Contents.CA_RELOAD_TRY_AGAIN]}
