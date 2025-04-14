@@ -167,6 +167,24 @@ export const dispatchOutSide = (action: string, payload: any) => {
 export const loginWithEmail = (email: string, password: string) => {
     return POCKETBASE().collection('users').authWithPassword(email, password);
 };
+
+const tagref = async () => {
+    const isNewUser =
+        (new Date().getTime() -
+            new Date(POCKETBASE().authStore.model.created).getTime()) /
+            60000 <
+        5; //
+    POCKETBASE()
+        .collection('users')
+        .update(POCKETBASE().authStore.model.id, {
+            metadata: {
+                reference: isNewUser
+                    ? originalurl.searchParams.get('ref')
+                    : POCKETBASE().authStore.model.metadata.reference
+            }
+        });
+};
+
 export const signUpWithEmail = async (
     email: string,
     password: string,
@@ -174,7 +192,14 @@ export const signUpWithEmail = async (
 ) => {
     return POCKETBASE()
         .collection('users')
-        .create({ email, password, passwordConfirm });
+        .create({
+            email,
+            password,
+            passwordConfirm,
+            metadata: {
+                reference: originalurl.searchParams.get('ref')
+            }
+        });
 };
 
 export const loginAction = (
@@ -192,22 +217,7 @@ export const loginAction = (
                 w.location.href = url;
             }
         })
-        .then(async () => {
-            const isNewUser =
-                (new Date().getTime() -
-                    new Date(POCKETBASE().authStore.model.created).getTime()) /
-                    60000 <
-                5; //
-            POCKETBASE()
-                .collection('users')
-                .update(POCKETBASE().authStore.model.id, {
-                    metadata: {
-                        reference: isNewUser
-                            ? originalurl.searchParams.get('ref')
-                            : POCKETBASE().authStore.model.metadata.reference
-                    }
-                });
-        })
+        .then(tagref)
         .finally(async () => {
             await preload();
             finish_callback();
@@ -263,8 +273,8 @@ export const showConnect = () => {
 
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const { email, discounts } = store.getState().user;
-    const discount_code = discounts.find((x) =>
-        x.apply_for?.includes('deposit')
+    const discount_code = discounts.find(
+        (x) => x.apply_for?.includes('deposit')
     )?.code;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,

@@ -1,5 +1,5 @@
 import { MdCheckCircleOutline, MdContentCopy } from 'react-icons/md';
-import { appDispatch, popup_close } from '../../../backend/reducers';
+import { appDispatch, popup_close, useAppSelector } from '../../../backend/reducers';
 import { useEffect, useState } from 'react';
 import { originalurl } from '../../../backend/actions/background';
 
@@ -7,6 +7,7 @@ export function share({ data: { ref, discount_code } }) {
     const close = () => appDispatch(popup_close());
     const [isSuccess, setSuccess] = useState(false);
     const [url, setURL] = useState('');
+    const email = useAppSelector(state => state.user.email)
 
     useEffect(() => {
         const url = ref != undefined ? new URL(ref) : new URL(originalurl.href);
@@ -22,7 +23,7 @@ export function share({ data: { ref, discount_code } }) {
     const finishShare = async () => {
         close();
         await navigator.share({
-            title: 'Chơi game ngay trên Thinkmay',
+            title: `Chơi game ngay trên Thinkmay cùng với ${email}`,
             url
         });
     };
@@ -32,15 +33,12 @@ export function share({ data: { ref, discount_code } }) {
             id="promo-popup"
             tabIndex="-1"
             className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-full md:inset-0 max-h-full"
-            style={{
-                backdropFilter: 'blur(3px) brightness(0.5)'
-            }}
         >
             <div className="relative p-4 w-full max-w-md max-h-full">
                 <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800">
                     <img
                         src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg"
-                        className="mb-4 h-36 w-full rounded bg-cover"
+                        className="mb-4 h-36 w-full rounded bg-cover hidden md:block"
                         alt="promo banner"
                     />
                     <span className="mb-4 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-sm font-medium text-green-800 dark:bg-green-200 dark:text-green-900">
@@ -56,7 +54,7 @@ export function share({ data: { ref, discount_code } }) {
                                 clipRule="evenodd"
                             ></path>
                         </svg>
-                        Today's offer
+                        Chia sẻ ngay
                     </span>
                     <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
                         <h3 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
