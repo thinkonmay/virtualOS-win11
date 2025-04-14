@@ -54,14 +54,6 @@ const Taskbar = () => {
         afterMath(e);
     };
 
-    const pay = () =>
-        appDispatch(
-            app_full({
-                id: 'payment',
-                page: 'payment'
-            })
-        );
-
     const numberFormat = (num) => new Intl.NumberFormat().format(num);
 
     const customDispatch = customClickDispatch((e) => afterMath(e));
@@ -125,12 +117,6 @@ const Taskbar = () => {
                                     width={24}
                                 />
                                 {numberFormat(money)}
-                                <button
-                                    onClick={pay}
-                                    className="depositBtn bg-slate-600 text-xl text-white"
-                                >
-                                    +
-                                </button>
                             </div>
                         </div>
                     </div>
