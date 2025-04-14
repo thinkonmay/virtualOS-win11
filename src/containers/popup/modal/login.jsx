@@ -11,6 +11,7 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 import { preload } from '../../../backend/actions/background';
+import DomainSwitch from '../../applications/apps/assets/DomainSwitch';
 
 export function login({ loading }) {
     const [username, setUsername] = useState('');
@@ -63,12 +64,11 @@ export function login({ loading }) {
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-900 md:p-6 ">
                     <div className="flex items-center mb-2">
                         <a
-                            href="#"
-                            className="flex items-center text-xl font-semibold text-gray-900 dark:text-white"
+                            className="flex items-center text-xl font-semibold text-gray-900 dark:text-white mr-2"
                         >
                             <img
                                 src="logo_white.png"
-                                className="h-12 mr-4 hidden dark:!hidden"
+                                className="h-12 mr-4 hidden dark:block"
                             ></img>
                             <img
                                 src="logo.png"
@@ -76,6 +76,7 @@ export function login({ loading }) {
                             ></img>
                             Đăng nhập Thinkmay
                         </a>
+                        <DomainSwitch/>
                     </div>
                     <div className="flex items-center mb-2 space-x-4 ">
                         <a

@@ -23,7 +23,6 @@ function DomainSwitch() {
                 {availableDomains.map((domain, index) => (
                     <option key={index} value={domain.domain}>
                         {domain.domain.replaceAll('.thinkmay.net', '')}{' '}
-                        {domain.free}
                     </option>
                 ))}
             </select>
