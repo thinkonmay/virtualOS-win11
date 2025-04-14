@@ -210,22 +210,12 @@ const updateUI = async () => {
     const volume = template?.local_id;
     const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
     const def = ['win11', '150', undefined];
-    if (def.includes(template?.code))
-        toast(store.getState().globals.translation[Contents.DEFAULT_TEMPLATE], {
-            duration: 15000,
-            icon: '🥸',
-            style: {
-                borderRadius: '10px',
-                background: '#333',
-                color: '#fff'
-            }
-        });
 
     toast(
         `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}${templatetext}`,
         {
             icon: 'ℹ️',
-            duration: 5000,
+            duration: 3000,
             style: {
                 borderRadius: '10px',
                 background: '#333',

@@ -4,6 +4,9 @@ import {
     verify_transaction
 } from '../../backend/actions';
 import {
+    app_close,
+    app_full,
+    app_toggle,
     appDispatch,
     fetch_wallet,
     useAppSelector
@@ -67,6 +70,11 @@ export const PaymentPage = ({ value }) => {
     const resources = useAppSelector((state) => state.user.resources);
     const [planAmount, setplanAmount] = useState({});
     const [promotion, setPromotion] = useState('');
+    const [promotionState, setPromotionState] = useState('unknown');
+    useEffect(() => {
+        if (promotionState == 'failed')
+            setTimeout(() => setPromotionState('unknown'), 2000);
+    }, [promotionState]);
     const [step, setStep] = useState(value?.plan != undefined ? 2 : 1);
 
     let total = 0;
@@ -146,10 +154,13 @@ export const PaymentPage = ({ value }) => {
         return (
             <div
                 key={index}
-                className="flex flex-wrap items-center space-y-6 p-6 sm:gap-6 sm:space-y-0 md:justify-between"
+                className="flex flex-wrap items-center space-y-6 px-3 py-1  sm:gap-6 sm:space-y-0 md:justify-between"
             >
                 <div className="w-64 items-center space-y-4 sm:flex sm:space-x-6 sm:space-y-0 md:max-w-md lg:max-w-lg">
-                    <a href="#" className="block aspect-square w-10 shrink-0">
+                    <a
+                        href="#"
+                        className="sm:block aspect-square w-10 shrink-0 hidden"
+                    >
                         <img
                             className="h-full w-full dark:hidden"
                             src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
@@ -236,7 +247,7 @@ export const PaymentPage = ({ value }) => {
                     ) : null}
                 </div>
 
-                <div className="md:w-24 md:text-right">
+                <div className="w-24 hidden sm:block">
                     <p className="text-base font-bold text-black dark:text-white">
                         {(plan.amount * quantity) / 1000}k
                     </p>
@@ -247,7 +258,7 @@ export const PaymentPage = ({ value }) => {
 
     return (
         <div
-            className="w-full h-full px-4 md:px-5 lg-6 mx-auto relative z-10 rounded"
+            className="w-full h-full px-1 md:px-5 lg-6 mx-auto relative z-10 rounded"
             style={{ color: `var(--dark-txt)` }}
         >
             <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -284,7 +295,7 @@ export const PaymentPage = ({ value }) => {
                     </div>
 
                     <div className="mt-6 w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
-                        <div className="p-6">
+                        <div className="p-6 hidden sm:block">
                             <h4 className="mb-4 text-xl font-semibold text-white">
                                 Phương thức thanh toán
                             </h4>
@@ -325,9 +336,8 @@ export const PaymentPage = ({ value }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex space-y-4 p-6">
+                        <div className="flex space-y-4 px-6 py-0 sm:py-6">
                             <div className="flex justify-between relative w-full ">
-                                <div className=" absolute left-0 top-0 py-2.5 px-4 text-gray-300"></div>
                                 <input
                                     type="text"
                                     className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
@@ -335,14 +345,17 @@ export const PaymentPage = ({ value }) => {
                                         setPromotion(x.target.value)
                                     }
                                     value={promotion}
-                                    placeholder="Enter your promotion code"
+                                    placeholder="Mã giảm giá"
                                 />
-                                <button className=" bg-gray-700 text-white p-2 rounded-md flex justify-center items-center hover:opacity-80 ml-3">
-                                    {true ? (
+                                <button
+                                    className=" bg-gray-700 text-white p-2 rounded-md flex justify-center items-center hover:opacity-80 ml-3"
+                                    onClick={() => setPromotionState('failed')}
+                                >
+                                    {promotionState == 'unknown' ? (
                                         <>
                                             Apply
                                             <svg
-                                                className="w-6 h-6 text-gray-800 dark:text-white ml-1"
+                                                className="w-6 h-6 text-gray-800 dark:text-white"
                                                 aria-hidden="true"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 width="24"
@@ -359,7 +372,7 @@ export const PaymentPage = ({ value }) => {
                                                 />
                                             </svg>
                                         </>
-                                    ) : true ? (
+                                    ) : promotionState == 'success' ? (
                                         <>
                                             Applied
                                             <svg
@@ -403,8 +416,8 @@ export const PaymentPage = ({ value }) => {
                                 </button>
                             </div>
                         </div>
-                        <div className="space-y-4 p-6">
-                            <h4 className="text-xl font-semibold text-white">
+                        <div className="sm:space-y-4 p-6">
+                            <h4 className="text-xl font-semibold text-white hidden sm:block">
                                 Tổng hợp
                             </h4>
 
@@ -422,15 +435,16 @@ export const PaymentPage = ({ value }) => {
                                 gradual_deduction={gradual_deduction}
                             />
 
-                            <p className="max-w-xs text-sm font-normal text-gray-500 dark:text-gray-400">
-                               Bằng cách đặt hàng, bạn đồng ý với{' '}
+                            <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                Bằng cách đặt hàng, bạn đồng ý với{' '}
                                 <a
                                     href="/legal"
                                     title=""
                                     className="text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
                                 >
                                     chính sách và điều khoản
-                                </a>{' '} của Thinkmay.
+                                </a>{' '}
+                                của Thinkmay.
                             </p>
                         </div>
 
@@ -543,6 +557,9 @@ const PaymentFlow = ({
             cluster_domain,
             template
         });
+
+        appDispatch(app_close('payment'))
+        appDispatch(app_toggle('connectPc'))
     };
 
     const verify = async () => {
@@ -577,13 +594,14 @@ const PaymentFlow = ({
         case 'showQR':
             return (
                 <>
-                    <div className=" flex justify-between gap-3 items-center rounded-lg p-2 bg-slate-200">
+                    <div className=" flex justify-center gap-3 items-center rounded-lg p-2  ">
                         <QRCode
                             size={256}
                             style={{
-                                height: 'auto',
-                                maxWidth: '100%',
-                                width: '100%'
+                                height: '100%',
+                                maxHeight: `${Math.round(
+                                    window.screen.height * 0.6
+                                )}px`
                             }}
                             value={qrcode}
                             viewBox={`0 0 256 256`}
@@ -620,19 +638,13 @@ const PaymentFlow = ({
                         >
                             Hủy thanh toán
                         </button>
-                        <button
-                            onClick={payos}
-                            className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                        >
-                            Đi đến PayOS
-                        </button>
                     </div>
                 </>
             );
         case 'requestQR':
             return (
                 <>
-                    <div className="space-y-4">
+                    <div className="space-y-4 hidden sm:block">
                         <div className="space-y-2">
                             <dl className="flex items-center justify-between gap-4">
                                 <dt className="text-gray-500 dark:text-gray-400">
@@ -697,7 +709,7 @@ const PaymentFlow = ({
         case 'deduct':
             return (
                 <>
-                    <div className="space-y-4">
+                    <div className="space-y-4  hidden sm:block">
                         <div className="space-y-2">
                             <dl className="flex items-center justify-between gap-4  pt-10">
                                 <dt className="text-gray-500 dark:text-gray-400">
@@ -761,7 +773,7 @@ const PaymentFlow = ({
                             </button>
                         ) : (
                             <button
-                                onClick={() => setStep('picking')}
+                                onClick={() => appDispatch(app_close('payment'))}
                                 className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                             >
                                 Hoàn tất
@@ -826,7 +838,7 @@ const Stage = ({ step }) => {
         <div className="mt-6 sm:mt-8 lg:mt-12">
             <div className="grid grid-cols-3 divide-y divide-gray-200 text-start dark:divide-gray-700 lg:gap-8 lg:divide-y-0 lg:text-center">
                 <div
-                    className={`py-0 ${
+                    className={`py-0 flex justify-center  ${
                         step >= 1 ? 'text-blue-500' : 'text-gray-400'
                     }`}
                 >
@@ -853,7 +865,7 @@ const Stage = ({ step }) => {
                     </p>
                 </div>
                 <div
-                    className={`py-0 ${
+                    className={`py-0 flex justify-center ${
                         step >= 2 ? 'text-blue-500' : 'text-gray-400'
                     }`}
                 >
@@ -881,7 +893,7 @@ const Stage = ({ step }) => {
                 </div>
 
                 <div
-                    className={`py-0 ${
+                    className={`py-0 flex justify-center ${
                         step >= 3 ? 'text-blue-500' : 'text-gray-400'
                     }`}
                 >

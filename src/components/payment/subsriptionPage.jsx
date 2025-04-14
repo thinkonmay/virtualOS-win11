@@ -157,7 +157,9 @@ function DomainSelection({ onChangeDomain }) {
 const Addon = {
     no_waiting_line: ({ value }) => (
         <li
-            className={`flex items-center space-x-3 ${!value ? 'text-gray-500' : ''}`}
+            className={`flex items-center space-x-3 ${
+                !value ? 'text-gray-500' : ''
+            }`}
         >
             <svg
                 className="flex-shrink-0 w-5 h-5"
@@ -179,7 +181,9 @@ const Addon = {
     ),
     multiple_cluster: ({ value }) => (
         <li
-            className={`flex items-center space-x-3 ${!value ? 'text-gray-500' : ''}`}
+            className={`flex items-center space-x-3 ${
+                !value ? 'text-gray-500' : ''
+            }`}
         >
             <svg
                 className="flex-shrink-0 w-5 h-5"

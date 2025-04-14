@@ -36,7 +36,11 @@ export const PaymentApp = () => {
     const renderRoute = (page, index) => (
         <div
             key={index}
-            className={page == curpage ? 'item subActive' : 'item'}
+            className={
+                page == curpage
+                    ? 'item subActive ml-1 sm:ml-4'
+                    : 'item ml-1 sm:ml-4'
+            }
             onClick={() => handleChangePage(page)}
         >
             {routing[page]}
@@ -46,7 +50,7 @@ export const PaymentApp = () => {
         <div
             key={index}
             onClick={() => window.open(external[page])}
-            className="item"
+            className="item ml-1 sm:ml-4"
         >
             {routing[page]}
         </div>
@@ -72,7 +76,7 @@ export const PaymentApp = () => {
             />
             <LazyComponent show={!wnapp.hide}>
                 <div className="windowScreen wrapperPayment">
-                    <div className="navPayment text-left">
+                    <div className="navPayment text-left w-24 sm:w-36 text-sm sm:text-xl font-bold">
                         {pages.map(renderRoute)}
                         {pages2.map(renderExternal)}
                     </div>

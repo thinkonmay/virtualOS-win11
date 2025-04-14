@@ -200,7 +200,6 @@
 	}
 
 	.navPayment {
-		width: 240px;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
@@ -210,11 +209,7 @@
 		border-bottom: 1px solid var(--bg2);
 		color: var(--dark-txt);
 
-		font-size: 20px;
-		font-weight: 600;
-
 		.item {
-			margin-left: 1rem;
 			cursor: pointer;
 			&:hover {
 				color: rgb(99, 155, 210);
@@ -418,12 +413,8 @@
 		}
 
 		.navPayment {
-			width: 160px;
-
 			padding-top: 24px;
 			gap: 20px;
-
-			font-size: 16px;
 
 			.item {
 				cursor: pointer;

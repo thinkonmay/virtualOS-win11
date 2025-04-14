@@ -1,5 +1,6 @@
 import {
     appDispatch,
+    app_full,
     app_toggle,
     cache_setting,
     fetch_configuration,
@@ -34,6 +35,9 @@ import toast from 'react-hot-toast';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const [customizing, openCustomization] = useState(false);
+    useEffect(() => {
+        if (customizing) appDispatch(app_full({ id: 'connectPc' }));
+    }, [customizing]);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
@@ -334,6 +338,7 @@ function Customize({ onClose: close }) {
                     if (error instanceof Error) {
                         appDispatch(popup_close());
                         toast(`Failed to apply your changes`, {});
+                        close();
                         return;
                     }
                 }
@@ -348,10 +353,10 @@ function Customize({ onClose: close }) {
     };
 
     const games = [
-        {
-            name: 'Genshin Impact',
-            action: () => {}
-        }
+        // {
+        //     name: 'Genshin Impact',
+        //     action: () => {}
+        // }
     ];
 
     const renderOption = (option, index) => (
@@ -367,7 +372,7 @@ function Customize({ onClose: close }) {
             >
                 <label
                     htmlFor="account-moderator"
-                    className="w-full p-3 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer text-center"
+                    className="w-full p-3 text-sm font-medium text-gray-300 cursor-pointer text-center"
                 >
                     {option.name}
                 </label>
@@ -412,7 +417,7 @@ function Customize({ onClose: close }) {
                 </label>
 
                 <div className="flex">
-                    <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
+                    <div className="border border-gray-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
                         {hw.value}
                     </div>
                     <div
@@ -472,7 +477,7 @@ function Customize({ onClose: close }) {
             style={{ backdropFilter: 'blur(3px) brightness(0.5)' }}
         >
             <div
-                className="fixed w-full h-full max-h-[800px] max-w-[700px] md:h-auto p-8 rounded-2xl"
+                className="fixed w-full h-full max-h-[800px] max-w-[700px] md:h-auto px-8 py-16 rounded-2xl"
                 style={{ background: 'var(--fakeMica' }}
             >
                 <div className="px-4 space-y-4 md:px-6">
@@ -482,15 +487,15 @@ function Customize({ onClose: close }) {
                         </div>
                     </div>
                     <div>
-                        <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
+                        <h6 className="mb-2 text-sm font-medium text-white">
                             Advanced setting
                         </h6>
-                        <ul className="grid grid-cols-3 items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:flex-row dark:bg-gray-700 dark:border-gray-600 dark:text-white list-none ">
+                        <ul className="grid grid-cols-3 items-center w-full text-sm font-medium text-gray-900 border border-gray-200 rounded-lg md:flex-row bg-gray-700 dark:border-gray-600 dark:text-white list-none ">
                             {actions.map(renderOption)}
                         </ul>
                     </div>
                     <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <label className="block mb-2 text-sm font-medium text-white">
                             Game setting
                         </label>
                         <ul className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 list-none ">
@@ -498,7 +503,7 @@ function Customize({ onClose: close }) {
                         </ul>
                     </div>
                 </div>
-                <div className="flex items-center p-6 space-x-4 rounded-b dark:border-gray-600">
+                <div className="flex items-center p-6 space-x-4 rounded-b border-gray-600">
                     <button
                         type="submit"
                         className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
@@ -508,14 +513,14 @@ function Customize({ onClose: close }) {
                     </button>
                     <button
                         type="reset"
-                        className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        className="py-2.5 px-5 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 bg-gray-800 text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         onClick={reset}
                     >
                         Reset
                     </button>
                     <button
                         type="reset"
-                        className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        className="py-2.5 px-5 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 bg-gray-900 text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                         onClick={close}
                     >
                         Cancel

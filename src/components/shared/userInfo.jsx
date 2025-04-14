@@ -91,17 +91,19 @@ function UserInfo() {
                         <DomainSwitch />
                     </div>
                     {subscription != undefined ? (
-                        <div className="w-full flex gap-4 justify-between">
-                            <span>Node</span>
-                            <NodeSwitch />
-                        </div>
+                        <>
+                            <div className="w-full flex gap-4 justify-between">
+                                <span>Node</span>
+                                <NodeSwitch />
+                            </div>
+                            <div className="w-full flex gap-4 justify-between">
+                                <Paid />
+                            </div>
+                        </>
                     ) : null}
-                    <div className="w-full flex gap-4 justify-between">
-                        {subscription != undefined ? <Paid /> : null}
-                    </div>
                 </div>
 
-                <div className="menuBar mt-10">
+                <div className="menuBar">
                     <div
                         className="w-full h-full flex cursor-pointer prtclk items-center justify-center gap-2"
                         onClick={() => appDispatch(user_delete())}
