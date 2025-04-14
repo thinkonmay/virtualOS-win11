@@ -173,7 +173,7 @@ export const PaymentPage = ({ value }) => {
                 </div>
 
                 <div className="w-8 shrink-0">
-                    <p className="text-base font-normal text-white">
+                    <p className="text-base font-normal text-black dark:text-white">
                         {plan.amount / 1000}k
                     </p>
                 </div>
@@ -237,7 +237,7 @@ export const PaymentPage = ({ value }) => {
                 </div>
 
                 <div className="md:w-24 md:text-right">
-                    <p className="text-base font-bold text-white">
+                    <p className="text-base font-bold text-black dark:text-white">
                         {(plan.amount * quantity) / 1000}k
                     </p>
                 </div>
@@ -338,7 +338,7 @@ export const PaymentPage = ({ value }) => {
                                     placeholder="Enter your promotion code"
                                 />
                                 <button className=" bg-gray-700 text-white p-2 rounded-md flex justify-center items-center hover:opacity-80 ml-3">
-                                    {false ? (
+                                    {true ? (
                                         <>
                                             Apply
                                             <svg
@@ -423,27 +423,18 @@ export const PaymentPage = ({ value }) => {
                             />
 
                             <p className="max-w-xs text-sm font-normal text-gray-500 dark:text-gray-400">
-                                By placing your order, you agree to Flowbite's{' '}
+                               Bằng cách đặt hàng, bạn đồng ý với{' '}
                                 <a
-                                    href="#"
+                                    href="/legal"
                                     title=""
                                     className="text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
                                 >
-                                    privacy note
-                                </a>{' '}
-                                and{' '}
-                                <a
-                                    href="#"
-                                    title=""
-                                    className="text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
-                                >
-                                    terms of use
-                                </a>
-                                .
+                                    chính sách và điều khoản
+                                </a>{' '} của Thinkmay.
                             </p>
                         </div>
 
-                        <div className="space-y-4 bg-gray-50 p-6 dark:bg-gray-700">
+                        {/* <div className="space-y-4 bg-gray-50 p-6 dark:bg-gray-700">
                             <p className="text-sm font-medium text-white">
                                 Your benefits:
                             </p>
@@ -466,7 +457,7 @@ export const PaymentPage = ({ value }) => {
                                 Flowbite PRO shipping benefits have been applied
                                 to your order.
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
