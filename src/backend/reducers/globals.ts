@@ -250,7 +250,8 @@ export const globalAsync = {
             .select(
                 'code_name,name,metadata->publishers,metadata->short_description,metadata->screenshots->0->>path_full,management->>kickey'
             )
-            .not('metadata->screenshots->0->>path_full', 'is', null);
+            .not('metadata->screenshots->0->>path_full', 'is', null)
+            .order('management->>priority');
         if (error) throw new Error(error.message);
 
         return data.map((x) => ({

@@ -24,7 +24,7 @@ export function extendService({ data: { type, available_time } }) {
         appDispatch(
             app_full({
                 id: 'payment',
-                page: 'payment',
+                page: 'payment'
             })
         );
     };
@@ -62,10 +62,12 @@ export function extendService({ data: { type, available_time } }) {
                                 </span> */}
                             </div>
                             <p className="mb-4 border-b border-t border-gray-200 py-4 text-lg text-gray-500 dark:border-gray-700 dark:text-white md:mb-6 md:py-6 md:text-xl">
-                                {type == 'time_limit' ? 'Bạn đã đạt số giờ chơi tối đa' : 'Gói của bạn đã hết hạn'}
-                                <br/>
+                                {type == 'time_limit'
+                                    ? 'Bạn đã đạt số giờ chơi tối đa'
+                                    : 'Gói của bạn đã hết hạn'}
+                                <br />
                                 Dữ liệu của bạn sẽ bị xóa sau ngày {clean_after}
-                                <br/>
+                                <br />
                                 Thanh toán ngay để tránh gián đoạn dịch vụ
                             </p>
                             <SubscriptionPage
@@ -108,9 +110,14 @@ export function extendService({ data: { type, available_time } }) {
                                 </span> */}
                             </div>
                             <p className="mb-4 border-b border-t border-gray-200 py-4 text-lg text-gray-500 dark:border-gray-700 dark:text-white md:mb-6 md:py-6 md:text-xl">
-                                Bạn còn lại {available_time}{type == 'near_date_limit' ? ' ngày' : ' giờ'} sử dụng
+                                Bạn còn lại {available_time}
+                                {type == 'near_date_limit'
+                                    ? ' ngày'
+                                    : ' giờ'}{' '}
+                                sử dụng
                                 <br></br>
-                                Thanh toán ngay để tránh gián đoạn dịch vụ, sau đó hệ thống sẽ tự động gia hạn
+                                Thanh toán ngay để tránh gián đoạn dịch vụ, sau
+                                đó hệ thống sẽ tự động gia hạn
                             </p>
                             <SubscriptionPage
                                 onlyPlan={true}
