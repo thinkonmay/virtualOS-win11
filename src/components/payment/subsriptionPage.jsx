@@ -88,9 +88,7 @@ const PaymentButton = ({ template, domain, sub, switchPage }) => {
                             type="button"
                             className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-blue-700"
                         >
-                            {`Nạp thêm ${
-                                (sub.amount - money) / 1000
-                            }k để tự động gia hạn`}
+                            Nạp thêm để tiếp tục đăng kí
                         </button>
                     </div>
                 )
@@ -218,7 +216,11 @@ const Addon = {
                     clipRule="evenodd"
                 ></path>
             </svg>
-            <span>Giới hạn {value} giờ chơi</span>
+            {value == 0 ? (
+                <span className="line-through">Giới hạn giờ chơi</span>
+            ) : (
+                <span>Tối đa {value}h chơi</span>
+            )}
         </li>
     ),
     storage_limit: ({ value }) => (
@@ -236,7 +238,11 @@ const Addon = {
                     clipRule="evenodd"
                 ></path>
             </svg>
-            <span>{value}GB dung lượng tối đa</span>
+            {value == 0 ? (
+                <span className="line-through">Giới hạn dung lượng tối đa</span>
+            ) : (
+                <span>Giới hạn {value}GB dung lượng tối đa</span>
+            )}
         </li>
     ),
     storage_credit: ({ value }) => (
@@ -254,7 +260,11 @@ const Addon = {
                     clipRule="evenodd"
                 ></path>
             </svg>
-            <span>Giới hạn {value}GB dữ liệu</span>
+            {value == 0 ? (
+                <span className="line-through">Giới hạn dung lượng</span>
+            ) : (
+                <span>{value}GB credit dung lượng</span>
+            )}
         </li>
     )
 };
@@ -268,9 +278,9 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
             title: 'Gói 2 tuần',
             name: 'week1',
             bonus: {
-                time: 100,
-                storage_limit: 400,
-                storage_credit: 200,
+                time: 50,
+                storage_limit: 200,
+                storage_credit: 100,
                 no_waiting_line: false,
                 multiple_cluster: false
             }
@@ -291,9 +301,9 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
             title: 'Gói cao cấp',
             name: 'month2',
             bonus: {
-                time: 100,
-                storage_limit: 400,
-                storage_credit: 200,
+                time: 0,
+                storage_limit: 0,
+                storage_credit: 0,
                 no_waiting_line: true,
                 multiple_cluster: true
             }

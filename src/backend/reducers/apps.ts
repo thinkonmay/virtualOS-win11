@@ -52,7 +52,7 @@ export const appSlice = createSlice({
             obj.hide = false;
             obj.max = true;
             obj.page = page;
-            obj.value = value;
+            obj.value = value ?? obj.value;
             state.hz += 1;
             obj.z = state.hz;
         },
