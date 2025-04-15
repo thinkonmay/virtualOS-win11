@@ -92,10 +92,10 @@ function UserInfo() {
                     </div>
                     {subscription != undefined ? (
                         <>
-                            <div className="w-full flex gap-4 justify-between">
+                            {/* <div className="w-full flex gap-4 justify-between">
                                 <span>Node</span>
                                 <NodeSwitch />
-                            </div>
+                            </div> */}
                             <div className="w-full flex gap-4 justify-between">
                                 <Paid />
                             </div>

@@ -10,6 +10,7 @@ import { LazyComponent, ToolBar } from '../../../components/shared/general';
 import './assets/store.scss';
 import { MdInfoOutline } from 'react-icons/md';
 import { Contents } from '../../../backend/reducers/locales';
+import { preloadSilent } from '../../../backend/actions/background';
 
 export const MicroStore = () => {
     const wnapp = useAppSelector((state) =>
@@ -100,6 +101,15 @@ const DetailPage = ({
     const has_subscription = useAppSelector(
         (state) => state.user.subscription != undefined
     );
+    const cluster = useAppSelector((state) => state.user.subscription?.cluster);
+    const currentAddress = useAppSelector(
+        (state) => state.worker.currentAddress
+    );
+    const redirect = async () => {
+        localStorage.setItem('thinkmay_domain', cluster);
+        await preloadSilent();
+    };
+    const contact = async () => appDispatch(show_chat());
     const [options, setOptions] = useState([
         ...(code_name != null
             ? [
@@ -366,7 +376,23 @@ const DetailPage = ({
                                     Quay lại
                                 </button>
                                 {has_subscription ? (
-                                    code_name == code ? (
+                                    code == null ? (
+                                        cluster != currentAddress ? (
+                                            <button
+                                                onClick={redirect}
+                                                className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                            >
+                                                Về server của mình
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={contact}
+                                                className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                            >
+                                                Dữ liệu chưa được khởi tạo
+                                            </button>
+                                        )
+                                    ) : code_name == code ? (
                                         <button className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400">
                                             Bạn đã cài đặt game này
                                         </button>
