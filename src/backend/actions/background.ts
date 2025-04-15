@@ -30,7 +30,8 @@ import {
     store,
     sync,
     worker_refresh,
-    update_game_tag
+    update_game_tag,
+    fetch_error_message
 } from '../reducers';
 import { Contents } from '../reducers/locales/index.ts';
 
@@ -80,6 +81,7 @@ const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
 const fetchConfiguration = () => appDispatch(fetch_configuration());
 const fetchDomains = () => appDispatch(fetch_domain());
+const fetchErrorMessages = () => appDispatch(fetch_error_message());
 const fetchUser = () => appDispatch(fetch_user());
 const fetchDiscounts = () => appDispatch(fetch_active_discounts());
 const fetchApp = () => appDispatch(worker_refresh());
@@ -250,6 +252,7 @@ export const preloadSilent = async () => {
         fetchPayment(),
         startAnalytics(),
         fetchDomains(),
+        fetchErrorMessages(),
         fetchApp(),
         fetchPlans(),
         fetchStore(),

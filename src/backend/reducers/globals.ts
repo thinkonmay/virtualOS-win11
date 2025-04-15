@@ -10,6 +10,13 @@ export type TranslationResult = {
     [key in Contents]: string;
 };
 
+export type ErrorMessage = {
+    code: number;
+    vi: string;
+    en: string;
+    id: string;
+};
+
 type IGame = {
     name: string;
     code_name: string;
@@ -204,6 +211,7 @@ const initialState = {
     service_available: false,
     tutorial: false,
     translation: {} as TranslationResult,
+    error_messages: [] as ErrorMessage[],
     maintenance: {} as Maintain,
     games: [] as IGame[],
     domains: [] as Domain[],
@@ -214,6 +222,7 @@ const initialState = {
 type Data = {
     games: IGame[];
     domains: Domain[];
+    error_messages: ErrorMessage[];
 };
 
 export const globalAsync = {
@@ -261,7 +270,17 @@ export const globalAsync = {
                 hasaccount: x.kickey == 'true'
             }
         }));
-    })
+    }),
+    fetch_error_message: createAsyncThunk(
+        'fetch_error_message',
+        async (): Promise<ErrorMessage[]> => {
+            const { data, error } = await GLOBAL().rpc('get_error_message');
+
+            if (error) throw new Error(error.message);
+
+            return data;
+        }
+    )
 };
 
 export const globalSlice = createSlice({
@@ -319,6 +338,12 @@ export const globalSlice = createSlice({
                 fetch: globalAsync.fetch_domain,
                 hander: (state, action: PayloadAction<Domain[]>) => {
                     state.domains = action.payload;
+                }
+            },
+            {
+                fetch: globalAsync.fetch_error_message,
+                hander: (state, action: PayloadAction<ErrorMessage[]>) => {
+                    state.error_messages = action.payload;
                 }
             }
         );
