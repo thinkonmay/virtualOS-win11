@@ -357,6 +357,9 @@ export const create_payment_pocket = async (args: {
             }
         })
     );
+
+    const allowed_games = ['fc_online','win11','wukong','gta5vn','inzoi']
+    args.template =  allowed_games.includes(args?.template) ? args.template : undefined
     const { error } = await GLOBAL().rpc('create_or_replace_payment', args);
     if (error) {
         appDispatch(popup_close());
