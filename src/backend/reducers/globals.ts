@@ -281,8 +281,8 @@ export const globalSlice = createSlice({
             state.opening = payload.payload;
         },
         show_chat: (state, payload: PayloadAction<boolean | undefined>) => {
-            if ((window as any).LiveChatWidget != undefined)
-                (window as any).LiveChatWidget.call('maximize');
+            if ((window as any).OpenWidget != undefined)
+                (window as any).OpenWidget.call('maximize');
         },
         show_tutorial: (
             state,

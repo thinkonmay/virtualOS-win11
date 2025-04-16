@@ -1,4 +1,3 @@
-import { LiveChatWidget } from '@livechat/widget-react';
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
@@ -55,7 +54,7 @@ function App() {
     };
 
     useEffect(() => {
-        window.LiveChatWidget.call('minimize');
+        window.OpenWidget.call('minimize');
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
             e = e || window.event;
@@ -201,7 +200,6 @@ function App() {
                         </>
                     )}
                 </div>
-                <LiveChatWidget license="19109345" visibility="maximized" />
             </ErrorBoundary>
         </div>
     );

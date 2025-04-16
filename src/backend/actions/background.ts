@@ -71,7 +71,7 @@ const startAnalytics = async () => {
         email != undefined &&
         email != null
     )
-        (window as any).LiveChatWidget.call('set_customer_email', email);
+        (window as any).OpenWidget.call('set_customer_email', email);
     await UserSession(email);
 };
 
