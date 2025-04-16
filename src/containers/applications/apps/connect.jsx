@@ -353,10 +353,34 @@ function Customize({ onClose: close }) {
     };
 
     const games = [
-        // {
-        //     name: 'Genshin Impact',
-        //     action: () => {}
-        // }
+        {
+            name: 'GTA5',
+            action: () => {
+                appDispatch(scancode_toggle(true))
+                appDispatch(toggle_hide_vm(false))
+            }
+        },
+        {
+            name: 'Black Myth Wukong',
+            action: () => {
+                appDispatch(scancode_toggle(false))
+                appDispatch(toggle_hide_vm(false))
+            }
+        },
+        {
+            name: 'FC Online',
+            action: () => {
+                appDispatch(scancode_toggle(true))
+                appDispatch(toggle_hide_vm(true))
+            }
+        },
+        {
+            name: 'Inzoi',
+            action: () => {
+                appDispatch(scancode_toggle(false))
+                appDispatch(toggle_hide_vm(false))
+            }
+        },
     ];
 
     const renderOption = (option, index) => (
@@ -381,14 +405,7 @@ function Customize({ onClose: close }) {
     );
 
     const renderGameSetting = (game, index) => (
-        <li key={index}>
-            <input
-                type="checkbox"
-                id="frontend-developer"
-                name="job_title"
-                value=""
-                className="hidden peer"
-            />
+        <li key={index} onClick={game.action} >
             <label
                 htmlFor="frontend-developer"
                 className="inline-flex items-center justify-center w-full p-2 text-sm font-medium text-center bg-white border-2 rounded-lg cursor-pointer text-primary-600 border-primary-600 dark:hover:text-white dark:border-primary-500 dark:peer-checked:border-primary-500 peer-checked:border-primary-600 peer-checked:bg-primary-600 hover:text-white peer-checked:text-white hover:bg-primary-500 dark:text-primary-500 dark:bg-gray-800 dark:hover:bg-primary-600 dark:hover:border-primary-600 dark:peer-checked:bg-primary-500"

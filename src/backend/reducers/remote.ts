@@ -359,8 +359,8 @@ export const remoteSlice = createSlice({
         strict_timing: (state, action: PayloadAction<boolean>) => {
             state.no_strict_timing = action.payload;
         },
-        scancode_toggle: (state) => {
-            state.scancode = !state.scancode;
+        scancode_toggle: (state, action: PayloadAction<boolean|undefined>) => {
+            state.scancode = action.payload ?? !state.scancode;
             if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         scancode: (state, action: PayloadAction<boolean>) => {
