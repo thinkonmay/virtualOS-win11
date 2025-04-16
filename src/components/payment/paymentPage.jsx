@@ -594,7 +594,7 @@ const PaymentFlow = ({
         case 'showQR':
             return (
                 <>
-                    <div className=" flex justify-center gap-3 items-center rounded-lg p-2  ">
+                    <div className=" flex justify-center gap-3 items-center rounded-lg p-2  bg-white ">
                         <QRCode
                             size={256}
                             style={{
