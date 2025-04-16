@@ -363,7 +363,7 @@ function Customize({ onClose: close }) {
         {
             name: 'Black Myth Wukong',
             action: () => {
-                appDispatch(scancode_toggle(false))
+                appDispatch(scancode_toggle(true))
                 appDispatch(toggle_hide_vm(false))
             }
         },
@@ -377,7 +377,7 @@ function Customize({ onClose: close }) {
         {
             name: 'Inzoi',
             action: () => {
-                appDispatch(scancode_toggle(false))
+                appDispatch(scancode_toggle(true))
                 appDispatch(toggle_hide_vm(false))
             }
         },
