@@ -183,7 +183,12 @@ export const {
     toggle_remote_async
 } = remoteAsync;
 
-export const { fetch_store, fetch_domain, update_game_tag } = globalAsync;
+export const {
+    fetch_store,
+    fetch_domain,
+    update_game_tag,
+    fetch_error_message
+} = globalAsync;
 
 export const dispatch_generic = async ({
     type,
