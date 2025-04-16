@@ -10,12 +10,12 @@ export function discount({ data: { from, to, percentage, code } }) {
         (state) => state.user.subscription != undefined
     );
     const accept = () => {
-        appDispatch(
-            app_full({
-                id: 'payment',
-                page: 'subscription'
-            })
-        );
+        // appDispatch(
+        //     app_full({
+        //         id: 'payment',
+        //         page: 'subscription'
+        //     })
+        // );
         appDispatch(popup_close());
     };
     return (
