@@ -127,8 +127,7 @@ export const workerAsync = {
                     info.virtReady ? workerAsync.showPosition : undefined
                 );
                 if (resp instanceof APIError) {
-                    
-                    toast(formatError(resp))
+                    toast(formatError(resp));
                     appDispatch(popup_close());
                     return;
                 }

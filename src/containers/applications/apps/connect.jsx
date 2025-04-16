@@ -35,6 +35,7 @@ import toast from 'react-hot-toast';
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
     const [customizing, openCustomization] = useState(false);
+    const [limitClick, setLimitClick] = useState(false);
     useEffect(() => {
         if (customizing) appDispatch(app_full({ id: 'connectPc' }));
     }, [customizing]);
@@ -44,6 +45,13 @@ export const ConnectApp = () => {
     const available = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
+
+    const inUse = useAppSelector((state) =>
+        state.worker.data[state.worker.currentAddress]?.Volumes.find(
+            (e) => e.inuse && e.pool == 'user_data'
+        )
+    );
+
     const { cluster, metadata } = useAppSelector(
         (state) => state.user.subscription ?? {}
     );
@@ -60,12 +68,21 @@ export const ConnectApp = () => {
             data: { type }
         });
 
-    const connect = () =>
-        reach_time_limit
-            ? appDispatch(limit('time_limit'))
-            : reach_date_limit
-              ? appDispatch(limit('date_limit'))
-              : appDispatch(wait_and_claim_volume());
+    const connect = () => {
+        if (!limitClick) {
+            if (reach_time_limit) {
+                appDispatch(limit('time_limit'));
+            } else if (reach_date_limit) {
+                appDispatch(limit('date_limit'));
+            } else if (inUse) {
+                toast(t[Contents.CA_INUSE_TOAST]);
+                appDispatch(worker_refresh_ui());
+            } else {
+                appDispatch(wait_and_claim_volume());
+            }
+            setLimitClick(true);
+        }
+    };
 
     const pay = () => appDispatch(app_toggle('payment'));
     const reload = () => appDispatch(worker_refresh_ui());
@@ -73,6 +90,10 @@ export const ConnectApp = () => {
         localStorage.setItem('thinkmay_domain', cluster);
         await preload();
     };
+
+    useEffect(() => {
+        setTimeout(() => (limitClick ? setLimitClick(false) : {}), 2000);
+    }, [limitClick]);
 
     return (
         <div
@@ -129,10 +150,12 @@ export const ConnectApp = () => {
                                 <>
                                     <button
                                         onClick={connect}
-                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full"
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
                                     >
                                         {available == 'ready'
-                                            ? t[Contents.CA_TURN_ON_PC]
+                                            ? inUse
+                                                ? t[Contents.CA_INUSE]
+                                                : t[Contents.CA_TURN_ON_PC]
                                             : t[Contents.CA_CONNECT]}
                                     </button>
                                     <p className="text-xs text-center mt-3">
@@ -356,31 +379,31 @@ function Customize({ onClose: close }) {
         {
             name: 'GTA5',
             action: () => {
-                appDispatch(scancode_toggle(true))
-                appDispatch(toggle_hide_vm(false))
+                appDispatch(scancode_toggle(true));
+                appDispatch(toggle_hide_vm(false));
             }
         },
         {
             name: 'Black Myth Wukong',
             action: () => {
-                appDispatch(scancode_toggle(true))
-                appDispatch(toggle_hide_vm(false))
+                appDispatch(scancode_toggle(true));
+                appDispatch(toggle_hide_vm(false));
             }
         },
         {
             name: 'FC Online',
             action: () => {
-                appDispatch(scancode_toggle(true))
-                appDispatch(toggle_hide_vm(true))
+                appDispatch(scancode_toggle(true));
+                appDispatch(toggle_hide_vm(true));
             }
         },
         {
             name: 'Inzoi',
             action: () => {
-                appDispatch(scancode_toggle(true))
-                appDispatch(toggle_hide_vm(false))
+                appDispatch(scancode_toggle(true));
+                appDispatch(toggle_hide_vm(false));
             }
-        },
+        }
     ];
 
     const renderOption = (option, index) => (
@@ -405,7 +428,7 @@ function Customize({ onClose: close }) {
     );
 
     const renderGameSetting = (game, index) => (
-        <li key={index} onClick={game.action} >
+        <li key={index} onClick={game.action}>
             <label
                 htmlFor="frontend-developer"
                 className="inline-flex items-center justify-center w-full p-2 text-sm font-medium text-center bg-white border-2 rounded-lg cursor-pointer text-primary-600 border-primary-600 dark:hover:text-white dark:border-primary-500 dark:peer-checked:border-primary-500 peer-checked:border-primary-600 peer-checked:bg-primary-600 hover:text-white peer-checked:text-white hover:bg-primary-500 dark:text-primary-500 dark:bg-gray-800 dark:hover:bg-primary-600 dark:hover:border-primary-600 dark:peer-checked:bg-primary-500"

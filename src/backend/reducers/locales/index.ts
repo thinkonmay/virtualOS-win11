@@ -222,6 +222,8 @@ export enum Contents {
     //CONNECT APP ( CA )
     CA_TURN_ON_PC,
     CA_CONNECT,
+    CA_INUSE,
+    CA_INUSE_TOAST,
     CA_CONNECT_EXPLAIN,
     CA_CONNECT_EXPLAIN_1,
 
@@ -350,13 +352,30 @@ export function language() {
     vn.set(Contents.CA_TURN_ON_PC, 'Bật máy');
     id.set(Contents.CA_TURN_ON_PC, 'Hidupkan PC');
 
+    en.set(Contents.CA_INUSE, 'Click to reload');
+    vn.set(Contents.CA_INUSE, 'Click để thử lại');
+    id.set(Contents.CA_INUSE, 'Click to reload');
+
+    en.set(
+        Contents.CA_INUSE_TOAST,
+        'Contact ADMIN if not be able to connect after 10 minutes'
+    );
+    vn.set(
+        Contents.CA_INUSE_TOAST,
+        'Nếu trong vòng 10 phút vẫn không bật được máy. Liên hệ ADMIN để hỗ trợ!'
+    );
+    id.set(
+        Contents.CA_INUSE_TOAST,
+        'Contact ADMIN if not be able to connect after 10 minutes'
+    );
+
     en.set(Contents.CA_CONNECT, 'Connect');
     vn.set(Contents.CA_CONNECT, 'Kết nối');
     id.set(Contents.CA_CONNECT, 'Sambungkan');
 
     en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
     vn.set(Contents.CA_CONNECT_EXPLAIN, 'Click để truy cập cloud PC');
-    en.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
+    id.set(Contents.CA_CONNECT_EXPLAIN, `Click to access your computer`);
 
     en.set(
         Contents.CA_CONNECT_EXPLAIN_1,

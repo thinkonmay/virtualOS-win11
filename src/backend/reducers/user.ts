@@ -244,8 +244,7 @@ export const userAsync = {
                 );
             else {
                 const resp = await ChangeNode(currentAddress, node, vol.name);
-                if (resp instanceof APIError) 
-                    throw formatError(resp)
+                if (resp instanceof APIError) throw formatError(resp);
                 appDispatch(worker_refresh());
             }
         }
@@ -274,8 +273,7 @@ export const userAsync = {
                     template,
                     vol.name
                 );
-                if (resp instanceof APIError) 
-                    throw formatError(resp)
+                if (resp instanceof APIError) throw formatError(resp);
                 appDispatch(app_close('store'));
                 appDispatch(app_full({ id: 'connectPc' }));
             }
