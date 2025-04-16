@@ -25,6 +25,7 @@ import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 import toast from 'react-hot-toast';
+import { formatError } from '../utils/formatErr';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
@@ -108,7 +109,7 @@ export const workerAsync = {
             );
 
             const info = await GetInfo(currentAddress);
-            if (info instanceof APIError) throw info;
+            if (info instanceof APIError) throw formatError(info);
             else if (!info.virtReady && !info.remoteReady)
                 throw new Error(`no remote capability on ${currentAddress}`);
 
@@ -126,7 +127,8 @@ export const workerAsync = {
                     info.virtReady ? workerAsync.showPosition : undefined
                 );
                 if (resp instanceof APIError) {
-                    toast(`Failed ${resp.code} ${resp.message}`);
+                    
+                    toast(formatError(resp))
                     appDispatch(popup_close());
                     return;
                 }
@@ -143,7 +145,7 @@ export const workerAsync = {
                 high_mtu: HighMTU,
                 high_queue: HighQueue
             });
-            if (result instanceof APIError) throw result;
+            if (result instanceof APIError) throw formatError(result);
             await appDispatch(save_reference(result));
 
             appDispatch(remote_connect(result));
@@ -279,7 +281,7 @@ export const workerAsync = {
             if (session == undefined)
                 throw new Error(`no session available on ${currentAddress}`);
             const info = await CloseSession(currentAddress, session);
-            if (info instanceof APIError) throw info;
+            if (info instanceof APIError) throw formatError(info);
             await appDispatch(
                 workerAsync.update_local_worker({
                     info,

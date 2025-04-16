@@ -32,6 +32,7 @@ import {
 } from '../reducers/index';
 import { Contents } from '../reducers/locales';
 import { originalurl, preload, preloadSilent } from './background';
+import { formatError } from '../utils/formatErr';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -375,7 +376,7 @@ export const create_payment_pocket = async (args: {
     while (!(info?.virtReady ?? false)) {
         await new Promise((r) => setTimeout(r, 20000));
         const result = await GetInfo(args?.cluster_domain);
-        if (result instanceof APIError) throw result;
+        if (result instanceof APIError) throw formatError(error);
         else info = result;
     }
 
