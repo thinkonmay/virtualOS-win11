@@ -66,16 +66,26 @@ const subcontents = [
 
 export const PaymentPage = ({ value }) => {
     const email = useAppSelector((state) => state.user.email);
+    const discount_codes = useAppSelector((state) =>
+        state.user.discounts
+            .filter((x) => x.apply_for.includes('deposit'))
+            .map((x) => x.code)
+    );
     const plans = useAppSelector((state) => state.user.plans);
     const resources = useAppSelector((state) => state.user.resources);
     const [planAmount, setplanAmount] = useState({});
     const [promotion, setPromotion] = useState('');
     const [promotionState, setPromotionState] = useState('unknown');
+    const [step, setStep] = useState(value?.plan != undefined ? 2 : 1);
+
     useEffect(() => {
+        if (promotionState == 'applying' && discount_codes.includes(promotion))
+            setTimeout(() => setPromotionState('success'), 1000);
+        if (promotionState == 'applying' && !discount_codes.includes(promotion))
+            setTimeout(() => setPromotionState('failed'), 2000);
         if (promotionState == 'failed')
             setTimeout(() => setPromotionState('unknown'), 2000);
     }, [promotionState]);
-    const [step, setStep] = useState(value?.plan != undefined ? 2 : 1);
 
     let total = 0;
     let instant_deduction = 0;
@@ -349,7 +359,9 @@ export const PaymentPage = ({ value }) => {
                                 />
                                 <button
                                     className=" bg-gray-700 text-white p-2 rounded-md flex justify-center items-center hover:opacity-80 ml-3"
-                                    onClick={() => setPromotionState('failed')}
+                                    onClick={() =>
+                                        setPromotionState('applying')
+                                    }
                                 >
                                     {promotionState == 'unknown' ? (
                                         <>
@@ -369,6 +381,27 @@ export const PaymentPage = ({ value }) => {
                                                     strokeLinejoin="round"
                                                     strokeWidth="2"
                                                     d="M18.5 12A2.5 2.5 0 0 1 21 9.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v2.5a2.5 2.5 0 0 1 0 5V17a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                                                />
+                                            </svg>
+                                        </>
+                                    ) : promotionState == 'applying' ? (
+                                        <>
+                                            Applying
+                                            <svg
+                                                className="w-6 h-6 text-gray-800 dark:text-white"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    stroke="currentColor"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
                                                 />
                                             </svg>
                                         </>
@@ -428,7 +461,9 @@ export const PaymentPage = ({ value }) => {
                                 }
                                 setStep={setStep}
                                 plan={picked_plan}
-                                promotion={promotion}
+                                promotion={
+                                    promotionState == 'success' ? promotion : ''
+                                }
                                 template={value?.template?.code_name}
                                 cluster_domain={value?.cluster}
                                 instant_deduction={instant_deduction}
@@ -492,6 +527,14 @@ const PaymentFlow = ({
 }) => {
     const email = useAppSelector((state) => state.user.email);
     const balance = useAppSelector((state) => state.user.balance);
+    const discount_rate = useAppSelector(
+        (state) =>
+            state.user.discounts.find((x) => x.code == promotion)
+                ?.multiply_rate ?? 1
+    );
+    const discount_amount = Math.round(
+        ((1 - 1 / discount_rate) * total) / 1000
+    );
     const has_subscription = useAppSelector(
         (state) => state.user.subscription != undefined
     );
@@ -672,24 +715,24 @@ const PaymentFlow = ({
                             </dl>
                         </div>
                     </div>
-                    <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                        <dt className="font-bold text-white">
-                            Số tiền phải trả
-                        </dt>
-                        <dd className="font-bold text-white">
-                            {total / 1000}k
-                        </dd>
-                    </dl>
-                    {false ? (
+                    {discount_rate != 1 ? (
                         <dl className="flex items-center justify-between gap-4">
                             <dt className="text-gray-500 dark:text-gray-400">
                                 Tiết kiệm
                             </dt>
                             <dd className="font-medium text-green-500">
-                                -{0}k
+                                -{discount_amount}k
                             </dd>
                         </dl>
                     ) : null}
+                    <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                        <dt className="font-bold text-white">
+                            Số tiền phải trả
+                        </dt>
+                        <dd className="font-bold text-white">
+                            {total / 1000 - discount_amount}k
+                        </dd>
+                    </dl>
                     <div className="flex flex-row gap-4">
                         <button
                             onClick={() => setStep('picking')}
@@ -787,12 +830,22 @@ const PaymentFlow = ({
         case 'picking':
             return (
                 <>
+                    {discount_rate != 1 ? (
+                        <dl className="flex items-center justify-between gap-4">
+                            <dt className="text-gray-500 dark:text-gray-400">
+                                Tiết kiệm
+                            </dt>
+                            <dd className="font-medium text-green-500">
+                                -{discount_amount}k
+                            </dd>
+                        </dl>
+                    ) : null}
                     <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                         <dt className="font-bold text-white">
                             Số tiền phải trả
                         </dt>
                         <dd className="font-bold text-white">
-                            {total / 1000}k
+                            {total / 1000 - discount_amount}k
                         </dd>
                     </dl>
                     <dl className="flex items-center justify-between gap-4  pt-10">
@@ -803,16 +856,6 @@ const PaymentFlow = ({
                             {balance / 1000}k
                         </dd>
                     </dl>
-                    {false ? (
-                        <dl className="flex items-center justify-between gap-4">
-                            <dt className="text-gray-500 dark:text-gray-400">
-                                Tiết kiệm
-                            </dt>
-                            <dd className="font-medium text-green-500">
-                                -{0}k
-                            </dd>
-                        </dl>
-                    ) : null}
                     <button
                         onClick={() =>
                             total > 50000 ? setStep('requestQR') : null

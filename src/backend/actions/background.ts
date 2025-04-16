@@ -224,19 +224,20 @@ const updateUI = async () => {
         }
     );
 
-    // if (discounts.length > 0) {
-    //     const [{ start_at, end_at, multiply_rate }] = discounts;
-    //     appDispatch(
-    //         popup_open({
-    //             type: 'discount',
-    //             data: {
-    //                 from: new Date(start_at).toLocaleDateString(),
-    //                 to: new Date(end_at).toLocaleDateString(),
-    //                 percentage: multiply_rate - 1
-    //             }
-    //         })
-    //     );
-    // }
+    if (discounts.length > 0) {
+        const [{ start_at, end_at, multiply_rate, code }] = discounts;
+        appDispatch(
+            popup_open({
+                type: 'discount',
+                data: {
+                    code,
+                    from: new Date(start_at).toLocaleDateString(),
+                    to: new Date(end_at).toLocaleDateString(),
+                    percentage: multiply_rate - 1
+                }
+            })
+        );
+    }
 };
 
 export const preloadSilent = async () => {

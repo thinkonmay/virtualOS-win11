@@ -5,20 +5,16 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 
-export function discount({ data: { from, to, percentage } }) {
+export function discount({ data: { from, to, percentage, code } }) {
     const has_subscription = useAppSelector(
         (state) => state.user.subscription != undefined
     );
     const accept = () => {
         appDispatch(
-            has_subscription
-                ? app_full({
-                      id: 'payment',
-                      page: 'payment'
-                  })
-                : app_full({
-                      id: 'store'
-                  })
+            app_full({
+                id: 'payment',
+                page: 'subscription'
+            })
         );
         appDispatch(popup_close());
     };
@@ -48,7 +44,7 @@ export function discount({ data: { from, to, percentage } }) {
                             </span>
                         </a>
                         <span className="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-sm font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
-                            giảm giá
+                            khuyến mãi
                         </span>
                     </div>
                     <p className="mb-4 border-b border-t border-gray-200 py-4 text-lg text-gray-500 dark:border-gray-700 dark:text-white md:mb-6 md:py-6 md:text-xl">
@@ -58,8 +54,22 @@ export function discount({ data: { from, to, percentage } }) {
                         </span>
                         ngay hôm nay để nhận được khuyến mãi lên tới
                         <span className="font-bold text-gray-900 dark:text-white">
-                            {` ${percentage * 100}%`}
+                            {` ${Math.round(percentage * 100)}%`}
                         </span>{' '}
+                    </p>
+                    <p className="mb-4 border-b border-t border-gray-200 py-4 text-lg text-gray-500 dark:border-gray-700 dark:text-white md:mb-6 md:py-6 md:text-xl">
+                        Nhập mã giảm giá
+                        <span className="font-bold text-gray-900 dark:text-white">
+                            {` ${code} `}
+                        </span>
+                        khi thanh toán, giới hạn từ ngày
+                        <span className="font-bold text-gray-900 dark:text-white">
+                            {` ${from} `}
+                        </span>
+                        đến ngày
+                        <span className="font-bold text-gray-900 dark:text-white">
+                            {` ${to} `}
+                        </span>
                     </p>
                     {/* <h3 className="mb-4 text-xl font-semibold leading-none text-gray-900 dark:text-white md:mb-6">
                         Lợi 

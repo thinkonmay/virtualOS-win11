@@ -52,6 +52,7 @@ type PopupData =
     | {
           type: 'discount';
           data: {
+              code: string;
               from: string;
               to: string;
               percentage: number;
