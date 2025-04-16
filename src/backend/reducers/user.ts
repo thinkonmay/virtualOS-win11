@@ -103,12 +103,9 @@ export const userAsync = {
             const { error, data } = await GLOBAL()
                 .from('discounts')
                 .select(
-                    'code,start_at,end_at,' +
-                        'discount_limit_per_user,discount_limit,' +
-                        'multiply_rate,apply_for'
-                );
-            if (error) throw error;
-            else return data as any[];
+                    'code,start_at,end_at,discount_limit_per_user,discount_limit,multiply_rate,apply_for');
+            if (error != null) throw error;
+            else return data;
         }
     ),
     fetch_wallet: createAsyncThunk(
