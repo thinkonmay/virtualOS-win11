@@ -131,7 +131,6 @@ const fetchPayment = () =>
     ]);
 
 const fetchDiscounts = async () => {
-    await appDispatch(fetch_active_discounts());
 };
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
