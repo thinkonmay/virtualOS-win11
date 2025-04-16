@@ -263,7 +263,7 @@ const Addon = {
             {value == 0 ? (
                 <span className="line-through">Giới hạn dung lượng</span>
             ) : (
-                <span>{value}GB credit dung lượng</span>
+                <span>{value} credit dung lượng</span>
             )}
         </li>
     )
@@ -280,7 +280,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
             bonus: {
                 time: 50,
                 storage_limit: 200,
-                storage_credit: 100,
+                storage_credit: 150 * 15,
                 no_waiting_line: false,
                 multiple_cluster: false
             }
@@ -292,7 +292,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
             bonus: {
                 time: 120,
                 storage_limit: 400,
-                storage_credit: 200,
+                storage_credit: 200 * 30,
                 no_waiting_line: false,
                 multiple_cluster: false
             }
