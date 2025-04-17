@@ -75,8 +75,8 @@ export const ConnectApp = () => {
 
     const connect = () => {
         if (limitClick) return;
-        if (reach_time_limit) appDispatch(limit('time_limit'));
-        else if (reach_date_limit) appDispatch(limit('date_limit'));
+        // if (reach_time_limit) appDispatch(limit('time_limit'));
+        // else if (reach_date_limit) appDispatch(limit('date_limit'));
         else if (inUse && available == 'ready') appDispatch(worker_refresh_ui());
         else appDispatch(wait_and_claim_volume());
         setLimitClick(true);
