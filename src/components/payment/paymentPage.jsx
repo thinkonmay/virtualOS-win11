@@ -465,7 +465,7 @@ export const PaymentPage = ({ value }) => {
                                     promotionState == 'success' ? promotion : ''
                                 }
                                 template={value?.template?.code_name}
-                                cluster_domain={value?.cluster}
+                                cluster_domain={value?.cluster ?? 'play.2.thinkmay.net'}
                                 instant_deduction={instant_deduction}
                                 gradual_deduction={gradual_deduction}
                             />

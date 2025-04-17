@@ -272,7 +272,8 @@ const Addon = {
 export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
     const plans = useAppSelector((state) => state.user.plans);
     const subscription = useAppSelector((state) => state.user.subscription);
-    const [domain, setDomain] = useState('');
+    const currentAddress = useAppSelector(state => state.worker.currentAddress)
+    const [domain, setDomain] = useState(currentAddress);
     const subcontents = [
         {
             title: 'Gói 2 tuần',
