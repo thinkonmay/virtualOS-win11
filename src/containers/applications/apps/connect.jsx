@@ -37,6 +37,10 @@ export const ConnectApp = () => {
     const [customizing, openCustomization] = useState(false);
     const [limitClick, setLimitClick] = useState(false);
     useEffect(() => {
+        setTimeout(() => (limitClick ? setLimitClick(false) : {}), 2000);
+    }, [limitClick]);
+
+    useEffect(() => {
         if (customizing) appDispatch(app_full({ id: 'connectPc' }));
     }, [customizing]);
     const wnapp = useAppSelector((state) =>
@@ -46,10 +50,11 @@ export const ConnectApp = () => {
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
 
-    const inUse = useAppSelector((state) =>
-        state.worker.data[state.worker.currentAddress]?.Volumes?.find(
-            (e) => e.inuse && e.pool == 'user_data'
-        ) ?? false
+    const inUse = useAppSelector(
+        (state) =>
+            state.worker.data[state.worker.currentAddress]?.Volumes?.find(
+                (e) => e.inuse && e.pool == 'user_data'
+            ) ?? false
     );
 
     const { cluster, metadata } = useAppSelector(
@@ -69,19 +74,12 @@ export const ConnectApp = () => {
         });
 
     const connect = () => {
-        if (!limitClick) {
-            if (reach_time_limit) {
-                appDispatch(limit('time_limit'));
-            } else if (reach_date_limit) {
-                appDispatch(limit('date_limit'));
-            } else if (inUse) {
-                toast(t[Contents.CA_INUSE_TOAST]);
-                appDispatch(worker_refresh_ui());
-            } else {
-                appDispatch(wait_and_claim_volume());
-            }
-            setLimitClick(true);
-        }
+        if (limitClick) return;
+        if (reach_time_limit) appDispatch(limit('time_limit'));
+        else if (reach_date_limit) appDispatch(limit('date_limit'));
+        else if (inUse) appDispatch(worker_refresh_ui());
+        else appDispatch(wait_and_claim_volume());
+        setLimitClick(true);
     };
 
     const pay = () => appDispatch(app_toggle('payment'));
@@ -90,10 +88,6 @@ export const ConnectApp = () => {
         localStorage.setItem('thinkmay_domain', cluster);
         await preload();
     };
-
-    useEffect(() => {
-        setTimeout(() => (limitClick ? setLimitClick(false) : {}), 2000);
-    }, [limitClick]);
 
     return (
         <div
