@@ -129,6 +129,9 @@ type PopupData =
               oldPlanId: string;
               isRenew?: boolean;
           };
+      }
+    | {
+          type: 'redirectWebsite';
       };
 
 type Data = {
@@ -152,6 +155,7 @@ export const modalSlice = createSlice({
             let preferred = [
                 'extendService',
                 'redirectDomain',
+                'redirectWebsite',
                 'discount',
                 'maintain'
             ];

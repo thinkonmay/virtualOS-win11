@@ -130,8 +130,7 @@ const fetchPayment = () =>
         appDispatch(get_deposit_status())
     ]);
 
-const fetchDiscounts = async () => {
-};
+const fetchDiscounts = async () => {};
 const fetchApp = async () => {
     await appDispatch(worker_refresh());
 };
@@ -264,6 +263,12 @@ const updateUI = async () => {
             })
         );
     }
+
+    appDispatch(
+        popup_open({
+            type: 'redirectWebsite'
+        })
+    );
 };
 
 export const preload = async (update_ui?: boolean) => {

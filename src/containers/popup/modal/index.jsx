@@ -8,6 +8,7 @@ export { pocketBuyConfirm } from './pocketBuyConfirm';
 export { pocketNotEnoughMoney } from './pocketNotEnoughMoney';
 export { showQa } from './qa';
 export { redirectDomain } from './redirect';
+export { redirectWebsite } from './redirectWebsite';
 export { serversInfo } from './serversInfo';
 export { shareLink } from './shareLink';
 export { paymentQR } from './paymentQR';
