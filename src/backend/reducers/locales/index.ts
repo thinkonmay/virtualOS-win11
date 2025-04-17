@@ -353,7 +353,7 @@ export function language() {
     id.set(Contents.CA_TURN_ON_PC, 'Hidupkan PC');
 
     en.set(Contents.CA_INUSE, 'Click to reload');
-    vn.set(Contents.CA_INUSE, 'Click để thử lại');
+    vn.set(Contents.CA_INUSE, 'Máy đang bật, thử lại');
     id.set(Contents.CA_INUSE, 'Click to reload');
 
     en.set(
