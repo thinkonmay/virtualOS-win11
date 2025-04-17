@@ -7,14 +7,7 @@ function DomainSwitch() {
 
     const updateLanguage = async (e) => {
         const domain = e.target.value;
-        const listDomain = ['play.thinkmay.net', 'play.3.thinkmay.net'];
-        const v2_domain = ['play.2.thinkmay.net', 'v4.thinkmay.net'];
-        if (listDomain.includes(domain))
-            window.open(`https://${domain}`, '_self');
-        else if (v2_domain.includes(domain)) {
-            localStorage.setItem('thinkmay_domain', domain);
-            await preloadSilent();
-        }
+        if (domain != null) localStorage.setItem('thinkmay_domain', domain);
     };
 
     return (
