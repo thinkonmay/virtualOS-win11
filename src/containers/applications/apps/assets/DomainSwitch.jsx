@@ -7,7 +7,8 @@ function DomainSwitch() {
 
     const updateLanguage = async (e) => {
         const domain = e.target.value;
-        if (domain != null) localStorage.setItem('thinkmay_domain', domain);
+        localStorage.setItem('thinkmay_domain', domain);
+        await preloadSilent();
     };
 
     return (
