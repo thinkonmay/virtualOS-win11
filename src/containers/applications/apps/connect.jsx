@@ -47,9 +47,9 @@ export const ConnectApp = () => {
     );
 
     const inUse = useAppSelector((state) =>
-        state.worker.data[state.worker.currentAddress]?.Volumes.find(
+        state.worker.data[state.worker.currentAddress]?.Volumes?.find(
             (e) => e.inuse && e.pool == 'user_data'
-        )
+        ) ?? false
     );
 
     const { cluster, metadata } = useAppSelector(
