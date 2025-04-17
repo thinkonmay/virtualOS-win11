@@ -25,11 +25,7 @@ export function redirectWebsite() {
 
             <div className="justify-center">
                 <p className="mt-[8px] justify-center">
-                    Từ ngày 17/4/2025, thinkmay sẽ chuyển toàn bộ website về thinkmay.net, 
-                    <br />
-                    trang web này vẫn có thể sử dụng bình thường cho đến 30/4/2025
-                    <br />
-                    tuy nhiên bạn sẽ sử dụng một phiên bản cũ hơn
+                    Thinkmay sẽ chuyển toàn bộ website về thinkmay.net 
                 </p>
             </div>
             <div className="flex gap-3 justify-center mt-3 mb-2">
