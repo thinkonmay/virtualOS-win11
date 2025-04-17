@@ -590,7 +590,7 @@ const PaymentFlow = ({
     );
     const register = async () => {
         if (currentAddress != cluster_domain) {
-            localStorage.setItem('thinkmay_domain', domain);
+            localStorage.setItem('thinkmay_domain', cluster_domain);
             await preloadSilent();
         }
 
