@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
+    app_close,
     app_full,
+    app_toggle,
     appDispatch,
     change_template,
     show_chat,
@@ -153,6 +155,11 @@ const DetailPage = ({
                 }
             })
         );
+
+    const connect = () => {
+        appDispatch(app_toggle('connectPc'));
+        appDispatch(app_close('store'));
+    }
 
     const renderOption = (val, index) => {
         const [clicked, setClicked] = useState(true);
@@ -393,8 +400,11 @@ const DetailPage = ({
                                             </button>
                                         )
                                     ) : code_name == code ? (
-                                        <button className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400">
-                                            Bạn đã cài đặt game này
+                                        <button
+                                            onClick={connect}
+                                            className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                        >
+                                            Bật máy
                                         </button>
                                     ) : samenode ? (
                                         <button
