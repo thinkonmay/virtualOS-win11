@@ -71,6 +71,9 @@ export const PaymentPage = ({ value }) => {
             .filter((x) => x.apply_for.includes('deposit'))
             .map((x) => x.code)
     );
+    const currentAddress = useAppSelector(
+        (state) => state.worker.currentAddress
+    );
     const plans = useAppSelector((state) => state.user.plans);
     const resources = useAppSelector((state) => state.user.resources);
     const [planAmount, setplanAmount] = useState({});
@@ -466,7 +469,7 @@ export const PaymentPage = ({ value }) => {
                                 }
                                 template={value?.template?.code_name}
                                 cluster_domain={
-                                    value?.cluster ?? 'play.2.thinkmay.net'
+                                    value?.cluster ?? currentAddress
                                 }
                                 instant_deduction={instant_deduction}
                                 gradual_deduction={gradual_deduction}
@@ -587,15 +590,7 @@ const PaymentFlow = ({
         }
     };
 
-    const currentAddress = useAppSelector(
-        (state) => state.worker.currentAddress
-    );
     const register = async () => {
-        if (currentAddress != cluster_domain) {
-            localStorage.setItem('thinkmay_domain', cluster_domain);
-            await preloadSilent();
-        }
-
         await create_payment_pocket({
             email,
             plan_name,

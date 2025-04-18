@@ -159,7 +159,7 @@ const DetailPage = ({
     const connect = () => {
         appDispatch(app_toggle('connectPc'));
         appDispatch(app_close('store'));
-    }
+    };
 
     const renderOption = (val, index) => {
         const [clicked, setClicked] = useState(true);
