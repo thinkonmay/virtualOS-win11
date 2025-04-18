@@ -400,12 +400,20 @@ const DetailPage = ({
                                             </button>
                                         )
                                     ) : code_name == code ? (
-                                        <button
-                                            onClick={connect}
-                                            className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
-                                        >
-                                            Bật máy
-                                        </button>
+                                        <>
+                                            <button
+                                                onClick={handleDownload}
+                                                className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                            >
+                                                Reset
+                                            </button>
+                                            <button
+                                                onClick={connect}
+                                                className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                            >
+                                                Bật máy
+                                            </button>
+                                        </>
                                     ) : samenode ? (
                                         <button
                                             onClick={handleDownload}
