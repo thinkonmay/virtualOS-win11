@@ -13,7 +13,7 @@ import {
 } from '../../backend/actions';
 import { preloadSilent } from '../../backend/actions/background';
 
-const PaymentButton = ({ template, domain, sub, switchPage }) => {
+const PaymentButton = ({ template, sub, switchPage }) => {
     const email = useAppSelector((state) => state.user.email);
     const subscription = useAppSelector((state) => state.user.subscription);
     const money = useAppSelector((state) => state.user.balance);
@@ -24,18 +24,8 @@ const PaymentButton = ({ template, domain, sub, switchPage }) => {
 
     const info = () => appDispatch(startogg());
     const onChooseSub = async () => {
-        if (
-            currentAddress != domain &&
-            domain != '' &&
-            domain != undefined &&
-            domain != null
-        ) {
-            localStorage.setItem('thinkmay_domain', domain);
-            await preloadSilent();
-        }
-
         const plan_name = sub.name;
-        const cluster_domain = domain ?? currentAddress;
+        const cluster_domain = currentAddress;
         const plan_price = sub.amount;
         subscription != undefined
             ? money >= plan_price
@@ -63,7 +53,7 @@ const PaymentButton = ({ template, domain, sub, switchPage }) => {
             app_payload({
                 id: 'payment',
                 key: 'value',
-                value: { ...val, plan: sub.name, cluster: domain }
+                value: { ...val, plan: sub.name, cluster: currentAddress }
             })
         );
         switchPage('payment');
@@ -117,20 +107,15 @@ const PaymentButton = ({ template, domain, sub, switchPage }) => {
     );
 };
 
-function DomainSelection({ onChangeDomain }) {
+function DomainSelection() {
     const domains = useAppSelector((state) => state.globals.domains);
     const currentAddress = useAppSelector(
         (state) => state.worker.currentAddress
     );
 
-    useEffect(() => {
-        onChangeDomain(currentAddress);
-    }, []);
-
     const chooseDomain = async (e) => {
         const domain = e.target.value;
         if (domain == currentAddress) return;
-        onChangeDomain(domain);
         localStorage.setItem('thinkmay_domain', domain);
         await preloadSilent();
     };
@@ -279,7 +264,6 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
     const currentAddress = useAppSelector(
         (state) => state.worker.currentAddress
     );
-    const [domain, setDomain] = useState(currentAddress);
     const subcontents = [
         {
             title: 'Gói 2 tuần',
@@ -340,7 +324,6 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                 <PaymentButton
                     sub={plan}
                     template={value?.template?.code_name}
-                    domain={domain}
                     switchPage={switchPage}
                 />
 
@@ -370,9 +353,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                         <p className="mb-5 font-light text-gray-300 sm:text-xl">
                             *chưa bao gồm tài khoản game và các nâng cấp khác
                         </p>
-                        {subscription == undefined ? (
-                            <DomainSelection onChangeDomain={setDomain} />
-                        ) : null}
+                        {subscription == undefined ? <DomainSelection /> : null}
                     </div>
                 ) : null}
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
