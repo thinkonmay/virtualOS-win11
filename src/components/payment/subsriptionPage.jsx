@@ -35,19 +35,21 @@ const PaymentButton = ({ template, domain, sub, switchPage }) => {
         const plan_name = sub.name;
         const cluster_domain = domain ?? currentAddress;
         const plan_price = sub.amount;
-        const result =
-            subscription != undefined
-                ? money >= plan_price
-                    ? await replace_payment_pocket({ email, plan_name })
-                    : chooseAndswitch()
-                : money >= plan_price
-                  ? await create_payment_pocket({
-                        email,
-                        plan_name,
-                        cluster_domain,
-                        template
-                    })
-                  : chooseAndswitch();
+        subscription != undefined
+            ? money >= plan_price
+                ? await replace_payment_pocket({ email, plan_name })
+                : chooseAndswitch()
+            : money >= plan_price
+              ? create_payment_pocket({
+                    email,
+                    plan_name,
+                    cluster_domain,
+                    template
+                }).then(() => {
+                    appDispatch(app_close('payment'));
+                    appDispatch(app_toggle('connectPc'));
+                })
+              : chooseAndswitch();
     };
 
     const val = useAppSelector(
