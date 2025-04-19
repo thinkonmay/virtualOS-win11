@@ -159,6 +159,8 @@ export const {
     worker_refresh,
     worker_refresh_ui,
     fetch_configuration,
+    fetch_app_access,
+    change_app_access,
     wait_and_claim_volume,
     unclaim_volume
 } = workerAsync;

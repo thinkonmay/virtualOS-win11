@@ -195,7 +195,11 @@ export const userAsync = {
                 throw new Error(
                     `Failed to query plan table + ${error.message}`
                 );
-            else return data.map((x) => ({ ...x, amount: parseInt(x.daily_price) }));
+            else
+                return data.map((x) => ({
+                    ...x,
+                    amount: parseInt(x.daily_price)
+                }));
         }
     ),
     get_plans: createAsyncThunk(

@@ -56,6 +56,10 @@ type WorkerType = {
     HighQueue: boolean;
 
     metadata?: Metadata;
+    app_access?: {
+        id: string;
+        app_id: string;
+    };
 };
 
 const initialState: WorkerType = {
@@ -195,6 +199,34 @@ export const workerAsync = {
                           }
                 )
             );
+        }
+    ),
+    change_app_access: createAsyncThunk(
+        'change_app_access',
+        async (app_id: string, { getState }): Promise<void> => {
+            const id = (getState() as RootState).worker.app_access?.id;
+            if (id == undefined)
+                throw new Error('you do not have app access available');
+            await POCKETBASE().collection('app_access').update(id, { app_id });
+        }
+    ),
+    fetch_app_access: createAsyncThunk(
+        'fetch_app_access',
+        async (): Promise<
+            | {
+                  id: string;
+                  app_id: string;
+              }
+            | undefined
+        > => {
+            const volumes = await POCKETBASE()
+                .collection('app_access')
+                .getFullList<{
+                    id: string;
+                    app_id: string;
+                }>();
+
+            return volumes?.[0];
         }
     ),
     fetch_configuration: createAsyncThunk(
@@ -338,6 +370,12 @@ export const workerSlice = createSlice({
                 fetch: workerAsync.fetch_configuration,
                 hander: (state, action) => {
                     state.metadata = action.payload;
+                }
+            },
+            {
+                fetch: workerAsync.fetch_app_access,
+                hander: (state, action) => {
+                    state.app_access = action.payload;
                 }
             }
         );

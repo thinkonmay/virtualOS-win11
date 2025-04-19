@@ -31,7 +31,8 @@ import {
     sync,
     worker_refresh,
     update_game_tag,
-    fetch_error_message
+    fetch_error_message,
+    fetch_app_access
 } from '../reducers';
 import { Contents } from '../reducers/locales/index.ts';
 
@@ -80,6 +81,7 @@ const fetchPayment = () => appDispatch(fetch_wallet());
 const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
 const fetchConfiguration = () => appDispatch(fetch_configuration());
+const fetchAppAccess = () => appDispatch(fetch_app_access());
 const fetchDomains = () => appDispatch(fetch_domain());
 const fetchErrorMessages = () => appDispatch(fetch_error_message());
 const fetchUser = () => appDispatch(fetch_user());
@@ -249,6 +251,7 @@ export const preloadSilent = async () => {
         fetchSubscription(),
         fetchDiscounts(),
         fetchConfiguration(),
+        fetchAppAccess(),
         loadSettings(),
         fetchPayment(),
         startAnalytics(),

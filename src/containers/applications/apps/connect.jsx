@@ -3,6 +3,7 @@ import {
     app_full,
     app_toggle,
     cache_setting,
+    fetch_app_access,
     fetch_configuration,
     popup_open,
     scancode_toggle,
@@ -246,7 +247,7 @@ export const ConnectApp = () => {
 
 function Customize({ onClose: close }) {
     const t = useAppSelector((state) => state.globals.translation);
-    const { HideVM, HighQueue, HighMTU, metadata } = useAppSelector(
+    const { HideVM, HighQueue, HighMTU, metadata, app_access } = useAppSelector(
         (state) => state.worker
     );
 
@@ -306,6 +307,8 @@ function Customize({ onClose: close }) {
         }
     ]);
 
+    const [gameLicense, setGameLicense] = useState(false);
+
     const defaultVal = (configuration) => [
         {
             name: 'ram',
@@ -330,7 +333,10 @@ function Customize({ onClose: close }) {
         }
     ];
 
-    const reset = () => setHWOption(defaultVal(configuration));
+    const reset = () => {
+        setHWOption(defaultVal(configuration));
+        setGameLicense(app_access != undefined);
+    };
     useEffect(() => {
         reset();
     }, [metadata]);
@@ -363,43 +369,28 @@ function Customize({ onClose: close }) {
             }
         }
 
-        if (refresh_conf) await appDispatch(fetch_configuration());
+        if ((app_access != undefined) != gameLicense) {
+            refresh_conf = true;
+            const error = await create_or_replace_resources(
+                `kickey${gameLicense ? '' : '_none'}`
+            );
+            if (error instanceof Error) {
+                appDispatch(popup_close());
+                toast(`Failed to apply your changes`, {});
+                close();
+                return;
+            }
+        }
+
+        if (refresh_conf) {
+            await appDispatch(fetch_configuration());
+            await appDispatch(fetch_app_access());
+        }
         appDispatch(cache_setting());
         toast(`Your changes is applied`, {});
         appDispatch(popup_close());
         close();
     };
-
-    const games = [
-        {
-            name: 'GTA5',
-            action: () => {
-                appDispatch(scancode_toggle(true));
-                appDispatch(toggle_hide_vm(false));
-            }
-        },
-        {
-            name: 'Black Myth Wukong',
-            action: () => {
-                appDispatch(scancode_toggle(true));
-                appDispatch(toggle_hide_vm(false));
-            }
-        },
-        {
-            name: 'FC Online',
-            action: () => {
-                appDispatch(scancode_toggle(true));
-                appDispatch(toggle_hide_vm(true));
-            }
-        },
-        {
-            name: 'Inzoi',
-            action: () => {
-                appDispatch(scancode_toggle(true));
-                appDispatch(toggle_hide_vm(false));
-            }
-        }
-    ];
 
     const renderOption = (option, index) => (
         <li
@@ -422,16 +413,32 @@ function Customize({ onClose: close }) {
         </li>
     );
 
-    const renderGameSetting = (game, index) => (
-        <li key={index} onClick={game.action}>
-            <label
-                htmlFor="frontend-developer"
-                className="inline-flex items-center justify-center w-full p-2 text-sm font-medium text-center bg-white border-2 rounded-lg cursor-pointer text-primary-600 border-primary-600 dark:hover:text-white dark:border-primary-500 dark:peer-checked:border-primary-500 peer-checked:border-primary-600 peer-checked:bg-primary-600 hover:text-white peer-checked:text-white hover:bg-primary-500 dark:text-primary-500 dark:bg-gray-800 dark:hover:bg-primary-600 dark:hover:border-primary-600 dark:peer-checked:bg-primary-500"
-            >
-                {game.name}
-            </label>
-        </li>
-    );
+    const GameLicense = () => {
+        return (
+            <div className="w-full h-full">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Steam account
+                </label>
+                <div className="flex items-center ps-4 border border-gray-200 dark:border-gray-700 bg-gray-300 dark:bg-gray-900 rounded-full">
+                    <input
+                        checked={gameLicense}
+                        onChange={() => {}}
+                        onClick={() => setGameLicense((old) => !old)}
+                        id="bordered-radio-2"
+                        type="radio"
+                        name="bordered-radio"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label
+                        htmlFor="bordered-radio-2"
+                        className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >
+                        Checked state
+                    </label>
+                </div>
+            </div>
+        );
+    };
 
     const increment = (hw, up) =>
         setHWOption((old) => {
@@ -519,6 +526,7 @@ function Customize({ onClose: close }) {
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div className="flex flex-col md:flex-row items-center justify-between col-span-2 space-x-3">
                             {hwOptions.map(renderHWOption)}
+                            <GameLicense />
                         </div>
                     </div>
                     <div>
@@ -527,14 +535,6 @@ function Customize({ onClose: close }) {
                         </h6>
                         <ul className="grid grid-cols-3 items-center w-full text-sm font-medium text-gray-900 border border-gray-200 rounded-lg md:flex-row bg-gray-700 dark:border-gray-600 dark:text-white list-none ">
                             {actions.map(renderOption)}
-                        </ul>
-                    </div>
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-white">
-                            Game setting
-                        </label>
-                        <ul className="grid w-full grid-cols-2 gap-3 md:grid-cols-3 list-none ">
-                            {games.map(renderGameSetting)}
                         </ul>
                     </div>
                 </div>
