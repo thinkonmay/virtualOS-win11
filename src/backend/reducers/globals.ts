@@ -18,6 +18,7 @@ export type ErrorMessage = {
 };
 
 type IGame = {
+    id: number;
     name: string;
     code_name: string;
     publishers: any;
@@ -257,7 +258,7 @@ export const globalAsync = {
         const { data, error } = await GLOBAL()
             .from('stores')
             .select(
-                'code_name,name,metadata->publishers,metadata->short_description,metadata->screenshots->0->>path_full,management->>kickey'
+                'id,code_name,name,metadata->publishers,metadata->short_description,metadata->screenshots->0->>path_full,management->>kickey'
             )
             .not('metadata->screenshots->0->>path_full', 'is', null)
             .order('management->>priority');

@@ -4,6 +4,7 @@ import {
     app_full,
     app_toggle,
     appDispatch,
+    change_app_access,
     change_template,
     show_chat,
     useAppSelector
@@ -88,6 +89,7 @@ export const MicroStore = () => {
 
 const DetailPage = ({
     app: {
+        id,
         code_name,
         tag: { hasaccount, samenode },
         name,
@@ -100,6 +102,9 @@ const DetailPage = ({
 }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const code = useAppSelector((state) => state.worker.metadata?.code);
+    const app_account = useAppSelector(
+        (state) => state.worker.app_access?.app_id
+    );
     const has_subscription = useAppSelector(
         (state) => state.user.subscription != undefined
     );
@@ -126,13 +131,14 @@ const DetailPage = ({
             ? [
                   {
                       code: 'kickey',
-                      name: 'Tài khoản game',
+                      name: `Tài khoản game ${app_account == id && hasaccount ? '(Đang sử dụng)' : ''}`,
                       clicked: true
                   }
               ]
             : [])
     ]);
 
+    const use_app_access = () => appDispatch(change_app_access(id));
     const handleDownload = () =>
         onConfirmation({
             template: code_name
@@ -382,6 +388,14 @@ const DetailPage = ({
                                 >
                                     Quay lại
                                 </button>
+                                {app_account != id && hasaccount ? (
+                                    <button
+                                        onClick={use_app_access}
+                                        className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                    >
+                                        Dùng tài khoản game
+                                    </button>
+                                ) : null}
                                 {has_subscription ? (
                                     code == null ? (
                                         cluster != currentAddress ? (

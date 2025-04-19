@@ -417,7 +417,7 @@ function Customize({ onClose: close }) {
         return (
             <div className="w-full h-full">
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Steam account
+                    tài khoản game
                 </label>
                 <div className="flex items-center ps-4 border border-gray-200 dark:border-gray-700 bg-gray-300 dark:bg-gray-900 rounded-full">
                     <input
@@ -433,7 +433,7 @@ function Customize({ onClose: close }) {
                         htmlFor="bordered-radio-2"
                         className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                     >
-                        Checked state
+                        Được tạo sẵn
                     </label>
                 </div>
             </div>

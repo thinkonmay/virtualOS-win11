@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
     appDispatch,
     close_remote,
+    fetch_app_access,
     popup_close,
     popup_open,
     remote_connect,
@@ -208,6 +209,7 @@ export const workerAsync = {
             if (id == undefined)
                 throw new Error('you do not have app access available');
             await POCKETBASE().collection('app_access').update(id, { app_id });
+            await appDispatch(fetch_app_access())
         }
     ),
     fetch_app_access: createAsyncThunk(
