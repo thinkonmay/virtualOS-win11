@@ -158,12 +158,12 @@ export const ConnectApp = () => {
                                         <br />
                                         {t[Contents.CA_CONNECT_EXPLAIN_1]}
                                     </p>
-                                    <button
+                                    {/* <button
                                         onClick={() => openCustomization(true)}
                                         className="text-gray-400 text-l font-light bg-transparent underline mt-4 cursor-pointer"
                                     >
                                         Tùy chỉnh cấu hình
-                                    </button>
+                                    </button> */}
                                 </>
                             ) : available == 'no_node' ? (
                                 <>
