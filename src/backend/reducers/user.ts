@@ -189,13 +189,13 @@ export const userAsync = {
         async (_: void): Promise<Resource[]> => {
             const { data, error } = await GLOBAL()
                 .from('resources')
-                .select('price->>amount,name,configuration,type')
+                .select('daily_price,name,configuration,type')
                 .eq('active', true);
             if (error != null)
                 throw new Error(
                     `Failed to query plan table + ${error.message}`
                 );
-            else return data.map((x) => ({ ...x, amount: parseInt(x.amount) }));
+            else return data.map((x) => ({ ...x, amount: parseInt(x.daily_price) }));
         }
     ),
     get_plans: createAsyncThunk(
