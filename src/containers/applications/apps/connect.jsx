@@ -32,6 +32,7 @@ import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 import { preload } from '../../../backend/actions/background';
 import toast from 'react-hot-toast';
+import { isMobile } from '../../../../src-tauri/core';
 
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -42,7 +43,7 @@ export const ConnectApp = () => {
     }, [limitClick]);
 
     useEffect(() => {
-        if (customizing) appDispatch(app_full({ id: 'connectPc' }));
+        if (customizing && isMobile()) appDispatch(app_full({ id: 'connectPc' }));
     }, [customizing]);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
@@ -416,10 +417,10 @@ function Customize({ onClose: close }) {
     const GameLicense = () => {
         return (
             <div className="w-full h-full">
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="block mb-2 text-sm font-medium text-white">
                     tài khoản game
                 </label>
-                <div className="flex items-center ps-4 border border-gray-200 dark:border-gray-700 bg-gray-300 dark:bg-gray-900 rounded-full">
+                <div className="flex items-center ps-4 border border-gray-700 bg-gray-900 rounded-full">
                     <input
                         checked={gameLicense}
                         onChange={() => {}}
@@ -427,11 +428,11 @@ function Customize({ onClose: close }) {
                         id="bordered-radio-2"
                         type="radio"
                         name="bordered-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        className="w-4 h-4 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"
                     />
                     <label
                         htmlFor="bordered-radio-2"
-                        className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        className="w-full py-4 ms-2 text-sm font-medium text-gray-300"
                     >
                         Được tạo sẵn
                     </label>
@@ -454,12 +455,12 @@ function Customize({ onClose: close }) {
     const renderHWOption = (hw, index) => {
         return (
             <div key={index} className="w-full">
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="block mb-2 text-sm font-medium text-white">
                     {hw.name}
                 </label>
 
                 <div className="flex">
-                    <div className="border border-gray-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
+                    <div className="border border-gray-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
                         {hw.value}
                     </div>
                     <div
