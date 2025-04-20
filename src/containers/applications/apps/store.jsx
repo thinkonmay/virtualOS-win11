@@ -141,6 +141,7 @@ const DetailPage = ({
     useEffect(() => {
         setOptions((old) => {
             const index = old.findIndex((x) => x.code == 'kickey');
+            if (index == -1) return old
             const temp = old[index];
             temp.clicked = app_account == id;
             old[index] = temp;
