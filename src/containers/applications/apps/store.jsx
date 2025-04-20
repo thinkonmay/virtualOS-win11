@@ -181,7 +181,7 @@ const DetailPage = ({
     };
 
     const closew = async () => {
-        if (!has_subscription) return close();
+        if (!has_subscription || !hasaccount) return close();
         const kickeysub = options.find((x) => x.code == 'kickey')?.clicked;
         if (kickeysub == (app_account == id)) return close();
         await appDispatch(change_app_access(kickeysub ? id : 'none'));
@@ -190,7 +190,7 @@ const DetailPage = ({
 
     const [closeText, setCloseText] = useState('Quay lại');
     useEffect(() => {
-        if (!has_subscription) return;
+        if (!has_subscription  || !hasaccount) return;
         const text =
             options.find((x) => x.code == 'kickey')?.clicked ==
             (app_account == id)
