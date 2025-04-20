@@ -127,11 +127,18 @@ export const workerAsync = {
                 )
                     throw new Error(`you don't have any volume available`);
 
+                let finish = false;
                 const resp = await StartThinkmay(
                     currentAddress,
                     info.virtReady ? { HideVM: HideVM } : undefined,
-                    info.virtReady ? workerAsync.showPosition : undefined
+                    info.virtReady
+                        ? (txt) =>
+                              finish
+                                  ? new Promise(() => {})
+                                  : workerAsync.showPosition(txt)
+                        : undefined
                 );
+                finish = true;
                 if (resp instanceof APIError) {
                     toast(formatError(resp));
                     appDispatch(popup_close());
