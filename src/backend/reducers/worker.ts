@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+    app_full,
     appDispatch,
     close_remote,
     fetch_app_access,
@@ -221,7 +222,21 @@ export const workerAsync = {
             let id = (getState() as RootState).worker.app_access?.id;
             if (id == undefined) {
                 const error = await create_or_replace_resources('kickey');
-                if (error) throw error;
+                if (error && error.message.includes('405')) {
+                    appDispatch(
+                        app_full({
+                            id: 'payment',
+                            page: 'payment',
+                            value: {
+                                account: {
+                                    id: app_id
+                                }
+                            }
+                        })
+                    );
+
+                    return;
+                } else if (error) throw error;
                 id = (getState() as RootState).worker.app_access?.id;
             }
 

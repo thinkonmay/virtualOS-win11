@@ -343,6 +343,14 @@ function Customize({ onClose: close }) {
         reset();
     }, [metadata]);
 
+    const open_payment = () =>
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment'
+            })
+        );
+
     const apply = async () => {
         appDispatch(
             popup_open({
@@ -361,9 +369,14 @@ function Customize({ onClose: close }) {
                     const error = await create_or_replace_resources(
                         `${option.name}${option.value}`
                     );
-                    if (error instanceof Error) {
+                    if (error && error.message.includes('405')) {
+                        open_payment();
                         appDispatch(popup_close());
+                        close();
+                        return;
+                    } else if (error instanceof Error) {
                         toast(`Failed to apply your changes`, {});
+                        appDispatch(popup_close());
                         close();
                         return;
                     }
@@ -376,9 +389,14 @@ function Customize({ onClose: close }) {
             const error = await create_or_replace_resources(
                 `kickey${gameLicense ? '' : '_none'}`
             );
-            if (error instanceof Error) {
+            if (error && error.message.includes('405')) {
+                open_payment();
                 appDispatch(popup_close());
+                close();
+                return;
+            } else if (error instanceof Error) {
                 toast(`Failed to apply your changes`, {});
+                appDispatch(popup_close());
                 close();
                 return;
             }

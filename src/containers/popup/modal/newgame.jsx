@@ -1,9 +1,17 @@
-import { appDispatch, popup_close } from '../../../backend/reducers';
+import { app_full, appDispatch, popup_close } from '../../../backend/reducers';
 
-export function newGame({ data: { ref, discount_code } }) {
+export function newGame({ data: { app_name, image } }) {
     const close = () => appDispatch(popup_close());
 
     const finish = async () => {
+        appDispatch(
+            app_full({
+                id: 'store',
+                value: {
+                    app: app_name
+                }
+            })
+        );
         close();
     };
 
@@ -16,7 +24,10 @@ export function newGame({ data: { ref, discount_code } }) {
             <div className="relative">
                 <div className="relative rounded-lg bg-white p-8 text-center shadow dark:bg-gray-800">
                     <img
-                        src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141"
+                        src={
+                            image ??
+                            'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141'
+                        }
                         className="mb-4 h-[560px] w-[960px] rounded bg-cover hidden md:block"
                         alt="promo banner"
                     />
@@ -33,7 +44,7 @@ export function newGame({ data: { ref, discount_code } }) {
                                 clipRule="evenodd"
                             ></path>
                         </svg>
-                        Chia sẻ ngay
+                        Tài khoản game
                     </span>
                     <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
                         <h3 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
@@ -51,6 +62,13 @@ export function newGame({ data: { ref, discount_code } }) {
                             className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-blue-700"
                         >
                             Đăng kí ngay
+                        </button>
+                        <button
+                            onClick={close}
+                            type="button"
+                            className="py-2.5 px-5 bg-gray-300 shadow-sm rounded-full transition-all duration-500 text-base text-black font-semibold text-center w-fit block mx-auto hover:bg-blue-300"
+                        >
+                            Lúc khác
                         </button>
                     </div>
                 </div>

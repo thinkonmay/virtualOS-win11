@@ -47,6 +47,7 @@ type PopupData =
           data: {
               image?: string;
               title?: string;
+              app_name: string;
           };
       }
     | {

@@ -75,7 +75,11 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
     const [planAmount, setplanAmount] = useState({});
     const [promotion, setPromotion] = useState('');
     const [promotionState, setPromotionState] = useState('unknown');
-    const [step, setStep] = useState(plan != undefined ? 2 : 1);
+    const [step, setStep] = useState(
+        plan != undefined || template != undefined || account != undefined
+            ? 2
+            : 1
+    );
 
     useEffect(() => {
         if (promotionState == 'applying' && discount_codes.includes(promotion))
@@ -589,8 +593,10 @@ const PaymentFlow = ({
             await GLOBAL().rpc('verify_all_deposits');
             await appDispatch(fetch_wallet());
             setStep('deduct');
-            if (has_subscription || plan_name == undefined) return;
-            await register();
+            if (has_subscription || plan_name == undefined) {
+                if (game_license != undefined)
+                    await appDispatch(change_app_access(game_license));
+            } else await register();
         }
     };
 

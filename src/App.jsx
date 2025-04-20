@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
 import { UserEvents } from '../src-tauri/api';
-import { originalurl, PreloadBackground } from './backend/actions/background';
+import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 
 import {
