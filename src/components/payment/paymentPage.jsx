@@ -5,15 +5,14 @@ import {
 } from '../../backend/actions';
 import {
     app_close,
-    app_full,
     app_toggle,
     appDispatch,
+    change_app_access,
     fetch_wallet,
     useAppSelector
 } from '../../backend/reducers';
 import QRCode from 'react-qr-code';
 import { GLOBAL } from '../../../src-tauri/api';
-import { preloadSilent } from '../../backend/actions/background';
 
 const subcontents = [
     {
@@ -135,8 +134,7 @@ export const PaymentPage = ({ value }) => {
         useEffect(() => {
             set(
                 value?.plan == plan.name ||
-                    value?.additional?.includes(plan.name) ||
-                    value?.template?.code_name == plan.name
+                    (plan.name == 'kickey' && value?.account != undefined)
                     ? 1
                     : 0
             );
@@ -473,6 +471,7 @@ export const PaymentPage = ({ value }) => {
                                 }
                                 instant_deduction={instant_deduction}
                                 gradual_deduction={gradual_deduction}
+                                game_license={value?.account?.id}
                             />
 
                             <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -487,31 +486,6 @@ export const PaymentPage = ({ value }) => {
                                 của Thinkmay.
                             </p>
                         </div>
-
-                        {/* <div className="space-y-4 bg-gray-50 p-6 dark:bg-gray-700">
-                            <p className="text-sm font-medium text-white">
-                                Your benefits:
-                            </p>
-                            <ul className="list-outside list-disc space-y-1 pl-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-                                <li>Pre-order guarantee</li>
-                                <li>Free shipping</li>
-                                <li>Best price</li>
-                            </ul>
-
-                            <a
-                                href="#"
-                                title=""
-                                className="inline-block text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
-                            >
-                                {' '}
-                                How are shipping costs calculated?{' '}
-                            </a>
-
-                            <p className="max-w-xs text-sm font-normal text-gray-500 dark:text-gray-400">
-                                Flowbite PRO shipping benefits have been applied
-                                to your order.
-                            </p>
-                        </div> */}
                     </div>
                 </div>
             </div>
@@ -528,6 +502,7 @@ const PaymentFlow = ({
     initialStep,
     cluster_domain,
     gradual_deduction,
+    game_license,
     instant_deduction
 }) => {
     const email = useAppSelector((state) => state.user.email);
@@ -598,6 +573,9 @@ const PaymentFlow = ({
             template
         });
 
+        if (game_license != undefined)
+            await appDispatch(change_app_access(game_license));
+
         appDispatch(app_close('payment'));
         appDispatch(app_toggle('connectPc'));
     };
@@ -607,6 +585,8 @@ const PaymentFlow = ({
             await GLOBAL().rpc('verify_all_deposits');
             await appDispatch(fetch_wallet());
             setStep('deduct');
+            if (has_subscription || plan_name == undefined) return;
+            await register();
         }
     };
 
@@ -619,10 +599,6 @@ const PaymentFlow = ({
         };
     }, [step]);
 
-    const payos = async () => {
-        const w = window.open();
-        w.location.href = url;
-    };
     const deny = async () => {
         await GLOBAL().rpc('cancel_transaction', {
             id
@@ -674,7 +650,7 @@ const PaymentFlow = ({
                     <div className="flex flex-row gap-4">
                         <button
                             onClick={deny}
-                            className="flex w-full items-center justify-center rounded-lg bg-gray-300 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                            className="flex w-full items-center justify-center rounded-lg bg-gray-300 px-5  py-2.5 text-sm font-medium text-black dark:text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
                         >
                             Hủy thanh toán
                         </button>
@@ -759,68 +735,13 @@ const PaymentFlow = ({
                                     {balance / 1000}k
                                 </dd>
                             </dl>
-                            <dl className="flex items-center justify-between gap-4">
-                                <dt className="text-gray-500 dark:text-gray-400">
-                                    Trừ từ ví (sau khi thanh toán)
-                                </dt>
-                                <dd className="font-medium text-white">
-                                    -{instant_deduction / 1000}k
-                                </dd>
-                            </dl>
-                            <dl className="flex items-center justify-between gap-4">
-                                <dt className="text-gray-500 dark:text-gray-400">
-                                    Số dư trong ví (sau khi thanh toán)
-                                </dt>
-                                <dd className="font-medium text-white">
-                                    {(balance - instant_deduction) / 1000}k
-                                </dd>
-                            </dl>
-                            <dl className="flex items-center justify-between gap-4">
-                                <dt className="text-gray-500 dark:text-gray-400">
-                                    Trừ từ ví (trong 1 tháng)
-                                </dt>
-                                <dd className="font-medium text-white">
-                                    -{gradual_deduction / 1000}k
-                                </dd>
-                            </dl>
-                            <dl className="flex items-center justify-between gap-4">
-                                <dt className="text-gray-500 dark:text-gray-400">
-                                    Số dư trong ví (sau 1 tháng)
-                                </dt>
-                                <dd className="font-medium text-white">
-                                    {(balance -
-                                        instant_deduction -
-                                        gradual_deduction) /
-                                        1000}
-                                    k
-                                </dd>
-                            </dl>
                         </div>
-                    </div>
-                    <div className="flex flex-row gap-4">
-                        {/* <button
-                            onClick={() => setStep('requestQR')}
-                            className="flex w-full items-center justify-center rounded-lg bg-gray-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4   focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                        <button
+                            onClick={() => appDispatch(app_close('payment'))}
+                            className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         >
-                            Nạp vào ví
-                        </button> */}
-                        {plan_name != undefined && !has_subscription ? (
-                            <button
-                                onClick={register}
-                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                            >
-                                Đăng kí và sử dụng
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() =>
-                                    appDispatch(app_close('payment'))
-                                }
-                                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                            >
-                                Hoàn tất
-                            </button>
-                        )}
+                            Hoàn tất
+                        </button>
                     </div>
                 </>
             );

@@ -121,7 +121,7 @@ const DetailPage = ({
         ...(code_name != null && !has_subscription
             ? [
                   {
-                      code: 'payment',
+                      code: 'predownload',
                       name: 'Game tải sẵn (miễn phí)',
                       clicked: true
                   }
@@ -158,15 +158,18 @@ const DetailPage = ({
                 id: 'payment',
                 page: 'subscription',
                 value: {
-                    template: {
-                        name,
-                        code_name
-                    },
-                    additional: [
-                        ...(options.find((x) => x.code == 'kickey')?.clicked
-                            ? ['kickey']
-                            : [])
-                    ]
+                    template: options.find((x) => x.code == 'predownload')
+                        ?.clicked
+                        ? {
+                              name,
+                              code_name
+                          }
+                        : undefined,
+                    account: options.find((x) => x.code == 'kickey')?.clicked
+                        ? {
+                              id
+                          }
+                        : undefined
                 }
             })
         );
