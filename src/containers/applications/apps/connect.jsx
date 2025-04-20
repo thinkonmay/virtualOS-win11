@@ -43,7 +43,8 @@ export const ConnectApp = () => {
     }, [limitClick]);
 
     useEffect(() => {
-        if (customizing && isMobile()) appDispatch(app_full({ id: 'connectPc' }));
+        if (customizing && isMobile())
+            appDispatch(app_full({ id: 'connectPc' }));
     }, [customizing]);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')

@@ -27,6 +27,7 @@ import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 import toast from 'react-hot-toast';
 import { formatError } from '../utils/formatErr';
+import { create_or_replace_resources } from '../actions';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
@@ -205,11 +206,20 @@ export const workerAsync = {
     change_app_access: createAsyncThunk(
         'change_app_access',
         async (app_id: string, { getState }): Promise<void> => {
-            const id = (getState() as RootState).worker.app_access?.id;
-            if (id == undefined)
-                throw new Error('you do not have app access available');
+            if (app_id == 'none') {
+                await create_or_replace_resources('kickey_none');
+                return;
+            }
+
+            let id = (getState() as RootState).worker.app_access?.id;
+            if (id == undefined) {
+                const error = await create_or_replace_resources('kickey');
+                if (error) throw error;
+                id = (getState() as RootState).worker.app_access?.id;
+            }
+
             await POCKETBASE().collection('app_access').update(id, { app_id });
-            await appDispatch(fetch_app_access())
+            await appDispatch(fetch_app_access());
         }
     ),
     fetch_app_access: createAsyncThunk(
@@ -379,6 +389,10 @@ export const workerSlice = createSlice({
                 hander: (state, action) => {
                     state.app_access = action.payload;
                 }
+            },
+            {
+                fetch: workerAsync.change_app_access,
+                hander: (state, action) => {}
             }
         );
     }

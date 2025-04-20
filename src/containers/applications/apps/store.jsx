@@ -118,11 +118,11 @@ const DetailPage = ({
     };
     const contact = async () => appDispatch(show_chat());
     const [options, setOptions] = useState([
-        ...(code_name != null
+        ...(code_name != null && !has_subscription
             ? [
                   {
                       code: 'payment',
-                      name: 'Game tải sẵn (free)',
+                      name: 'Game tải sẵn (miễn phí)',
                       clicked: true
                   }
               ]
@@ -131,14 +131,23 @@ const DetailPage = ({
             ? [
                   {
                       code: 'kickey',
-                      name: `Tài khoản game ${app_account == id && hasaccount ? '(Đang sử dụng)' : ''}`,
-                      clicked: true
+                      name: `Tài khoản game (50.000VND/tháng)`,
+                      clicked: false
                   }
               ]
             : [])
     ]);
 
-    const use_app_access = () => appDispatch(change_app_access(id));
+    useEffect(() => {
+        setOptions((old) => {
+            const index = old.findIndex((x) => x.code == 'kickey');
+            const temp = old[index];
+            temp.clicked = app_account == id;
+            old[index] = temp;
+            return [...old];
+        });
+    }, [app_account]);
+
     const handleDownload = () =>
         onConfirmation({
             template: code_name
@@ -167,24 +176,55 @@ const DetailPage = ({
         appDispatch(app_close('store'));
     };
 
+    const closew = async () => {
+        if (!has_subscription) return close();
+        const kickeysub = options.find((x) => x.code == 'kickey')?.clicked;
+        if (kickeysub == (app_account == id)) return close();
+        await appDispatch(change_app_access(kickeysub ? id : 'none'));
+        close();
+    };
+
+    const [closeText, setCloseText] = useState('Quay lại');
+    useEffect(() => {
+        if (!has_subscription) return;
+        const text =
+            options.find((x) => x.code == 'kickey')?.clicked ==
+            (app_account == id)
+                ? 'Quay lại'
+                : 'Xác nhận';
+        setCloseText(text);
+    }, [options]);
+
     const renderOption = (val, index) => {
-        const [clicked, setClicked] = useState(true);
+        const [clicked, setClicked] = useState(val.clicked);
         useEffect(() => {
             setOptions((old) => {
                 old[index].clicked = clicked;
-                return old;
+                return [...old];
             });
         }, [clicked]);
+        useEffect(() => {
+            setClicked(val.clicked);
+        }, [val.clicked]);
+
+        const properties = clicked
+            ? 'after:end-[4px] bg-blue-600 ring-blue-800 outline-none ring-4'
+            : 'after:start-[4px] bg-gray-500 ring-blue-200 outline-none ring-4';
+
         return (
-            <button
+            <label
+                className="inline-flex items-center cursor-pointer"
                 key={index}
-                onClick={() => setClicked((old) => !old)}
-                className={`col-span-3 text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900  flex items-center rounded-full justify-center transition-all duration-300 ${
-                    clicked ? 'bg-gray-600 text-white ' : ''
-                }`}
             >
-                {val.name}
-            </button>
+                <input type="checkbox" value="" className="sr-only peer" />
+                <div
+                    onClick={() => setClicked((old) => !old)}
+                    className={`${properties} relative w-14 h-7 rounded-full peer border-white after:content-[''] after:absolute after:top-0.5  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 `}
+                />
+                <span className="ms-3 text-sm font-medium text-white">
+                    {val.name}
+                </span>
+            </label>
         );
     };
 
@@ -374,7 +414,7 @@ const DetailPage = ({
                                         Các gói dịch vụ đi kèm
                                     </p>
                                     <div className="w-full pb-8 border-b border-gray-100 flex-wrap">
-                                        <div className="grid grid-cols-3 min-[400px]:grid-cols-6 gap-3 max-w-md">
+                                        <div className="flex flex-col min-[400px]:grid-cols-6 gap-3 max-w-md">
                                             {options.map(renderOption)}
                                         </div>
                                     </div>
@@ -383,19 +423,11 @@ const DetailPage = ({
 
                             <div className="flex items-center gap-3">
                                 <button
-                                    onClick={close}
+                                    onClick={closew}
                                     className="group py-4 px-5 rounded-full bg-blue-50 text-blue-600 font-semibold text-lg w-full flex items-center justify-center gap-2 transition-all duration-500 hover:bg-blue-100"
                                 >
-                                    Quay lại
+                                    {closeText}
                                 </button>
-                                {app_account != id && hasaccount ? (
-                                    <button
-                                        onClick={use_app_access}
-                                        className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
-                                    >
-                                        Dùng tài khoản game
-                                    </button>
-                                ) : null}
                                 {has_subscription ? (
                                     code == null ? (
                                         cluster != currentAddress ? (

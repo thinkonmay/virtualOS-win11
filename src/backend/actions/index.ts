@@ -18,6 +18,7 @@ import {
     desk_size,
     desk_sort,
     dispatch_generic,
+    fetch_app_access,
     fetch_configuration,
     fetch_wallet,
     menu_chng,
@@ -274,8 +275,8 @@ export const showConnect = () => {
 
 export const create_payment_qr = async ({ amount }: { amount: string }) => {
     const { email, discounts } = store.getState().user;
-    const discount_code = discounts.find((x) =>
-        x.apply_for?.includes('deposit')
+    const discount_code = discounts.find(
+        (x) => x.apply_for?.includes('deposit')
     )?.code;
     const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
         email,
@@ -423,6 +424,7 @@ export const create_or_replace_resources = async (resource_name: string) => {
     });
     if (error) return new Error(error.message);
 
+    await appDispatch(fetch_app_access());
     await appDispatch(fetch_configuration());
     await appDispatch(fetch_wallet());
     return undefined;
