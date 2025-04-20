@@ -53,7 +53,7 @@ const PaymentButton = ({ template, sub, switchPage }) => {
             app_payload({
                 id: 'payment',
                 key: 'value',
-                value: { ...val, plan: sub.name, cluster: currentAddress }
+                value: { ...val, plan: sub.name }
             })
         );
         switchPage('payment');

@@ -88,7 +88,7 @@ export const PaymentApp = () => {
                                 onlyPlan={false}
                             />
                         ) : (
-                            <PaymentPage value={val} />
+                            <PaymentPage value={val ?? {}} />
                         )}
                     </div>
                 </div>

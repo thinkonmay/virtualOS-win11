@@ -63,22 +63,19 @@ const subcontents = [
     }
 ];
 
-export const PaymentPage = ({ value }) => {
+export const PaymentPage = ({ value: { plan, template, account } }) => {
     const email = useAppSelector((state) => state.user.email);
     const discount_codes = useAppSelector((state) =>
         state.user.discounts
             .filter((x) => x.apply_for.includes('deposit'))
             .map((x) => x.code)
     );
-    const currentAddress = useAppSelector(
-        (state) => state.worker.currentAddress
-    );
     const plans = useAppSelector((state) => state.user.plans);
     const resources = useAppSelector((state) => state.user.resources);
     const [planAmount, setplanAmount] = useState({});
     const [promotion, setPromotion] = useState('');
     const [promotionState, setPromotionState] = useState('unknown');
-    const [step, setStep] = useState(value?.plan != undefined ? 2 : 1);
+    const [step, setStep] = useState(plan != undefined ? 2 : 1);
 
     useEffect(() => {
         if (promotionState == 'applying' && discount_codes.includes(promotion))
@@ -109,7 +106,7 @@ export const PaymentPage = ({ value }) => {
             gradual_deduction +=
                 resources.find((x) => x.name == key)?.amount * 30;
 
-    let picked_plan = value?.plan;
+    let picked_plan = plan;
     if (picked_plan == undefined)
         for (const key in planAmount)
             if (
@@ -120,21 +117,26 @@ export const PaymentPage = ({ value }) => {
                 break;
             }
 
-    const additionalPlans = [];
-    if (value?.template)
-        additionalPlans.push({
-            title: `${value.template.name} đã được cài sẵn`,
-            name: value.template.code_name,
-            amount: 0
-        });
+    const additionalPlans =
+        template != undefined
+            ? [
+                  {
+                      title: `${template.name} đã được cài sẵn`,
+                      name: template.code_name,
+                      amount: 0
+                  }
+              ]
+            : [];
 
-    const renderPlan = (plan, index) => {
+    const renderPlan = (option, index) => {
         const [quantity, setQuantity] = useState(0);
 
         useEffect(() => {
             set(
-                value?.plan == plan.name ||
-                    (plan.name == 'kickey' && value?.account != undefined)
+                plan == option.name ||
+                    additionalPlans.find((x) => x.name == option.name) !=
+                        undefined ||
+                    (option.name == 'kickey' && account != undefined)
                     ? 1
                     : 0
             );
@@ -145,7 +147,7 @@ export const PaymentPage = ({ value }) => {
 
             setQuantity((old) => old + val);
             setplanAmount((old) => {
-                old[plan.name] = (quantity + val) * plan.amount;
+                old[option.name] = (quantity + val) * option.amount;
                 return old;
             });
         };
@@ -155,7 +157,7 @@ export const PaymentPage = ({ value }) => {
 
             setQuantity(val);
             setplanAmount((old) => {
-                old[plan.name] = val * plan.amount;
+                old[option.name] = val * option.amount;
                 return old;
             });
         };
@@ -189,14 +191,14 @@ export const PaymentPage = ({ value }) => {
                             href="#"
                             className="font-medium text-gray-900 hover:underline dark:text-white"
                         >
-                            {plan.title}
+                            {option.title}
                         </a>
                     </div>
                 </div>
 
                 <div className="w-8 shrink-0">
                     <p className="text-base font-normal text-black dark:text-white">
-                        {plan.amount / 1000}k
+                        {option.amount / 1000}k
                     </p>
                 </div>
 
@@ -260,7 +262,7 @@ export const PaymentPage = ({ value }) => {
 
                 <div className="w-24 hidden sm:block">
                     <p className="text-base font-bold text-black dark:text-white">
-                        {(plan.amount * quantity) / 1000}k
+                        {(option.amount * quantity) / 1000}k
                     </p>
                 </div>
             </div>
@@ -457,21 +459,18 @@ export const PaymentPage = ({ value }) => {
 
                             <PaymentFlow
                                 total={total}
-                                initialStep={
-                                    step == 2 ? 'requestQR' : 'picking'
-                                }
-                                setStep={setStep}
-                                plan={picked_plan}
+                                instant_deduction={instant_deduction}
+                                gradual_deduction={gradual_deduction}
                                 promotion={
                                     promotionState == 'success' ? promotion : ''
                                 }
-                                template={value?.template?.code_name}
-                                cluster_domain={
-                                    value?.cluster ?? currentAddress
+                                stepCallback={setStep}
+                                initialStep={
+                                    step == 2 ? 'requestQR' : 'picking'
                                 }
-                                instant_deduction={instant_deduction}
-                                gradual_deduction={gradual_deduction}
-                                game_license={value?.account?.id}
+                                plan_name={picked_plan}
+                                template={template?.code_name}
+                                game_license={account?.id}
                             />
 
                             <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -494,18 +493,22 @@ export const PaymentPage = ({ value }) => {
 };
 
 const PaymentFlow = ({
-    promotion,
-    template,
-    total,
-    setStep: stepCallback,
-    plan: plan_name,
+    stepCallback,
     initialStep,
-    cluster_domain,
+
+    total,
     gradual_deduction,
-    game_license,
-    instant_deduction
+    instant_deduction,
+    promotion,
+
+    plan_name,
+    template,
+    game_license
 }) => {
     const email = useAppSelector((state) => state.user.email);
+    const currentAddress = useAppSelector(
+        (state) => state.worker.currentAddress
+    );
     const balance = useAppSelector((state) => state.user.balance);
     const discount_rate = useAppSelector(
         (state) =>
@@ -566,6 +569,7 @@ const PaymentFlow = ({
     };
 
     const register = async () => {
+        const cluster_domain = currentAddress;
         await create_payment_pocket({
             email,
             plan_name,
