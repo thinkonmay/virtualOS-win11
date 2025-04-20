@@ -4,3 +4,4 @@ export { login } from './login';
 export { notify } from './notify';
 export { redirectDomain } from './redirect';
 export { extendService } from './extend';
+export { newGame } from './newgame';

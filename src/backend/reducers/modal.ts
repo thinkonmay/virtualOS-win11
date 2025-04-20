@@ -43,6 +43,13 @@ type PopupData =
           };
       }
     | {
+          type: 'newGame';
+          data: {
+              image?: string;
+              title?: string;
+          };
+      }
+    | {
           type: 'share';
           data: {
               ref?: string;

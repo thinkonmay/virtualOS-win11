@@ -141,7 +141,7 @@ const DetailPage = ({
     useEffect(() => {
         setOptions((old) => {
             const index = old.findIndex((x) => x.code == 'kickey');
-            if (index == -1) return old
+            if (index == -1) return old;
             const temp = old[index];
             temp.clicked = app_account == id;
             old[index] = temp;
@@ -190,7 +190,7 @@ const DetailPage = ({
 
     const [closeText, setCloseText] = useState('Quay lại');
     useEffect(() => {
-        if (!has_subscription  || !hasaccount) return;
+        if (!has_subscription || !hasaccount) return;
         const text =
             options.find((x) => x.code == 'kickey')?.clicked ==
             (app_account == id)
