@@ -5,3 +5,4 @@ export { notify } from './notify';
 export { redirectDomain } from './redirect';
 export { extendService } from './extend';
 export { newGame } from './newgame';
+export { maintainance } from './maintainance';

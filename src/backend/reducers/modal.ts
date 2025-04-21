@@ -43,6 +43,10 @@ type PopupData =
           };
       }
     | {
+          type: 'maintainance';
+          data: {};
+      }
+    | {
           type: 'newGame';
           data: {
               image?: string;

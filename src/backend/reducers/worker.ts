@@ -32,6 +32,7 @@ import { create_or_replace_resources } from '../actions';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
+    available_templates: string[];
 };
 
 type Metadata = {
@@ -175,7 +176,9 @@ export const workerAsync = {
             info: Computer;
             currentAddress: string;
         }): Promise<{ [address: string]: innerComputer }> => {
+            const available_templates: string[] = [];
             let availability = undefined;
+
             if (info.remoteReady) {
                 if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
@@ -187,9 +190,19 @@ export const workerAsync = {
                     availability = 'no_node';
                 else if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
+
+                info.Volumes?.filter(
+                    (x) => x.pool == 'app_data' && x.name.includes('.template')
+                )?.forEach(({ name }) =>
+                    !available_templates.includes(name)
+                        ? available_templates.push(name)
+                        : null
+                );
             } else availability = undefined;
 
-            return { [currentAddress]: { ...info, availability } };
+            return {
+                [currentAddress]: { ...info, availability, available_templates }
+            };
         }
     ),
     fetch_local_worker: createAsyncThunk(

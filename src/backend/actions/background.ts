@@ -242,15 +242,28 @@ const updateUI = async () => {
         );
     }
 
-    appDispatch(
-        popup_open({
-            type: 'newGame',
-            data: {
-                image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141',
-                app_name: 'wukong'
-            }
-        })
-    );
+    if (
+        !store
+            .getState()
+            .globals.domains.map((x) => x.domain)
+            .includes(domain)
+    )
+        appDispatch(
+            popup_open({
+                type: 'maintainance',
+                data: {}
+            })
+        );
+    else
+        appDispatch(
+            popup_open({
+                type: 'newGame',
+                data: {
+                    image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141',
+                    app_name: 'wukong'
+                }
+            })
+        );
 };
 
 export const preloadSilent = async () => {
