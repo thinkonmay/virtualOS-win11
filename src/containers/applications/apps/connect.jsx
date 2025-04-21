@@ -546,7 +546,7 @@ function Customize({ onClose: close }) {
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div className="flex flex-col md:flex-row items-center justify-between col-span-2 space-x-3">
                             {hwOptions.map(renderHWOption)}
-                            <GameLicense />
+                            {app_access == undefined ? null : <GameLicense />}
                         </div>
                     </div>
                     <div>
