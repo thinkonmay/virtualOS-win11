@@ -588,7 +588,16 @@ const PaymentFlow = ({
         appDispatch(app_toggle('connectPc'));
     };
 
+    const [second_left, setSecondLeft] = useState(0);
     const verify = async () => {
+        setSecondLeft((old) => {
+            if (old > 0)
+                return old-1;
+
+            deny()
+            return old
+        });
+
         if (await verify_transaction({ id })) {
             await GLOBAL().rpc('verify_all_deposits');
             await appDispatch(fetch_wallet());
@@ -602,7 +611,7 @@ const PaymentFlow = ({
 
     useEffect(() => {
         if (step != 'showQR') return;
-
+        setSecondLeft(300)
         const interval = setInterval(verify, 1000);
         return async () => {
             clearInterval(interval);
@@ -633,6 +642,14 @@ const PaymentFlow = ({
                             viewBox={`0 0 256 256`}
                         />
                     </div>
+                    <dl className="flex items-center justify-between gap-4">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                            Hết hạn sau
+                        </dt>
+                        <dd className="font-medium text-white">
+                            {Math.floor(second_left / 60)}m{second_left % 60}s
+                        </dd>
+                    </dl>
                     <dl className="flex items-center justify-between gap-4">
                         <dt className="text-gray-500 dark:text-gray-400">
                             Người nhận
