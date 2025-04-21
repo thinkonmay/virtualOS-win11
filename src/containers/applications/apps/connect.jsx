@@ -253,6 +253,13 @@ function Customize({ onClose: close }) {
         (state) => state.worker
     );
 
+    const game = useAppSelector(
+        (state) =>
+            state.globals.games.find(
+                (x) => state.worker.app_access?.app_id == x.id
+            )?.name
+    );
+
     const { configuration } = metadata ?? { configuration: {} };
 
     const { scancode, hq } = useAppSelector((state) => state.remote);
@@ -453,7 +460,7 @@ function Customize({ onClose: close }) {
                         htmlFor="bordered-radio-2"
                         className="w-full py-4 ms-2 text-sm font-medium text-gray-300"
                     >
-                        Được tạo sẵn
+                        {game ?? 'unknown'}
                     </label>
                 </div>
             </div>
