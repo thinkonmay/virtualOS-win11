@@ -1,3 +1,4 @@
+import { isMobile } from '../../../../src-tauri/core';
 import { app_full, appDispatch, popup_close } from '../../../backend/reducers';
 
 export function newGame({ data: { app_name, image } }) {
@@ -23,14 +24,16 @@ export function newGame({ data: { app_name, image } }) {
         >
             <div className="relative">
                 <div className="relative rounded-lg bg-white p-8 text-center shadow dark:bg-gray-800">
-                    <img
-                        src={
-                            image ??
-                            'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141'
-                        }
-                        className="mb-4 h-[560px] w-[960px] rounded bg-cover hidden md:block"
-                        alt="promo banner"
-                    />
+                    {isMobile() ? null : (
+                        <img
+                            src={
+                                image ??
+                                'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141'
+                            }
+                            className="mb-4 h-[360px] w-[640px] rounded bg-cover hidden md:block"
+                            alt="promo banner"
+                        />
+                    )}
                     <span className="mb-4 inline-flex items-center rounded bg-green-100 px-2.5 py-0.5 text-sm font-medium text-green-800 dark:bg-green-200 dark:text-green-900">
                         <svg
                             className="-ml-1 mr-1 h-4 w-4"

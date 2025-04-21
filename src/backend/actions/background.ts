@@ -213,7 +213,6 @@ const updateUI = async () => {
     const templatetext = template?.name ? `\nTemplate ${template.name}` : '';
     const volume = template?.local_id;
     const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
-    const def = ['win11', '150', undefined];
 
     toast(
         `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}${templatetext}`,
@@ -242,6 +241,16 @@ const updateUI = async () => {
             })
         );
     }
+
+    appDispatch(
+        popup_open({
+            type: 'newGame',
+            data: {
+                image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141',
+                app_name: 'wukong'
+            }
+        })
+    );
 };
 
 export const preloadSilent = async () => {
