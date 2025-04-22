@@ -58,7 +58,7 @@ const handleClipboard = async () => {
 };
 
 const setDomain = async () => {
-    const defaultDomain = 'play.2.thinkmay.net';
+    const defaultDomain = 'play.3.thinkmay.net';
     const address = localStorage.getItem('thinkmay_domain');
     if (address == null) {
         localStorage.setItem('thinkmay_domain', defaultDomain);
