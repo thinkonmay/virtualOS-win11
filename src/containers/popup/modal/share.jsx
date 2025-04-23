@@ -17,7 +17,7 @@ export function share({ data: { ref, discount_code } }) {
         const url = ref != undefined ? new URL(ref) : new URL(originalurl.href);
         url.searchParams.set('ref', discount_code);
         setURL(url.toString());
-        navigator.clipboard.writeText(url);
+        navigator.clipboard.writeText(url.toString());
     }, []);
 
     const handleCopy = () => {
