@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
 import { BiSupport } from 'react-icons/bi';
-import { RiBookLine } from 'react-icons/ri';
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
-
 import {
     MdArrowBackIos,
     MdArrowForwardIos,
-    MdOutlineVideoSettings
+    MdOutlineVideoSettings,
+    MdShare
 } from 'react-icons/md';
-
-import { afterMath } from '../../backend/actions';
+import { afterMath, showLinkShare } from '../../backend/actions';
 import {
-    app_full,
     appDispatch,
     show_chat,
     startogg,
@@ -76,8 +73,17 @@ const Taskbar = () => {
                         )}
                     </button>
                     <div
+                        className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
+                        onClick={() => appDispatch(showLinkShare())}
+                    >
+                        <MdShare fontSize={'1.5rem'} />
+                        <span className="hidden md:block">
+                            {t[Contents.SHARE]}
+                        </span>
+                    </div>
+                    <div
                         id="supportNow"
-                        className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight flex rounded "
+                        className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
                         onClick={() => appDispatch(show_chat())}
                         data-action="sidepane/sidepane_bandtogg"
                         style={{ '--prefix': 'BAND' }}
@@ -178,6 +184,15 @@ const Taskbar = () => {
                         } taskright`}
                         data-remote={remote.active}
                     >
+                        <div
+                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
+                            onClick={() => appDispatch(showLinkShare())}
+                        >
+                            <MdShare strokeWidth={'0rem'} fontSize={'1.5rem'} />
+                            <span className="hidden md:block">
+                                {t[Contents.SHARE]}
+                            </span>
+                        </div>
                         <div
                             id="supportNow"
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "

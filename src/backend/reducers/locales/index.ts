@@ -152,7 +152,7 @@ export enum Contents {
     HIGH_MTU,
     HIGH_QUEUE,
     STRICT_TIMING,
-    EXTERNAL_TAB,
+    SHARE,
     EXTERNAL_TAB_EXPlAIN,
     STEAM_LOGIN,
     STEAM_LOGIN_EXPlAIN,
@@ -1014,9 +1014,9 @@ export function language() {
         'Đăng nhập steam bằng tài khoản bạn đã liên kết'
     );
 
-    en.set(Contents.EXTERNAL_TAB, 'Share link');
-    vn.set(Contents.EXTERNAL_TAB, 'Chia sẻ link');
-    id.set(Contents.EXTERNAL_TAB, 'Bagikan tautan');
+    en.set(Contents.SHARE, 'Share link');
+    vn.set(Contents.SHARE, 'Chia sẻ link');
+    id.set(Contents.SHARE, 'Bagikan tautan');
 
     en.set(Contents.EXTERNAL_TAB_EXPlAIN, 'Share link');
     vn.set(

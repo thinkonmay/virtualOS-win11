@@ -591,11 +591,10 @@ const PaymentFlow = ({
     const [second_left, setSecondLeft] = useState(0);
     const verify = async () => {
         setSecondLeft((old) => {
-            if (old > 0)
-                return old-1;
+            if (old > 0) return old - 1;
 
-            deny()
-            return old
+            deny();
+            return old;
         });
 
         if (await verify_transaction({ id })) {
@@ -611,7 +610,7 @@ const PaymentFlow = ({
 
     useEffect(() => {
         if (step != 'showQR') return;
-        setSecondLeft(300)
+        setSecondLeft(300);
         const interval = setInterval(verify, 1000);
         return async () => {
             clearInterval(interval);

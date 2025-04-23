@@ -9,7 +9,7 @@ import { originalurl } from '../../../backend/actions/background';
 
 export function share({ data: { ref, discount_code } }) {
     const close = () => appDispatch(popup_close());
-    const [isSuccess, setSuccess] = useState(false);
+    const [isSuccess, setSuccess] = useState(true);
     const [url, setURL] = useState('');
     const email = useAppSelector((state) => state.user.email);
 
@@ -19,10 +19,7 @@ export function share({ data: { ref, discount_code } }) {
         setURL(url.toString());
     }, []);
 
-    const handleCopy = () => {
-        setSuccess(true);
-        navigator.clipboard.writeText(url);
-    };
+    const handleCopy = () => navigator.clipboard.writeText(url);
 
     const finishShare = async () => {
         close();

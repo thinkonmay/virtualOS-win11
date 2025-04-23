@@ -124,15 +124,6 @@ export const listMobileSettings = [
     },
     {
         ui: true,
-        id: 'shareLinkBtn',
-        src: 'MdOutlineLink',
-        name: [Contents.EXTERNAL_TAB],
-        state: 'network.airplane',
-        action: 'showLinkShare',
-        explain: [Contents.EXTERNAL_TAB_EXPlAIN]
-    },
-    {
-        ui: true,
         id: 'shutdownBtn',
 
         src: 'MdOutlinePowerSettingsNew',
@@ -142,34 +133,12 @@ export const listMobileSettings = [
         style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
     },
     {
-        ui: true,
-        id: 'loggerBtn',
-        src: 'MdHighQuality',
-        name: [Contents.MAXIMUM_QUALITY],
-        state: 'hq',
-        action: 'toggle_hq',
-        explain: [Contents.MAXIMUM_QUALITY_EXPLAIN]
-    },
-    {
         id: 'fixKeyboardBtnMobile',
         src: 'MdAutoFixHigh',
         name: [Contents.SCAN_CODE],
         state: 'scancode',
         action: 'remote/scancode_toggle',
         explain: [Contents.SCAN_CODE_EXPLAIN]
-    },
-    {
-        src: 'MdVideogameAsset',
-        name: [Contents.HIDE_VM],
-        state: 'HideVM',
-        action: 'worker/toggle_hide_vm',
-        explain: [Contents.HIDE_VM_EXPLAIN]
-    },
-    {
-        src: 'MdOutlineNetworkWifi',
-        name: [Contents.HIGH_QUEUE],
-        state: 'HighQueue',
-        action: 'worker/toggle_high_queue'
     }
 ];
 export const listDesktopShortCut = [
@@ -207,16 +176,6 @@ export const listDesktopSettings = [
         state: 'scancode',
         action: 'remote/scancode_toggle',
         explain: [Contents.SCAN_CODE_EXPLAIN]
-    },
-    {
-        ui: true,
-        id: 'shareLinkBtn',
-
-        src: 'MdOutlineLink',
-        name: [Contents.EXTERNAL_TAB],
-        state: 'share_reference',
-        action: 'showLinkShare',
-        explain: [Contents.EXTERNAL_TAB_EXPlAIN]
     },
     {
         ui: true,
