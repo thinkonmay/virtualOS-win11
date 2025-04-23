@@ -47,6 +47,10 @@ type PopupData =
           data: {};
       }
     | {
+          type: 'shareBanner';
+          data: {};
+      }
+    | {
           type: 'newGame';
           data: {
               image?: string;

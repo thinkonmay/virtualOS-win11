@@ -254,6 +254,13 @@ const updateUI = async () => {
                 data: {}
             })
         );
+    else if (!unknown_user)
+        appDispatch(
+            popup_open({
+                type: 'shareBanner',
+                data: {}
+            })
+        );
     else
         appDispatch(
             popup_open({
