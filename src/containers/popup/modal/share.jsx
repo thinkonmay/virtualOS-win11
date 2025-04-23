@@ -9,7 +9,7 @@ import { originalurl } from '../../../backend/actions/background';
 
 export function share({ data: { ref, discount_code } }) {
     const close = () => appDispatch(popup_close());
-    const [isSuccess, setSuccess] = useState(true);
+    const [isSuccess, setSuccess] = useState(false);
     const [url, setURL] = useState('');
     const email = useAppSelector((state) => state.user.email);
 
@@ -17,9 +17,13 @@ export function share({ data: { ref, discount_code } }) {
         const url = ref != undefined ? new URL(ref) : new URL(originalurl.href);
         url.searchParams.set('ref', discount_code);
         setURL(url.toString());
+        navigator.clipboard.writeText(url);
     }, []);
 
-    const handleCopy = () => navigator.clipboard.writeText(url);
+    const handleCopy = () => {
+        setSuccess(true);
+        navigator.clipboard.writeText(url);
+    };
 
     const finishShare = async () => {
         close();
@@ -92,15 +96,13 @@ export function share({ data: { ref, discount_code } }) {
                                 </p>
                             </div>
                         </div>
-                        {isSuccess ? (
-                            <button
-                                type="submit"
-                                className="w-full cursor-pointer rounded-lg bg-primary-700 px-5 py-3 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                onClick={finishShare}
-                            >
-                                Share to your friends
-                            </button>
-                        ) : null}
+                        <button
+                            type="submit"
+                            className="w-full cursor-pointer rounded-lg bg-primary-700 px-5 py-3 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            onClick={finishShare}
+                        >
+                            Share to your friends
+                        </button>
                     </div>
                     <button
                         type="button"
