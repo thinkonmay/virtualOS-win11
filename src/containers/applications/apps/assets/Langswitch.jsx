@@ -2,14 +2,14 @@ import { useLayoutEffect, useState } from 'react';
 import { appDispatch, update_language } from '../../../../backend/reducers';
 import { localStorageKey } from '../../../../backend/utils/constant';
 
-const allowed = ['ENG', 'VN', 'ID'];
+export const allowed_language = ['ENG', 'VN', 'ID'];
 function LangSwitch() {
     const [languageValue, setLanguageValue] = useState('');
 
     useLayoutEffect(() => {
         let languageLocal =
             localStorage.getItem(localStorageKey.language) ?? 'VN';
-        if (!allowed.includes(languageLocal)) languageLocal = 'ENG';
+        if (!allowed_language.includes(languageLocal)) languageLocal = 'ENG';
 
         setLanguageValue(languageLocal);
         appDispatch(update_language(languageLocal));
@@ -17,7 +17,7 @@ function LangSwitch() {
 
     const updateLanguage = (e) => {
         const language = e.target.value;
-        if (!allowed.includes(language)) return;
+        if (!allowed_language.includes(language)) return;
 
         localStorage.setItem('language', language);
         setLanguageValue(language);
