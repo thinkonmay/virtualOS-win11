@@ -42,7 +42,7 @@ export function share({ data: { ref, discount_code } }) {
             <div className="relative p-4 w-full max-w-md max-h-full">
                 <div className="relative rounded-lg bg-white p-4 text-center shadow dark:bg-gray-800">
                     <img
-                        src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/promo-banner.jpg"
+                        src="img/asset/sharebanner.jpg"
                         className="mb-4 h-36 w-full rounded bg-cover hidden md:block"
                         alt="promo banner"
                     />
