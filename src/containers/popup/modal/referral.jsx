@@ -20,7 +20,8 @@ export function shareBanner() {
     }, []);
 
     const finishShare = async () => {
-        close();
+        close()
+        navigator.clipboard.writeText(url);
         await navigator.share({
             title: `Chơi game ngay trên Thinkmay cùng với ${email}`,
             url
