@@ -37,8 +37,8 @@ export function shareBanner() {
                 <div className="relative rounded-lg bg-white p-8 text-center shadow dark:bg-gray-800">
                     {isMobile() ? null : (
                         <img
-                            src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141"
-                            className="mb-4 h-[360px] w-[640px] rounded bg-cover hidden md:block"
+                            src="img/asset/sharebanner.jpg"
+                            className="mb-4 h-[288px] w-[704px] rounded bg-cover hidden md:block"
                             alt="promo banner"
                         />
                     )}
@@ -59,8 +59,9 @@ export function shareBanner() {
                     </span>
                     <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
                         <h3 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
-                            Nhận ngay <span className='text-blue-400'>01 ngày</span>{' '}
-                            sử dụng khi giới thiệu bạn bè
+                            Nhận ngay{' '}
+                            <span className="text-blue-400">01 ngày</span> sử
+                            dụng khi giới thiệu bạn bè
                         </h3>
                         <p className="text-sm">
                             Chia sẻ link giới thiệu và nhận khuyến mãi cho mỗi
