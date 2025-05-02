@@ -1,6 +1,5 @@
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { MdArrowForward } from 'react-icons/md';
-import { login } from '../../../backend/actions';
 import {
     app_toggle,
     appDispatch,
@@ -105,6 +104,8 @@ const DetailPage = ({ app }) => {
         );
     };
 
+    const filterName = ['FC Online', 'Windows 10'];
+    const isShowBtnBuyAcc = !filterName.includes(name);
     return (
         <div className="detailpage w-full absolute top-0 flex">
             <div className="detailcont">
@@ -137,7 +138,9 @@ const DetailPage = ({ app }) => {
                                         >
                                             {t[[Contents.TA_CRATE_NEW_PC]]}
                                         </button>
-                                        <G4MarketBtn />
+                                        {isShowBtnBuyAcc ? (
+                                            <G4MarketBtn />
+                                        ) : null}
                                     </div>
 
                                     <div className="text-sm p-3  mt-6">
@@ -221,8 +224,11 @@ const DownPage = ({ action }) => {
                         <p className="storeSubHeading font-bold text-left mt-2">
                             {t[Contents.TA_SUBTITLE]}
                         </p>
+                        <p className="storeSubHeading font-bold text-left mt-2">
+                            Tạo máy mới sẽ xoá dữ liệu máy cũ
+                        </p>
                     </div>
-                    <G4MarketBtn offset="bottom" />
+                    {/*<G4MarketBtn offset="bottom" />*/}
                 </div>
                 <div className="appscont mt-16">
                     {games.map((game, i) => (
