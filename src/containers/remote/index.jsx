@@ -68,7 +68,8 @@ export const Remote = () => {
             new RemoteDesktopClient(
                 new VideoWrapper(remoteVideo.current, auth.videoUrl),
                 new AudioWrapper(remoteAudio.current, auth.audioUrl),
-                auth.dataUrl
+                auth.dataUrl,
+                auth.microUrl
             )
         );
 
