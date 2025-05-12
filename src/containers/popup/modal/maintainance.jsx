@@ -48,7 +48,17 @@ export function maintainance({ data: {} }) {
                         <h3 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
                             Server {currentAddress} đang được bảo trì
                             <br />
-                            và hiện đang không khả dụng
+                            và hiện đang không khả dụng.
+                            <br />
+                            Thông báo thay đổi tên server như sau:
+                            <br />
+                            play3 chuyển sang haiphong
+                            <br />
+                            v4 chuyển sang saigon1
+                            <br />
+                            play2 chuyển sang saigon2
+                            <br />
+                            Vui lòng chọn lại đúng server theo gói đăng ký.
                         </h3>
                     </div>
                     <div className="flex gap-2">
