@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
 import {
     appDispatch,
     change_bitrate,
     change_framerate,
     close_remote,
-    popup_close,
-    popup_open,
     remote_connect,
     remote_ready,
     RootState,
@@ -31,9 +30,8 @@ import {
     set_hq,
     SIZE
 } from '../../../src-tauri/singleton';
-import { BuilderHelper } from './helper';
 import { originalurl } from '../actions/background';
-import toast from 'react-hot-toast';
+import { BuilderHelper } from './helper';
 
 export type Metric = {
     receivefps: number[];
@@ -182,6 +180,7 @@ export const remoteAsync = {
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
         const address = url.searchParams.get('host');
         const audio = url.searchParams.get('audio');
+        const mic = url.searchParams.get('mic');
         const video = url.searchParams.get('video');
         const data = url.searchParams.get('data');
         const high_queue = store.getState().worker.HighQueue;
@@ -196,6 +195,7 @@ export const remoteAsync = {
             remote_connect({
                 videoUrl: `wss://${address}:444/broadcasters/webrtc?token=${video}${opt}`,
                 audioUrl: `wss://${address}:444/broadcasters/webrtc?token=${audio}`,
+                microUrl: `wss://${address}:444/broadcasters/microphone?token=${mic}`,
                 dataUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
             })
         );
