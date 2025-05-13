@@ -14,6 +14,8 @@ import {
 } from '.';
 import {
     APIError,
+    ClaimSteam,
+    ClaimStorage,
     CloseSession,
     Computer,
     GetInfo,
@@ -21,7 +23,10 @@ import {
     GLOBAL,
     ParseRequest,
     POCKETBASE,
-    StartThinkmay
+    S3Credential,
+    Session,
+    StartThinkmay,
+    Steam
 } from '../../../src-tauri/api';
 import { ready } from '../../../src-tauri/singleton';
 import { formatWaitingLog } from '../utils/formatWatingLog';
@@ -165,6 +170,42 @@ export const workerAsync = {
             appDispatch(remote_connect(result));
             if (!(await ready())) appDispatch(close_remote());
             else appDispatch(remote_ready());
+        }
+    ),
+    unclaim_steam: createAsyncThunk(
+        'unclaim_steam',
+        async (_: Session, { getState }): Promise<void> => {}
+    ),
+    unclaim_storage: createAsyncThunk(
+        'unclaim_storage',
+        async (_: Session, { getState }): Promise<void> => {}
+    ),
+    claim_steam: createAsyncThunk(
+        'claim_steam',
+        async (_: void, { getState }): Promise<Steam> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
+
+            const session = await ClaimSteam(currentAddress);
+            if (session instanceof APIError) throw session;
+            else if (session.app == undefined)
+                throw new Error('no steam credential available');
+            else return session.app;
+        }
+    ),
+    claim_storage: createAsyncThunk(
+        'claim_storage',
+        async (_: void, { getState }): Promise<S3Credential> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
+
+            const session = await ClaimStorage(currentAddress);
+            if (session instanceof APIError) throw session;
+            else if (session.app == undefined)
+                throw new Error('no storage credential available');
+            else return session.s3bucket;
         }
     ),
     update_local_worker: createAsyncThunk(
@@ -408,6 +449,23 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.unclaim_volume,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.claim_steam,
+                hander: (state, action) => {
+                    const app = action.payload;
+                    window.open(
+                        `thinkmay://${btoa(
+                            `${app.username}:${app.credential}`
+                        )}`
+                    );
+                }
+            },
+            {
+                fetch: workerAsync.claim_storage,
+                hander: (state, action) => {
+                    action.payload;
+                }
             },
             {
                 fetch: workerAsync.worker_refresh_ui,

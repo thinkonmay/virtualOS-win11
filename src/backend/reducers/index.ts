@@ -162,6 +162,10 @@ export const {
     fetch_app_access,
     change_app_access,
     wait_and_claim_volume,
+    claim_steam,
+    claim_storage,
+    unclaim_steam,
+    unclaim_storage,
     unclaim_volume
 } = workerAsync;
 export const {
