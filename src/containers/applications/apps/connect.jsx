@@ -3,6 +3,7 @@ import {
     app_full,
     app_toggle,
     cache_setting,
+    change_preferred_codec,
     fetch_app_access,
     fetch_configuration,
     popup_open,
@@ -262,7 +263,9 @@ function Customize({ onClose: close }) {
 
     const { configuration } = metadata ?? { configuration: {} };
 
-    const { scancode, hq } = useAppSelector((state) => state.remote);
+    const { scancode, hq, preferred_codec } = useAppSelector(
+        (state) => state.remote
+    );
 
     const actions = [
         {
@@ -289,6 +292,16 @@ function Customize({ onClose: close }) {
             name: `Scan code`,
             state: scancode,
             action: () => appDispatch(scancode_toggle())
+        },
+        {
+            name: `H.265 codec`,
+            state: preferred_codec == 'h265',
+            action: () =>
+                appDispatch(
+                    change_preferred_codec(
+                        preferred_codec == 'h265' ? 'h264' : 'h265'
+                    )
+                )
         }
     ];
 

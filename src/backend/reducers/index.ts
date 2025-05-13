@@ -147,6 +147,7 @@ export const {
     close_remote,
     change_bitrate,
     change_framerate,
+    change_preferred_codec,
     toggle_fullscreen,
     set_fullscreen,
     pointer_lock,

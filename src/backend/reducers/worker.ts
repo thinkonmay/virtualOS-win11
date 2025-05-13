@@ -114,6 +114,7 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const {
+                remote: { preferred_codec },
                 worker: { HideVM, HighMTU, HighQueue, currentAddress }
             } = getState() as RootState;
 
@@ -138,6 +139,7 @@ export const workerAsync = {
                 const resp = await StartThinkmay(
                     currentAddress,
                     info.virtReady ? { HideVM: HideVM } : undefined,
+                    preferred_codec,
                     info.virtReady
                         ? (txt) =>
                               finish

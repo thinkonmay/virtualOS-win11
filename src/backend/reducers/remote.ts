@@ -4,6 +4,7 @@ import {
     appDispatch,
     change_bitrate,
     change_framerate,
+    change_preferred_codec,
     close_remote,
     remote_connect,
     remote_ready,
@@ -53,6 +54,7 @@ type Data = {
     hq: boolean;
     prev_hq: boolean;
     direct_access: boolean;
+    preferred_codec: 'h264' | 'h265';
 
     scancode: boolean;
     no_strict_timing: boolean;
@@ -89,6 +91,7 @@ const initialState: Data = {
     fullscreen: false,
     pointer_lock: false,
     relative_mouse: false,
+    preferred_codec: 'h264',
 
     frame_drop: false,
     bitrate: 0,
@@ -225,12 +228,13 @@ export const remoteAsync = {
             const user = (getState() as RootState).user.id;
             const { HideVM, HighMTU, HighQueue } = (getState() as RootState)
                 .worker;
-            const { hq, bitrate, framerate, scancode } = (
+            const { hq, bitrate, framerate, scancode, preferred_codec } = (
                 getState() as RootState
             ).remote;
 
             const setting = {
                 hq,
+                preferred_codec,
                 HideVM,
                 HighMTU,
                 scancode,
@@ -271,6 +275,7 @@ export const remoteAsync = {
         const settings = await POCKETBASE().collection('setting').getFullList<{
             setting: {
                 hq?: boolean;
+                preferred_codec?: 'h264' | 'h265';
                 HideVM?: boolean;
                 HighMTU?: boolean;
                 HighQueue?: boolean;
@@ -287,6 +292,7 @@ export const remoteAsync = {
                         HideVM,
                         HighMTU,
                         HighQueue,
+                        preferred_codec,
                         scancode: _scancode
                     }
                 }
@@ -295,6 +301,8 @@ export const remoteAsync = {
             appDispatch(toggle_high_mtu(HighMTU));
             appDispatch(toggle_high_queue(HighQueue));
             appDispatch(toggle_hq(hq));
+            if (['h264', 'h265'].includes(preferred_codec))
+                appDispatch(change_preferred_codec(preferred_codec));
             if (_scancode) appDispatch(scancode(_scancode));
         }
     }),
@@ -439,6 +447,12 @@ export const remoteSlice = createSlice({
         },
         change_bitrate: (state, action: PayloadAction<number>) => {
             state.bitrate = action.payload;
+        },
+        change_preferred_codec: (
+            state,
+            action: PayloadAction<'h264' | 'h265'>
+        ) => {
+            state.preferred_codec = action.payload;
         },
         toggle_objectfit: (state) => {
             const currentState = state.objectFit;
