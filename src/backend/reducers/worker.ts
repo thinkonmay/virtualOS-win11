@@ -184,30 +184,26 @@ export const workerAsync = {
     ),
     claim_steam: createAsyncThunk(
         'claim_steam',
-        async (_: void, { getState }): Promise<Steam> => {
+        async (_: void, { getState }): Promise<string> => {
             const {
                 worker: { currentAddress }
             } = getState() as RootState;
 
             const session = await ClaimSteam(currentAddress);
             if (session instanceof APIError) throw session;
-            else if (session.app == undefined)
-                throw new Error('no steam credential available');
-            else return session.app;
+            else return session;
         }
     ),
     claim_storage: createAsyncThunk(
         'claim_storage',
-        async (_: void, { getState }): Promise<S3Credential> => {
+        async (_: void, { getState }): Promise<string> => {
             const {
                 worker: { currentAddress }
             } = getState() as RootState;
 
             const session = await ClaimStorage(currentAddress);
             if (session instanceof APIError) throw session;
-            else if (session.app == undefined)
-                throw new Error('no storage credential available');
-            else return session.s3bucket;
+            else return session;
         }
     ),
     update_local_worker: createAsyncThunk(
@@ -455,18 +451,13 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.claim_steam,
                 hander: (state, action) => {
-                    const app = action.payload;
-                    window.open(
-                        `thinkmay://${btoa(
-                            `${app.username}:${app.credential}`
-                        )}`
-                    );
+                    window.open(`thinkmay:${action.payload}`);
                 }
             },
             {
                 fetch: workerAsync.claim_storage,
                 hander: (state, action) => {
-                    action.payload;
+                    window.open(`thinkmay:${action.payload}`);
                 }
             },
             {
