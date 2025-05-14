@@ -210,6 +210,7 @@ export const userAsync = {
                 .select(
                     'name, policy->size, policy->limit_hour, policy->total_days , price->amount, metadata->allow_payment'
                 )
+                .is('metadata->>disable', null)
                 .eq('active', true);
 
             if (error != null)

@@ -46,9 +46,17 @@ export function maintainance({ data: {} }) {
                     </span>
                     <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
                         <h3 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">
-                            Server {currentAddress} đang được bảo trì
+                            Server {currentAddress} đang được bảo trì.
                             <br />
-                            và hiện đang không khả dụng
+                            Chi tiết:
+                            <br />
+                            play3 chuyển sang haiphong
+                            <br />
+                            v4 chuyển sang saigon1
+                            <br />
+                            play2 chuyển sang saigon2
+                            <br />
+                            Nếu gặp khó khăn, vui lòng nhắn tin cho fanpage Thinkmay.
                         </h3>
                     </div>
                     <div className="flex gap-2">
