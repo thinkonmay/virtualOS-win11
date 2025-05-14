@@ -7,16 +7,19 @@ import {
     RootState,
     appDispatch,
     app_full,
+    app_remove,
     app_toggle,
     check_worker,
     desk_remove,
     direct_access,
     fetch_active_discounts,
+    fetch_app_access,
+    fetch_buckets,
     fetch_configuration,
     fetch_domain,
+    fetch_error_message,
     fetch_store,
     fetch_subscription,
-    update_subscription_metadata,
     fetch_user,
     fetch_wallet,
     get_plans,
@@ -29,12 +32,10 @@ import {
     show_tutorial,
     store,
     sync,
-    worker_refresh,
     update_game_tag,
-    fetch_error_message,
-    fetch_app_access
+    update_subscription_metadata,
+    worker_refresh
 } from '../reducers';
-import { Contents } from '../reducers/locales/index.ts';
 
 export const originalurl = new URL(window.location.href);
 
@@ -82,6 +83,7 @@ const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
 const fetchConfiguration = () => appDispatch(fetch_configuration());
 const fetchAppAccess = () => appDispatch(fetch_app_access());
+const fetchBuckets = () => appDispatch(fetch_buckets());
 const fetchDomains = () => appDispatch(fetch_domain());
 const fetchErrorMessages = () => appDispatch(fetch_error_message());
 const fetchUser = () => appDispatch(fetch_user());
@@ -96,9 +98,10 @@ const updateGametag = () => appDispatch(update_game_tag());
 const updateUI = async () => {
     const {
         user: { subscription, email, discounts },
-        worker: { currentAddress }
+        worker: { currentAddress, bucket }
     } = store.getState();
 
+    if (bucket == undefined) appDispatch(app_remove('storage'));
     const unknown_user = email == undefined || email == 'unkown' || email == '';
 
     const rms = [];
@@ -289,6 +292,7 @@ export const preloadSilent = async () => {
         fetchApp(),
         fetchPlans(),
         fetchStore(),
+        fetchBuckets(),
         fetchResources()
     ]);
     await Promise.all([updateSubmetadata(), updateGametag()]);

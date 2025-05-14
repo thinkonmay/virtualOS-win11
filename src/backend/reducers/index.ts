@@ -86,6 +86,7 @@ export const {
     app_showdesk,
     app_maximize,
     app_payload,
+    app_remove,
     app_minimize
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
@@ -161,6 +162,7 @@ export const {
     worker_refresh_ui,
     fetch_configuration,
     fetch_app_access,
+    fetch_buckets,
     change_app_access,
     wait_and_claim_volume,
     claim_steam,

@@ -56,6 +56,13 @@ const apps: AppData[] = [
         size: 'mini'
     },
     {
+        name: [Contents.STORAGE_APP],
+        id: 'storage',
+        action: 'claim_storage',
+        image: 'explorer',
+        size: 'mini'
+    },
+    {
         name: [Contents.DISCORD_APP],
         id: 'discord',
         icon: 'discord',
@@ -63,13 +70,6 @@ const apps: AppData[] = [
         payload: externalLink.DISCORD_LINK,
         mono: true
     },
-    //{
-    //    name: [Contents.FANPAGE_APP],
-    //    id: 'facebook',
-    //    action: 'apps/app_external',
-    //    payload: externalLink.FACEBOOK_LINK,
-    //    mono: true
-    //},
     {
         name: [Contents.MESSAGE_APP],
         id: 'facebook',
@@ -87,6 +87,7 @@ var { taskbar, desktop } = {
         'facebook',
         'store',
         'connectPc',
+        'storage',
         'payment',
         'facebook',
         ...(DevEnv ? ['worker'] : [])

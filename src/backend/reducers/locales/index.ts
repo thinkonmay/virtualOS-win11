@@ -215,6 +215,7 @@ export enum Contents {
     PAYMENT_APP,
     TEMPLATE_APP,
     CONNECT_APP,
+    STORAGE_APP,
     DISCORD_APP,
     FANPAGE_APP,
     MESSAGE_APP,
@@ -606,6 +607,10 @@ export function language() {
     en.set(Contents.CONNECT_APP, 'Connect to YourPC');
     vn.set(Contents.CONNECT_APP, 'Kết nối máy ảo');
     id.set(Contents.CONNECT_APP, 'Sambungkan ke PC Anda');
+
+    en.set(Contents.STORAGE_APP, 'Open cloud storage');
+    vn.set(Contents.STORAGE_APP, 'Truy cập dữ liệu');
+    id.set(Contents.STORAGE_APP, 'Open cloud storage');
 
     en.set(Contents.FANPAGE_APP, 'Fanpage');
     vn.set(Contents.FANPAGE_APP, 'Fanpage');

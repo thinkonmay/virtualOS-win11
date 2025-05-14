@@ -65,6 +65,7 @@ type WorkerType = {
     HighQueue: boolean;
 
     metadata?: Metadata;
+    bucket?: string;
     app_access?: {
         id: string;
         app_id: string;
@@ -296,6 +297,18 @@ export const workerAsync = {
             await appDispatch(fetch_app_access());
         }
     ),
+    fetch_buckets: createAsyncThunk(
+        'fetch_buckets',
+        async (): Promise<string | undefined> => {
+            const volumes = await POCKETBASE()
+                .collection('buckets')
+                .getFullList<{
+                    bucket_name: string;
+                }>();
+
+            return volumes?.[0]?.bucket_name;
+        }
+    ),
     fetch_app_access: createAsyncThunk(
         'fetch_app_access',
         async (): Promise<
@@ -474,6 +487,12 @@ export const workerSlice = createSlice({
                 fetch: workerAsync.fetch_app_access,
                 hander: (state, action) => {
                     state.app_access = action.payload;
+                }
+            },
+            {
+                fetch: workerAsync.fetch_buckets,
+                hander: (state, action) => {
+                    state.bucket = action.payload;
                 }
             },
             {

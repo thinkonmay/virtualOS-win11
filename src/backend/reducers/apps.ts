@@ -56,7 +56,9 @@ export const appSlice = createSlice({
             state.hz += 1;
             obj.z = state.hz;
         },
-
+        app_remove: (state, action: PayloadAction<string>) => {
+            state.apps = state.apps.filter((x) => action.payload != x.id);
+        },
         app_close: (state, action: PayloadAction<string>) => {
             const obj = state.apps.find((x) => action.payload == x.id);
             if (obj == undefined) return;
