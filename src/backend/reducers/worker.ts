@@ -75,7 +75,7 @@ type WorkerType = {
 const initialState: WorkerType = {
     data: {},
 
-    currentAddress: 'play.2.thinkmay.net',
+    currentAddress: 'saigon2.thinkmay.net',
     HideVM: true,
     HighMTU: false,
     HighQueue: false

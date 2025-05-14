@@ -59,7 +59,7 @@ const handleClipboard = async () => {
 };
 
 const setDomain = async () => {
-    const defaultDomain = 'play.2.thinkmay.net';
+    const defaultDomain = 'saigon2.thinkmay.net';
     const address = localStorage.getItem('thinkmay_domain');
     if (address == null) {
         localStorage.setItem('thinkmay_domain', defaultDomain);
