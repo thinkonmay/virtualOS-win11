@@ -288,7 +288,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
             }
         },
         {
-            title: 'Gói cao cấp',
+            title: 'Gói tháng cao cấp',
             name: 'month2',
             bonus: {
                 time: 0,

@@ -26,7 +26,7 @@ const subcontents = [
         name: 'month1'
     },
     {
-        title: 'Gói cao cấp',
+        title: 'Gói tháng cao cấp',
         type: 'plan',
         name: 'month2'
     },
