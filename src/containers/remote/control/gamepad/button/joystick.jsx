@@ -2,7 +2,7 @@ import { memo, useId, useRef, useState } from 'react';
 import { gamepadAxis } from '../../../../../../src-tauri/singleton';
 
 const speed = 0.48;
-const knobRadius = 0.3;
+const knobRadius = 0.6;
 
 export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
     const id = useId();
@@ -30,9 +30,7 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
         knobRef.current.style.transform = `translate(${x}px, ${y}px)`;
     };
 
-    const handlePointerMove = (e) => updatePosition(e);
-
-    const handlePointerUp = async () => {
+    const handlePointerUp = () => {
         knobRef.current.style.transform = 'translate(0px, 0px)';
         gamepadAxis(0, 0, isRight);
     };
