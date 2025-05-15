@@ -17,7 +17,7 @@ import {
     ready,
     virtMouseWheel
 } from '../../../src-tauri/singleton';
-import { showConnect } from '../../backend/actions';
+import { clickShortCut, showConnect } from '../../backend/actions';
 import {
     appDispatch,
     open_gaming_keyboard,
@@ -100,7 +100,7 @@ export const Remote = () => {
                 ) : gamingKeyboard ? (
                     <GamingKeyboard />
                 ) : (
-                    <Plugin></Plugin>
+                    <Plugin />
                 )
             ) : null}
 
@@ -154,18 +154,14 @@ const Plugin = () => {
             <div className="z-10 absolute bottom-[40%]  left-4 flex flex-col gap-4">
                 <button
                     className="py-2 px-1 rounded-md bg-[#212121c4]"
-                    onClick={() => {
-                        virtMouseWheel(-150);
-                    }}
+                    onClick={() => clickShortCut(['control', 'v'])}
                 >
                     <LuClipboardPaste width={32} color="#fff" />
                 </button>
 
                 <button
                     className="py-2 px-1 rounded-md bg-[#212121c4]"
-                    onClick={() => {
-                        virtMouseWheel(150);
-                    }}
+                    onClick={() => clickShortCut(['control', 'c'])}
                 >
                     <LuClipboardCopy width={32} color="#fff" />
                 </button>
@@ -174,18 +170,14 @@ const Plugin = () => {
             <div className="z-10 absolute bottom-[40%]  right-4 flex flex-col gap-4">
                 <button
                     className="py-2 rounded-md bg-[#212121c4]"
-                    onClick={() => {
-                        virtMouseWheel(-150);
-                    }}
+                    onClick={() => virtMouseWheel(-150)}
                 >
                     <Icon src="mouseUp" width={32} />
                 </button>
 
                 <button
                     className="py-2 rounded-md bg-[#212121c4]"
-                    onClick={() => {
-                        virtMouseWheel(150);
-                    }}
+                    onClick={() => virtMouseWheel(150)}
                 >
                     <Icon src="mouseDown" width={32} />
                 </button>
@@ -194,11 +186,9 @@ const Plugin = () => {
             <div className="z-10 absolute top-16 left-4 flex flex-col gap-4">
                 <button
                     className="py-2 px-1 rounded-md bg-[#212121c4] text-white"
-                    onClick={() => {
-                        virtMouseWheel(150);
-                    }}
+                    onClick={() => clickShortCut(['lwin', 'd'])}
                 >
-                    esc
+                    home
                 </button>
             </div>
         </>

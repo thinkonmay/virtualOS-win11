@@ -68,13 +68,7 @@ export const btnGamepadSizes: IGamePadBtnSize = {
     rb: 1
 };
 
-export const listMobileShortCut = [
-    {
-        name: 'Win D',
-        val: ['lwin', 'd'],
-        explain: [Contents.WIN_D_SHORTCUT]
-    }
-];
+export const listMobileShortCut = [];
 export const listMobileSettings = [
     {
         ui: true,
