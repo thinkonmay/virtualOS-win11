@@ -9,7 +9,7 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
     const ref = useRef(null);
     const knobRef = useRef(null);
 
-    const updatePosition = (event) => {
+    const handlePointerMove = (event) => {
         const touch = event.changedTouches?.[0];
         const rect = ref.current.getBoundingClientRect();
         let x = (touch.clientX - rect.left - rect.width / 2) * speed;
