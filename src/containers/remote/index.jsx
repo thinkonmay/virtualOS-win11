@@ -191,6 +191,14 @@ const Plugin = () => {
                     home
                 </button>
             </div>
+            <div className="z-10 absolute top-16 right-4 flex flex-col gap-4">
+                <button
+                    className="py-2 px-1 rounded-md bg-[#212121c4] text-white"
+                    onClick={() => clickShortCut(['Enter'])}
+                >
+                    enter
+                </button>
+            </div>
         </>
     );
 };
