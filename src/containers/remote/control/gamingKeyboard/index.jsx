@@ -14,7 +14,7 @@ import {
     set_keyboard_edit_state,
     useAppSelector
 } from '../../../../backend/reducers';
-import { CustomJoyStick } from '../gamepad/button/joystick';
+import { VirtualASDW } from '../gamepad/button/joystick';
 import { GamingKeyboardButton } from './components/button';
 
 import {
@@ -129,31 +129,29 @@ function GamingKeyboard() {
             switch (key.type) {
                 case 'joystick':
                     return (
-                        <Draggable
-                            key={key.id}
-                            disabled={true}
-                            nodeRef={joystickWrapperRef}
-                            position={{
+                        <div className="fixed">
+                            <Draggable
+                                key={key.id}
+                                disabled={true}
+                                nodeRef={joystickWrapperRef}
+                                position={{
                                 x:
                                     deviceResolution.deviceWidth *
                                     key.position.x,
                                 y:
                                     deviceResolution.deviceHeight *
                                     key.position.y
-                            }}
-                        >
-                            <div
-                                id={key.id}
-                                className="wrapperDraggable"
-                                ref={joystickWrapperRef}
+                                }}
                             >
-                                <CustomJoyStick
-                                    draggable={false}
-                                    size={100}
-                                    isRight={true}
-                                />
-                            </div>
-                        </Draggable>
+                                <div
+                                    id={key.id}
+                                    className="wrapperDraggable"
+                                    ref={joystickWrapperRef}
+                                >
+                                    <VirtualASDW keycallback={console.log} />
+                                </div>
+                            </Draggable>
+                        </div>
                     );
                 case 'key':
                     return (
