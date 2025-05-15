@@ -64,13 +64,10 @@ const defaultButtonGroupRightValue = {
     btnB: { x: 0.9, y: 0.52 },
     btnX: { x: 0.89, y: 0.74 },
     ybxa: { x: 0.93, y: 0.45 },
-    subBtn: { x: 0.45, y: 0.03 }
+    subBtn: { x: 0.45, y: 0.9 }
 };
 
 export const ButtonGroupRight = (props) => {
-    const btnSize = useAppSelector(
-        (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
-    );
     const btnSizes = useAppSelector(
         (state) => state.sidepane.mobileControl.gamepadSetting.btnSizes
     );
@@ -243,7 +240,6 @@ export const ButtonGroupRight = (props) => {
         localStorage.setItem(`right_group_pos3`, JSON.stringify(defaultPos));
     }, [DefaultPosition]);
 
-    const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
     const subBtnRef = useRef(null);
 
@@ -384,7 +380,6 @@ export const ButtonGroupRight = (props) => {
                     ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
-                        ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSizes.rightJt}
                         isRight={true}
@@ -407,12 +402,10 @@ export const ButtonGroupRight = (props) => {
                         <MdArrowLeft />
                     </div>
                     <div
-                        onClick={() => {
-                            appDispatch(toggle_gamepad());
-                        }}
-                        className="w-7 h-7 rounded-full flex items-center justify-center text-white bg-[#da5102]"
+                        className="centerButton"
+                        onClick={() => appDispatch(toggle_gamepad())}
                     >
-                        ✕
+                        close
                     </div>
                     <div
                         className="centerButton"
@@ -574,7 +567,6 @@ export const ButtonGroupLeft = (props) => {
         appDispatch(select_btn_gamepad(key));
     };
     const dpadRef = useRef(null);
-    const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
     return (
         <>
@@ -633,7 +625,7 @@ export const ButtonGroupLeft = (props) => {
                         selected == 'dpad' && props.draggable ? 'selected' : ''
                     }`}
                 >
-                    <DPad ref={dpadRef} size={BUTTON_SIZE * btnSizes.dpad} />
+                    <DPad size={BUTTON_SIZE * btnSizes.dpad} />
                 </div>
             </Draggable>
             <GamepadButton
@@ -675,9 +667,7 @@ export const ButtonGroupLeft = (props) => {
                     ref={joystickWrapperRef}
                 >
                     <CustomJoyStick
-                        color="black"
                         isRight={false}
-                        ref={joystickRef}
                         draggable={props.draggable}
                         size={JOYSTICK_SIZE * btnSizes.leftJt}
                     />
@@ -738,18 +728,6 @@ const NavSettings = ({ show }) => {
                         </button>
                     </div>
                 </div>
-                {/*<div className='ctnContent'>
-                    <p className='title'>Độ mờ:</p>
-                    <div className='btnGroup'>
-                        <button>
-                            -
-                        </button>
-
-                        <p>100%</p>
-
-                        <button>+</button>
-                    </div>
-                </div>*/}
             </div>
 
             <div className="ctnBtns ">

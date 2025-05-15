@@ -26,7 +26,6 @@ const GamepadButton = ({
     );
     const [holding, setHolding] = useState(false);
     const buttonRef = useRef(null);
-    const buttonChildRef = useRef(null);
 
     const handleTouchStart = (e) => {
         onTouchStart();
@@ -64,11 +63,9 @@ const GamepadButton = ({
             >
                 <div
                     id={id}
-                    //ref={buttonRef}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                     onTouchCancel={handleTouchCancel}
-                    ref={buttonChildRef}
                     className={`${className} defaultButton ${type} ${
                         holding ? 'hold' : ''
                     }`}

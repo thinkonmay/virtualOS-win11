@@ -4,6 +4,7 @@ import {
     appDispatch,
     decrease_key_gamingKeyboard,
     delete_key_gamingKeyboard,
+    hide_gaming_keyboard,
     increase_key_gamingKeyboard,
     move_key_gamingKeyboard,
     save_gamingKeyboard_to_local,
@@ -43,7 +44,6 @@ function GamingKeyboard() {
         deviceHeight: window.innerHeight
     });
 
-    const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
     useEffect(() => {
         window.addEventListener('resize', handleResize);
@@ -148,7 +148,6 @@ function GamingKeyboard() {
                                 ref={joystickWrapperRef}
                             >
                                 <CustomJoyStick
-                                    ref={joystickRef}
                                     draggable={false}
                                     size={100}
                                     isRight={true}
@@ -216,6 +215,35 @@ function GamingKeyboard() {
                             }}
                         >
                             <Icon fontSize="1.2rem"></Icon>
+                        </GamingKeyboardButton>
+                    );
+                case 'close':
+                    return (
+                        <GamingKeyboardButton
+                            id={key.id}
+                            key={key.id}
+                            onTouchStart={() => {}}
+                            onTouchEnd={() =>
+                                appDispatch(hide_gaming_keyboard())
+                            }
+                            onStop={handleStop}
+                            onDrag={handleDrag}
+                            draggable={gamingKeyboard.editState == 'draggable'}
+                            style={{
+                                // backgroundColor: '#da5102',
+                                width: `${50 * key.size}px`,
+                                height: `${50 * key.size}px`
+                            }}
+                            pos={{
+                                x:
+                                    deviceResolution.deviceWidth *
+                                    key.position.x,
+                                y:
+                                    deviceResolution.deviceHeight *
+                                    key.position.y
+                            }}
+                        >
+                            close
                         </GamingKeyboardButton>
                     );
             }

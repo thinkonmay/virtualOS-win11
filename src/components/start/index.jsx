@@ -18,14 +18,6 @@ import {
     appDispatch,
     change_bitrate,
     change_framerate,
-    open_gaming_keyboard,
-    scancode,
-    set_keyboard_edit_state,
-    sidepane_panehide,
-    toggle_gamepad,
-    toggle_gamepad_draggable,
-    toggle_gamepad_setting,
-    toggle_gaming_keyboard,
     useAppSelector
 } from '../../backend/reducers';
 import {
@@ -124,8 +116,9 @@ export const SidePane = () => {
             ? sidepane.mobileControl.buttons
             : sidepane.desktopControl.buttons;
         const mobileState = {
-            gamePadOpen: !sidepane.mobileControl.gamePadHide,
-            keyboardOpen: !sidepane.mobileControl.keyboardHide
+            gamePadOpen: !sidepane.mobileControl.gamepadSetting.draggable,
+            keyboardOpen:
+                sidepane.mobileControl.gamingKeyBoard.editState == 'draggable'
         };
 
         const tmp = {};
@@ -165,126 +158,123 @@ export const SidePane = () => {
     };
 
     return (
-        <>
-            <div
-                style={{ '--prefix': 'PANE' }}
-                className="sidePane dpShad"
-                data-hide={sidepane.hide}
-            >
-                <div className="mainContent">
-                    <div className="quickSettings ">
-                        {isMobile() ? (
-                            <MobileComponent data={data} />
-                        ) : (
-                            <DesktopComponent data={data} />
-                        )}
+        <div
+            style={{ '--prefix': 'PANE' }}
+            className="sidePane dpShad"
+            data-hide={sidepane.hide}
+        >
+            <div className="mainContent">
+                <div className="quickSettings ">
+                    {isMobile() ? (
+                        <MobileComponent data={data} />
+                    ) : (
+                        <DesktopComponent data={data} />
+                    )}
 
-                        <div className="sliderCont flex flex-col items-start">
-                            <SpecsConnectInfo />
+                    <div className="sliderCont flex flex-col items-start">
+                        <SpecsConnectInfo />
 
-                            <div className="containerSlider mb-[-4px]">
-                                <div className="sliderName">
-                                    <b>Bitrate:</b>
-                                    <span>
-                                        {Math.round(
-                                            (((MAX_BITRATE() - MIN_BITRATE()) /
-                                                100) *
-                                                remote.bitrate +
-                                                MIN_BITRATE()) /
-                                                1000
-                                        )}
-                                    </span>
-                                </div>
-                                <div className=" sliderWrapper">
-                                    <span>
-                                        {Math.round(MIN_BITRATE() / 1000)}mbps
-                                    </span>
-                                    <input
-                                        className="sliders bitrateSlider"
-                                        onChange={setBitrate}
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={remote.bitrate}
-                                    />
-                                    <span>
-                                        {Math.round(MAX_BITRATE() / 1000)}mbps
-                                    </span>
-                                </div>
+                        <div className="containerSlider mb-[-4px]">
+                            <div className="sliderName">
+                                <b>Bitrate:</b>
+                                <span>
+                                    {Math.round(
+                                        (((MAX_BITRATE() - MIN_BITRATE()) /
+                                            100) *
+                                            remote.bitrate +
+                                            MIN_BITRATE()) /
+                                            1000
+                                    )}
+                                </span>
                             </div>
-                            <div className="containerSlider">
-                                <div className="sliderName">
-                                    <b>Fps:</b>
-                                    <span>
-                                        {Math.round(
-                                            ((MAX_FRAMERATE - MIN_FRAMERATE) /
-                                                100) *
-                                                remote.framerate +
-                                                MIN_FRAMERATE
-                                        )}
-                                    </span>
-                                </div>
-                                <div className=" sliderWrapper">
-                                    <span>40</span>
-                                    <input
-                                        className="sliders framerateSlider"
-                                        onChange={setFramerate}
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={remote.framerate}
-                                    />
-                                    <span>120</span>
-                                </div>
+                            <div className=" sliderWrapper">
+                                <span>
+                                    {Math.round(MIN_BITRATE() / 1000)}mbps
+                                </span>
+                                <input
+                                    className="sliders bitrateSlider"
+                                    onChange={setBitrate}
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={remote.bitrate}
+                                />
+                                <span>
+                                    {Math.round(MAX_BITRATE() / 1000)}mbps
+                                </span>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="reduceLagCtn">
-                        <div className="wrapper ">
-                            <span className="italic text-[10px] lg:text-sm font-semibold underline">
-                                Làm sao để giảm giật lag khi chơi game?
-                            </span>
-                            <div className="child inset">
-                                <h3>Cách giảm giật lag khi chơi game</h3>
-                                <ul className="my-4">
-                                    <li>
-                                        Cách 1: Mở trên Chrome, đóng các tab,
-                                        ứng dụng đang chạy trên thiết bị của
-                                        bạn.
-                                    </li>
-                                    <li>
-                                        Cách 2:
-                                        <ul>
-                                            <li>
-                                                Giảm bitrate nếu bị delay, tăng
-                                                nhẹ cho đên khi thấy ổn
-                                            </li>
-                                            <li>
-                                                Chỉnh fps: Thử các mốc: 40, 50,
-                                                60, vv mỗi mốc trong 30s <br />
-                                                + 60-80 với điện thoại
-                                                <br />+ 50-120 với laptop(phụ
-                                                thuộc vào cấu hình)
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                                <p className="italic">
-                                    Nếu các cách trên không giúp giảm giật lag,
-                                    bạn vui lòng liên hệ <b>fanpage Thinkmay</b>{' '}
-                                    để được hỗ trợ nhé!{' '}
-                                </p>
+                        <div className="containerSlider">
+                            <div className="sliderName">
+                                <b>Fps:</b>
+                                <span>
+                                    {Math.round(
+                                        ((MAX_FRAMERATE - MIN_FRAMERATE) /
+                                            100) *
+                                            remote.framerate +
+                                            MIN_FRAMERATE
+                                    )}
+                                </span>
+                            </div>
+                            <div className=" sliderWrapper">
+                                <span>40</span>
+                                <input
+                                    className="sliders framerateSlider"
+                                    onChange={setFramerate}
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={remote.framerate}
+                                />
+                                <span>120</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <GamePadSetting></GamePadSetting>
+                <ReduceLag />
             </div>
-        </>
+        </div>
     );
 };
+
+const ReduceLag = () => (
+    <div className="reduceLagCtn">
+        <div className="wrapper ">
+            <span className="italic text-[10px] lg:text-sm font-semibold underline">
+                Làm sao để giảm giật lag khi chơi game?
+            </span>
+            <div className="child inset">
+                <h3>Cách giảm giật lag khi chơi game</h3>
+                <ul className="my-4">
+                    <li>
+                        Cách 1: Mở trên Chrome, đóng các tab, ứng dụng đang chạy
+                        trên thiết bị của bạn.
+                    </li>
+                    <li>
+                        Cách 2:
+                        <ul>
+                            <li>
+                                Giảm bitrate nếu bị delay, tăng nhẹ cho đên khi
+                                thấy ổn
+                            </li>
+                            <li>
+                                Chỉnh fps: Thử các mốc: 40, 50, 60, vv mỗi mốc
+                                trong 30s <br />
+                                + 60-80 với điện thoại
+                                <br />+ 50-120 với laptop(phụ thuộc vào cấu
+                                hình)
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <p className="italic">
+                    Nếu các cách trên không giúp giảm giật lag, bạn vui lòng
+                    liên hệ <b>fanpage Thinkmay</b> để được hỗ trợ nhé!{' '}
+                </p>
+            </div>
+        </div>
+    </div>
+);
 
 const SpecsConnectInfo = () => {
     const remote = useAppSelector((state) => state.remote);
@@ -350,97 +340,6 @@ const SpecsConnectInfo = () => {
                     </>
                 ) : null}
             </p>
-        </div>
-    );
-};
-const GamePadSetting = () => {
-    const sidepane = useAppSelector((state) => state.sidepane);
-
-    const gamepadDraggable = useAppSelector(
-        (state) => state.sidepane.mobileControl.gamepadSetting.draggable
-    );
-    const gamepadSettingOpen = sidepane.mobileControl.gamepadSetting.open;
-
-    const selectedOption = useAppSelector(
-        (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
-    );
-
-    const handleClose = (e) => {
-        appDispatch(sidepane_panehide());
-    };
-
-    return (
-        <div className="gamepadSettingWrapper">
-            <div
-                className={
-                    !gamepadSettingOpen
-                        ? 'gamepadSetting slide-out'
-                        : 'gamepadSetting slide-in'
-                }
-            >
-                <div className="flex justify-between py-4 px-2 mb-[12px] mx-[-12px]">
-                    <MdArrowBack
-                        fontSize={'1.5rem'}
-                        onClick={() => {
-                            appDispatch(toggle_gamepad_setting());
-                        }}
-                    />
-
-                    <MdOutlineClose
-                        onClick={handleClose}
-                        fontSize={'1.5rem'}
-                    ></MdOutlineClose>
-                </div>
-
-                <div>
-                    <h2 className="text-xs mb-4">Gamepad:</h2>
-                    <div className="flex gap-4">
-                        <button
-                            onClick={() => appDispatch(toggle_gamepad())}
-                            className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
-                        >
-                            Đóng/mở
-                        </button>
-                        <button
-                            className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
-                            onClick={() => {
-                                appDispatch(toggle_gamepad_draggable());
-                                appDispatch(sidepane_panehide());
-                            }}
-                        >
-                            Chỉnh sửa
-                        </button>
-                    </div>
-                </div>
-
-                <div className="mt-5">
-                    <h2 className="text-xs mb-4">Gaming Keyboard:</h2>
-
-                    <div className="flex gap-4">
-                        <button
-                            onClick={() => {
-                                appDispatch(toggle_gaming_keyboard());
-                                appDispatch(scancode(true));
-                            }}
-                            className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
-                        >
-                            Đóng/mở
-                        </button>
-                        <button
-                            className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
-                            onClick={() => {
-                                appDispatch(open_gaming_keyboard());
-                                appDispatch(
-                                    set_keyboard_edit_state('draggable')
-                                );
-                                appDispatch(sidepane_panehide());
-                            }}
-                        >
-                            Chỉnh sửa
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

@@ -41,7 +41,6 @@ const initialState: SidePaneData = {
         gamepadSetting: {
             btnSize: 1,
             draggable: false,
-            open: false,
             isDefaultPos: false,
             btnSizes: btnGamepadSizes,
             currentSelected: ''
@@ -95,10 +94,6 @@ export const sidepaneSlice = createSlice({
             state.hide = true;
             state.banhide = true;
         },
-        toggle_gamepad_setting: (state) => {
-            state.mobileControl.gamepadSetting.open =
-                !state.mobileControl.gamepadSetting.open!;
-        },
         set_gamepad_button_size: (state, action) => {
             const parsePayload = JSON.parse(action.payload);
             state.mobileControl.gamepadSetting.btnSizes = parsePayload;
@@ -131,6 +126,8 @@ export const sidepaneSlice = createSlice({
             state.mobileControl.gamePadHide = false;
             state.mobileControl.gamepadSetting.draggable =
                 !state.mobileControl.gamepadSetting.draggable;
+            state.hide = true;
+            state.banhide = true;
         },
         toggle_default_gamepad_position: (state) => {
             state.mobileControl.gamepadSetting.isDefaultPos =
@@ -159,11 +156,12 @@ export const sidepaneSlice = createSlice({
             state.hide = true;
             state.banhide = true;
         },
-
         set_keyboard_edit_state: (state, action) => {
+            state.mobileControl.gamingKeyBoard.open = true;
             state.mobileControl.gamingKeyBoard.editState = action.payload;
+            state.hide = true;
+            state.banhide = true;
         },
-
         select_key_gamingKeyboard: (state, action) => {
             const id = action.payload;
             const currentData = state.mobileControl.gamingKeyBoard.data;
