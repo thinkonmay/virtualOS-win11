@@ -1,19 +1,26 @@
-import 'sweetalert2/src/sweetalert2.scss';
+import toast from 'react-hot-toast';
 import {
-    pb,
-    supabase,
-    SupabaseFuncInvoke
-} from '../reducers/fetch/createClient';
-import { Computer, StartRequest } from '../reducers/fetch/local';
+    APIError,
+    Computer,
+    GetInfo,
+    POCKETBASE
+} from '../../../src-tauri/api';
+import { GLOBAL } from '../../../src-tauri/api/database';
+import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
+    app_close,
+    app_toggle,
     appDispatch,
+    close_remote,
     desk_hide,
     desk_show,
     desk_size,
     desk_sort,
     dispatch_generic,
-    fetch_user,
+    fetch_app_access,
+    fetch_configuration,
+    fetch_wallet,
     menu_chng,
     menu_hide,
     popup_close,
@@ -21,20 +28,17 @@ import {
     setting_theme,
     sidepane_panethem,
     store,
-    toggle_remote,
-    user_update,
-    wall_set,
-    worker_session_close
+    unclaim_volume,
+    worker_refresh
 } from '../reducers/index';
-import { keyboardCallback } from '../reducers/remote';
-import { localStorageKey, pathNames, PlanName } from '../utils/constant';
-import { RenderNode } from '../utils/tree';
-import { fetchApp } from './background';
+import { Contents } from '../reducers/locales';
+import { originalurl, preload, preloadSilent } from './background';
+import { formatError } from '../utils/formatErr';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
-    await fetchApp();
-    setTimeout(() => appDispatch(desk_show()), 200);
+    await appDispatch(worker_refresh());
+    appDispatch(desk_show());
 };
 
 export const afterMath = (event: any) => {
@@ -42,7 +46,8 @@ export const afterMath = (event: any) => {
         ['START', 'startmenu/starthid', 'startmenu.hide'], // TODO
         ['BAND', 'sidepane/sidepane_bandhide', 'sidepane.banhide'],
         ['PANE', 'sidepane/sidepane_panehide', 'sidepane.hide'],
-        ['MENU', 'menu/menu_hide', 'menus.hide']
+        ['MENU', 'menu/menu_hide', 'menus.hide'],
+        ['QA', 'startmenu/hideQa', 'startmenu.qahide']
     ];
 
     var actionType = '';
@@ -140,7 +145,6 @@ export const changeTheme = () => {
     document.body.dataset.theme = thm;
     appDispatch(setting_theme(thm));
     appDispatch(sidepane_panethem(icon));
-    appDispatch(wall_set(thm == 'light' ? 0 : 1));
 };
 
 export const menuDispatch = async (event: Event) => {
@@ -162,216 +166,263 @@ export const dispatchOutSide = (action: string, payload: any) => {
     appDispatch({ type: action, payload });
 };
 
-export const loginWithEmail = async (email: string, password: string) => {};
+export const loginWithEmail = (email: string, password: string) => {
+    return POCKETBASE().collection('users').authWithPassword(email, password);
+};
 
-export const signUpWithEmail = async (email: string, password: string) => {};
-export const login = async (provider: 'google' | 'facebook' | 'discord') => {
-    let w = window.open();
+const tagref = async () => {
+    const isNewUser =
+        (new Date().getTime() -
+            new Date(POCKETBASE().authStore.model.created).getTime()) /
+            60000 <
+        5; //
+    if (!isNewUser) return;
+    await POCKETBASE()
+        .collection('users')
+        .update(POCKETBASE().authStore.model.id, {
+            metadata: { reference: originalurl.searchParams.get('ref') }
+        });
+};
 
-    const {
-        record: { id }
-    } = await pb.collection('users').authWithOAuth2({
-        provider: 'google',
-        urlCallback: (url) => {
-            w.location.href = url;
-        }
+export const signUpWithEmail = async (
+    email: string,
+    password: string,
+    passwordConfirm: string
+) => {
+    return POCKETBASE()
+        .collection('users')
+        .create({
+            email,
+            password,
+            passwordConfirm,
+            metadata: {
+                reference: originalurl.searchParams.get('ref')
+            }
+        });
+};
+
+export const loginAction = (
+    provider: 'google' | 'facebook' | 'discord',
+    finish_callback?: () => {}
+) => {
+    window.oncontextmenu = (ev) => ev.preventDefault();
+
+    const w = window.open();
+    POCKETBASE()
+        .collection('users')
+        .authWithOAuth2({
+            provider: provider,
+            urlCallback: (url) => {
+                w.location.href = url;
+            }
+        })
+        .then(tagref)
+        .finally(async () => {
+            await preload();
+            finish_callback();
+        });
+};
+export const remotelogin = async (domain: string, email: string) => {
+    const { data, error } = await GLOBAL().rpc('generate_account', {
+        email,
+        domain
     });
-    const record = await pb.collection('users').getOne(id);
-    appDispatch(user_update(record));
-    await appDispatch(fetch_user());
+    if (error) throw new Error('Failed to generate account');
+    if (data == null) return 'Existed Account';
 };
 
-export const getHostSessionIdByEmail = async (): Promise<string> => {
-    const all = await pb.collection('volumes').getFullList<{
-        local_id: string;
-    }>();
-
-    const volume_id = all.at(0)?.local_id;
-
-    const node = new RenderNode(store.getState().worker.data);
-
-    let volumeFound: RenderNode<Computer> | undefined = undefined;
-
-    node.iterate((x) => {
-        if (
-            volumeFound == undefined &&
-            (x.info as Computer)?.Volumes?.includes(volume_id)
-        )
-            volumeFound = x;
-    });
-
-    const host_session = node.findParent(volumeFound.id, 'host_session');
-    return host_session.id ?? '';
-};
-
-export const getVolumeIdByEmail = async (): Promise<string> => {
-    const all = await pb.collection('volumes').getFullList<{
-        local_id: string;
-    }>();
-
-    return all.at(0)?.local_id ?? '';
-};
-
-export const getEmailFromDB = async (): Promise<string> => {
-    const all = await pb.collection('users').getFullList<{
-        email: string;
-    }>();
-
-    return all.at(0)?.email ?? '';
-};
 export const shutDownVm = async () => {
-    // get volume id
-    const host_session_id = await getHostSessionIdByEmail();
-    // call worker_ss_close
-    await appDispatch(worker_session_close(host_session_id));
-
-    appDispatch(toggle_remote());
+    await appDispatch(unclaim_volume());
+    appDispatch(close_remote());
 };
 export const clickShortCut = (keys = []) => {
-    keys.forEach((k, i) => {
-        keyboardCallback(k, 'down');
-    });
-    keys.forEach((k, i) => {
-        keyboardCallback(k, 'up');
-    });
+    for (const k of keys) keyboard({ val: k, isDown: true });
+    for (let index = 0; index < keys.length; index++)
+        keyboard({ val: keys[keys.length - 1 - index] });
 };
 
-export const bindStoreId = async (email: string, store_id: number) => {
-    try {
-        const data = await fetch(
-            'https://play.thinkmay.net/access_store_volume',
-            {
-                method: 'POST',
-                headers: {
-                    Authorization: pb.authStore.token
-                },
-                body: JSON.stringify({
-                    store_id,
-                    email
-                })
+export const showLinkShare = () =>
+    appDispatch(
+        popup_open({
+            type: 'share',
+            data: {
+                discount_code:
+                    store.getState().user.email?.split('@')?.[0] ?? 'share',
+                ref: store.getState().remote.ref
             }
+        })
+    );
+
+export const showConnect = () => {
+    appDispatch(popup_close());
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: {
+                loading: false,
+                tips: false,
+                title: 'Connecting video & audio',
+                text: store.getState().globals.translation[
+                    Contents.CA_CONNECT_NOTIFY
+                ]
+            }
+        })
+    );
+};
+
+export const create_payment_qr = async ({ amount }: { amount: string }) => {
+    const { email, discounts } = store.getState().user;
+    const discount_code = discounts.find(
+        (x) => x.apply_for?.includes('deposit')
+    )?.code;
+    const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
+        email,
+        amount: +amount,
+        provider: 'PAYOS',
+        currency: 'VND',
+        discount_code
+    });
+
+    if (error)
+        throw new Error('Error when create payment link' + error.message);
+    else if (data.length == 0)
+        throw new Error('Unable to create payment: transaction not found');
+    else {
+        const [
+            {
+                id,
+                qrcode,
+                payment_url,
+                data: { data: subdata }
+            }
+        ] = data as any[];
+        const actual_amount = Number.parseInt(subdata?.amount);
+        const prediscount = +amount;
+        appDispatch(
+            popup_open({
+                type: 'paymentQR',
+                data: {
+                    id,
+                    code: qrcode,
+                    url: payment_url,
+                    accountName: subdata?.accountName,
+                    amount: actual_amount,
+                    description:
+                        subdata?.description?.split(' ')[1] ??
+                        subdata?.description,
+                    discount_percent:
+                        actual_amount != prediscount
+                            ? Math.round(
+                                  (prediscount / actual_amount - 1) * 100
+                              )
+                            : undefined
+                }
+            })
         );
-        if (data.ok === false) throw await data.text();
-
-        return data;
-    } catch (error) {
-        throw error;
     }
 };
 
-export const isAlowBuyHourSub = async () => {
-    try {
-        const { data, error } = await supabase.rpc('allow_hour_plan');
+export const cancel_transaction = async ({ id }: { id: number }) => {
+    const { error } = await GLOBAL().rpc('cancel_transaction', {
+        id
+    });
 
-        if (data.ok === false) {
-            console.log(error);
-        }
-
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
-};
-interface PaymentBody {
-    buyerEmail: string;
-    items: {
-        name: PlanName;
-        price: number;
-        quantity: number;
-    }[];
-}
-
-export const createPaymentLink = async (inputs: PaymentBody) => {
-    const result = await SupabaseFuncInvoke('create_payment_link', inputs);
-    if (result instanceof Error) throw result;
-
-    return result;
+    if (error)
+        throw new Error('Error when cancellled transaction:' + error.message);
 };
 
-interface VerifyPaymentBody {
+export const verify_transaction = async ({ id }: { id: number }) => {
+    const { data, error } = await GLOBAL().rpc('get_transaction_status', {
+        id
+    });
+    if (error)
+        throw new Error(
+            'Error when try to verify transaction:' + error.message
+        );
+    else return data == 'PAID';
+};
+
+export const create_payment_pocket = async (args: {
     email: string;
-}
+    plan_name: string;
+    cluster_domain: string;
+    template?: string;
+}) => {
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: {
+                loading: true
+            }
+        })
+    );
 
-export const verifyPayment = async (inputs: VerifyPaymentBody) => {
-    const oldPathName = localStorage.getItem(localStorageKey.PATH_NAME);
-    localStorage.removeItem(localStorageKey.PATH_NAME);
-    if (oldPathName != pathNames.VERIFY_PAYMENT || !inputs) {
+    const allowed_games = ['fc_online', 'win11', 'wukong', 'gta5vn', 'inzoi'];
+    args.template = allowed_games.includes(args?.template)
+        ? args.template
+        : undefined;
+    const { error } = await GLOBAL().rpc('create_or_replace_payment', args);
+    if (error) {
+        appDispatch(popup_close());
+        toast(`Failed ${error.message}`);
         return;
     }
 
-    const result = await SupabaseFuncInvoke('verify_payment', {
-        email: inputs
+    await GLOBAL().rpc('verify_all_payment');
+
+    let info = undefined;
+    while (!(info?.virtReady ?? false)) {
+        await new Promise((r) => setTimeout(r, 20000));
+        const result = await GetInfo(args?.cluster_domain);
+        if (result instanceof APIError) throw formatError(error);
+        else info = result;
+    }
+
+    await preloadSilent();
+    appDispatch(popup_close());
+};
+
+export const replace_payment_pocket = async ({
+    email,
+    plan_name
+}: {
+    email: string;
+    plan_name: string;
+}) => {
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: { loading: true }
+        })
+    );
+
+    const { error } = await GLOBAL().rpc('create_or_replace_payment', {
+        email,
+        plan_name,
+        cluster_domain: 'unknown'
     });
 
-    if (result instanceof Error) throw result;
+    if (error) {
+        appDispatch(popup_close());
+        toast(`Failed ${error.message}`);
+        return;
+    }
 
-    await appDispatch(fetch_user());
-    return result;
+    await GLOBAL().rpc('verify_all_payment');
+    await preloadSilent();
+    appDispatch(popup_close());
 };
 
-export const wrapperAsyncFunction = async (
-    fun: () => Promise<any>,
-    {
-        loading = true,
-        title = 'Loading...',
-        text = '',
-        tips = true,
-        timeProcessing
-    }
-) => {
-    try {
-        appDispatch(
-            popup_open({
-                type: 'notify',
-                data: {
-                    loading,
-                    title,
-                    text,
-                    tips,
-                    timeProcessing
-                }
-            })
-        );
-        const data = await fun();
-        appDispatch(popup_close());
-        return data;
-    } catch (error) {
-        appDispatch(popup_close());
-        appDispatch(
-            popup_open({
-                type: 'complete',
-                data: {
-                    success: false,
-                    content: error.message
-                }
-            })
-        );
-    } finally {
-    }
-};
-
-//Connecting to old session
-
-export const hasHourSession = async () => {
-    const all = await pb.collection('volumes').getFullList();
-    const foundVolumeId = all.at(0)?.local_id;
-
-    const node = new RenderNode(store.getState().worker.data);
-    let result: RenderNode<Computer> | undefined = undefined;
-    node.iterate((x) => {
-        if (
-            result == undefined &&
-            (x.info as Computer)?.Volumes?.includes(foundVolumeId)
-        )
-            result = x;
+export const create_or_replace_resources = async (resource_name: string) => {
+    const email = store.getState().user.email;
+    const { error } = await GLOBAL().rpc('create_or_replace_resource_payment', {
+        email,
+        resource_name
     });
-    const session = node.find<StartRequest>(result?.data?.at(0)?.id)?.info;
-    const vm_session_id = node.findParent<StartRequest>(
-        result?.data?.at(0)?.id,
-        'host_session'
-    )?.info.id;
+    if (error) return new Error(error.message);
 
-    return session?.id;
+    await appDispatch(fetch_app_access());
+    await appDispatch(fetch_configuration());
+    await appDispatch(fetch_wallet());
+    return undefined;
 };
-
-// connect to session

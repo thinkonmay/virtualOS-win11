@@ -1,56 +1,50 @@
 import { useEffect, useState } from 'react';
-
-import { TbLoader3 } from 'react-icons/tb';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
-const TIME_RUN_OUT_OF_GPU = 200 * 1000; //sec
 export function notify({
     data: { title, tips = true, loading = true, text, timeProcessing = 3.5 }
 }) {
     const t = useAppSelector((state) => state.globals.translation);
-    const [textTrans, setTextTrans] = useState('');
-    const [isLaterThan15s, setIsLaterThan15s] = useState(false);
-
-    useEffect(() => {
-        let interval;
-        if (title == 'Connect to PC') {
-            const referenceTime = new Date();
-            const laterTime = new Date(
-                referenceTime.getTime() + TIME_RUN_OUT_OF_GPU
-            );
-
-            interval = setInterval(() => {
-                const currentTime = new Date();
-                if (currentTime > laterTime) {
-                    setIsLaterThan15s(true);
-                    setTextTrans(t[Contents.RUN_OUT_OF_GPU_STOCK_NOTIFY]);
-                    clearInterval(interval);
-                }
-            }, 6000);
-        }
-
-        return () => clearInterval(interval);
-    }, [title]);
-    useEffect(() => {
-        if (t[text]) setTextTrans(t[text]);
-
-        setTextTrans(text);
-    }, [text]);
 
     return (
-        <div className="w-[330px] h-auto p-[14px] pb-6">
-            <div className="notify-icon">
-                <TbLoader3 className="animate-spin" />
+        <div
+            id="promo-popup"
+            tabIndex="-1"
+            className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-full md:inset-0 max-h-full"
+            style={{
+                backdropFilter: 'brightness(0.3)'
+            }}
+        >
+            <div className="relative p-4 w-full max-w-md max-h-full">
+                <div
+                    className="relative rounded-lg p-4 text-center shadow text-white"
+                    style={{
+                        background: 'var(--fakeMica)'
+                    }}
+                >
+                    <div className="mt-4" id="loader">
+                        <svg
+                            className="progressRing"
+                            height={48}
+                            width={48}
+                            viewBox="0 0 16 16"
+                        >
+                            <circle cx="8px" cy="8px" r="7px"></circle>
+                        </svg>
+                    </div>
+                    <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
+                        {title ?? 'Please wait...'}
+                    </p>
+                    {text ? (
+                        <p className="mb-3 md:text-xl text-center"> {text} </p>
+                    ) : null}
+                    {loading ? (
+                        <LoadingProgressBar timeProcessing={timeProcessing} />
+                    ) : null}
+                    {tips ? <Protip /> : null}
+                </div>
             </div>
-            <p className="text-center text-[1.2rem] mb-[16px]">
-                {title ?? 'Please wait...'}
-            </p>
-            {textTrans ? <p className="mb-3"> {textTrans} </p> : null}
-            {loading && !isLaterThan15s ? (
-                <LoadingProgressBar timeProcessing={timeProcessing} />
-            ) : null}
-            {tips ? <Protip /> : null}
         </div>
     );
 }
@@ -75,7 +69,7 @@ const LoadingProgressBar = ({ timeProcessing }) => {
 
     return (
         <div className="loading-container !relative">
-            <div className="loading-bar">
+            <div className="loading-bar relative">
                 <div
                     className="loading-progress"
                     style={{ width: `${loading}%` }}
@@ -101,11 +95,10 @@ const Protip = () => {
     ];
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            const randomNumber = Math.floor(Math.random() * QUANTITY_TIP);
-
-            setCurrentTip(randomNumber);
-        }, 5 * 1000);
+        const interval = setInterval(
+            () => setCurrentTip(Math.floor(Math.random() * QUANTITY_TIP)),
+            5 * 1000
+        );
 
         return () => {
             clearInterval(interval);
@@ -113,7 +106,7 @@ const Protip = () => {
     }, []);
     return (
         <div className="mt-[24px]">
-            <strong>Pro tip:</strong>
+            <strong className="md:text-xl">Pro tip:</strong>
             <p className="mt-[8px]">{listDemoTip[currentTip]}</p>
         </div>
     );

@@ -1,114 +1,96 @@
+import { DevEnv } from '../../../src-tauri/api/database';
+import { Contents } from '../reducers/locales';
 import { MenuOption } from '../reducers/menu';
 import { externalLink } from './constant';
 
 export type AppData = {
     id: string;
-    name: string;
+    name: Contents[];
     action: string;
     payload?: any;
 
+    page?: string; //sub - refund - storage -history;
+    value?: any;
     menu?: MenuOption;
     size?: string;
-    ready?: boolean;
-    installing?: boolean;
     hide?: boolean;
     max?: boolean | null;
     z?: number;
     dim?: any;
     url?: string | null;
+
+    mono?: boolean;
+    icon?: string;
+    image?: string;
 };
 
 const apps: AppData[] = [
     {
-        name: 'Settings',
-        id: 'settings',
-        action: 'apps/app_toggle',
-        payload: 'settings'
+        name: [Contents.GUIDELINE_APP],
+        id: 'guideline',
+        action: 'global/show_tutorial',
+        payload: 'open',
+        icon: 'info',
+        size: 'full'
     },
     {
-        name: 'Worker Profile',
-        id: 'worker',
-        action: 'apps/app_toggle',
-        payload: 'worker'
-    },
-    {
-        name: 'Browser',
-        id: 'edge',
-        action: 'apps/app_toggle',
-        payload: 'edge'
-    },
-    {
-        name: 'Thanh toán',
+        name: [Contents.PAYMENT_APP],
         id: 'payment',
+        page: 'subscription',
         action: 'apps/app_toggle',
         payload: 'payment'
     },
     {
-        name: 'Feedback',
-        id: 'feedback',
-        action: 'apps/app_toggle',
-        payload: 'feedback'
-    },
-
-    {
-        name: 'Game cho gói giờ',
+        name: [Contents.TEMPLATE_APP],
         id: 'store',
         action: 'apps/app_toggle',
         payload: 'store',
-        size: 'mini'
+        size: 'full'
     },
     {
-        name: 'Máy tính cá nhân',
+        name: [Contents.CONNECT_APP],
         id: 'connectPc',
         action: 'apps/app_toggle',
+        image: 'worker',
         payload: 'connectPc',
-        max: false,
         size: 'mini'
     },
     {
-        name: 'Hướng dẫn',
-        id: 'hdsd',
-        action: 'apps/app_external',
-        payload: externalLink.GUIDE_VIDEO
-    },
-    //{
-    //    name: 'Guideline',
-    //    id: 'about',
-    //    action: 'apps/app_url',
-    //    payload: 'https://thinkmay.net'
-    //},
-    {
-        name: 'Your Info',
-        id: 'usermanager',
-        action: 'apps/app_toggle',
-        payload: 'usermanager'
+        name: [Contents.STORAGE_APP],
+        id: 'storage',
+        action: 'claim_storage',
+        image: 'explorer',
+        size: 'mini'
     },
     {
-        name: 'Discord',
+        name: [Contents.DISCORD_APP],
         id: 'discord',
+        icon: 'discord',
         action: 'apps/app_external',
-        payload: externalLink.DISCORD_LINK
+        payload: externalLink.DISCORD_LINK,
+        mono: true
     },
     {
-        name: 'Thinkmay Fanpage',
+        name: [Contents.MESSAGE_APP],
         id: 'facebook',
         action: 'apps/app_external',
-        payload: externalLink.FACEBOOK_LINK
+        payload: externalLink.MESSAGE_LINK,
+        mono: true
     }
 ];
 var { taskbar, desktop } = {
-    taskbar: ['Game cho gói giờ'],
+    taskbar: [],
     desktop: [
-        //'Worker Profile',
-        //'Browser',
-        'Local Connect',
-        'Discord',
-        'Hướng dẫn',
-        'Thinkmay Fanpage',
-        'Game cho gói giờ',
-        'Máy tính cá nhân',
-        'Thanh toán'
-        //'Your Info'
+        //'Local Connect',
+        'discord',
+        'guideline',
+        'facebook',
+        'store',
+        'connectPc',
+        'storage',
+        'payment',
+        'facebook',
+        ...(DevEnv ? ['worker'] : [])
     ]
 };
 
@@ -120,14 +102,12 @@ apps.map((x) => {
 });
 
 export const taskApps = apps
-    .filter((x) => taskbar.includes(x.name))
+    .filter((x) => taskbar.includes(x.id))
     .map((x) => x.id);
 
 export const desktopApps = apps
-    .filter((x) => desktop.includes(x.name))
-    .sort((a, b) =>
-        desktop.indexOf(a.name) > desktop.indexOf(b.name) ? 1 : -1
-    )
+    .filter((x) => desktop.includes(x.id))
+    .sort((a, b) => (desktop.indexOf(a.id) > desktop.indexOf(b.id) ? 1 : -1))
     .map((x) => x.id);
 
 export const allApps = apps;

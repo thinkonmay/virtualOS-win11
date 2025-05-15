@@ -1,120 +1,97 @@
-import { useState } from 'react';
 import {
-    app_toggle,
     appDispatch,
+    app_full,
+    app_toggle,
+    cache_setting,
+    change_preferred_codec,
+    fetch_app_access,
+    fetch_configuration,
     popup_open,
+    scancode_toggle,
+    show_chat,
     useAppSelector,
-    wait_and_claim_volume
+    wait_and_claim_volume,
+    worker_refresh_ui
 } from '../../../backend/reducers';
 import {
     Icon,
     LazyComponent,
     ToolBar
 } from '../../../components/shared/general';
+import { useEffect, useState } from 'react';
+import {
+    popup_close,
+    toggle_hide_vm,
+    toggle_high_mtu,
+    toggle_high_queue,
+    toggle_hq
+} from '../../../backend/reducers';
+import { create_or_replace_resources } from '../../../backend/actions';
 
 import { Contents } from '../../../backend/reducers/locales';
-import { PlanName } from '../../../backend/utils/constant';
+import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
+import { preload } from '../../../backend/actions/background';
+import toast from 'react-hot-toast';
+import { isMobile } from '../../../../src-tauri/core';
+
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
+    const [customizing, openCustomization] = useState(false);
+    const [limitClick, setLimitClick] = useState(false);
+    useEffect(() => {
+        setTimeout(() => (limitClick ? setLimitClick(false) : {}), 2000);
+    }, [limitClick]);
+
+    useEffect(() => {
+        if (customizing && isMobile())
+            appDispatch(app_full({ id: 'connectPc' }));
+    }, [customizing]);
     const wnapp = useAppSelector((state) =>
         state.apps.apps.find((x) => x.id == 'connectPc')
     );
-    const stats = useAppSelector((state) => state.user.stat);
-    const user = useAppSelector((state) => state.user);
-    const isMaintaining = useAppSelector(
-        (state) => state.globals.maintenance?.isMaintaining
+    const available = useAppSelector(
+        (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
 
-    const [selector, setSelector] = useState({
-        feeling: '',
-        control: {
-            choose: false
-        },
-        text: ''
-    });
+    const inUse = useAppSelector(
+        (state) =>
+            state.worker.data[state.worker.currentAddress]?.Volumes?.find(
+                (e) => e.inuse && e.pool == 'user_data'
+            ) ?? false
+    );
 
-    const emailSplit = () => {
-        let result = '';
-        result = user?.email?.split('@')?.at(0) || 'Your';
+    const { cluster, metadata } = useAppSelector(
+        (state) => state.user.subscription ?? {}
+    );
+    const { image, name } = useAppSelector(
+        (state) => state.worker.metadata ?? {}
+    );
+    const addr = useAppSelector((state) => state.worker.currentAddress);
+    const { reach_time_limit, reach_date_limit } = metadata ?? {};
+    const { browser } = detectBrowserAndOS();
 
-        return result;
-    };
+    const limit = (type) =>
+        popup_open({
+            type: 'extendService',
+            data: { type }
+        });
 
-    const renderPlanStorage = (planName) => {
-        let storage = '150GB + Cloud save';
-        if (planName == 'month_01') {
-            storage = '150GB + Cloud save';
-        }
-        if (planName == 'hour_01') {
-            storage = '130GB + Cloud save';
-        } else if (planName == 'month_02') {
-            storage = '200GB + Cloud save';
-        }
-
-        return storage;
-    };
-    const hasComputer = () => {
-        const planName = stats?.plan_name;
-        return planName == PlanName.month_01 || planName == PlanName.hour_01;
-    };
-    const listSpec = [
-        {
-            name: 'GPU:',
-            text: 'Nvidia RTX 3060Ti'
-        },
-        {
-            name: 'RAM:',
-            text: '16Gb Ram'
-        },
-        {
-            name: 'CPU:',
-            text: 'Intel Xeon™ (up to 3.1 GHz) 8 vCores'
-        },
-        {
-            name: 'STORAGE:',
-            text: renderPlanStorage(stats?.plan_name)
-        },
-        {
-            name: 'OS:',
-            text: 'Window 10'
-        }
-    ];
     const connect = () => {
-        if (!stats.plan_name) {
-            appDispatch(app_toggle('payment'));
-            return;
-        }
-        if (stats?.plan_name == 'hour_02') {
-            appDispatch(
-                popup_open({
-                    type: 'complete',
-                    data: {
-                        content:
-                            'Truy cập Store Games để cài game, do tải khoản của bạn chưa thuê PC riêng',
-                        success: false
-                    }
-                })
-            );
+        if (limitClick) return;
+        // if (reach_time_limit) appDispatch(limit('time_limit'));
+        // else if (reach_date_limit) appDispatch(limit('date_limit'));
+        else if (inUse && available == 'ready')
+            appDispatch(worker_refresh_ui());
+        else appDispatch(wait_and_claim_volume());
+        setLimitClick(true);
+    };
 
-            return;
-        }
-        if (user.isExpired) {
-            appDispatch(popup_open({ type: 'warning', data: {} }));
-            return;
-        }
-
-        if (isMaintaining) {
-            popup_open({
-                type: 'complete',
-                data: {
-                    content: 'Server is Offline!!!',
-                    success: false
-                }
-            });
-            return;
-        }
-        appDispatch(wait_and_claim_volume());
+    const pay = () => appDispatch(app_toggle('payment'));
+    const reload = () => appDispatch(worker_refresh_ui());
+    const redirect = async () => {
+        localStorage.setItem('thinkmay_domain', cluster);
+        await preload();
     };
 
     return (
@@ -136,35 +113,133 @@ export const ConnectApp = () => {
                 name="Connect to your PC"
             />
             <div
-                className="windowScreen connectAppContent flex flex-col p-[12px] pt-0"
+                className="windowScreen connectAppContent flex flex-col p-[12px] pt-0 relative"
                 data-dock="true"
+                style={
+                    image != null
+                        ? {
+                              backgroundImage: `url(${image})`,
+                              backgroundSize: 'cover'
+                          }
+                        : {
+                              background:
+                                  'linear-gradient(180deg, #040218 0%, #140B7E 100%)'
+                          }
+                }
             >
+                {customizing ? (
+                    <Customize onClose={() => openCustomization(false)} />
+                ) : null}
                 <LazyComponent show={!wnapp.hide}>
                     <div className="content">
                         <div className="title">
                             <Icon src="monitor"></Icon>
-                            {emailSplit()} PC
+                            {name}
                         </div>
 
                         <div className="containerSpec">
-                            <div className="flex flex-col gap-3">
-                                {listSpec.map((spec) => (
-                                    <div key={spec.text} className="spec">
-                                        <b className="">{spec.name}</b>
-                                        {spec.text}
+                            {!browser.includes('Chrome') ? (
+                                <div className="flex flex-col gap-3">
+                                    <div className="spec my-5">
+                                        {t[Contents.SUGGEST_BROWSER]}
                                     </div>
-                                ))}
-                                <div className="spec mt-4">
-                                    {t[Contents.SUGGEST_BROWSER]}
                                 </div>
-                            </div>
-
-                            <button
-                                onClick={connect}
-                                className="instbtn connectBtn"
-                            >
-                                {hasComputer() ? 'Connect' : 'Payment'}
-                            </button>
+                            ) : null}
+                            {available == 'ready' || available == 'started' ? (
+                                <>
+                                    <button
+                                        onClick={connect}
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
+                                    >
+                                        {available == 'ready'
+                                            ? inUse
+                                                ? t[Contents.CA_INUSE]
+                                                : t[Contents.CA_TURN_ON_PC]
+                                            : t[Contents.CA_CONNECT]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        {t[Contents.CA_CONNECT_EXPLAIN]}
+                                        <br />
+                                        {t[Contents.CA_CONNECT_EXPLAIN_1]}
+                                    </p>
+                                    <button
+                                        onClick={() => openCustomization(true)}
+                                        className="text-gray-400 text-l font-light bg-transparent underline mt-4 cursor-pointer"
+                                    >
+                                        Tùy chỉnh cấu hình
+                                    </button>
+                                </>
+                            ) : available == 'no_node' ? (
+                                <>
+                                    <button
+                                        onClick={() => appDispatch(show_chat())}
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
+                                    >
+                                        {t[Contents.CA_RELOAD_TRY_AGAIN]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        Hãy nhắn hỗ trợ nếu đợi quá 5'!
+                                    </p>
+                                </>
+                            ) : available == undefined ? (
+                                cluster != undefined ? (
+                                    cluster != addr ? (
+                                        <>
+                                            <button
+                                                onClick={redirect}
+                                                className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
+                                            >
+                                                {t[Contents.CA_WRONG_SERVER]}
+                                            </button>
+                                            <p className="text-xs text-center mt-3">
+                                                {
+                                                    t[
+                                                        Contents
+                                                            .CA_WRONG_SERVER_EXPLAIN
+                                                    ]
+                                                }
+                                                !
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                onClick={() =>
+                                                    appDispatch(show_chat())
+                                                }
+                                                className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
+                                            >
+                                                {t[Contents.CA_MISSING_VOLUME]}
+                                            </button>
+                                            <p className="text-xs text-center mt-3">
+                                                {
+                                                    t[
+                                                        Contents
+                                                            .CA_MISSING_VOLUME_EXPLAIN
+                                                    ]
+                                                }
+                                                !
+                                            </p>
+                                        </>
+                                    )
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={pay}
+                                            className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
+                                        >
+                                            {t[Contents.PAYMENT_APP]}
+                                        </button>
+                                        <p className="text-xs text-center mt-3">
+                                            Hãy nhắn hỗ trợ nếu đã mua gói!
+                                        </p>
+                                    </>
+                                )
+                            ) : (
+                                <button className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl">
+                                    Very weird bug happened
+                                </button>
+                            )}
                         </div>
                     </div>
                 </LazyComponent>
@@ -172,3 +247,361 @@ export const ConnectApp = () => {
         </div>
     );
 };
+
+function Customize({ onClose: close }) {
+    const t = useAppSelector((state) => state.globals.translation);
+    const { HideVM, HighQueue, HighMTU, metadata, app_access } = useAppSelector(
+        (state) => state.worker
+    );
+
+    const game = useAppSelector(
+        (state) =>
+            state.globals.games.find(
+                (x) => state.worker.app_access?.app_id == x.id
+            )?.name
+    );
+
+    const { configuration } = metadata ?? { configuration: {} };
+
+    const { scancode, hq, preferred_codec } = useAppSelector(
+        (state) => state.remote
+    );
+
+    const actions = [
+        {
+            name: t[Contents.HIDE_VM],
+            state: HideVM,
+            action: () => appDispatch(toggle_hide_vm())
+        },
+        {
+            name: t[Contents.HIGH_MTU],
+            state: HighMTU,
+            action: () => appDispatch(toggle_high_mtu())
+        },
+        {
+            name: t[Contents.HIGH_QUEUE],
+            state: HighQueue,
+            action: () => appDispatch(toggle_high_queue())
+        },
+        {
+            name: `High quality`,
+            state: hq,
+            action: () => appDispatch(toggle_hq())
+        },
+        {
+            name: `Scan code`,
+            state: scancode,
+            action: () => appDispatch(scancode_toggle())
+        },
+        {
+            name: `H.265 codec`,
+            state: preferred_codec == 'h265',
+            action: () =>
+                appDispatch(
+                    change_preferred_codec(
+                        preferred_codec == 'h265' ? 'h264' : 'h265'
+                    )
+                )
+        }
+    ];
+
+    const [hwOptions, setHWOption] = useState([
+        {
+            name: 'ram',
+            min: 16,
+            max: 24,
+            step: 4,
+            value: 16
+        },
+        {
+            name: 'cpu',
+            min: 8,
+            max: 12,
+            step: 2,
+            value: 8
+        },
+        {
+            name: 'disk',
+            min: 150,
+            max: 400,
+            step: 50,
+            value: 150
+        }
+    ]);
+
+    const [gameLicense, setGameLicense] = useState(false);
+
+    const defaultVal = (configuration) => [
+        {
+            name: 'ram',
+            min: 16,
+            max: 24,
+            step: 4,
+            value: configuration?.ram ?? 16
+        },
+        {
+            name: 'cpu',
+            min: 8,
+            max: 12,
+            step: 2,
+            value: configuration?.cpu ?? 8
+        },
+        {
+            name: 'disk',
+            min: configuration?.disk ?? 150,
+            max: 400,
+            step: 50,
+            value: configuration?.disk ?? 150
+        }
+    ];
+
+    const reset = () => {
+        setHWOption(defaultVal(configuration));
+        setGameLicense(app_access != undefined);
+    };
+    useEffect(() => {
+        reset();
+    }, [metadata]);
+
+    const open_payment = () =>
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment'
+            })
+        );
+
+    const apply = async () => {
+        appDispatch(
+            popup_open({
+                type: 'notify',
+                data: {
+                    loading: true
+                }
+            })
+        );
+
+        let refresh_conf = false;
+        for (const option of hwOptions) {
+            for (const def of defaultVal(configuration)) {
+                if (option.name == def.name && option.value != def.value) {
+                    refresh_conf = true;
+                    const error = await create_or_replace_resources(
+                        `${option.name}${option.value}`
+                    );
+                    if (error && error.message.includes('405')) {
+                        open_payment();
+                        appDispatch(popup_close());
+                        close();
+                        return;
+                    } else if (error instanceof Error) {
+                        toast(`Failed to apply your changes`, {});
+                        appDispatch(popup_close());
+                        close();
+                        return;
+                    }
+                }
+            }
+        }
+
+        if ((app_access != undefined) != gameLicense) {
+            refresh_conf = true;
+            const error = await create_or_replace_resources(
+                `kickey${gameLicense ? '' : '_none'}`
+            );
+            if (error && error.message.includes('405')) {
+                open_payment();
+                appDispatch(popup_close());
+                close();
+                return;
+            } else if (error instanceof Error) {
+                toast(`Failed to apply your changes`, {});
+                appDispatch(popup_close());
+                close();
+                return;
+            }
+        }
+
+        if (refresh_conf) {
+            await appDispatch(fetch_configuration());
+            await appDispatch(fetch_app_access());
+        }
+        appDispatch(cache_setting());
+        toast(`Your changes is applied`, {});
+        appDispatch(popup_close());
+        close();
+    };
+
+    const renderOption = (option, index) => (
+        <li
+            key={index}
+            className="w-full border-b border-gray-200 md:border-b-0 md:border-r dark:border-gray-600"
+        >
+            <div
+                onClick={option.action}
+                className={`flex items-center mx-1 my-3 rounded-xl  cursor-pointer ${
+                    option.state ? 'bg-blue-950' : 'bg-gray-600'
+                }`}
+            >
+                <label
+                    htmlFor="account-moderator"
+                    className="w-full p-3 text-sm font-medium text-gray-300 cursor-pointer text-center"
+                >
+                    {option.name}
+                </label>
+            </div>
+        </li>
+    );
+
+    const GameLicense = () => {
+        return (
+            <div className="w-full h-full">
+                <label className="block mb-2 text-sm font-medium text-white">
+                    tài khoản game
+                </label>
+                <div className="flex items-center ps-4 border border-gray-700 bg-gray-900 rounded-full">
+                    <input
+                        checked={gameLicense}
+                        onChange={() => {}}
+                        onClick={() => setGameLicense((old) => !old)}
+                        id="bordered-radio-2"
+                        type="radio"
+                        name="bordered-radio"
+                        className="w-4 h-4 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"
+                    />
+                    <label
+                        htmlFor="bordered-radio-2"
+                        className="w-full py-4 ms-2 text-sm font-medium text-gray-300"
+                    >
+                        {game ?? 'unknown'}
+                    </label>
+                </div>
+            </div>
+        );
+    };
+
+    const increment = (hw, up) =>
+        setHWOption((old) => {
+            const index = old.findIndex((x) => x.name == hw.name);
+            if (index == -1) return old;
+            const dup = [...old];
+            const newval = dup[index].value + (up ? hw.step : -hw.step);
+            if (newval > hw.max || newval < hw.min) return old;
+            dup[index].value = newval;
+            return dup;
+        });
+
+    const renderHWOption = (hw, index) => {
+        return (
+            <div key={index} className="w-full">
+                <label className="block mb-2 text-sm font-medium text-white">
+                    {hw.name}
+                </label>
+
+                <div className="flex">
+                    <div className="border border-gray-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
+                        {hw.value}
+                    </div>
+                    <div
+                        onClick={() => increment(hw, false)}
+                        className="bg-gray-600 ml-1 rounded-full w-8 h-8 my-auto cursor-pointer"
+                    >
+                        <svg
+                            className="w-8 h-8 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 12h14"
+                            />
+                        </svg>
+                    </div>
+                    <div
+                        onClick={() => increment(hw, true)}
+                        className="bg-gray-600 ml-1 rounded-full w-8 h-8 my-auto cursor-pointer"
+                    >
+                        <svg
+                            className="w-8 h-8 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 12h14m-7 7V5"
+                            />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div
+            id="auth-pop-up"
+            tabIndex="-1"
+            className="flex overflow-x-auto justify-center items-center absolute bottom-0 top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+            style={{ backdropFilter: 'blur(3px) brightness(0.5)' }}
+        >
+            <div
+                className="fixed w-full h-full max-h-[800px] max-w-[700px] md:h-auto px-8 py-16 rounded-2xl"
+                style={{ background: 'var(--fakeMica' }}
+            >
+                <div className="px-4 space-y-4 md:px-6">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div className="flex flex-col md:flex-row items-center justify-between col-span-2 space-x-3">
+                            {hwOptions.map(renderHWOption)}
+                            {app_access == undefined ? null : <GameLicense />}
+                        </div>
+                    </div>
+                    <div>
+                        <h6 className="mb-2 text-sm font-medium text-white">
+                            Advanced setting
+                        </h6>
+                        <ul className="grid grid-cols-3 items-center w-full text-sm font-medium text-gray-900 border border-gray-200 rounded-lg md:flex-row bg-gray-700 dark:border-gray-600 dark:text-white list-none ">
+                            {actions.map(renderOption)}
+                        </ul>
+                    </div>
+                </div>
+                <div className="flex items-center p-6 space-x-4 rounded-b border-gray-600">
+                    <button
+                        type="submit"
+                        className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                        onClick={apply}
+                    >
+                        Apply
+                    </button>
+                    <button
+                        type="reset"
+                        className="py-2.5 px-5 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 bg-gray-800 text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        onClick={reset}
+                    >
+                        Reset
+                    </button>
+                    <button
+                        type="reset"
+                        className="py-2.5 px-5 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 bg-gray-900 text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        onClick={close}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}

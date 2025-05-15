@@ -1,83 +1,38 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
 import {
     appDispatch,
+    change_bitrate,
+    change_framerate,
+    change_preferred_codec,
     close_remote,
-    hard_reset,
-    popup_close,
-    popup_open,
     remote_connect,
+    remote_ready,
+    RootState,
+    scancode,
     store,
-    toggle_remote
+    toggle_hide_vm,
+    toggle_high_mtu,
+    toggle_high_queue,
+    toggle_hq,
+    toggle_remote,
+    worker_refresh
 } from '.';
-import { RemoteDesktopClient } from '../../../src-tauri/core/app';
-import { AxisType } from '../../../src-tauri/core/models/hid.model';
-import { EventCode, HIDMsg } from '../../../src-tauri/core/models/keys.model';
-import { convertJSKey } from '../../../src-tauri/core/utils/convert';
-import { sleep } from '../utils/sleep';
-import { isMobile } from './../utils/checking';
-import { CAUSE, pb } from './fetch/createClient';
+import { POCKETBASE, RemoteCredential } from '../../../src-tauri/api';
+import { isMobile } from '../../../src-tauri/core';
+import {
+    Assign,
+    CLIENT,
+    MAX_BITRATE,
+    MAX_FRAMERATE,
+    MIN_BITRATE,
+    MIN_FRAMERATE,
+    ready,
+    set_hq,
+    SIZE
+} from '../../../src-tauri/singleton';
+import { originalurl } from '../actions/background';
 import { BuilderHelper } from './helper';
-
-const size = () =>
-    client != null
-        ? client.video.video.videoHeight * client.video.video.videoWidth
-        : 1920 * 1080;
-export const MAX_BITRATE = () => (15000 / (1920 * 1080)) * size();
-export const MIN_BITRATE = () => (1000 / (1920 * 1080)) * size();
-export const MAX_FRAMERATE = 120; //240
-export const MIN_FRAMERATE = 40;
-
-export let client: RemoteDesktopClient | null = null;
-export const assign = (fun: () => RemoteDesktopClient) => {
-    if (client != null) client.Close();
-    client = fun();
-};
-
-let pinger = async () => {};
-export const set_pinger = (fun: () => Promise<void>) => {
-    pinger = fun;
-};
-
-export const ready = async () => {
-    appDispatch(
-        popup_open({
-            type: 'notify',
-            data: {
-                loading: true
-            }
-        })
-    );
-
-    let start = new Date().getTime();
-    while (client == null || !client?.ready()) {
-        const now = new Date().getTime();
-        if (now - start > 60 * 1000) {
-            appDispatch(popup_close());
-            appDispatch(close_remote());
-            throw new Error(
-                JSON.stringify({
-                    message: 'remote timeout connect to machine',
-                    code: CAUSE.REMOTE_TIMEOUT
-                })
-            );
-        }
-
-        await new Promise((r) => setTimeout(r, 1000));
-    }
-    if (isMobile) client.PointerVisible(true);
-
-    appDispatch(remoteSlice.actions.internal_sync());
-    appDispatch(popup_close());
-};
-
-export type AuthSessionResp = {
-    id: string;
-    webrtc: RTCConfiguration;
-    signaling: {
-        audioUrl: string;
-        videoUrl: string;
-    };
-};
 
 export type Metric = {
     receivefps: number[];
@@ -89,14 +44,20 @@ export type Metric = {
 
 type Data = {
     tracker_id?: string;
+
     active: boolean;
+    ready: boolean;
     fullscreen: boolean;
     pointer_lock: boolean;
     relative_mouse: boolean;
     focus: boolean;
-    local: boolean;
+    hq: boolean;
+    prev_hq: boolean;
+    direct_access: boolean;
+    preferred_codec: 'h264' | 'h265';
 
     scancode: boolean;
+    no_strict_timing: boolean;
     frame_drop: boolean;
 
     bitrate: number;
@@ -105,273 +66,256 @@ type Data = {
     prev_framerate: number;
     prev_size: number;
 
-    auth?: AuthSessionResp;
+    packetLoss: number;
+    idrcount: number;
+    realfps: number;
+    realbitrate: number;
+    realdecodetime: number;
+    realdelay: number;
+
+    auth?: RemoteCredential;
     ref?: string;
+
+    objectFit: 'fill' | 'contain';
 };
 
 const initialState: Data = {
-    local: false,
+    hq: false,
+    prev_hq: false,
+    direct_access: false,
     focus: true,
     active: false,
+    ready: false,
     scancode: false,
+    no_strict_timing: false,
     fullscreen: false,
     pointer_lock: false,
     relative_mouse: false,
+    preferred_codec: 'h264',
 
     frame_drop: false,
     bitrate: 0,
     prev_bitrate: 0,
     framerate: 0,
     prev_framerate: 0,
-    prev_size: 0
+    prev_size: 0,
+    idrcount: 0,
+    realfps: 0,
+    packetLoss: 0,
+    realbitrate: 0,
+    realdelay: 0,
+    realdecodetime: 0,
+    objectFit: 'fill'
 };
-
-function VirtualGamepadButtonSlider(isDown: boolean, index: number) {
-    if (index == 6 || index == 7) {
-        // slider
-        client?.SendRawHID(
-            new HIDMsg(EventCode.GamepadSlide, {
-                gamepad_id: 0,
-                index: index,
-                val: !isDown ? 0 : 1
-            }).ToString()
-        );
-        return;
-    }
-
-    client?.SendRawHID(
-        new HIDMsg(
-            !isDown ? EventCode.GamepadButtonDown : EventCode.GamepadButtonUp,
-            {
-                gamepad_id: 0,
-                index: index
-            }
-        ).ToString()
-    );
-}
-
-function VirtualGamepadAxis(x: number, y: number, type: AxisType) {
-    let axisx, axisy: number;
-    switch (type) {
-        case 'left':
-            axisx = 0;
-            axisy = 1;
-            break;
-        case 'right':
-            axisx = 2;
-            axisy = 3;
-            break;
-    }
-
-    client?.SendRawHID(
-        new HIDMsg(EventCode.GamepadAxis, {
-            gamepad_id: 0,
-            index: axisx,
-            val: x
-        }).ToString()
-    );
-    client?.SendRawHID(
-        new HIDMsg(EventCode.GamepadAxis, {
-            gamepad_id: 0,
-            index: axisy,
-            val: y
-        }).ToString()
-    );
-}
-
-const trigger = (code: EventCode, jsKey: string) => {
-    const key = convertJSKey(jsKey, 0);
-    if (key == undefined) return;
-    const data = new HIDMsg(code, { key }).ToString();
-    client?.SendRawHID(data);
-};
-
-export function WindowD() {
-    if (client == null) return;
-    trigger(EventCode.KeyDown, 'lwin');
-    trigger(EventCode.KeyDown, 'd');
-    trigger(EventCode.KeyUp, 'd');
-    trigger(EventCode.KeyUp, 'lwin');
-}
-
-export async function keyboardCallback(val, action: 'up' | 'down') {
-    if ('vibrate' in navigator && action == 'down') {
-        navigator.vibrate([40, 30, 0]);
-    }
-
-    if (client == null) return;
-    trigger(action == 'up' ? EventCode.KeyUp : EventCode.KeyDown, val);
-}
-export async function gamePadBtnCallback(index: number, type: 'up' | 'down') {
-    if ('vibrate' in navigator && type == 'down') {
-        navigator.vibrate([40, 30, 0]);
-    }
-    if (client == null) return;
-    VirtualGamepadButtonSlider(type == 'down', index);
-}
-
-export async function gamepadAxisCallback(
-    x: number,
-    y: number,
-    type: 'left' | 'right'
-) {
-    if (client == null) return;
-    VirtualGamepadAxis(x, y, type);
-}
 
 export const setClipBoard = async (content: string) => {
-    if (client == null) return;
-
-    client?.SetClipboard(content);
+    await CLIENT?.SetClipboard(content);
 };
-
-export function openRemotePage(
-    url: string,
-    options?: {
-        app_name?: string;
-        demoSession?: boolean;
-    }
-) {
-    const Url = new URL(url);
-    Url.searchParams.set('no_stretch', 'true');
-    if (store.getState().remote.scancode)
-        Url.searchParams.set('scancode', `true`);
-    if (options?.demoSession) Url.searchParams.set('demo', `true`);
-    if (options?.app_name) Url.searchParams.set('page', options.app_name);
-
-    const open = Url.toString();
-    if (isMobile()) {
-        document.location.href = open;
-        return;
-    }
-
-    setTimeout(() => {
-        window.open(open, '_blank');
-    }, 0);
-}
-
 export const remoteAsync = {
     check_worker: async () => {
-        if (!store.getState().remote.active) return;
-        else if (store.getState().remote.local) return;
-        else if (client == null) return;
-        else if (!client.ready()) return;
+        const {
+            remote: { active, direct_access }
+        } = store.getState();
+        if (!active) return;
+        else if (direct_access) return;
+        else if (CLIENT == undefined) return;
+        else if (CLIENT.Metrics.video.status == 'connected') return;
 
-        // TODO
-    },
-    ping_session: async () => {
-        const state = store.getState();
-        const { remote, popup } = state;
-
-        if (!remote.active || client == null) {
-            console.error(`
-remote: ${remote.active} not active
-client: ${client} not ready`);
-            return;
+        await appDispatch(worker_refresh());
+        const {
+            worker: { data, currentAddress }
+        } = store.getState();
+        if (data[currentAddress].availability != 'started') {
+            appDispatch(close_remote());
+            toast(`Your PC was shutted down`, {
+                icon: 'ℹ️',
+                duration: 5000,
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff'
+                }
+            });
         }
-
-        // const lastActive = Math.min(
-        //     client?.hid?.last_active(),
-        //     client?.touch?.last_active()
-        // );
-        // if (lastActive > 5 * 60) {
-        //     if (popup.data_stack.length > 0) {
-        //         console.log('Early exit: popup data stack length > 0');
-        //         return;
-        //     }
-
-        //     // appDispatch(
-        //     //     popup_open({
-        //     //         type: 'notify',
-        //     //         data: {
-        //     //             loading: false,
-        //     //             tips: false,
-        //     //             title: 'Please move your mouse!'
-        //     //         }
-        //     //     })
-        //     // );
-
-        //     // while (
-        //     //     Math.min(
-        //     //         client?.hid?.last_active(),
-        //     //         client?.touch?.last_active()
-        //     //     ) > 2
-        //     // ) {
-        //     //     await new Promise((r) => setTimeout(r, 1000));
-        //     // }
-
-        //     // appDispatch(popup_close());
-        // }
-
-        pinger();
     },
-    sync: async () => {
-        if (!store.getState().remote.active) return;
-        else if (client == null) return;
-        else if (!client.ready()) return;
+    sync: () => {
+        const {
+            active,
+            bitrate,
+            framerate,
+            prev_bitrate,
+            prev_framerate,
+            prev_hq,
+            hq,
+            prev_size
+        } = store.getState().remote;
+        if (!active) return;
+        else if (CLIENT == undefined || !CLIENT?.ready()) return;
+        if (isMobile()) CLIENT.PointerVisible(true);
+
+        const {
+            gamePadHide,
+            keyboardHide,
+            gamepadSetting: { draggable }
+        } = store.getState().sidepane.mobileControl;
+        CLIENT.touch.mode =
+            gamePadHide && keyboardHide && !draggable ? 'trackpad' : 'none';
+
+        appDispatch(
+            remoteSlice.actions.metrics({
+                packetloss: CLIENT.Metrics.video.packetloss.last,
+                idrcount: CLIENT.Metrics.video.idrcount.last,
+                bitrate: CLIENT.Metrics.video.bitrate.persecond,
+                fps: CLIENT.Metrics.video.frame.persecond,
+                decodetime: CLIENT.Metrics.video.frame.decodetime,
+                delay: CLIENT.Metrics.video.frame.delay
+            })
+        );
 
         if (
-            store.getState().remote.prev_bitrate !=
-                store.getState().remote.bitrate ||
-            store.getState().remote.prev_framerate !=
-                store.getState().remote.framerate ||
-            store.getState().remote.prev_framerate != size()
+            prev_bitrate != bitrate ||
+            prev_framerate != framerate ||
+            prev_hq != hq ||
+            prev_size != SIZE()
         )
             appDispatch(remoteSlice.actions.internal_sync());
     },
-    direct_access: createAsyncThunk(
-        'direct_access',
-        async ({ ref }: { ref: string }) => {
-            const resultList = await pb
-                .collection('reference')
-                .getFirstListItem(`token = "${ref}"`);
+    direct_access: createAsyncThunk('direct_access', async (url: URL) => {
+        const address = url.searchParams.get('host');
+        const audio = url.searchParams.get('audio');
+        const mic = url.searchParams.get('mic');
+        const video = url.searchParams.get('video');
+        const data = url.searchParams.get('data');
+        const high_queue = store.getState().worker.HighQueue;
+        const high_mtu = store.getState().worker.HighMTU;
+        if (address == null || audio == null || video == null || data == null)
+            return false;
 
-            appDispatch(remote_connect({ ...(resultList as any) }));
-        }
-    ),
+        const opt = `&queue_size=${high_queue ? 16 : 4}&mtu=${
+            high_mtu ? 1400 : 1200
+        }`;
+        appDispatch(
+            remote_connect({
+                videoUrl: `wss://${address}:444/broadcasters/webrtc?token=${video}${opt}`,
+                audioUrl: `wss://${address}:444/broadcasters/webrtc?token=${audio}`,
+                microUrl: `wss://${address}:444/broadcasters/microphone?token=${mic}`,
+                dataUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
+            })
+        );
+        if (!(await ready())) appDispatch(close_remote());
+        else appDispatch(remote_ready());
+        return true;
+    }),
     save_reference: createAsyncThunk(
         'save_reference',
-        async (info: {
-            audioUrl: string;
-            videoUrl: string;
-            rtc_config: RTCConfiguration;
-        }): Promise<string> => {
-            const token = crypto.randomUUID();
-            await pb.collection('reference').create({ ...info, token });
-            return token;
+        async (info: RemoteCredential): Promise<string> => {
+            const audio = new URL(info.audioUrl).searchParams.get('token');
+            const video = new URL(info.videoUrl).searchParams.get('token');
+            const data = new URL(info.dataUrl).searchParams.get('token');
+            const host = new URL(info.dataUrl).hostname;
+
+            const url = new URL(originalurl.toString());
+            url.searchParams.set('audio', audio);
+            url.searchParams.set('video', video);
+            url.searchParams.set('data', data);
+            url.searchParams.set('host', host);
+            return url.toString();
         }
     ),
     cache_setting: createAsyncThunk(
         'cache_setting',
-        async (_: void, { getState }) => {
-            // TODO
+        async (_: {}, { getState }) => {
+            const user = (getState() as RootState).user.id;
+            const { HideVM, HighMTU, HighQueue } = (getState() as RootState)
+                .worker;
+            const { hq, bitrate, framerate, scancode, preferred_codec } = (
+                getState() as RootState
+            ).remote;
+
+            const setting = {
+                hq,
+                preferred_codec,
+                HideVM,
+                HighMTU,
+                scancode,
+                HighQueue,
+                bitrate,
+                framerate
+            };
+            const settings = await POCKETBASE()
+                .collection('setting')
+                .getFullList();
+            if (settings.length == 0)
+                await POCKETBASE()
+                    .collection('setting')
+                    .create({ user, setting });
+            else
+                await POCKETBASE()
+                    .collection('setting')
+                    .update(settings[0]?.id, { setting });
         }
     ),
-    load_setting: createAsyncThunk('load_setting', async (_: void) => {
-        // TODO
+    _load_setting: createAsyncThunk('load_setting', async (_: void) => {
+        let bitrateLocal: number = +localStorage.getItem('bitrate');
+        let framerateLocal: number = +localStorage.getItem('framerate');
+
+        if (
+            bitrateLocal > 100 ||
+            bitrateLocal <= 0 ||
+            framerateLocal > 100 ||
+            framerateLocal <= 0
+        ) {
+            bitrateLocal = 35;
+            framerateLocal = 25;
+        }
+
+        appDispatch(change_bitrate(bitrateLocal));
+        appDispatch(change_framerate(framerateLocal));
+
+        const settings = await POCKETBASE().collection('setting').getFullList<{
+            setting: {
+                hq?: boolean;
+                preferred_codec?: 'h264' | 'h265';
+                HideVM?: boolean;
+                HighMTU?: boolean;
+                HighQueue?: boolean;
+                scancode?: boolean;
+                bitrate?: number;
+                framerate?: number;
+            };
+        }>();
+        if (settings.length > 0) {
+            const [
+                {
+                    setting: {
+                        hq,
+                        HideVM,
+                        HighMTU,
+                        HighQueue,
+                        preferred_codec,
+                        scancode: _scancode
+                    }
+                }
+            ] = settings;
+            appDispatch(toggle_hide_vm(HideVM));
+            appDispatch(toggle_high_mtu(HighMTU));
+            appDispatch(toggle_high_queue(HighQueue));
+            appDispatch(toggle_hq(hq));
+            if (['h264', 'h265'].includes(preferred_codec))
+                appDispatch(change_preferred_codec(preferred_codec));
+            if (_scancode) appDispatch(scancode(_scancode));
+        }
     }),
+    get load_setting() {
+        return this._load_setting;
+    },
+    set load_setting(value) {
+        this._load_setting = value;
+    },
     toggle_remote_async: createAsyncThunk(
         'toggle_remote_async',
-        async (_: void, { getState }) => {
-            if (!store.getState().remote.active) {
-                appDispatch(toggle_remote());
-                await sleep(2000);
-                return;
-            }
-
+        async (_: void, {}) => {
             appDispatch(toggle_remote());
-
-            return;
-        }
-    ),
-    hard_reset_async: createAsyncThunk(
-        'hard_reset_async',
-        async (_: void, { getState }) => {
-            if (client == null) return;
-
-            appDispatch(hard_reset());
-            await ready();
-            return;
         }
     )
 };
@@ -382,39 +326,24 @@ export const remoteSlice = createSlice({
     reducers: {
         remote_connect: (
             state,
-            {
-                payload: { audioUrl, videoUrl, rtc_config }
-            }: PayloadAction<{
-                audioUrl: string;
-                videoUrl: string;
-                rtc_config: RTCConfiguration;
-            }>
+            { payload: data }: PayloadAction<RemoteCredential>
         ) => {
-            state.local = true;
-            state.auth = {
-                id: undefined,
-                webrtc: rtc_config,
-                signaling: {
-                    audioUrl,
-                    videoUrl
-                }
-            };
-
+            state.auth = data;
             state.active = true;
             state.fullscreen = true;
+            state.ready = false;
         },
-        share_reference: (state) => {
-            const token = state.ref;
-            console.log(token);
-            if (token == undefined) return;
-
-            navigator.clipboard.writeText(
-                `https://${window.location.host}/?ref=${token}`
-            );
+        remote_ready: (state) => {
+            state.ready = true;
+        },
+        toggle_hq: (state, action: PayloadAction<boolean | undefined>) => {
+            const newstate = action.payload ?? !state.hq;
+            set_hq(newstate);
+            state.hq = newstate;
         },
         loose_focus: (state) => {
             state.focus = false;
-            client?.hid?.ResetKeyStuck();
+            if (CLIENT) CLIENT?.hid?.ResetKeyStuck();
         },
         have_focus: (state) => {
             state.focus = true;
@@ -423,34 +352,34 @@ export const remoteSlice = createSlice({
             state.active = false;
             state.auth = undefined;
             state.fullscreen = false;
-            setTimeout(() => client?.Close(), 100);
+            CLIENT?.Close();
+            Assign(null);
         },
         toggle_remote: (state) => {
             if (!state.active) {
                 state.fullscreen = true;
             } else {
                 state.fullscreen = false;
-                setTimeout(() => client?.Close(), 100);
+                CLIENT?.Close();
             }
             state.active = !state.active;
         },
-        hard_reset: () => {
-            if (client == null) return;
-
-            client?.HardReset();
+        strict_timing: (state, action: PayloadAction<boolean>) => {
+            state.no_strict_timing = action.payload;
         },
-        scancode_toggle: (state) => {
-            state.scancode = !state.scancode;
-            if (client) client.hid.scancode = state.scancode;
+        scancode_toggle: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            state.scancode = action.payload ?? !state.scancode;
+            if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         scancode: (state, action: PayloadAction<boolean>) => {
             state.scancode = action.payload;
+            if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         framedrop: (state, action: PayloadAction<boolean>) => {
             if (state.active) state.frame_drop = action.payload;
-        },
-        homescreen: () => {
-            WindowD();
         },
         set_fullscreen: (state, action: PayloadAction<boolean>) => {
             state.fullscreen = action.payload;
@@ -460,19 +389,37 @@ export const remoteSlice = createSlice({
         },
         pointer_lock: (state, action: PayloadAction<boolean>) => {
             state.pointer_lock = action.payload;
-            if (client == null) return;
-            client.PointerVisible(action.payload);
+            CLIENT?.PointerVisible(action.payload);
         },
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
         },
+        metrics: (
+            state,
+            action: PayloadAction<{
+                packetloss: number;
+                idrcount: number;
+                bitrate: number;
+                fps: number;
+                decodetime: number;
+                delay: number;
+            }>
+        ) => {
+            state.idrcount = action.payload.idrcount;
+            state.packetLoss = action.payload.packetloss;
+            state.realbitrate = action.payload.bitrate;
+            state.realfps = action.payload.fps;
+            state.realdecodetime = action.payload.decodetime;
+            state.realdelay = action.payload.delay;
+        },
         internal_sync: (state) => {
             if (
                 (state.bitrate != state.prev_bitrate ||
-                    state.prev_size != size()) &&
-                size() > 0
+                    state.prev_size != SIZE() ||
+                    state.prev_hq != state.hq) &&
+                SIZE() > 0
             ) {
-                client?.ChangeBitrate(
+                CLIENT?.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
                             state.bitrate +
@@ -480,11 +427,12 @@ export const remoteSlice = createSlice({
                     )
                 );
                 state.prev_bitrate = state.bitrate;
-                state.prev_size = size();
+                state.prev_size = SIZE();
+                state.prev_hq = state.hq;
             }
 
             if (state.framerate != state.prev_framerate) {
-                client?.ChangeFramerate(
+                CLIENT?.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
                             state.framerate +
@@ -499,6 +447,16 @@ export const remoteSlice = createSlice({
         },
         change_bitrate: (state, action: PayloadAction<number>) => {
             state.bitrate = action.payload;
+        },
+        change_preferred_codec: (
+            state,
+            action: PayloadAction<'h264' | 'h265'>
+        ) => {
+            state.preferred_codec = action.payload;
+        },
+        toggle_objectfit: (state) => {
+            const currentState = state.objectFit;
+            state.objectFit = currentState == 'fill' ? 'contain' : 'fill';
         }
     },
     extraReducers: (builder) => {
@@ -506,13 +464,7 @@ export const remoteSlice = createSlice({
             builder,
             {
                 fetch: remoteAsync.load_setting,
-                hander: (state, action: PayloadAction<any>) => {
-                    const { bitrate, framerate } = action.payload;
-                    state.bitrate = bitrate;
-                    state.framerate = framerate;
-
-                    if (isMobile()) return;
-                }
+                hander: (state, action: PayloadAction<any>) => {}
             },
             {
                 fetch: remoteAsync.cache_setting,
@@ -529,8 +481,10 @@ export const remoteSlice = createSlice({
                 hander: (state, action: PayloadAction<void>) => {}
             },
             {
-                fetch: remoteAsync.hard_reset_async,
-                hander: (state, action: PayloadAction<void>) => {}
+                fetch: remoteAsync.direct_access,
+                hander: (state, action: PayloadAction<boolean>) => {
+                    state.direct_access = action.payload;
+                }
             }
         );
     }

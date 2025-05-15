@@ -4,7 +4,7 @@ import { desktopApps } from '../utils';
 const initialState = {
     apps: desktopApps,
     hide: false,
-    size: 1,
+    size: 3,
     sort: 'none',
     abOpen: false
 };

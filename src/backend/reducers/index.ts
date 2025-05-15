@@ -1,14 +1,14 @@
 import { ThunkMiddleware, configureStore } from '@reduxjs/toolkit';
 import * as actions from '.';
 import * as Actions from '../actions/index.js';
-import { appSlice, appsAsync } from './apps';
+import { appSlice } from './apps';
 import { deskSlice } from './desktop';
 import { globalAsync, globalSlice } from './globals';
 import { menusSlice } from './menu';
 import { modalSlice as popupSlice } from './modal';
 import { remoteAsync, remoteSlice } from './remote.js';
 import { settSlice } from './settings.js';
-import { sidepaneAsync, sidepaneSlice } from './sidepane';
+import { sidepaneSlice } from './sidepane';
 import { menuSlice } from './startmenu';
 import { taskSlice } from './taskbar';
 import { userAsync, userSlice } from './user';
@@ -16,14 +16,15 @@ import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { UserEvents } from './fetch/analytics.js';
+import { UserEvents } from '../../../src-tauri/api';
+import { DevEnv } from '../../../src-tauri/api/database';
 
-const blacklist = ['framerate', 'bitrate'];
+const blacklist = ['framerate', 'bitrate', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
-    if (window.location.href.includes('localhost'))
-        // TODO
-        console.log({ ...(action as any) });
-    if (blacklist.filter((x) => (action as any).type.includes(x)).length == 0)
+    if (DevEnv) console.log({ ...(action as any) });
+    else if (
+        blacklist.filter((x) => (action as any)?.type?.includes(x))?.length == 0
+    )
         UserEvents(action as any);
 
     return await next(action);
@@ -54,10 +55,9 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const appDispatch = store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const { update_language } = globalSlice.actions;
-export const { user_delete, user_update, user_check_sub } = userSlice.actions;
-export const { wall_next, wall_set, wall_lock, wall_unlock } =
-    wallSlice.actions;
+export const { update_language, show_tutorial, show_chat, open_game } =
+    globalSlice.actions;
+export const { user_delete, user_update } = userSlice.actions;
 export const { task_audo, task_hide, task_show, task_toggle } =
     taskSlice.actions;
 export const {
@@ -79,91 +79,126 @@ export const {
 } = menuSlice.actions;
 export const {
     app_toggle,
+    app_full,
     app_add,
     app_close,
     app_external,
     app_showdesk,
-    app_url
+    app_maximize,
+    app_payload,
+    app_remove,
+    app_minimize
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =
     settSlice.actions;
-export const { worker_prev, worker_view } = workerSlice.actions;
+export const {
+    toggle_hide_vm,
+    toggle_high_mtu,
+    toggle_high_queue,
+    set_current_address
+} = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
     sidepane_bandhide,
     sidepane_bandtogg,
     sidepane_panetogg,
     sidepane_panehide,
+    sidepane_paneopen,
     sidepane_panethem,
     render_message,
     push_notification,
     toggle_gamepad,
     toggle_keyboard,
     toggle_gamepad_setting,
-    change_btnGp_size,
+    set_gamepad_button_size,
     toggle_gamepad_draggable,
-    toggle_default_gamepad_position
+    toggle_default_gamepad_position,
+    toggle_status_connection,
+    hide_status_connection,
+    open_status_connection,
+    set_status_connection,
+    decrease_btn_gamepad,
+    increase_btn_gamepad,
+    select_btn_gamepad,
+    add_key_gamingKeyboard,
+    delete_key_gamingKeyboard,
+    move_key_gamingKeyboard,
+    select_key_gamingKeyboard,
+    set_keyboard_edit_state,
+    toggle_gaming_keyboard,
+    hide_gaming_keyboard,
+    open_gaming_keyboard,
+    set_gamingKeyboard_data,
+    set_default_gamingKeyboard,
+    save_gamingKeyboard_to_local,
+    decrease_key_gamingKeyboard,
+    increase_key_gamingKeyboard
 } = sidepaneSlice.actions;
 
 export const {
     remote_connect,
-    share_reference,
+    remote_ready,
     toggle_remote,
-    hard_reset,
     loose_focus,
     have_focus,
     scancode,
     scancode_toggle,
+    strict_timing,
     close_remote,
     change_bitrate,
     change_framerate,
+    change_preferred_codec,
     toggle_fullscreen,
     set_fullscreen,
     pointer_lock,
-    homescreen,
-    relative_mouse
+    toggle_hq,
+    relative_mouse,
+    toggle_objectfit
 } = remoteSlice.actions;
 
 export const {
-    fetch_app,
-    install_app,
-    start_app,
-    pause_app,
-    delete_app,
-    access_app
-} = appsAsync;
-export const {
-    fetch_local_worker,
-    worker_session_access,
-    worker_session_close,
-    worker_session_create,
-    worker_vm_create,
-    worker_vm_create_from_volume,
     worker_refresh,
+    worker_refresh_ui,
+    fetch_configuration,
+    fetch_app_access,
+    fetch_buckets,
+    change_app_access,
     wait_and_claim_volume,
-    claim_volume,
-    vm_session_create,
-    vm_session_access,
-    vm_session_close
+    claim_steam,
+    claim_storage,
+    unclaim_steam,
+    unclaim_storage,
+    unclaim_volume
 } = workerAsync;
-export const { fetch_user } = userAsync;
 export const {
-    ping_session,
+    fetch_user,
+    fetch_wallet,
+    fetch_active_discounts,
+    fetch_subscription,
+    update_subscription_metadata,
+    get_plans,
+    get_resources,
+    change_node,
+    change_template
+} = userAsync;
+export const {
+    check_worker,
     sync,
     direct_access,
     save_reference,
-    check_worker,
     load_setting,
     cache_setting,
-    toggle_remote_async,
-    hard_reset_async
+    toggle_remote_async
 } = remoteAsync;
 
-export const { fetch_store, fetch_under_maintenance } = globalAsync;
-export const { push_message, fetch_message } = sidepaneAsync;
+export const {
+    fetch_store,
+    fetch_domain,
+    update_game_tag,
+    fetch_error_message
+} = globalAsync;
 
-export { ready } from './remote';
 export const dispatch_generic = async ({
     type,
     payload

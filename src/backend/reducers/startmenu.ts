@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { WindowD } from './remote';
 
 const initialState = {
-    hide: true
+    hide: true,
+    qahide: true
     // menu: false,
     // showAll: false,
     // alpha: false,

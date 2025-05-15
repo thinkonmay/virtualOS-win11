@@ -3,6 +3,7 @@
   --bg2: rgba(255, 255, 255, 0.67);
 
   display: flex;
+  align-items: center;
   position: absolute;
   overflow: hidden;
   width: 100vw;
@@ -11,14 +12,50 @@
   background: var(--bg1);
   -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  bottom: 0;
   z-index: 10000;
+
+  &[data-align="center"] {
+    bottom: 0;
+  }
+
+  &[data-align="left"] {
+    top: 0;
+  }
 
   &[data-remote="true"] {
     display: none;
     background: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  .vndIcon {
+    img {
+      filter: unset;
+    }
+  }
+
+  .containerWalletInfo {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+
+    .wrapperWallet {
+      display: flex;
+      gap: 8px;
+
+      .depositBtn {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+
+    }
   }
 }
 
@@ -27,10 +64,18 @@ body[data-theme="dark"] {
     --bg1: rgba(32, 32, 32, 0.75);
     --bg2: rgba(255, 255, 255, 0.1);
 
-    .taskright {
-      .btn-show {
+    .vndIcon {
+      img {
         filter: invert(1);
       }
+    }
+
+    .taskright {
+      .btn-show {
+        //filter: invert(1);
+      }
+
+
 
     }
   }
@@ -53,6 +98,14 @@ body[data-theme="dark"] {
 
 .taskright {
   position: absolute;
+  color: var(--dark-txt);
+  padding: 0 12px;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
 
   &[data-remote="true"] {
     bottom: 0;
@@ -60,9 +113,9 @@ body[data-theme="dark"] {
     //height: max-content;
     z-index: 10;
     padding-left: 22px;
-
+    color: #fff;
     --bg1: rgba(32, 32, 32, 0.75);
-    --bg2: rgba(255, 255, 255, 0.3);
+    --bg2: rgba(37, 37, 37, 0.7);
     //-webkit-backdrop-filter: saturate(3) blur(20px);
     //backdrop-filter: saturate(3) blur(20px);
     background-color: var(--bg2);
@@ -77,20 +130,10 @@ body[data-theme="dark"] {
     }
 
     &.slide-out {
-      transform: translateX(93%)
+      transform: translateX(91%)
     }
   }
 
-
-
-  padding: 0 12px;
-  top: 0;
-  right: 0;
-  width: auto;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 
   .btn-show {
     position: absolute;
@@ -104,33 +147,31 @@ body[data-theme="dark"] {
     outline: none;
     border: none;
     background: none;
+    color: #fff;
 
     -webkit-tap-highlight-color: transparent;
   }
 }
 
-@media (1px < width < 1024px) {
+@media (max-width: 1024px) {
   .taskright {
     position: absolute;
 
     &[data-remote="true"] {
-      //bottom: 0;
       top: 0;
-      height: 56px;
+      height: 3rem; 
       z-index: 10;
-      padding-left: 22px;
-
-
 
       transition: all ease-in-out 0.5s;
       transform: translatex(0%);
-
-
     }
+  }
 
-
-
-
+  .settingBtn {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8xpx;
   }
 }
 
@@ -192,6 +233,8 @@ body[data-theme="dark"] {
   &[data-side="left"] {
     align-items: flex-start;
   }
+
+
 }
 
 .tsbar {
@@ -202,10 +245,11 @@ body[data-theme="dark"] {
   transition: all ease-in-out 200ms;
 }
 
+
 .tsIcon {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   margin: auto 3px;
   box-sizing: border-box;
   border-radius: 0;

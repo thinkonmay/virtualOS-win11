@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
+import { BiSupport } from 'react-icons/bi';
 import useSound from 'use-sound';
 import ringSound from '/audio/ring2.mp3';
-
 import {
     MdArrowBackIos,
     MdArrowForwardIos,
-    MdOutlineVideoSettings
+    MdOutlineVideoSettings,
+    MdShare
 } from 'react-icons/md';
-
-import { afterMath } from '../../backend/actions';
+import { afterMath, showLinkShare } from '../../backend/actions';
 import {
     appDispatch,
-    task_hide,
-    task_show,
+    show_chat,
+    startogg,
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
@@ -25,10 +25,11 @@ import './taskbar.scss';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);
-    const dispatch = appDispatch;
     const remote = useAppSelector((state) => state.remote);
     const tasks = useAppSelector((state) => state.taskbar);
+    const align = useAppSelector((state) => state.taskbar.align);
     const apps = useAppSelector((state) => state.apps);
+    const money = useAppSelector((state) => state.user.balance);
     const [open, setOpen] = useState(true);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
@@ -39,50 +40,18 @@ const Taskbar = () => {
             .filter((x) => defaultapps.find((y) => y.id == x.id) == undefined)
     );
 
-    const showPrev = (event) => {
-        var ele = event.target;
-        while (ele && ele.getAttribute('value') == null)
-            ele = ele.parentElement;
-
-        var appPrev = ele.getAttribute('value');
-        var xpos = window.scrollX + ele.getBoundingClientRect().left;
-
-        var offsetx = Math.round((xpos * 10000) / window.innerWidth) / 100;
-
-        dispatch(
-            task_show({
-                app: appPrev,
-                pos: offsetx
-            })
-        );
-    };
-
-    const hidePrev = () => {
-        dispatch(task_hide());
-    };
-
-    const [time, setTime] = useState(new Date());
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTime(new Date());
-        }, 1000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
-
     const [play] = useSound(ringSound, { volume: 0.1 });
 
     useEffect(() => {
-        remote?.active ? play() : null;
-    }, [remote.active]);
+        remote?.ready ? play() : null;
+    }, [remote.ready]);
 
     const toggleControl = (e) => {
         setOpen((old) => !old);
-
         afterMath(e);
     };
+
+    const numberFormat = (num) => new Intl.NumberFormat().format(num);
 
     const customDispatch = customClickDispatch((e) => afterMath(e));
     return (
@@ -92,229 +61,95 @@ const Taskbar = () => {
                     className={`${open ? 'slide-in' : 'slide-out'} taskright`}
                     data-remote={remote.active}
                 >
-                    {remote.active ? (
-                        <button className="btn-show" onClick={toggleControl}>
-                            {open ? (
-                                <MdArrowForwardIos
-                                    style={{ fontSize: '1.2rem' }}
-                                ></MdArrowForwardIos>
-                            ) : (
-                                <MdArrowBackIos
-                                    style={{ fontSize: '1.2rem' }}
-                                ></MdArrowBackIos>
-                            )}
-                        </button>
-                    ) : null}
-
-                    <>
-                        <div
-                            className="p-2 prtclk handcr hvlight flex rounded "
-                            onClick={customDispatch}
-                            data-action="sidepane/sidepane_bandtogg"
-                            style={{ '--prefix': 'BAND' }}
-                        >
-                            <div
-                                className="text-xm font-semibold"
-                                style={{ color: '#0167c0' }}
-                            >
-                                {t[Contents.SUPPORT]}
-                            </div>
+                    <button className="btn-show" onClick={toggleControl}>
+                        {open ? (
+                            <MdArrowForwardIos
+                                style={{ fontSize: '1.2rem' }}
+                            ></MdArrowForwardIos>
+                        ) : (
+                            <MdArrowBackIos
+                                style={{ fontSize: '1.2rem' }}
+                            ></MdArrowBackIos>
+                        )}
+                    </button>
+                    <div
+                        className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
+                        onClick={() => appDispatch(showLinkShare())}
+                    >
+                        <MdShare fontSize={'1.5rem'} />
+                        <span className="hidden md:block">
+                            {t[Contents.SHARE]}
+                        </span>
+                    </div>
+                    <div
+                        id="supportNow"
+                        className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
+                        onClick={() => appDispatch(show_chat())}
+                        data-action="sidepane/sidepane_bandtogg"
+                        style={{ '--prefix': 'BAND' }}
+                    >
+                        <BiSupport fontSize={'1.5rem'} />
+                        <span className="hidden md:block">Hỗ trợ</span>
+                    </div>
+                    <div
+                        className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] items-center rounded"
+                        onClick={customDispatch}
+                        style={{ '--prefix': 'PANE' }}
+                        id="settingBtn"
+                        data-action="sidepane_panetogg"
+                    >
+                        <div className="text-xm flex items-center gap-[4px] font-semibold">
+                            <MdOutlineVideoSettings
+                                fontSize={'1.2rem'}
+                            ></MdOutlineVideoSettings>
+                            {t[Contents.SETTING]}
                         </div>
-                        <div
-                            className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
-                            onClick={customDispatch}
-                            style={{ '--prefix': 'PANE' }}
-                            data-action="sidepane_panetogg"
-                        >
-                            {remote.connection?.video == 'connected' ? (
-                                <Icon
-                                    className="taskIcon"
-                                    src={
-                                        remote.frame_drop ? 'wifi_low' : 'wifi'
-                                    }
-                                    ui
-                                    width={16}
-                                />
-                            ) : null}
-                            <div className="text-xm flex gap-[4px] font-semibold">
-                                <MdOutlineVideoSettings
-                                    fontSize={'1.2rem'}
-                                ></MdOutlineVideoSettings>
-                                {t[Contents.SETTING]}
-                            </div>
-                        </div>
-                    </>
+                    </div>
                 </div>
             ) : (
                 <div
                     className="taskbar"
                     data-remote={remote.active}
-                    style={!remote.active ? { '--prefix': 'TASK' } : {}}
+                    data-align={align}
+                    style={{ '--prefix': 'TASK' }}
                 >
                     <audio src={ringSound}></audio>
-                    {remote.active ? null : (
-                        <div className="tasksCont" data-side={tasks.align}>
-                            <div className="tsbar" onMouseOut={hidePrev}>
+                    <div className="containerWalletInfo">
+                        <div className="wrapperWallet">
+                            <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">
                                 <Icon
-                                    className="tsIcon tsIconInvert"
-                                    src="home"
+                                    className="vndIcon"
+                                    src="vnd"
                                     width={24}
-                                    click="startmenu/startogg"
-                                    style={{ '--prefix': 'START' }}
                                 />
-
-                                {defaultapps.map((task, i) => {
-                                    const isHidden = task.hide;
-                                    const isActive = task.z == apps.hz;
-                                    return (
-                                        <div
-                                            key={i}
-                                            onMouseOver={
-                                                (!isActive &&
-                                                    !isHidden &&
-                                                    showPrev) ||
-                                                null
-                                            }
-                                            value={task.id}
-                                        >
-                                            <Icon
-                                                className="tsIcon"
-                                                width={24}
-                                                open={isHidden ? null : true}
-                                                click="apps/app_toggle"
-                                                active={isActive}
-                                                payload={task.id}
-                                                src={task.id}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                                {tempapps.map((key, i) => {
-                                    const isActive = key.z == apps.hz;
-                                    return (
-                                        <div
-                                            key={i}
-                                            onMouseOver={
-                                                (!isActive && showPrev) || null
-                                            }
-                                            value={key.icon}
-                                        >
-                                            <Icon
-                                                className="tsIcon"
-                                                width={24}
-                                                active={isActive}
-                                                click={key.action}
-                                                payload={key.payload}
-                                                menu={key.action}
-                                                open="true"
-                                                src={key.id}
-                                            />
-                                        </div>
-                                    );
-                                })}
+                                {numberFormat(money)}
                             </div>
                         </div>
-                    )}
-                    <div
-                        className={`${
-                            open ? 'slide-in' : 'slide-out'
-                        } taskright`}
-                        data-remote={remote.active}
-                    >
-                        {remote.active ? (
-                            <button
-                                className="btn-show"
-                                onClick={() => setOpen((old) => !old)}
-                            >
-                                {open ? (
-                                    <MdArrowForwardIos
-                                        style={{ fontSize: '1.2rem' }}
-                                    ></MdArrowForwardIos>
-                                ) : (
-                                    <MdArrowBackIos
-                                        style={{ fontSize: '1.2rem' }}
-                                    ></MdArrowBackIos>
-                                )}
-                            </button>
-                        ) : null}
-
-                        <>
-                            <div
-                                className="p-2 prtclk handcr hvlight flex rounded "
-                                onClick={clickDispatch}
-                                data-action="sidepane/sidepane_bandtogg"
-                                style={{ '--prefix': 'BAND' }}
-                            >
-                                <div
-                                    className="text-xm font-semibold"
-                                    style={{ color: '#0167c0' }}
-                                >
-                                    {t[Contents.SUPPORT]}
-                                </div>
-                            </div>
-                            <div
-                                className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
-                                onClick={clickDispatch}
-                                style={{ '--prefix': 'PANE' }}
-                                data-action="sidepane_panetogg"
-                            >
-                                {remote.connection?.video == 'connected' ? (
-                                    <Icon
-                                        className="taskIcon"
-                                        src={
-                                            remote.frame_drop
-                                                ? 'wifi_low'
-                                                : 'wifi'
-                                        }
-                                        ui
-                                        width={16}
-                                    />
-                                ) : null}
-                                <div className="text-xm flex gap-[4px] font-semibold">
-                                    <MdOutlineVideoSettings
-                                        fontSize={'1.2rem'}
-                                    ></MdOutlineVideoSettings>
-                                    {t[Contents.SETTING]}
-                                </div>
-                            </div>
-                        </>
                     </div>
-                </div>
-            )}
-            {/*<div
-                className="taskbar"
-                data-remote={remote.active}
-                style={!remote.active ? { '--prefix': 'TASK' } : {}}
-            >
-                <audio src={ringSound}></audio>
-                {remote.active ? null : (
                     <div className="tasksCont" data-side={tasks.align}>
-                        <div className="tsbar" onMouseOut={hidePrev}>
-                            <Icon
-                                className="tsIcon tsIconInvert"
-                                src="home"
-                                width={24}
-                                click="startmenu/startogg"
+                        <div className="tsbar">
+                            <div
                                 style={{ '--prefix': 'START' }}
-                            />
-
+                                className="settingBtn flex items-center prtclk handcr rounded-md p-2 hvlight"
+                                onClick={() => appDispatch(startogg())}
+                            >
+                                <Icon
+                                    className="infoBtn tsIcon tsIconInvert"
+                                    src="home"
+                                    width={28}
+                                />
+                                <p className="hidden md:block text-xm font-semibold">
+                                    {t[Contents.ACCOUNT]}
+                                </p>
+                            </div>
                             {defaultapps.map((task, i) => {
                                 const isHidden = task.hide;
                                 const isActive = task.z == apps.hz;
                                 return (
-                                    <div
-                                        key={i}
-                                        onMouseOver={
-                                            (!isActive &&
-                                                !isHidden &&
-                                                showPrev) ||
-                                            null
-                                        }
-                                        value={task.id}
-                                    >
+                                    <div key={i} value={task.id}>
                                         <Icon
                                             className="tsIcon"
-                                            width={24}
+                                            width={18}
                                             open={isHidden ? null : true}
                                             click="apps/app_toggle"
                                             active={isActive}
@@ -327,13 +162,7 @@ const Taskbar = () => {
                             {tempapps.map((key, i) => {
                                 const isActive = key.z == apps.hz;
                                 return (
-                                    <div
-                                        key={i}
-                                        onMouseOver={
-                                            (!isActive && showPrev) || null
-                                        }
-                                        value={key.icon}
-                                    >
+                                    <div key={i} value={key.icon}>
                                         <Icon
                                             className="tsIcon"
                                             width={24}
@@ -349,83 +178,53 @@ const Taskbar = () => {
                             })}
                         </div>
                     </div>
-                )}
-                <div
-                    className={`${open ? 'slide-in' : 'slide-out'} taskright`}
-                    data-remote={remote.active}
-                >
-                    {remote.active ? (
-                        <button
-                            className="btn-show"
-                            onClick={() => setOpen((old) => !old)}
-                        >
-                            {open ? (
-                                <MdArrowForwardIos
-                                    style={{ fontSize: '1.2rem' }}
-                                ></MdArrowForwardIos>
-                            ) : (
-                                <MdArrowBackIos
-                                    style={{ fontSize: '1.2rem' }}
-                                ></MdArrowBackIos>
-                            )}
-                        </button>
-                    ) : null}
-
-                    <>
+                    <div
+                        className={`${
+                            open ? 'slide-in' : 'slide-out'
+                        } taskright`}
+                        data-remote={remote.active}
+                    >
                         <div
-                            className="p-2 prtclk handcr hvlight flex rounded "
-                            onClick={clickDispatch}
+                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
+                            onClick={() => appDispatch(showLinkShare())}
+                        >
+                            <MdShare strokeWidth={'0rem'} fontSize={'1.5rem'} />
+                            <span className="hidden md:block">
+                                {t[Contents.SHARE]}
+                            </span>
+                        </div>
+                        <div
+                            id="supportNow"
+                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
+                            onClick={() => appDispatch(show_chat())}
                             data-action="sidepane/sidepane_bandtogg"
                             style={{ '--prefix': 'BAND' }}
                         >
-                            <div
-                                className="text-xm font-semibold"
-                                style={{ color: '#0167c0' }}
-                            >
+                            <BiSupport
+                                strokeWidth={'0rem'}
+                                fontSize={'1.5rem'}
+                            />
+                            <span className="hidden md:block">
                                 {t[Contents.SUPPORT]}
-                            </div>
+                            </span>
                         </div>
                         <div
-                            className="prtclk handcr my-1 p-2 hvlight flex gap-[8px] rounded"
+                            id="settingBtn"
+                            className="settingBtn prtclk handcr my-1 p-2 hvlight flex gap-[8px] items-center rounded"
                             onClick={clickDispatch}
                             style={{ '--prefix': 'PANE' }}
                             data-action="sidepane_panetogg"
                         >
-                            {remote.connection?.video == 'connected' ? (
-                                <Icon
-                                    className="taskIcon"
-                                    src={
-                                        remote.frame_drop ? 'wifi_low' : 'wifi'
-                                    }
-                                    ui
-                                    width={16}
-                                />
-                            ) : null}
-                            <div className="text-xm flex gap-[4px] font-semibold">
+                            <div className="text-xm flex gap-[4px] items-center font-semibold">
                                 <MdOutlineVideoSettings
                                     fontSize={'1.2rem'}
                                 ></MdOutlineVideoSettings>
                                 {t[Contents.SETTING]}
                             </div>
                         </div>
-                    </>
-                    <div className="taskDate p-2 m-1 prtclk rounded">
-                        <div>
-                            {time.toLocaleTimeString('en-US', {
-                                hour: 'numeric',
-                                minute: 'numeric'
-                            })}
-                        </div>
-                        <div>
-                            {time.toLocaleDateString('en-US', {
-                                year: '2-digit',
-                                month: '2-digit',
-                                day: 'numeric'
-                            })}
-                        </div>
                     </div>
                 </div>
-            </div>*/}
+            )}
         </>
     );
 };

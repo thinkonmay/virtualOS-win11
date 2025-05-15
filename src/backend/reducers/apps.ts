@@ -1,61 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { appDispatch, close_remote, ready } from '.';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppData, allApps } from '../utils';
-import { DeleteApplication, StartApplication, StopApplication } from './fetch';
 import { BuilderHelper } from './helper';
-
-export const appsAsync = {
-    fetch_app: createAsyncThunk('fetch_app', async (): Promise<any[]> => {
-        return [];
-    }),
-
-    install_app: createAsyncThunk(
-        'install_app',
-        async (
-            {
-                app_template_id
-            }: {
-                app_template_id: string;
-            },
-            { getState }
-        ): Promise<void> => {}
-    ),
-
-    access_app: createAsyncThunk(
-        'access_app',
-        async (storage_id: string, { getState }): Promise<string> => {
-            await ready();
-            return storage_id;
-        }
-    ),
-
-    start_app: createAsyncThunk(
-        'start_app',
-        async (storage_id: string, { getState }) => {
-            await StartApplication(storage_id);
-            await ready();
-            return storage_id;
-        }
-    ),
-
-    pause_app: createAsyncThunk(
-        'pause_app',
-        async (storage_id: string, { getState }): Promise<string> => {
-            await StopApplication(storage_id);
-            appDispatch(close_remote());
-            return storage_id;
-        }
-    ),
-
-    delete_app: createAsyncThunk(
-        'delete_app',
-        async (storage_id: string, { getState }): Promise<string> => {
-            await DeleteApplication(storage_id);
-            appDispatch(close_remote());
-            return storage_id;
-        }
-    )
-};
 
 type Data = {
     hz: number;
@@ -71,26 +16,7 @@ export const appSlice = createSlice({
     initialState,
     reducers: {
         app_external: (state, action: PayloadAction<any>) => {
-            //window.open(action.payload, '_blank');
-            setTimeout(() => {
-                window.open(action.payload, '_blank');
-            }, 0);
-        },
-        app_url: (state, action: PayloadAction<string | undefined>) => {
-            const obj = state.apps.find((x) => x.id == 'edge');
-            if (obj == undefined) return;
-
-            if (action.payload && action.payload.startsWith('http'))
-                obj.url = action.payload;
-            else if (action.payload && action.payload.length != 0)
-                obj.url = 'https://www.bing.com/search?q=' + action.payload;
-            else obj.url = null;
-
-            obj.size = 'full';
-            obj.hide = false;
-            obj.max = true;
-            state.hz += 1;
-            obj.z = state.hz;
+            window.open(action.payload, '_blank');
         },
         app_showdesk: (state, action: PayloadAction<any>) => {
             state.apps.forEach((obj) => {
@@ -114,17 +40,25 @@ export const appSlice = createSlice({
 
             state.apps = [...initialState.apps, ...app];
         },
-        app_full: (state, action: PayloadAction<string>) => {
-            const obj = state.apps.find((x) => action.payload == x.id);
+        app_full: (
+            state,
+            action: PayloadAction<{ id: string; page?: string; value?: any }>
+        ) => {
+            const { id, value, page = '' } = action.payload;
+            const obj = state.apps.find((x) => id == x.id);
             if (obj == undefined) return;
 
             obj.size = 'full';
             obj.hide = false;
             obj.max = true;
+            obj.page = page;
+            obj.value = value ?? obj.value;
             state.hz += 1;
             obj.z = state.hz;
         },
-
+        app_remove: (state, action: PayloadAction<string>) => {
+            state.apps = state.apps.filter((x) => action.payload != x.id);
+        },
         app_close: (state, action: PayloadAction<string>) => {
             const obj = state.apps.find((x) => action.payload == x.id);
             if (obj == undefined) return;
@@ -213,70 +147,15 @@ export const appSlice = createSlice({
                 state.hz += 1;
                 obj.z = state.hz;
             }
+        },
+        app_payload: (state, action: PayloadAction<{ id; key; value }>) => {
+            const obj = state.apps.find((x) => x.id == action.payload.id);
+            if (obj == undefined) return;
+
+            obj[action.payload.key] = action.payload.value;
         }
     },
     extraReducers: (builder) => {
-        BuilderHelper<Data, any, any>(
-            builder,
-            {
-                fetch: appsAsync.access_app,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: appsAsync.install_app,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: appsAsync.start_app,
-                hander: (state, action) => {
-                    const obj = state.apps.find(
-                        (x) => action.payload == x.payload
-                    );
-                    if (obj == undefined) return;
-                    obj.ready = true;
-                    obj.menu = 'running_app';
-                    obj.action = 'access_app';
-                }
-            },
-            {
-                fetch: appsAsync.pause_app,
-                hander: (state, action) => {
-                    const obj = state.apps.find(
-                        (x) => action.payload == x.payload
-                    );
-                    if (obj == undefined) return;
-                    obj.ready = false;
-                    obj.menu = 'paused_app';
-                    obj.action = 'start_app';
-                }
-            },
-            {
-                fetch: appsAsync.delete_app,
-                hander: (state, action) => {
-                    const filtered = state.apps.findIndex(
-                        (x) => action.payload == x.payload
-                    );
-                    if (filtered == -1) return;
-                    state.apps.splice(filtered, 1);
-                }
-            },
-            {
-                fetch: appsAsync.fetch_app,
-                hander: (state, action) => {
-                    const app = action.payload.map((x: any) => {
-                        return {
-                            ...x,
-                            payload: x.payload,
-                            size: 'full',
-                            hide: x.id != 'settings',
-                            max: null,
-                            z: 0
-                        };
-                    });
-
-                    state.apps = [...initialState.apps, ...app];
-                }
-            }
-        );
+        BuilderHelper<Data, any, any>(builder);
     }
 });

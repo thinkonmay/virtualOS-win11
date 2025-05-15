@@ -17,7 +17,7 @@ const initialState = {
     },
     person: {
         name: 'Thinkmay User',
-        theme: 'light',
+        theme: 'dark', //dark - light
         color: 'blue'
     },
     devices: {

@@ -1,215 +1,323 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc'; // import UTC plugin
-import { verifyPayment, wrapperAsyncFunction } from '.';
-
+import md5 from 'md5';
+import toast from 'react-hot-toast';
+import { UserEvents, UserSession } from '../../../src-tauri/api';
+import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
+import { CLIENT } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
+    app_full,
+    app_remove,
     app_toggle,
-    change_bitrate,
-    change_framerate,
     check_worker,
-    fetch_message,
+    desk_remove,
+    direct_access,
+    fetch_active_discounts,
+    fetch_app_access,
+    fetch_buckets,
+    fetch_configuration,
+    fetch_domain,
+    fetch_error_message,
     fetch_store,
-    fetch_under_maintenance,
+    fetch_subscription,
     fetch_user,
+    fetch_wallet,
+    get_plans,
+    get_resources,
     have_focus,
+    load_setting,
     loose_focus,
-    ping_session,
     popup_open,
-    setting_theme,
-    sidepane_panethem,
+    set_current_address,
+    show_tutorial,
     store,
     sync,
-    user_check_sub,
-    wall_set,
+    update_game_tag,
+    update_subscription_metadata,
     worker_refresh
 } from '../reducers';
-import { client } from '../reducers/remote';
 
-const loadSettings = async () => {
-    let thm = localStorage.getItem('theme');
-    thm = thm == 'light' ? 'light' : 'dark';
-    var icon = thm == 'light' ? 'sun' : 'moon';
-
-    if (
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-        thm = 'dark';
-    }
-
-    document.body.dataset.theme = thm;
-    appDispatch(setting_theme(thm));
-    appDispatch(sidepane_panethem(icon));
-    appDispatch(wall_set(thm == 'light' ? 0 : 1));
-};
-
-export const fetchUser = async () => {
-    await appDispatch(fetch_user());
-
-    const stat = store.getState().user.stat;
-
-    appDispatch(app_toggle('usermanager'));
-
-    if (stat.plan_name == 'hour_02' || !stat.plan_name) {
-        appDispatch(app_toggle('store'));
-    } else {
-        appDispatch(app_toggle('connectPc'));
-    }
-    checkMaintain();
-};
-const checkMaintain = async () => {
-    await appDispatch(fetch_under_maintenance());
-    const info = store.getState().globals.maintenance;
-
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
-
-    let startAtTime = dayjs.utc(info.created_at);
-    let endAtTime = dayjs.utc(info.ended_at);
-
-    // Convert to GMT+7
-    let startAt = startAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-    let endAt = endAtTime.tz('Asia/Bangkok'); // Bangkok is in GMT+7 timezone
-
-    // Extract hour, day, and month
-    const hourStart = startAt.hour();
-    const dayStart = startAt.date();
-    const monthStart = startAt.month() + 1;
-
-    const startText = `${hourStart}h ${dayStart}/${monthStart}`;
-
-    const hourEnd = endAt.hour();
-    const dayEnd = endAt.date();
-    const monthEnd = endAt.month() + 1;
-
-    const endText = `${hourEnd}h ${dayEnd}/${monthEnd}`;
-
-    if (dayjs() < endAt) {
-        appDispatch(
-            popup_open({
-                type: 'maintain',
-                data: {
-                    start: startText,
-                    end: endText
-                }
-            })
-        );
-    }
-};
-export const fetchApp = async () => {
-    await appDispatch(worker_refresh());
-};
-const fetchSetting = async () => {
-    let bitrateLocal: number = +localStorage.getItem('bitrate');
-    let framerateLocal: number = +localStorage.getItem('framerate');
-
-    if (
-        bitrateLocal > 100 ||
-        bitrateLocal <= 0 ||
-        framerateLocal > 100 ||
-        framerateLocal <= 0
-    ) {
-        bitrateLocal = 35;
-        framerateLocal = 25;
-    }
-
-    appDispatch(change_bitrate(bitrateLocal));
-    appDispatch(change_framerate(framerateLocal));
-};
+export const originalurl = new URL(window.location.href);
 
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (client == null || !client?.ready()) return;
+        if (CLIENT == undefined || !CLIENT?.ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
+        const clipboardHash = md5(clipboard);
         if (!(store.getState() as RootState).remote.focus)
             appDispatch(have_focus());
-        if (clipboard == old_clipboard) return;
+        if (clipboardHash == old_clipboard) return;
 
-        old_clipboard = clipboard;
-        client?.SetClipboard(clipboard);
+        old_clipboard = clipboardHash;
+        CLIENT?.SetClipboard(clipboard);
     } catch {
         if ((store.getState() as RootState).remote.focus)
             appDispatch(loose_focus());
     }
 };
 
-const fetchMessage = async () => {
+const setDomain = async () => {
+    const defaultDomain = 'saigon2.thinkmay.net';
+    const address = localStorage.getItem('thinkmay_domain');
+    if (address == null) {
+        localStorage.setItem('thinkmay_domain', defaultDomain);
+        appDispatch(set_current_address(defaultDomain));
+    } else appDispatch(set_current_address(address));
+};
+const startAnalytics = async () => {
     const email = store.getState().user.email;
-    await appDispatch(fetch_message(email));
+    if (
+        email != 'unknown' &&
+        email != '' &&
+        email != undefined &&
+        email != null
+    )
+        (window as any).OpenWidget.call('set_customer_email', email);
+    await UserSession(email);
 };
 
-const fetchStore = async () => {
-    await appDispatch(fetch_store());
-};
-export const checkTimeUsage = async () => {
-    const subInfo = store.getState().user?.stat;
+const fetchPayment = () => appDispatch(fetch_wallet());
+const fetchStore = () => appDispatch(fetch_store());
+const fetchSubscription = () => appDispatch(fetch_subscription());
+const fetchConfiguration = () => appDispatch(fetch_configuration());
+const fetchAppAccess = () => appDispatch(fetch_app_access());
+const fetchBuckets = () => appDispatch(fetch_buckets());
+const fetchDomains = () => appDispatch(fetch_domain());
+const fetchErrorMessages = () => appDispatch(fetch_error_message());
+const fetchUser = () => appDispatch(fetch_user());
+const fetchDiscounts = () => appDispatch(fetch_active_discounts());
+const fetchApp = () => appDispatch(worker_refresh());
+const fetchPlans = () => appDispatch(get_plans());
+const fetchResources = () => appDispatch(get_resources());
+const loadSettings = () => appDispatch(load_setting());
+const updateSubmetadata = () => appDispatch(update_subscription_metadata());
+const updateGametag = () => appDispatch(update_game_tag());
 
-    const totalTime = +(subInfo?.plan_hour + subInfo?.additional_time);
-    let isExpired = false;
-    const now = new Date();
+const updateUI = async () => {
+    const {
+        user: { subscription, email, discounts },
+        worker: { currentAddress, bucket }
+    } = store.getState();
 
-    // Check if now is within 2 days of end_time
-    const endTime = new Date(subInfo?.end_time);
-    const twoDaysBeforeEndTime = new Date(endTime);
-    twoDaysBeforeEndTime.setDate(endTime.getDate() - 2);
+    if (bucket == undefined) appDispatch(app_remove('storage'));
+    const unknown_user = email == undefined || email == 'unkown' || email == '';
 
-    // Check if now is between twoDaysBeforeEndTime and endTime
-    const isNearbyEndTime = now >= twoDaysBeforeEndTime && now <= endTime;
+    const rms = [];
+    const ops = [];
+    if (subscription != undefined) {
+        const { cluster, metadata } = subscription;
+        ops.push('connectPc');
 
-    // Check if usage_hour is within 2 hours of 2 * plan_hour
-    const isNearbyUsageHour = subInfo?.remain_time <= 2;
+        const {
+            reach_time_limit,
+            nearly_reach_time_limit,
+            reach_date_limit,
+            nearly_reach_date_limit
+        } = metadata ?? {};
 
-    if (now > endTime || subInfo?.remain_time <= 0) {
-        isExpired = true;
+        if (cluster != currentAddress)
+            appDispatch(
+                popup_open({
+                    type: 'redirectDomain',
+                    data: {
+                        domain: cluster
+                    }
+                })
+            );
+        else if (reach_time_limit)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'time_limit'
+                    }
+                })
+            );
+        else if (reach_date_limit)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'date_limit'
+                    }
+                })
+            );
+        else if (nearly_reach_date_limit)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'near_date_limit',
+                        available_time: nearly_reach_date_limit
+                    }
+                })
+            );
+        else if (nearly_reach_time_limit != undefined)
+            appDispatch(
+                popup_open({
+                    type: 'extendService',
+                    data: {
+                        type: 'near_time_limit',
+                        available_time: nearly_reach_time_limit
+                    }
+                })
+            );
+    } else if (
+        originalurl.searchParams.get('tutorial') == 'on' &&
+        !unknown_user
+    )
+        appDispatch(show_tutorial('open'));
+
+    if (originalurl.searchParams.get('plan') != null && !unknown_user) {
+        ops.pop();
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment',
+                value: {
+                    plan: originalurl.searchParams.get('plan'),
+                    cluster: currentAddress,
+                    ...(originalurl.searchParams.get('app') != null
+                        ? {
+                              template: {
+                                  code_name:
+                                      originalurl.searchParams.get('app'),
+                                  name: originalurl.searchParams.get('app')
+                              }
+                          }
+                        : {})
+                }
+            })
+        );
+    } else if (originalurl.searchParams.get('app') != null && !unknown_user) {
+        ops.pop();
+        appDispatch(
+            app_full({
+                id: 'store',
+                value: {
+                    app: originalurl.searchParams.get('app')
+                }
+            })
+        );
     }
 
-    appDispatch(
-        user_check_sub({
-            isNearbyEndTime,
-            isNearbyUsageHour,
-            isExpired
-        })
-    );
-    return {
-        isNearbyEndTime: isNearbyEndTime,
-        isNearbyUsageHour: isNearbyUsageHour,
-        isExpired
-    };
-};
-const paymentVerify = () => {
-    return wrapperAsyncFunction(
-        () => verifyPayment(store.getState().user.email),
+    ops.forEach((x) => appDispatch(app_toggle(x)));
+    rms.forEach((x) => appDispatch(desk_remove(x)));
+
+    const domain = store.getState().worker.currentAddress;
+    const metadata = store.getState().user.subscription?.metadata;
+    const template = store.getState().worker.metadata;
+    const version = import.meta.env.__BUILD__;
+    const device = getOS() + ' ' + getBrowser();
+    const node = metadata?.node;
+    const nodetext = node ? `\nNode ${node}` : '';
+    const templatetext = template?.name ? `\nTemplate ${template.name}` : '';
+    const volume = template?.local_id;
+    const voltext = volume ? `\nVolume ${volume.split('-')?.[0]}` : '';
+
+    toast(
+        `Device ${device}\nVersion ${version}\nServer ${domain}${nodetext}${voltext}${templatetext}`,
         {
-            loading: true,
-            tips: false,
-            title: 'Verify payment!',
-            timeProcessing: 0.1
+            icon: 'ℹ️',
+            duration: 3000,
+            style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff'
+            }
         }
     );
-};
-export const preload = async () => {
-    try {
-        await fetchUser();
-        await Promise.allSettled([
-            paymentVerify(),
-            loadSettings(),
-            fetchApp(),
-            fetchSetting(),
-            fetchMessage(),
-            fetchStore(),
-            checkTimeUsage()
-        ]);
-    } catch (e) {
-        console.log(`error ${e} in preload function`);
+
+    if (discounts.length > 0) {
+        const [{ start_at, end_at, multiply_rate, code }] = discounts;
+        appDispatch(
+            popup_open({
+                type: 'discount',
+                data: {
+                    code,
+                    from: new Date(start_at).toLocaleDateString(),
+                    to: new Date(end_at).toLocaleDateString(),
+                    percentage: multiply_rate - 1
+                }
+            })
+        );
     }
 
-    setInterval(check_worker, 30 * 1000);
+    if (
+        !store
+            .getState()
+            .globals.domains.map((x) => x.domain)
+            .includes(domain)
+    )
+        appDispatch(
+            popup_open({
+                type: 'maintainance',
+                data: {}
+            })
+        );
+    else if (!unknown_user)
+        appDispatch(
+            popup_open({
+                type: 'shareBanner',
+                data: {}
+            })
+        );
+    else
+        appDispatch(
+            popup_open({
+                type: 'newGame',
+                data: {
+                    image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141',
+                    app_name: 'wukong'
+                }
+            })
+        );
+};
+
+export const preloadSilent = async () => {
+    await setDomain();
+    await fetchUser();
+    await Promise.all([
+        fetchSubscription(),
+        fetchDiscounts(),
+        fetchConfiguration(),
+        fetchAppAccess(),
+        loadSettings(),
+        fetchPayment(),
+        startAnalytics(),
+        fetchDomains(),
+        fetchErrorMessages(),
+        fetchApp(),
+        fetchPlans(),
+        fetchStore(),
+        fetchBuckets(),
+        fetchResources()
+    ]);
+    await Promise.all([updateSubmetadata(), updateGametag()]);
+};
+
+export const preload = async () => {
+    try {
+        await preloadSilent();
+        await updateUI();
+    } catch (e) {
+        UserEvents({
+            type: 'preload/rejected',
+            payload: e
+        });
+    }
+};
+
+export const PreloadBackground = async () => {
+    appDispatch(direct_access(originalurl));
+    const domain = originalurl.searchParams.get('server');
+    if (domain != '' && domain != null)
+        localStorage.setItem('thinkmay_domain', domain);
+
+    await preload();
+    setInterval(check_worker, 10 * 1000);
+    setInterval(handleClipboard, 300);
     setInterval(sync, 2 * 1000);
-    setInterval(handleClipboard, 100);
-    setInterval(ping_session, 1000 * 30);
 };

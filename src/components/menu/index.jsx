@@ -64,39 +64,12 @@ export const ActMenu = () => {
                                 {opt.icon && opt.type == 'svg' ? (
                                     <Icon icon={opt.icon} width={16} />
                                 ) : null}
-                                {opt.icon && opt.type == 'fa' ? (
-                                    <Icon fafa={opt.icon} width={16} />
-                                ) : null}
                                 {opt.icon && opt.type == null ? (
                                     <Icon src={opt.icon} width={16} />
                                 ) : null}
                             </div>
                         ) : null}
                         <div className="nopt">{opt.name}</div>
-                        {opt.opts ? (
-                            <Icon
-                                className="micon rightIcon"
-                                fafa="faChevronRight"
-                                width={10}
-                                color="#999"
-                            />
-                        ) : null}
-                        {opt.dot ? (
-                            <Icon
-                                className="micon dotIcon"
-                                fafa="faCircle"
-                                width={4}
-                                height={4}
-                            />
-                        ) : null}
-                        {opt.check ? (
-                            <Icon
-                                className="micon checkIcon"
-                                fafa="faCheck"
-                                width={8}
-                                height={8}
-                            />
-                        ) : null}
                         {opt.opts ? (
                             <div
                                 className="minimenu"

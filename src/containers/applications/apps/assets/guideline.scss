@@ -1,0 +1,69 @@
+.guidelineApp {
+	--bg1: rgba(242, 242, 242, 0.9);
+	--bg2: rgba(255, 255, 255, 0.9);
+	--bg3: rgba(0, 0, 0, 0.033);
+	--bg4: #aaa;
+	--rib-bg: #ffffffb8;
+
+	//min-width: 550px;
+	//background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
+	background: var(--bg1);
+
+	.wrapperGuideline {
+		background: linear-gradient(138deg, #060606 0%, rgb(117, 3, 146) 100%);
+
+	}
+
+	&[data-size="mini"] {
+		top: 1%;
+		right: 20%;
+		width: 320px;
+		height: 500px;
+	}
+
+	.guidelineContent {
+		padding: 24px;
+		//padding-top: 50px;
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 10px;
+		row-gap: 48px;
+		justify-content: center;
+
+		width: 100%;
+		height: 100%;
+
+		color: var(--dark-txt);
+		overflow-y: auto;
+		box-sizing: border-box;
+
+		.sub {
+			display: flex;
+			flex-direction: column;
+			border-radius: 30px;
+			padding: 16px 12px;
+			background: var(--bg1);
+			height: auto;
+			-webkit-transform-origin: center;
+			transform-origin: center;
+			transition: all ease-in-out .2s;
+			color: var(--dark-txt);
+		}
+	}
+
+	&[data-hide="true"] {
+		z-index: -1 !important;
+	}
+}
+
+
+body[data-theme="dark"] .guidelineApp {
+
+	--bg1: #1c1c1c;
+	--bg2: #242424;
+	--bg3: #313131;
+	--bg4: #444;
+	--rib-bg: #2f2e30b8;
+
+
+}

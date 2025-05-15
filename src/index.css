@@ -61,6 +61,13 @@ button {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+
+}
+
+.appwrap {
+  position: relative;
+  z-index: 0;
+
 }
 
 .w-max {
@@ -152,10 +159,16 @@ i[data-flip="true"] {
   position: absolute;
   width: 100vw;
   height: calc(100vh - 48px);
-  top: 0;
+  bottom: 5rem;
   overflow: hidden;
 }
 
+.desktop[data-align="center"] {
+  top: 0;
+}
+.desktop[data-align="left"] {
+  top: 3rem;
+}
 .desktop[data-mobile="true"] {
   width: calc(100vw - 52px);
   height: 100vh;
@@ -305,7 +318,7 @@ a {
   color: #f5f6f7;
   border-radius: 20px;
   outline: none;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 body[data-theme="dark"] .modalContent {
@@ -322,4 +335,8 @@ body[data-theme="dark"] .modalContent {
   /*content: none;  */
   background: inherit;
   color: inherit;
+}
+
+@theme {
+  --color-mica: #202020 radial-gradient(#3556e8 25%, #202020 100%) no-repeat fixed;
 }

@@ -1,21 +1,12 @@
 export const externalLink = {
-    SERVICE_LINK:
-        'https://thinkonmay.notion.site/Our-service-b6a51122ef8f4a998594576a9f3aed0f',
-    DOCUMENT_LINK:
-        'https://thinkonmay.notion.site/Technical-document-bb5ae115d37d4764a101dfc1f237a0e3',
-    PRICING_LINK:
-        'https://thinkonmay.notion.site/Pricing-plan-v2-308634ff7a264d7190468077e7da9e4d',
-    INTRODUCE_LINK:
-        'https://thinkonmay.notion.site/What-is-Thinkmay-57ef5071a5cc4d638584877f42957c34',
-    INTRODUCE_MEMBER_LINK:
-        'https://thinkonmay.notion.site/Team-member-f1060888766245dda40b3c46624a0223',
-    GITHUB_LINK: 'https://github.com/thinkonmay/thinkshare-v2',
-    DISCORD_LINK: 'https://discord.gg/96BesGqXQk',
+    GUIDELINE_DESKTOP_LINK:
+        'https://www.youtube.com/embed/asrq0ArmCY4?si=9SdJDxoYBCDLrQaw',
+    DISCORD_LINK:
+        'https://discord.com/servers/thinkmay-cloud-pc-1085741898309849128',
     FACEBOOK_LINK: 'https://www.facebook.com/thinkonmay',
-    FACEBOOK_MESSAGE_LINK:
-        'https://www.facebook.com/messages/t/105408644972153',
-    MAILTO_ADDRESS: 'mailto:huyhoangdo@contact.thinkmay.net',
-    GUIDE_VIDEO: 'https://www.youtube.com/watch?v=OeYx8N0xofI'
+    G4MARKET_LINK_DESKTOP: 'https://bit.ly/G4M-Thinkmay-Desktop',
+    G4MARKET_LINK_STORE: 'https://bit.ly/G4M-Thinkmay-In-store-game',
+    MESSAGE_LINK: 'https://www.facebook.com/messages/t/105408644972153'
 };
 
 export const scanCodeApps = [
@@ -32,20 +23,10 @@ export const scanCodeApps = [
 ];
 
 export const localStorageKey = {
-    user: 'USER1',
-    store: 'STORE',
-    app: 'APP',
-    request: 'REQUESTCACHE',
     language: 'language',
-    PATH_NAME: 'PATHNAME'
+    gamepadBtnSizes: 'GAMEPAD_BUTTON_SIZE',
+    gamingKeyboardData: 'GAMING_KEYBOARD_DATA'
 };
-
-export enum PlanName {
-    month_01 = 'month_01',
-    hour_02 = 'hour_02',
-    hour_01 = 'hour_01',
-    unlimited = 'unlimited_01'
-}
 
 export const pathNames = {
     VERIFY_PAYMENT: 'success'

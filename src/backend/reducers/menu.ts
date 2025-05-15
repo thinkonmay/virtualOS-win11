@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { NodeType } from '../utils/tree';
 
 type Opts =
     | {
@@ -49,47 +48,9 @@ const initialState: Data = {
     }
 };
 
-export type MenuOption = 'desk' | 'paused_app' | 'running_app' | NodeType;
+export type MenuOption = 'desk';
 function menu_conversion(menu: MenuOption): MenuOpt {
     switch (menu) {
-        case 'running_app':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Open',
-                        action: 'access_app'
-                    },
-                    {
-                        name: 'Reset',
-                        action: 'reset_app',
-                        icon: 'reset'
-                    },
-                    {
-                        name: 'Shutdown',
-                        action: 'pause_app',
-                        icon: 'shutdown'
-                    }
-                ]
-            };
-        case 'paused_app':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Power On',
-                        action: 'start_app',
-                        icon: 'start'
-                    },
-                    {
-                        name: 'Delete',
-                        action: 'delete_app',
-                        icon: 'delete'
-                    }
-                ]
-            };
         case 'desk':
             return {
                 width: '200px',
@@ -108,113 +69,17 @@ function menu_conversion(menu: MenuOption): MenuOpt {
                         name: 'Display settings',
                         icon: 'display',
                         type: 'svg',
-                        action: 'SETTINGS',
-                        payload: 'full'
-                    },
-                    {
-                        name: 'Personalize',
-                        icon: 'personalize',
-                        type: 'svg',
-                        action: 'SETTINGS',
+                        action: 'sidepane_panetogg',
                         payload: 'full'
                     },
                     {
                         type: 'hr'
                     },
                     {
-                        name: 'Next desktop background',
-                        action: 'WALLNEXT'
-                    },
-                    {
                         name: 'Guideline',
-                        icon: 'about',
-                        action: 'apps/app_url',
-                        payload: 'https://thinkmay.net'
-                    }
-                ]
-            };
-        case 'host_worker':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Create VM',
-                        action: 'worker_vm_create'
-                    }
-                ]
-            };
-        case 'volume':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Create VM',
-                        action: 'worker_vm_create_from_volume'
-                    }
-                ]
-            };
-        case 'vm_worker':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Thinkmay remote desktop',
-                        action: 'vm_session_create'
-                    }
-                ]
-            };
-        case 'local_worker':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Thinkmay remote desktop',
-                        action: 'worker_session_create'
-                    }
-                ]
-            };
-        case 'vm_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Access session',
-                        action: 'vm_session_access'
-                    },
-                    {
-                        name: 'Close session',
-                        action: 'vm_session_close'
-                    }
-                ]
-            };
-        case 'host_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Close session',
-                        action: 'worker_session_close'
-                    }
-                ]
-            };
-        case 'local_session':
-            return {
-                width: '200px',
-                secwid: '200px',
-                data: [
-                    {
-                        name: 'Access session',
-                        action: 'worker_session_access'
-                    },
-                    {
-                        name: 'Close session',
-                        action: 'worker_session_close'
+                        icon: 'info',
+                        type: 'svg',
+                        action: 'open_guideline'
                     }
                 ]
             };

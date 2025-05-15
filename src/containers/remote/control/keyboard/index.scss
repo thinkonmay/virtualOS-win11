@@ -1,0 +1,111 @@
+.virtKeyBoard {
+	position: fixed;
+	z-index: 6;
+
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transition: all ease-in-out 0.5s;
+	transform: translateY(100%);
+
+	&.slide-in {
+		transform: translateY(0%)
+	}
+
+	&.slide-out {
+		transform: translateY(100%)
+	}
+
+	.history {
+		position: absolute;
+		top: -24px;
+		right: 0;
+		left: 0;
+
+
+		.content {
+
+			margin: 0 auto;
+			max-width: 320px;
+			min-width: 120px;
+
+			padding: 8px 12px;
+			border-radius: 8px;
+			background: #fff;
+			min-height: 34px;
+
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: auto;
+			max-height: max-content;
+			text-align: center;
+			word-wrap: break-word;
+			text-overflow: ellipsis;
+		}
+
+
+	}
+
+	.hg-theme-default {
+		background-color: rgb(28 28 28 / 70%);
+	}
+
+
+	.hg-button+.hg-activeButton {
+		background-color: rgba(0, 0, 0, 0.5);
+
+	}
+
+
+	.hg-standardBtn {
+		background-color: rgba(0, 0, 0, 0.8);
+		color: white;
+		border-bottom: 0rem;
+		box-shadow: none;
+
+		height: 2.5rem;
+
+		font-size: 0.9rem;
+
+		&[data-skbtn='Space'] {
+			width: 10rem;
+		}
+
+		&[data-skbtn='Backspace'] {
+			width: 4rem;
+		}
+
+		&[data-skbtn='Shift'] {
+			width: 3rem;
+		}
+
+		&[data-skbtn='Enter'] {
+			width: 4rem;
+		}
+
+		&[data-skbtn='Alt'] {
+			width: 3rem;
+		}
+
+		&[data-skbtn='Control'] {
+			width: 4rem;
+		}
+
+		&[data-skbtn='Close'] {
+			width: 40px;
+			border-radius: 999px;
+			background-color: rgb(218, 81, 2);
+		}
+
+		&[data-skbtn=''] {
+			width: 1rem;
+			background-color: #ececec00;
+		}
+
+		+.hg-activeButton {
+			background-color: rgba(0, 0, 0, 0.5);
+
+		}
+	}
+
+}

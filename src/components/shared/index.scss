@@ -22,12 +22,11 @@
   flex-direction: column;
   justify-content: space-between;
   max-width: 360px;
-  //width: 40%;
   min-width: 270px;
   height: 100%;
 }
 
-@media (1px < width < 1024px) {
+@media (max-width: 1024px) {
   .userManager {
     font-size: 13.5px;
     overflow-y: auto;

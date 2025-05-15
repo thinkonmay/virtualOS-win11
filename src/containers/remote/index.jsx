@@ -1,174 +1,114 @@
-import { useEffect, useRef, useState } from 'react';
-import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
-import { RemoteDesktopClient } from '../../../src-tauri/core/app';
-import { AudioWrapper } from '../../../src-tauri/core/pipeline/sink/audio/wrapper';
-import { VideoWrapper } from '../../../src-tauri/core/pipeline/sink/video/wrapper';
+import { useEffect, useRef } from 'react';
+import { MdOutlineKeyboard, MdOutlineSportsEsports } from 'react-icons/md';
 import {
-    AddNotifier,
-    ConnectionEvent
-} from '../../../src-tauri/core/utils/log';
-import { afterMath } from '../../backend/actions';
+    AudioWrapper,
+    RemoteDesktopClient,
+    VideoWrapper,
+    isMobile
+} from '../../../src-tauri/core';
+import {
+    Assign,
+    CLIENT,
+    ready,
+    virtMouseWheel
+} from '../../../src-tauri/singleton';
 import {
     appDispatch,
-    hard_reset_async,
+    popup_close,
     set_fullscreen,
+    toggle_gamepad,
+    toggle_keyboard,
+    toggle_objectfit,
     useAppSelector
 } from '../../backend/reducers';
-import { assign, client } from '../../backend/reducers/remote';
-import { isMobile } from '../../backend/utils/checking';
+import { Icon } from '../../components/shared/general';
+import { VirtualGamepad } from './control/gamepad';
+import GamingKeyboard from './control/gamingKeyboard';
+import { VirtKeyboard } from './control/keyboard';
 import './remote.scss';
+import { showConnect } from '../../backend/actions';
 
 export const Remote = () => {
-    const relative_mouse = useAppSelector((x) => x.remote.relative_mouse);
-    const wall = useAppSelector((state) => state.wallpaper);
     const keyboard = useAppSelector(
         (state) => !state.sidepane.mobileControl.keyboardHide
+    );
+    const gamingKeyboard = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamingKeyBoard.open
     );
     const gamepad = useAppSelector(
         (state) => !state.sidepane.mobileControl.gamePadHide
     );
-
-    // ConnectStatus = 'not started' | 'started' | 'connecting' | 'connected' | 'closed'
-    const [videoConnectivity, setVideoConnectivity] = useState('not started');
-    const [audioConnectivity, setAudioConnectivity] = useState('not started');
-    const [isOpenStats, setOpenStats] = useState(true);
-    const remote = useAppSelector((store) => store.remote);
+    const draggable = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamepadSetting.draggable
+    );
+    const { active, auth, relative_mouse, fullscreen, objectFit } =
+        useAppSelector((store) => store.remote);
     const remoteVideo = useRef(null);
     const remoteAudio = useRef(null);
 
     useEffect(() => {
-        if (!remote.active || remote.auth == undefined) return;
+        if (!active || auth == undefined) return;
+        if (isMobile()) appDispatch(toggle_objectfit());
 
-        AddNotifier(async (message, text, source) => {
-            if (message == ConnectionEvent.WebRTCConnectionClosed)
-                source == 'audio'
-                    ? setAudioConnectivity('closed')
-                    : setVideoConnectivity('closed');
-            if (message == ConnectionEvent.WebRTCConnectionDoneChecking)
-                source == 'audio'
-                    ? setAudioConnectivity('connected')
-                    : setVideoConnectivity('connected');
-            if (message == ConnectionEvent.WebRTCConnectionChecking)
-                source == 'audio'
-                    ? setAudioConnectivity('connecting')
-                    : setVideoConnectivity('connecting');
+        showConnect();
+        setupWebRTC();
+        ready().then(() => appDispatch(popup_close()));
+    }, [active]);
 
-            if (message == ConnectionEvent.ApplicationStarted) {
-                //await TurnOnConfirm(message, text)
-                setAudioConnectivity('started');
-                setVideoConnectivity('started');
-            }
-
-            //Log(LogLevel.Infor,`${message} ${text ?? ""} ${source ?? ""}`)
-        });
-
-        SetupWebRTC();
-    }, [remote.active]);
-
-    //useEffect(() => {
-    //    const got_stuck_one = () => {
-    //        return ((['started', 'closed'].includes(videoConnectivity) && audioConnectivity == 'connected') ||
-    //            (['started', 'closed'].includes(audioConnectivity) && videoConnectivity == 'connected'))
-    //    }
-    //    const got_stuck_both = () => {
-    //        return (['started', 'closed'].includes(videoConnectivity) &&
-    //            ['started', 'closed'].includes(audioConnectivity))
-    //    }
-
-    //    const check_connection = () => {
-    //        if (got_stuck_one() || got_stuck_both())
-    //            SetupWebRTC()
-    //    }
-
-    //    if (got_stuck_one() || got_stuck_both()) {
-    //        console.log('stuck condition happended, retry after 5s')
-    //        const interval = setTimeout(check_connection, 7 * 1000)
-    //        return () => { clearTimeout(interval) }
-    //    }
-
-    //}, [videoConnectivity, audioConnectivity])
     useEffect(() => {
-        if (client == null) return;
-        else if (isMobile()) client?.PointerVisible(true);
+        if (CLIENT)
+            CLIENT.touch.touch_callback = async () => {
+                if (keyboard && CLIENT.touch.mode == 'none')
+                    appDispatch(toggle_keyboard());
+            };
+    }, [keyboard]);
 
-        if (keyboard || gamepad) client.hid.disable = true;
-        else client.hid.disable = false;
-
-        client.touch.mode =
-            isMobile() && !keyboard
-                ? gamepad
-                    ? 'gamepad'
-                    : 'trackpad'
-                : 'none';
-    }, [gamepad, keyboard]);
+    const setupWebRTC = () =>
+        Assign(
+            new RemoteDesktopClient(
+                new VideoWrapper(remoteVideo.current, auth.videoUrl),
+                new AudioWrapper(remoteAudio.current, auth.audioUrl),
+                auth.dataUrl,
+                auth.microUrl
+            )
+        );
 
     const pointerlock = () => {
-        appDispatch(set_fullscreen(true));
-        remoteVideo.current.requestPointerLock();
+        if (!fullscreen) appDispatch(set_fullscreen(true));
+        if (
+            !(
+                document.pointerLockElement != null ||
+                document.mozPointerLockElement != null ||
+                document.webkitPointerLockElement != null
+            )
+        )
+            remoteVideo.current.requestPointerLock();
     };
-
-    const SetupWebRTC = () => {
-        const video = new VideoWrapper(remoteVideo.current);
-        const audio = new AudioWrapper(remoteAudio.current);
-        assign(
-            () =>
-                new RemoteDesktopClient(
-                    video,
-                    audio,
-                    remote.auth.signaling,
-                    remote.auth.webrtc,
-                    { scancode: remote.scancode }
-                )
-        );
-    };
-
-    const HandleSuggestion = () => {
-        let elem = '';
-        if (videoConnectivity == 'closed' && audioConnectivity == 'closed') {
-            return (
-                <div className="mt-4 flex gap-2 items-center">
-                    <button
-                        onClick={() => appDispatch(hard_reset_async())}
-                        className="instbtn"
-                    >
-                        Reset
-                    </button>
-                    hoặc bật lại máy nếu <b>5'</b> chưa có hình & tiếng
-                </div>
-            );
-        }
-        if (videoConnectivity == 'closed' || audioConnectivity == 'closed') {
-            return (
-                <div className="mt-4 flex gap-2 items-center">
-                    <button
-                        onClick={() => appDispatch(hard_reset_async())}
-                        className="instbtn"
-                    >
-                        Reset
-                    </button>
-                    nếu sau <b>3'</b> chưa có hình hoặc tiếng
-                </div>
-            );
-        }
-    };
-
     return (
         <div className="relative">
+            {isMobile() ? (
+                keyboard ? (
+                    <VirtKeyboard />
+                ) : gamepad || draggable ? (
+                    <VirtualGamepad />
+                ) : gamingKeyboard ? (
+                    <GamingKeyboard />
+                ) : (
+                    <Plugin></Plugin>
+                )
+            ) : null}
+
             <video
                 className="remote"
                 ref={remoteVideo}
-                onClick={
-                    relative_mouse
-                        ? pointerlock
-                        : (e) => {
-                              afterMath(e);
-                          }
-                }
-                //style={{ backgroundImage: `url(img/wallpaper/${wall.src})` }}
+                onClick={relative_mouse ? pointerlock : null}
                 autoPlay
                 muted
                 playsInline
                 loop
+                style={{
+                    objectFit: objectFit
+                }}
             ></video>
             <audio
                 ref={remoteAudio}
@@ -179,29 +119,49 @@ export const Remote = () => {
                 loop={true}
                 style={{ zIndex: -5, opacity: 0 }}
             ></audio>
-
-            <div
-                className={`${
-                    isOpenStats ? 'slide-in' : 'slide-out'
-                }  statusConnection`}
-            >
-                <p>
-                    Video: <b>{videoConnectivity}</b>
-                    <br />
-                    Audio: <b>{audioConnectivity}</b>
-                </p>
-                <button
-                    className="btn-show"
-                    onClick={() => setOpenStats((old) => !old)}
-                >
-                    {isOpenStats ? (
-                        <MdArrowBackIos style={{ fontSize: '1.2rem' }} />
-                    ) : (
-                        <MdArrowForwardIos style={{ fontSize: '1.2rem' }} />
-                    )}
-                </button>
-                <HandleSuggestion />
-            </div>
         </div>
+    );
+};
+
+const Plugin = () => {
+    return (
+        <>
+            <div
+                onClick={() => {
+                    appDispatch(toggle_keyboard());
+                }}
+                className="z-10 absolute bottom-5 right-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+            >
+                <MdOutlineKeyboard fontSize={'1.4rem'} />
+            </div>
+            <div
+                onClick={() => {
+                    appDispatch(toggle_gamepad());
+                }}
+                className="z-10 absolute bottom-5 left-4 flex items-center justify-center rounded-sm bg-[#212121c4] w-[32px] h-[24px] text-[#ffffffe6]"
+            >
+                <MdOutlineSportsEsports fontSize={'1.4rem'} />
+            </div>
+
+            <div className="z-10 absolute bottom-[40%]  right-4 flex flex-col gap-4">
+                <button
+                    className="py-2 rounded-md bg-[#212121c4]"
+                    onClick={() => {
+                        virtMouseWheel(-150);
+                    }}
+                >
+                    <Icon src="mouseUp" width={32} />
+                </button>
+
+                <button
+                    className="py-2 rounded-md bg-[#212121c4]"
+                    onClick={() => {
+                        virtMouseWheel(150);
+                    }}
+                >
+                    <Icon src="mouseDown" width={32} />
+                </button>
+            </div>
+        </>
     );
 };

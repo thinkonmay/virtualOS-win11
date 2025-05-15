@@ -1,361 +1,423 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+    app_full,
     appDispatch,
-    claim_volume,
-    fetch_local_worker,
+    close_remote,
+    fetch_app_access,
     popup_close,
     popup_open,
     remote_connect,
+    remote_ready,
     RootState,
     save_reference,
-    vm_session_access,
-    vm_session_create,
-    worker_refresh,
-    worker_vm_create_from_volume
+    worker_refresh
 } from '.';
-import { sleep } from '../utils/sleep';
-import { fromComputer, RenderNode } from '../utils/tree';
-import { PingSession } from './fetch';
-import { UserEvents } from './fetch/analytics';
-import { pb } from './fetch/createClient';
 import {
+    APIError,
+    ClaimSteam,
+    ClaimStorage,
     CloseSession,
     Computer,
     GetInfo,
-    KeepaliveVolume,
+    getRemoteSession,
+    GLOBAL,
     ParseRequest,
-    ParseVMRequest,
-    StartRequest,
+    POCKETBASE,
+    S3Credential,
+    Session,
     StartThinkmay,
-    StartThinkmayOnVM,
-    StartVirtdaemon
-} from './fetch/local';
+    Steam
+} from '../../../src-tauri/api';
+import { ready } from '../../../src-tauri/singleton';
+import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
-import { set_pinger } from './remote';
+import toast from 'react-hot-toast';
+import { formatError } from '../utils/formatErr';
+import { create_or_replace_resources } from '../actions';
+
+type innerComputer = Computer & {
+    availability?: 'no_node' | 'ready' | 'started'; // private
+    available_templates: string[];
+};
+
+type Metadata = {
+    configuration?: {
+        ram: number;
+        cpu: number;
+        disk: number;
+        template: string;
+    };
+    pbid: string;
+    local_id: string;
+    image?: string;
+    code?: string;
+    name?: string;
+};
 
 type WorkerType = {
-    data: any;
-    cpath: string;
-    cdata: any[];
+    data: {
+        [address: string]: innerComputer;
+    };
 
-    hist: any[];
-    hid: number;
+    currentAddress: string;
+    HideVM: boolean;
+    HighMTU: boolean;
+    HighQueue: boolean;
+
+    metadata?: Metadata;
+    bucket?: string;
+    app_access?: {
+        id: string;
+        app_id: string;
+    };
 };
 
 const initialState: WorkerType = {
-    data: new RenderNode<{}>().any(),
+    data: {},
 
-    cpath: '',
-    cdata: [],
-
-    hist: [],
-    hid: 0
+    currentAddress: 'saigon2.thinkmay.net',
+    HideVM: true,
+    HighMTU: false,
+    HighQueue: false
 };
 
 export const workerAsync = {
+    showPosition: async (text: string) => {
+        appDispatch(popup_close());
+
+        appDispatch(
+            popup_open({
+                type: 'notify',
+                data: {
+                    loading: false,
+                    tips: true,
+                    title: 'Connect to PC',
+                    //text: `Progress: ${text}`
+                    text: formatWaitingLog(text)
+                }
+            })
+        );
+    },
     worker_refresh: createAsyncThunk(
         'worker_refresh',
+        async (_: void, { getState }): Promise<void> => {
+            const addr = (getState() as RootState).worker.currentAddress;
+            await appDispatch(workerAsync.fetch_local_worker(addr));
+        }
+    ),
+    worker_refresh_ui: createAsyncThunk(
+        'worker_refresh_ui',
         async (): Promise<void> => {
-            await appDispatch(
-                fetch_local_worker(
-                    window.location.host.includes('localhost') ||
-                        window.location.host.includes('tauri.localhost')
-                        ? 'play.thinkmay.net'
-                        : window.location.host
-                )
-            );
+            await appDispatch(worker_refresh());
         }
     ),
     wait_and_claim_volume: createAsyncThunk(
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
-            const email = (getState() as RootState).user.email;
-            await appDispatch(worker_refresh());
+            const {
+                remote: { preferred_codec },
+                worker: { HideVM, HighMTU, HighQueue, currentAddress }
+            } = getState() as RootState;
+
             appDispatch(
-                popup_open({
-                    type: 'notify',
-                    data: { loading: true, title: 'Connect to PC' }
-                })
+                popup_open({ type: 'notify', data: { loading: true } })
             );
 
-            const all = await pb.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
-            const volume_id = all.at(0)?.local_id;
+            const info = await GetInfo(currentAddress);
+            if (info instanceof APIError) throw formatError(info);
+            else if (!info.virtReady && !info.remoteReady)
+                throw new Error(`no remote capability on ${currentAddress}`);
 
-            const now = () => new Date().getTime() / 1000 / 60;
-            const start = now();
-            while (now() - start < 180) {
-                // 3 hours
-                const node = new RenderNode(
-                    (getState() as RootState).worker.data
+            let session = getRemoteSession(info);
+            if (session == undefined) {
+                if (
+                    info?.Volumes?.filter((x) => x.pool == 'user_data')
+                        .length == 0
+                )
+                    throw new Error(`you don't have any volume available`);
+
+                let finish = false;
+                const resp = await StartThinkmay(
+                    currentAddress,
+                    info.virtReady ? { HideVM: HideVM } : undefined,
+                    preferred_codec,
+                    info.virtReady
+                        ? (txt) =>
+                              finish
+                                  ? new Promise(() => {})
+                                  : workerAsync.showPosition(txt)
+                        : undefined
                 );
-
-                let result: RenderNode<Computer> | undefined = undefined;
-                node.iterate((x) => {
-                    if (
-                        result == undefined &&
-                        (x.info as Computer)?.Volumes?.includes(volume_id)
-                    )
-                        result = x;
-                });
-
-                if (result == undefined) {
-                    appDispatch(popup_close());
-                    throw new Error(
-                        'Không tìm thấy ổ cứng, đợi 5 - 10p hoặc liên hệ Admin ở Hỗ trợ ngay!'
-                    );
-                }
-                const computer: Computer = node.findParent<Computer>(
-                    result.id,
-                    'host_worker'
-                )?.info;
-                if (computer == undefined) {
-                    appDispatch(popup_close());
-                    throw new Error('invalid tree');
-                }
-
-                if (result.type == 'vm_worker' && result.data.length > 0) {
-                    UserEvents({
-                        type: 'remote/exit_queue_list',
-                        payload: {
-                            email,
-                            end_at: new Date().toISOString()
-                        }
-                    });
-                    await appDispatch(vm_session_access(result.data.at(0).id));
-                    set_pinger(
-                        KeepaliveVolume(computer, volume_id, () =>
-                            PingSession(volume_id)
-                        )
-                    );
-                    appDispatch(popup_close());
-                    return;
-                } else if (
-                    result.type == 'vm_worker' &&
-                    result.data.length == 0
-                ) {
-                    UserEvents({
-                        type: 'remote/exit_queue_list',
-                        payload: {
-                            email,
-                            end_at: new Date().toISOString()
-                        }
-                    });
-                    await appDispatch(vm_session_create(result.id));
-                    set_pinger(
-                        KeepaliveVolume(computer, volume_id, () =>
-                            PingSession(volume_id)
-                        )
-                    );
+                finish = true;
+                if (resp instanceof APIError) {
+                    toast(formatError(resp));
                     appDispatch(popup_close());
                     return;
                 }
-
-                const resp = await StartVirtdaemon(computer, volume_id);
-                if (resp instanceof Error) {
-                    appDispatch(popup_close());
-                    throw resp;
-                }
-
-                await appDispatch(worker_refresh());
+                appDispatch(
+                    workerAsync.update_local_worker({
+                        currentAddress,
+                        info: resp
+                    })
+                );
+                session = getRemoteSession(resp);
             }
 
-            appDispatch(popup_close());
-            return;
+            const result = ParseRequest(currentAddress, session, {
+                high_mtu: HighMTU,
+                high_queue: HighQueue
+            });
+            if (result instanceof APIError) throw formatError(result);
+            await appDispatch(save_reference(result));
+
+            appDispatch(remote_connect(result));
+            if (!(await ready())) appDispatch(close_remote());
+            else appDispatch(remote_ready());
         }
     ),
-    claim_volume: createAsyncThunk(
-        'claim_volume',
-        async (_: void, { getState }): Promise<Computer | Error> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
+    unclaim_steam: createAsyncThunk(
+        'unclaim_steam',
+        async (_: Session, { getState }): Promise<void> => {}
+    ),
+    unclaim_storage: createAsyncThunk(
+        'unclaim_storage',
+        async (_: Session, { getState }): Promise<void> => {}
+    ),
+    claim_steam: createAsyncThunk(
+        'claim_steam',
+        async (_: void, { getState }): Promise<string> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
 
-            const all = await pb.collection('volumes').getFullList<{
-                local_id: string;
-            }>();
+            const session = await ClaimSteam(currentAddress);
+            if (session instanceof APIError) throw session;
+            else return session;
+        }
+    ),
+    claim_storage: createAsyncThunk(
+        'claim_storage',
+        async (_: void, { getState }): Promise<string> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
 
-            const volume_id = all.at(0)?.local_id;
-            let result: RenderNode<Computer> | undefined = undefined;
-            node.iterate((x) => {
+            const session = await ClaimStorage(currentAddress);
+            if (session instanceof APIError) throw session;
+            else return session;
+        }
+    ),
+    update_local_worker: createAsyncThunk(
+        'update_local_worker',
+        async ({
+            info,
+            currentAddress
+        }: {
+            info: Computer;
+            currentAddress: string;
+        }): Promise<{ [address: string]: innerComputer }> => {
+            const available_templates: string[] = [];
+            let availability = undefined;
+
+            if (info.remoteReady) {
+                if (info.Sessions?.length > 0) availability = 'started';
+                else availability = 'ready';
+            } else if (info.virtReady) {
                 if (
-                    result == undefined &&
-                    (x.info as Computer)?.Volumes?.includes(volume_id)
+                    info.Volumes?.filter((x) => x.pool == 'user_data')
+                        ?.length == 0
                 )
-                    result = x;
-            });
+                    availability = 'no_node';
+                else if (info.Sessions?.length > 0) availability = 'started';
+                else availability = 'ready';
 
-            if (result == undefined) throw new Error('worker not found');
-            else if (result.type == 'host_worker') {
-                await appDispatch(worker_vm_create_from_volume(volume_id));
-                await appDispatch(claim_volume());
-            } else if (result.type == 'vm_worker' && result.data.length > 0)
-                await appDispatch(vm_session_access(result.data.at(0).id));
-            else if (result.type == 'vm_worker' && result.data.length == 0)
-                await appDispatch(vm_session_create(result.id));
+                info.Volumes?.filter(
+                    (x) => x.pool == 'app_data' && x.name.includes('.template')
+                )?.forEach(({ name }) =>
+                    !available_templates.includes(name)
+                        ? available_templates.push(name)
+                        : null
+                );
+            } else availability = undefined;
 
-            appDispatch(popup_close());
-            return result.info;
+            return {
+                [currentAddress]: { ...info, availability, available_templates }
+            };
         }
     ),
     fetch_local_worker: createAsyncThunk(
         'fetch_local_worker',
-        async (address: string): Promise<any> => {
+        async (address: string): Promise<void> => {
             const result = await GetInfo(address);
-            if (result instanceof Error) {
-                const node = new RenderNode<{}>();
-                node.id = address;
-                return node.any();
-            }
-
-            return fromComputer(address, result).any();
-        }
-    ),
-    worker_session_create: createAsyncThunk(
-        'worker_session_create',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer = node.findParent<Computer>(input, 'local_worker')
-                ?.info;
-
-            const result = await StartThinkmay(computer);
-            appDispatch(fetch_local_worker(computer.address));
-            appDispatch(remote_connect(result));
-            await appDispatch(save_reference(result));
-        }
-    ),
-    worker_session_access: createAsyncThunk(
-        'worker_session_access',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer = node.findParent<Computer>(input, 'local_worker')
-                ?.info;
-            const session = node.findParent<StartRequest>(
-                input,
-                'local_session'
-            )?.info;
-
-            if (computer == undefined) throw new Error('invalid tree');
-            if (session == undefined) throw new Error('invalid tree');
-
-            const result = ParseRequest(computer, session);
-            appDispatch(remote_connect(result));
-            await appDispatch(save_reference(result));
-        }
-    ),
-    worker_session_close: createAsyncThunk(
-        'worker_session_close',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer =
-                node.findParent<Computer>(input, 'host_worker')?.info ??
-                node.findParent<Computer>(input, 'local_worker')?.info;
-            const session = node.find<StartRequest>(input)?.info;
-
-            if (computer == undefined) throw new Error('invalid tree');
-            if (session == undefined) throw new Error('invalid tree');
-
-            await CloseSession(computer, session);
-            await appDispatch(fetch_local_worker(computer.address));
-        }
-    ),
-    worker_vm_create: createAsyncThunk(
-        'worker_vm_create',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer: Computer = node.find<Computer>(input).info;
-            if (computer == undefined) throw new Error('invalid tree');
-
-            await StartVirtdaemon(computer);
-            await appDispatch(fetch_local_worker(computer.address));
-        }
-    ),
-    worker_vm_create_from_volume: createAsyncThunk(
-        'worker_vm_create_from_volume',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer: Computer = node.findParent<Computer>(
-                input,
-                'host_worker'
-            ).info;
-            if (computer == undefined) throw new Error('invalid tree');
-
-            const resp = await StartVirtdaemon(computer, input);
-            if (resp instanceof Error) {
-                throw resp.message;
-            }
-            await appDispatch(fetch_local_worker(computer.address));
-            return resp;
-        }
-    ),
-    vm_session_create: createAsyncThunk(
-        'vm_session_create',
-        async (ip: string, { getState }): Promise<any> => {
-            await appDispatch(worker_refresh());
-
-            const node = new RenderNode((getState() as RootState).worker.data);
-
-            const host = node.findParent<Computer>(ip, 'host_worker');
-            const vm_session = node.findParent<StartRequest>(
-                ip,
-                'host_session'
+            await appDispatch(
+                workerAsync.update_local_worker(
+                    result instanceof APIError
+                        ? {
+                              info: {},
+                              currentAddress: address
+                          }
+                        : {
+                              info: result,
+                              currentAddress: address
+                          }
+                )
             );
-
-            if (host == undefined) throw new Error('invalid tree');
-            else if (vm_session == undefined) throw new Error('invalid tree');
-
-            const result = await StartThinkmayOnVM(host.info, vm_session.id);
-            await sleep(15 * 1000);
-            appDispatch(remote_connect(result));
-            await appDispatch(fetch_local_worker(host.info.address));
-            await appDispatch(save_reference(result));
         }
     ),
-    vm_session_access: createAsyncThunk(
-        'vm_session_access',
-        async (input: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer = node.findParent<Computer>(input, 'host_worker')
-                ?.info;
-            const session = node.find<StartRequest>(input)?.info;
-            const vm_session_id = node.findParent<StartRequest>(
-                input,
-                'host_session'
-            )?.info.id;
+    change_app_access: createAsyncThunk(
+        'change_app_access',
+        async (app_id: string, { getState }): Promise<void> => {
+            if (app_id == 'none') {
+                await create_or_replace_resources('kickey_none');
+                return;
+            }
 
-            if (computer == undefined) throw new Error('invalid tree');
-            if (session == undefined) throw new Error('invalid tree');
-            if (vm_session_id == undefined) throw new Error('invalid tree');
+            let id = (getState() as RootState).worker.app_access?.id;
+            if (id == undefined) {
+                const error = await create_or_replace_resources('kickey');
+                if (error && error.message.includes('405')) {
+                    appDispatch(
+                        app_full({
+                            id: 'payment',
+                            page: 'payment',
+                            value: {
+                                account: {
+                                    id: app_id
+                                }
+                            }
+                        })
+                    );
 
-            const result = ParseVMRequest(computer, {
-                ...session,
-                target: vm_session_id
-            });
+                    return;
+                } else if (error) throw error;
+                id = (getState() as RootState).worker.app_access?.id;
+            }
 
-            appDispatch(remote_connect(result));
-            await sleep(15 * 1000);
-            await appDispatch(save_reference(result));
+            await POCKETBASE().collection('app_access').update(id, { app_id });
+            await appDispatch(fetch_app_access());
         }
     ),
-    vm_session_close: createAsyncThunk(
-        'vm_session_close',
-        async (id: string, { getState }): Promise<any> => {
-            const node = new RenderNode((getState() as RootState).worker.data);
-            const computer =
-                node.findParent<Computer>(id, 'host_worker')?.info ??
-                node.findParent<Computer>(id, 'local_worker')?.info;
-            if (computer == undefined) throw new Error('invalid tree');
+    fetch_buckets: createAsyncThunk(
+        'fetch_buckets',
+        async (): Promise<string | undefined> => {
+            const volumes = await POCKETBASE()
+                .collection('buckets')
+                .getFullList<{
+                    bucket_name: string;
+                }>();
 
-            const session = node.find<StartRequest>(id)?.info;
-            if (session == undefined) throw new Error('invalid tree');
+            return volumes?.[0]?.bucket_name;
+        }
+    ),
+    fetch_app_access: createAsyncThunk(
+        'fetch_app_access',
+        async (): Promise<
+            | {
+                  id: string;
+                  app_id: string;
+              }
+            | undefined
+        > => {
+            const volumes = await POCKETBASE()
+                .collection('app_access')
+                .getFullList<{
+                    id: string;
+                    app_id: string;
+                }>();
 
-            const vm_session_id = node.findParent<StartRequest>(
-                id,
-                'host_session'
-            )?.info.id;
-            if (vm_session_id == undefined) throw new Error('invalid tree');
+            return volumes?.[0];
+        }
+    ),
+    fetch_configuration: createAsyncThunk(
+        'fetch_configuration',
+        async (): Promise<Metadata | undefined> => {
+            const volumes = await POCKETBASE()
+                .collection('volumes')
+                .getFullList<{
+                    id: string;
+                    local_id: string;
+                    configuration?: {
+                        template: string;
+                        cpu: string;
+                        ram: string;
+                        disk: string;
+                    };
+                }>();
 
-            await CloseSession(computer, { ...session, target: vm_session_id });
-            await appDispatch(fetch_local_worker(computer.address));
+            if (volumes.length == 0) return;
+
+            const [{ id: pbid, local_id, configuration: _configuration }] =
+                volumes;
+            const configuration = {
+                cpu: parseInt(_configuration?.cpu),
+                ram: parseInt(_configuration?.ram),
+                disk: parseInt(_configuration?.disk),
+                template: _configuration?.template
+            };
+            if (Number.isNaN(configuration.cpu)) configuration.cpu = 8;
+            if (Number.isNaN(configuration.ram)) configuration.ram = 16;
+            if (Number.isNaN(configuration.disk)) configuration.disk = 150;
+            if (configuration.template == undefined)
+                configuration.template = 'win11.template';
+            const code = configuration.template.replaceAll('.template', '');
+
+            if (code != undefined) {
+                const { data: stores, error: err } = await GLOBAL()
+                    .from('stores')
+                    .select('metadata->screenshots->0->>path_full,name')
+                    .eq('code_name', code)
+                    .limit(1);
+                if (err) throw err;
+                else if (stores.length > 0) {
+                    const [{ path_full: image, name }] = stores;
+                    return {
+                        pbid,
+                        configuration,
+                        local_id,
+                        image,
+                        code,
+                        name
+                    };
+                } else
+                    return {
+                        pbid,
+                        configuration,
+                        local_id,
+                        code
+                    };
+            } else
+                return {
+                    pbid,
+                    configuration,
+                    local_id
+                };
+        }
+    ),
+    unclaim_volume: createAsyncThunk(
+        'unclaim_volume',
+        async (_: void, { getState }): Promise<any> => {
+            const {
+                worker: { data, currentAddress }
+            } = getState() as RootState;
+            const computer = data[currentAddress];
+
+            let session = undefined;
+            if (computer.remoteReady)
+                session = computer.Sessions.find(
+                    (x) => x.thinkmay != undefined
+                );
+            else if (computer.virtReady)
+                session = computer.Sessions.find((x) => x.vm != undefined);
+            if (session == undefined)
+                throw new Error(`no session available on ${currentAddress}`);
+            const info = await CloseSession(currentAddress, session);
+            if (info instanceof APIError) throw formatError(info);
+            await appDispatch(
+                workerAsync.update_local_worker({
+                    info,
+                    currentAddress: currentAddress
+                })
+            );
         }
     )
 };
@@ -364,87 +426,77 @@ export const workerSlice = createSlice({
     name: 'worker',
     initialState,
     reducers: {
-        worker_view: (state, action: PayloadAction<string | number>) => {
-            const paths = state.cpath.split('/').filter((x) => x.length > 0);
-            paths.push(`${action.payload}`);
-            state.cpath = paths.join('/');
-
-            let temp: RenderNode<any>[] = [];
-            let target: RenderNode<any> = state.data;
-            paths.forEach((x) => {
-                temp = new RenderNode(target).data;
-                target = temp.find((y) => y.id == x) ?? target;
-            });
-
-            state.cdata = target.data.map((x) => x.any());
+        toggle_high_queue: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            state.HighQueue = action.payload ?? !state.HighQueue;
         },
-        worker_prev: (state, action: PayloadAction<any>) => {
-            const paths = state.cpath.split('/').filter((x) => x.length > 0);
-            paths.pop();
-            state.cpath = paths.join('/');
-            if (paths.length == 0) {
-                state.cdata = new RenderNode(state.data).data.map((x) =>
-                    x.any()
-                );
-                return;
-            }
-
-            let temp: RenderNode<any>[] = [];
-            let target: RenderNode<any> = state.data;
-            paths.forEach((x) => {
-                temp = new RenderNode(target).data;
-                target = temp.find((y) => y.id == x) ?? target;
-            });
-
-            state.cdata = target.data.map((x) => x.any());
+        toggle_high_mtu: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            state.HighMTU = action.payload ?? !state.HighMTU;
+        },
+        toggle_hide_vm: (state, action: PayloadAction<boolean | undefined>) => {
+            state.HideVM = action.payload ?? !state.HideVM;
+        },
+        set_current_address: (state, payload: PayloadAction<string>) => {
+            state.currentAddress = payload.payload;
         }
     },
     extraReducers: (build) => {
         BuilderHelper<WorkerType, any, any>(
             build,
             {
-                fetch: workerAsync.fetch_local_worker,
+                fetch: workerAsync.update_local_worker,
                 hander: (state, action) => {
-                    let target = new RenderNode<any>(state.data);
-
-                    const node = new RenderNode<Computer>(action.payload);
-                    const overlapp = target.data.findIndex(
-                        (x) => x.id == node.id
-                    );
-                    if (overlapp == -1 && node.type != 'reject')
-                        target.data.push(node);
-                    else if (overlapp == -1 && node.type == 'reject') return;
-                    else if (node.type == 'reject')
-                        target.data = target.data.filter(
-                            (v, i) => i != overlapp
-                        );
-                    else target.data[overlapp] = node;
-
-                    state.data = target.any();
-
-                    const paths = state.cpath
-                        .split('/')
-                        .filter((x) => x.length > 0);
-                    if (paths.length == 0) {
-                        state.cdata = target.data.map((x) => x.any());
-                    } else {
-                        paths.forEach(
-                            (x) =>
-                                (target =
-                                    new RenderNode(target).data.find(
-                                        (y) => y.id == x
-                                    ) ?? target)
-                        );
-                        state.cdata = target.data.map((x) => x.any());
-                    }
+                    state.data = {
+                        ...state.data,
+                        ...action.payload
+                    };
                 }
             },
             {
-                fetch: workerAsync.worker_session_close,
+                fetch: workerAsync.unclaim_volume,
                 hander: (state, action) => {}
             },
             {
-                fetch: workerAsync.wait_and_claim_volume,
+                fetch: workerAsync.claim_steam,
+                hander: (state, action) => {
+                    window.open(`thinkmay:${action.payload}`);
+                }
+            },
+            {
+                fetch: workerAsync.claim_storage,
+                hander: (state, action) => {
+                    window.open(`thinkmay:${action.payload}`);
+                }
+            },
+            {
+                fetch: workerAsync.worker_refresh_ui,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.fetch_configuration,
+                hander: (state, action) => {
+                    state.metadata = action.payload;
+                }
+            },
+            {
+                fetch: workerAsync.fetch_app_access,
+                hander: (state, action) => {
+                    state.app_access = action.payload;
+                }
+            },
+            {
+                fetch: workerAsync.fetch_buckets,
+                hander: (state, action) => {
+                    state.bucket = action.payload;
+                }
+            },
+            {
+                fetch: workerAsync.change_app_access,
                 hander: (state, action) => {}
             }
         );

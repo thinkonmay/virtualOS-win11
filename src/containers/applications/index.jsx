@@ -4,13 +4,8 @@ import './tabs2.scss';
 import './wnapp.scss';
 
 export * from './apps/connect';
-export * from './apps/edge';
-export * from './apps/feedback';
 export * from './apps/payment';
-export * from './apps/settings';
 export * from './apps/store';
-export * from './apps/usermanager';
-export * from './apps/worker';
 
 export const ScreenPreview = () => {
     const tasks = useAppSelector((state) => state.taskbar);

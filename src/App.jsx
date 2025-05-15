@@ -1,45 +1,40 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import ReactModal from 'react-modal';
-import { preload } from './backend/actions/background';
+import { Toaster } from 'react-hot-toast';
+import { UserEvents } from '../src-tauri/api';
+import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
+
 import {
     appDispatch,
-    direct_access,
     menu_show,
     pointer_lock,
     set_fullscreen,
     useAppSelector
 } from './backend/reducers';
-import { UserSession } from './backend/reducers/fetch/analytics';
 import { Contents } from './backend/reducers/locales';
-import { isMobile } from './backend/utils/checking';
-import { localStorageKey, pathNames } from './backend/utils/constant';
 import ActMenu from './components/menu';
-import {
-    DesktopApp,
-    LogMaintain,
-    SidePane,
-    StartMenu
-} from './components/start';
-import { WidPane } from './components/start/widget';
+import { Tutorial } from './components/onboarding/tutorial';
+import { DesktopApp, SidePane, StartMenu } from './components/start';
 import Taskbar from './components/taskbar';
 import * as Applications from './containers/applications';
-import { Background, BootScreen, LockScreen } from './containers/background';
+import { Background, BootScreen } from './containers/background';
 import Popup from './containers/popup';
+import { login as Login } from './containers/popup/modal/login';
 import { Remote } from './containers/remote';
+import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
 
 function App() {
-    ReactModal.setAppElement('#root');
+    document.body.dataset.theme = 'dark';
+    const align = useAppSelector((state) => state.taskbar.align);
     const remote = useAppSelector((x) => x.remote);
-    const user = useAppSelector((state) => state.user);
+    const loggedIn = useAppSelector((state) => state.user.email != '');
+    const tutorial = useAppSelector((state) => state.globals.tutorial);
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
-    const isMaintaining = useAppSelector(
-        (state) => state.globals.maintenance?.isMaintaining
-    );
+    const [loadingText, setloadingText] = useState(Contents.BOOTING);
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -58,49 +53,24 @@ function App() {
         }
     };
 
-    const [loadingText, setloadingText] = useState(Contents.BOOTING);
-
     useEffect(() => {
-        const url = new URL(window.location.href).searchParams;
-        const pathName = new URL(window.location.href).pathname;
-        const pathNameSegment = pathName.replace('/', '');
-        if (pathNameSegment == pathNames.VERIFY_PAYMENT) {
-            localStorage.setItem(localStorageKey.PATH_NAME, pathNameSegment);
-        }
-        const ref = url.get('ref');
-        if (ref != null) {
-            appDispatch(direct_access({ ref }));
-            //window.history.replaceState({}, document.title, '/' + '');
-            window.onbeforeunload = (e) => {
-                const text = 'Are you sure (｡◕‿‿◕｡)';
-                e = e || window.event;
-                if (e) e.returnValue = text;
-                return text;
-            };
-        }
-        window.history.replaceState({}, document.title, '/' + '');
+        window.OpenWidget.call('minimize');
+        window.onbeforeunload = (e) => {
+            const text = 'Are you sure (｡◕‿‿◕｡)';
+            e = e || window.event;
+            if (e) e.returnValue = text;
+            return text;
+        };
 
-        preload().finally(async () => {
-            await new Promise((r) => setTimeout(r, 1000));
-            const now = new Date().getTime();
-            const timeout = () => new Date().getTime() - now > 10 * 1000;
-            while (
-                isMobile() &&
-                window.screen.width < window.screen.height &&
-                !timeout()
-            ) {
-                setloadingText(Contents.ROTATE_PHONE);
-                await new Promise((r) => setTimeout(r, 1000));
-            }
-
+        const now = () => new Date().getTime();
+        const start_fetch = now();
+        PreloadBackground().finally(async () => {
+            const finish_fetch = now();
+            const interval = finish_fetch - start_fetch;
+            UserEvents({ type: 'preload/finish', payload: { interval } });
             setLockscreen(false);
         });
     }, []);
-    useEffect(() => {
-        if (user.id == 'unknown') return;
-
-        UserSession(user.email);
-    }, [user.id]);
 
     const fullscreen = async () => {
         const elem = document.documentElement;
@@ -128,14 +98,13 @@ function App() {
     };
 
     useEffect(() => {
-        if (remote.fullscreen) {
+        if (tutorial) window.onclick = null;
+        else if (remote.active) {
             window.onclick = null;
             window.oncontextmenu = (ev) => ev.preventDefault();
         } else {
             window.oncontextmenu = ctxmenu;
-            window.onclick = (e) => {
-                afterMath(e);
-            };
+            window.onclick = afterMath;
         }
 
         const job = remote.fullscreen ? fullscreen() : exitfullscreen();
@@ -151,9 +120,11 @@ function App() {
             appDispatch(set_fullscreen(fullscreen));
         };
 
-        const UIStateLoop = setInterval(handleState, 100);
-        return () => clearInterval(UIStateLoop);
-    }, [remote.fullscreen]);
+        const UIStateLoop = setInterval(handleState, 500);
+        return () => {
+            clearInterval(UIStateLoop);
+        };
+    }, [remote.fullscreen, tutorial, remote.active]);
 
     const exitpointerlock = () => {
         document.exitPointerLock();
@@ -175,7 +146,7 @@ function App() {
                 appDispatch(pointer_lock(havingPtrLock));
         };
 
-        const UIStateLoop = setInterval(handleState, 100);
+        const UIStateLoop = setInterval(handleState, 500);
         return () => {
             clearInterval(UIStateLoop);
         };
@@ -184,32 +155,51 @@ function App() {
     return (
         <div className="App">
             <ErrorBoundary FallbackComponent={ErrorFallback}>
-                {booting ? <BootScreen loadingText={loadingText} /> : null}
-                {user.id == 'unknown' && !remote.active ? <LockScreen /> : null}
+                {booting ? (
+                    <BootScreen loadingText={loadingText} />
+                ) : (
+                    <>
+                        <Login loading={setLockscreen} />
+                        <Popup />
+                    </>
+                )}
                 <div className="appwrap ">
                     {pointerLock ? null : (
                         <>
                             <Taskbar />
                             <ActMenu />
-                            <WidPane />
                             <StartMenu />
                             <SidePane />
-                            <Popup />
+                            <Tutorial />
+                            <Toaster
+                                position={
+                                    align == 'left'
+                                        ? 'bottom-right'
+                                        : 'top-right'
+                                }
+                            />
                         </>
                     )}
-
-                    {remote.active ? <Remote /> : <Background />}
-                    {!remote.active ? (
-                        <div className="desktop" data-menu="desk">
-                            <DesktopApp />
-                            {Object.keys(Applications).map((key, idx) => {
-                                var WinApp = Applications[key];
-                                return <WinApp key={idx} />;
-                            })}
-                        </div>
-                    ) : null}
+                    {remote.active && !pointerLock ? <Status /> : null}
+                    {remote.active && loggedIn ? (
+                        <Remote />
+                    ) : (
+                        <>
+                            <Background />
+                            <div
+                                className="desktop"
+                                data-align={align}
+                                data-menu="desk"
+                            >
+                                <DesktopApp />
+                                {Object.keys(Applications).map((key, idx) => {
+                                    var WinApp = Applications[key];
+                                    return <WinApp key={idx} />;
+                                })}
+                            </div>
+                        </>
+                    )}
                 </div>
-                {isMaintaining ? <LogMaintain /> : null}
             </ErrorBoundary>
         </div>
     );

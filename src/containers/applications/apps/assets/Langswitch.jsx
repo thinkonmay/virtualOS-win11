@@ -2,7 +2,7 @@ import { useLayoutEffect, useState } from 'react';
 import { appDispatch, update_language } from '../../../../backend/reducers';
 import { localStorageKey } from '../../../../backend/utils/constant';
 
-const allowed = ['ENG', 'VN'];
+const allowed = ['ENG', 'VN', 'ID'];
 function LangSwitch() {
     const [languageValue, setLanguageValue] = useState('');
 
@@ -25,9 +25,14 @@ function LangSwitch() {
     };
     return (
         <div className="langSwitcher langSwitcherTile">
-            <select value={languageValue} onChange={updateLanguage}>
+            <select
+                value={languageValue}
+                onChange={updateLanguage}
+                className="w-28"
+            >
                 <option value="ENG">English</option>
                 <option value="VN">Vietnamese</option>
+                <option value="ID">Indonesian</option>
             </select>
         </div>
     );

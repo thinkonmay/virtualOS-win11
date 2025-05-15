@@ -1,41 +1,37 @@
 import { useEffect, useRef, useState } from 'react';
-import { AiOutlineCloudDownload } from 'react-icons/ai';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
 import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
-import { PiPauseBold } from 'react-icons/pi';
 import * as Actions from '../../backend/actions';
 import { getTreeValue } from '../../backend/actions';
 
-import { useDispatch } from 'react-redux';
-import {
-    appDispatch,
-    change_bitrate,
-    change_btnGp_size,
-    change_framerate,
-    menu_show,
-    sidepane_panehide,
-    toggle_default_gamepad_position,
-    toggle_gamepad,
-    toggle_gamepad_draggable,
-    toggle_gamepad_setting,
-    useAppSelector
-} from '../../backend/reducers';
-import { Contents } from '../../backend/reducers/locales';
+import { isMobile } from '../../../src-tauri/core';
 import {
     MAX_BITRATE,
     MAX_FRAMERATE,
     MIN_BITRATE,
     MIN_FRAMERATE
-} from '../../backend/reducers/remote';
+} from '../../../src-tauri/singleton';
+import {
+    appDispatch,
+    change_bitrate,
+    change_framerate,
+    open_gaming_keyboard,
+    scancode,
+    set_keyboard_edit_state,
+    sidepane_panehide,
+    toggle_gamepad,
+    toggle_gamepad_draggable,
+    toggle_gamepad_setting,
+    toggle_gaming_keyboard,
+    useAppSelector
+} from '../../backend/reducers';
 import {
     clickDispatch,
     customClickDispatch
 } from '../../backend/utils/dispatch';
-import { sleep } from '../../backend/utils/sleep';
-import { VirtualGamepad } from '../mobileControl/component/virtGamepad';
-import VirtKeyboard from '../mobileControl/component/virtKeyBoard';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';
@@ -43,77 +39,52 @@ import './startmenu.scss';
 export * from './start';
 
 export const DesktopApp = () => {
+    const desk = useAppSelector((state) => state.desktop);
     const deskApps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.desktop.apps.includes(x.id))
     );
-    const desk = useAppSelector((state) => state.desktop);
-    const [holding, setHolding] = useState(false);
-    const timeoutRef = useRef(null);
-    const lastTap = useRef(null);
+    const t = useAppSelector((state) => state.globals.translation);
 
-    const dispatch = useDispatch();
-
-    const handleTouchStart = (e) => {
-        return;
-        Actions.afterMath(e);
-        timeoutRef.current = setTimeout(() => {
-            setHolding(true);
-            e.preventDefault();
-            var touch = e.touches[0] || e.changedTouches[0];
-
-            var data = {
-                top: touch.clientY,
-                left: touch.clientX
-            };
-            data.menu = e.target.dataset.menu;
-            data.dataset = { ...e.target.dataset };
-            dispatch(menu_show(data));
-        }, 300); // 1000 milliseconds = 1 second
-    };
-
-    const handleTouchEnd = async (e) => {
-        //clearTimeout(timeoutRef.current);
-        await sleep(200);
-        clickDispatch(e);
-    };
+    const handleTouchEnd = clickDispatch;
     const handleDouble = customClickDispatch((e) => e.stopPropagation());
 
     return (
         <div className="desktopCont">
             {!desk.hide &&
-                deskApps.map((app, i) => {
-                    return (
-                        <div
-                            key={i}
-                            className="dskApp prtclk relative"
-                            tabIndex={0}
-                            data-action={app.action}
-                            data-menu={app.menu}
-                            data-payload={app.payload || 'full'}
-                            data-id={app.id ?? 'null'}
-                            data-name={app.name}
-                            onDoubleClick={handleDouble}
-                            onTouchStart={handleTouchStart}
-                            onTouchEnd={handleTouchEnd}
-                        >
+                deskApps.map((app, i) => (
+                    <div
+                        key={i}
+                        id={app.id}
+                        className="dskApp prtclk relative sm:m-4 m-0"
+                        tabIndex={0}
+                        data-action={app.action}
+                        data-menu={app.menu}
+                        data-payload={app.payload || 'full'}
+                        data-id={app.id ?? 'null'}
+                        data-name={app.name}
+                        onDoubleClick={handleDouble}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        {app.icon == undefined ? (
                             <Icon
-                                className="dskIcon "
+                                className={`${app.id}`}
                                 click={'null'}
-                                src={app.id}
-                                // mono={!(app.ready ?? true)}
+                                width={Math.round(desk.size * 30)}
+                                src={app.image ?? app.id}
+                                mono={app.mono ?? false}
                                 pr
-                                width={Math.round(desk.size * 36)}
                             />
-                            <div className="appName">{app.name}</div>
-                            {!app.installing ? null : (
-                                <AiOutlineCloudDownload className="text-[1.2rem] text-white absolute top-[-3px] right-[-3px]" />
-                            )}
-                            {app.ready ?? true ? null : (
-                                <PiPauseBold className="text-[1.2rem] text-white absolute top-[-3px] right-[-3px]" />
-                            )}
-                        </div>
-                    );
-                })}
+                        ) : (
+                            <Icon
+                                icon={app.icon}
+                                className={`${app.id}`}
+                                click={'null'}
+                                width={Math.round(desk.size * 30)}
+                            />
+                        )}
+                        <div className="appName">{t[app.name]}</div>
+                    </div>
+                ))}
         </div>
     );
 };
@@ -122,35 +93,23 @@ export const SidePane = () => {
     const sidepane = useAppSelector((state) => state.sidepane);
     const setting = useAppSelector((state) => state.setting);
     const remote = useAppSelector((state) => state.remote);
-    const t = useAppSelector((state) => state.globals.translation);
-    const [pnstates, setPnstate] = useState([]);
-    const dispatch = appDispatch;
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 1024);
-        };
-
-        // Attach event listener
-        window.addEventListener('resize', handleResize);
-
-        // Detach event listener on cleanup
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-    useEffect(() => {
-        const framerateSlider = document.querySelector('.framerateSlider');
-        const bitrateSlider = document.querySelector('.bitrateSlider');
-        sliderBackground(framerateSlider, remote.framerate);
-        sliderBackground(bitrateSlider, remote.bitrate);
-    }, [remote.bitrate, remote.framerate]);
-
+    const { HideVM, HighMTU, HighQueue } = useAppSelector(
+        (state) => state.worker
+    );
+    const { steam, storage } = useAppSelector(
+        (state) => state.worker.data[state.worker.currentAddress] ?? {}
+    );
+    const [pnstates, setPnstate] = useState({});
+    const shutdownable = useAppSelector(
+        (state) => state.worker.data[state.worker.currentAddress]?.availability
+    );
+    const active = useAppSelector((state) => state.remote.active);
     const setBitrate = (e) => {
-        dispatch(change_bitrate(e.target.value));
+        appDispatch(change_bitrate(e.target.value));
         localStorage.setItem('bitrate', e.target.value);
     };
     const setFramerate = (e) => {
-        dispatch(change_framerate(e.target.value));
+        appDispatch(change_framerate(e.target.value));
         localStorage.setItem('framerate', e.target.value);
     };
     function sliderBackground(elem, e) {
@@ -161,34 +120,49 @@ export const SidePane = () => {
     }
 
     useEffect(() => {
-        //sidepane.quicks.map((item, i) => {
-        //    if (item.src == 'nightlight') {
-        //        if (pnstates[i]) document.body.dataset.sepia = true;
-        //        else document.body.dataset.sepia = false;
-        //    }
-        //});
-    });
-
-    useEffect(() => {
-        var tmp = [];
-        var states = isMobile
+        let states = isMobile()
             ? sidepane.mobileControl.buttons
-            : sidepane.quicks;
+            : sidepane.desktopControl.buttons;
         const mobileState = {
             gamePadOpen: !sidepane.mobileControl.gamePadHide,
             keyboardOpen: !sidepane.mobileControl.keyboardHide
         };
-        for (var i = 0; i < states.length; i++) {
-            var val = getTreeValue(
-                { ...setting, ...remote, ...mobileState },
-                states[i].state
+
+        const tmp = {};
+        for (const { state, name } of states) {
+            let val = getTreeValue(
+                {
+                    ...setting,
+                    ...remote,
+                    ...mobileState,
+                    HideVM,
+                    HighMTU,
+                    HighQueue,
+                    steam,
+                    storage
+                },
+                state
             );
-            if (states[i].name == 'Theme') val = val == 'dark';
-            tmp.push(val);
+            if (name == 'Theme') val = val == 'dark';
+            tmp[state] = val;
         }
 
         setPnstate(tmp);
-    }, [setting, sidepane, remote]);
+    }, [setting, sidepane, remote, HideVM, HighMTU, HighQueue, steam]);
+
+    useEffect(() => {
+        const framerateSlider = document.querySelector('.framerateSlider');
+        const bitrateSlider = document.querySelector('.bitrateSlider');
+        sliderBackground(framerateSlider, remote.framerate);
+        sliderBackground(bitrateSlider, remote.bitrate);
+    }, [remote.bitrate, remote.framerate]);
+
+    const data = {
+        pnstates,
+        sidepane,
+        shutdownable,
+        active
+    };
 
     return (
         <>
@@ -199,24 +173,18 @@ export const SidePane = () => {
             >
                 <div className="mainContent">
                     <div className="quickSettings ">
-                        {isMobile ? (
-                            <MobileComponent
-                                pnstates={pnstates}
-                            ></MobileComponent>
+                        {isMobile() ? (
+                            <MobileComponent data={data} />
                         ) : (
-                            <DesktopComponent pnstates={pnstates} />
+                            <DesktopComponent data={data} />
                         )}
 
                         <div className="sliderCont flex flex-col items-start">
-                            <div className="containerSlider">
-                                <p className="sliderName">
-                                    {t[Contents.SUGGEST_BITRATE_FPS]}{' '}
-                                    <b>6 & 60</b>
-                                </p>
+                            <SpecsConnectInfo />
 
+                            <div className="containerSlider mb-[-4px]">
                                 <div className="sliderName">
-                                    {/*{t[Contents.QUALITY]}*/}
-                                    Bitrate:
+                                    <b>Bitrate:</b>
                                     <span>
                                         {Math.round(
                                             (((MAX_BITRATE() - MIN_BITRATE()) /
@@ -228,7 +196,9 @@ export const SidePane = () => {
                                     </span>
                                 </div>
                                 <div className=" sliderWrapper">
-                                    <span>1mbs</span>
+                                    <span>
+                                        {Math.round(MIN_BITRATE() / 1000)}mbps
+                                    </span>
                                     <input
                                         className="sliders bitrateSlider"
                                         onChange={setBitrate}
@@ -237,14 +207,14 @@ export const SidePane = () => {
                                         max="100"
                                         value={remote.bitrate}
                                     />
-                                    <span>15mbs</span>
+                                    <span>
+                                        {Math.round(MAX_BITRATE() / 1000)}mbps
+                                    </span>
                                 </div>
                             </div>
-
                             <div className="containerSlider">
                                 <div className="sliderName">
-                                    {/*{t[Contents.FRAMERATE]}*/}
-                                    Fps:
+                                    <b>Fps:</b>
                                     <span>
                                         {Math.round(
                                             ((MAX_FRAMERATE - MIN_FRAMERATE) /
@@ -269,25 +239,120 @@ export const SidePane = () => {
                             </div>
                         </div>
                     </div>
-                    <GamePadSetting></GamePadSetting>
+
+                    <div className="reduceLagCtn">
+                        <div className="wrapper ">
+                            <span className="italic text-[10px] lg:text-sm font-semibold underline">
+                                Làm sao để giảm giật lag khi chơi game?
+                            </span>
+                            <div className="child inset">
+                                <h3>Cách giảm giật lag khi chơi game</h3>
+                                <ul className="my-4">
+                                    <li>
+                                        Cách 1: Mở trên Chrome, đóng các tab,
+                                        ứng dụng đang chạy trên thiết bị của
+                                        bạn.
+                                    </li>
+                                    <li>
+                                        Cách 2:
+                                        <ul>
+                                            <li>
+                                                Giảm bitrate nếu bị delay, tăng
+                                                nhẹ cho đên khi thấy ổn
+                                            </li>
+                                            <li>
+                                                Chỉnh fps: Thử các mốc: 40, 50,
+                                                60, vv mỗi mốc trong 30s <br />
+                                                + 60-80 với điện thoại
+                                                <br />+ 50-120 với laptop(phụ
+                                                thuộc vào cấu hình)
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <p className="italic">
+                                    Nếu các cách trên không giúp giảm giật lag,
+                                    bạn vui lòng liên hệ <b>fanpage Thinkmay</b>{' '}
+                                    để được hỗ trợ nhé!{' '}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/*<div className="p-1 bottomBar">
-                    <div className="px-3 battery-sidepane">
-                        <Battery pct />
-                    </div>
-                </div>*/}
+                <GamePadSetting></GamePadSetting>
             </div>
-            {isMobile ? (
-                <>
-                    <VirtKeyboard></VirtKeyboard>
-                    <VirtualGamepad></VirtualGamepad>
-                </>
-            ) : null}
         </>
     );
 };
 
+const SpecsConnectInfo = () => {
+    const remote = useAppSelector((state) => state.remote);
+
+    return (
+        <div className="containerSlider">
+            <div className="wrapperSpecsInfo sliderName    mb-1">
+                <div className="specsTitle ">
+                    Thông số: <AiOutlineQuestionCircle />
+                </div>
+
+                <div className="specsExplain">
+                    <p>
+                        <b>Packetloss</b>: Tỷ lệ dữ liệu bị mất khi truyền từ
+                        cloud về thiết bị của bạn. Mức lý tưởng: 0
+                    </p>
+
+                    <p>
+                        <b>IDR</b>: Thông số tái tạo khung hình bị vỡ. Mức lý
+                        tưởng: 10 - 30.
+                    </p>
+
+                    <p>
+                        <b>Bitrate</b>: Tốc độ truyền dữ liệu mỗi giây. Mức tối
+                        thiểu cho cloud gaming: 6Mbps
+                    </p>
+
+                    <p>
+                        <b>Fps</b>: Số khung hình hiển thị mỗi giây. Mức tối
+                        thiểu: 30
+                    </p>
+
+                    <p>
+                        <b>Decode</b>: Thời gian cần để giải mã tín hiệu video
+                        từ cloud. Mức lý tưởng: dưới 1 ms
+                    </p>
+
+                    <p>
+                        <b>Delay</b>: Độ trễ từ khi thực hiện thao tác game đến
+                        khi hành động xuất hiện trên màn hình. Mức lý tưởng:
+                        dưới 30 ms
+                    </p>
+                </div>
+            </div>
+            <p className="sliderName">
+                packetloss: <span> {remote.packetLoss}</span>
+                idr: <span> {remote.idrcount}</span>
+                bitrate: <span> {remote.realbitrate}</span>
+                kbps
+            </p>
+            <p className="sliderName">
+                fps: <span> {remote.realfps}</span>
+                {!isNaN(remote.realdecodetime) ? (
+                    <>
+                        decode: <span> {remote.realdecodetime.toFixed(2)}</span>
+                        ms{' '}
+                    </>
+                ) : null}
+                {!isNaN(remote.realdelay) ? (
+                    <>
+                        delay: <span> {remote.realdelay.toFixed(2)}</span>
+                        ms
+                    </>
+                ) : null}
+            </p>
+        </div>
+    );
+};
 const GamePadSetting = () => {
     const sidepane = useAppSelector((state) => state.sidepane);
 
@@ -300,213 +365,267 @@ const GamePadSetting = () => {
         (state) => state.sidepane.mobileControl.gamepadSetting.btnSize
     );
 
-    const handleChange = (e) => {
-        appDispatch(change_btnGp_size(e.target.value));
-    };
     const handleClose = (e) => {
         appDispatch(sidepane_panehide());
     };
 
     return (
-        <div
-            className={
-                !gamepadSettingOpen
-                    ? 'gamepadSetting slide-out'
-                    : 'gamepadSetting slide-in'
-            }
-        >
-            <div className="flex justify-between py-3 mx-[-12px]">
-                <MdArrowBack
-                    fontSize={'1.2rem'}
-                    onClick={() => {
-                        appDispatch(toggle_gamepad_setting());
-                    }}
-                />
-
-                <MdOutlineClose
-                    onClick={handleClose}
-                    fontSize={'1.2rem'}
-                ></MdOutlineClose>
-            </div>
-            <button
-                onClick={() => {
-                    appDispatch(toggle_gamepad());
-                }}
-                className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg mb-4"
+        <div className="gamepadSettingWrapper">
+            <div
+                className={
+                    !gamepadSettingOpen
+                        ? 'gamepadSetting slide-out'
+                        : 'gamepadSetting slide-in'
+                }
             >
-                Đóng/mở gamepad ảo
-            </button>
-            <div className="">
-                <p className="text-[0.9rem] mb-[4px]">Size:</p>
-                <form className="flex gap-4">
-                    <label className="size-choosen">
-                        Small
-                        <input
-                            type="radio"
-                            value="1"
-                            checked={selectedOption == '1'}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label className="size-choosen">
-                        Medium
-                        <input
-                            type="radio"
-                            value="1.2"
-                            checked={selectedOption == '1.2'}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label className="size-choosen">
-                        Big
-                        <input
-                            type="radio"
-                            value="3"
-                            checked={selectedOption == '3'}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </form>
-            </div>
+                <div className="flex justify-between py-4 px-2 mb-[12px] mx-[-12px]">
+                    <MdArrowBack
+                        fontSize={'1.5rem'}
+                        onClick={() => {
+                            appDispatch(toggle_gamepad_setting());
+                        }}
+                    />
 
-            <button
-                className="instbtn outline-none border-none w-full py-3 bold mt-4 rounded-lg"
-                onClick={() => {
-                    appDispatch(toggle_gamepad_draggable());
-                }}
-            >
-                Đổi vị trí các nút
-            </button>
+                    <MdOutlineClose
+                        onClick={handleClose}
+                        fontSize={'1.5rem'}
+                    ></MdOutlineClose>
+                </div>
 
-            {gamepadDraggable == 'draggable' ? (
-                <>
-                    <p className="text-[0.75rem] mt-1">
-                        *kéo các nút để chỉnh vị trí
-                    </p>
-                    <div className="ctnBtn flex mt-4 gap-4 justify-end">
+                <div>
+                    <h2 className="text-xs mb-4">Gamepad:</h2>
+                    <div className="flex gap-4">
                         <button
-                            className="bg-slate-400 rounded-md"
-                            onClick={() =>
-                                appDispatch(toggle_default_gamepad_position())
-                            }
+                            onClick={() => appDispatch(toggle_gamepad())}
+                            className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
                         >
-                            Default
+                            Đóng/mở
                         </button>
                         <button
-                            className="bg-[#0167c0] rounded-md"
+                            className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
                             onClick={() => {
                                 appDispatch(toggle_gamepad_draggable());
-                                appDispatch(toggle_gamepad_setting());
+                                appDispatch(sidepane_panehide());
                             }}
                         >
-                            Save
+                            Chỉnh sửa
                         </button>
                     </div>
-                </>
+                </div>
+
+                <div className="mt-5">
+                    <h2 className="text-xs mb-4">Gaming Keyboard:</h2>
+
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => {
+                                appDispatch(toggle_gaming_keyboard());
+                                appDispatch(scancode(true));
+                            }}
+                            className="w-full instbtn outline-none border-none py-3 px-6 text-[14px] rounded-lg "
+                        >
+                            Đóng/mở
+                        </button>
+                        <button
+                            className="instbtn bg-green-600 outline-none border-none w-full py-3 bold  rounded-lg"
+                            onClick={() => {
+                                appDispatch(open_gaming_keyboard());
+                                appDispatch(
+                                    set_keyboard_edit_state('draggable')
+                                );
+                                appDispatch(sidepane_panehide());
+                            }}
+                        >
+                            Chỉnh sửa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const MobileBtn = ({ qk, pnstates }) => {
+    const t = useAppSelector((state) => state.globals.translation);
+
+    const [isShowExplain, setShowExplain] = useState(false);
+    const touchTimerRef = useRef(null);
+
+    const handleTouchStart = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+        }
+
+        touchTimerRef.current = setTimeout(() => {
+            setShowExplain(true);
+        }, 1000); // 1 giây
+    };
+
+    const handleTouchEnd = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+            touchTimerRef.current = null;
+        }
+        setShowExplain(false);
+    };
+
+    return (
+        <div className="qkGrp">
+            <div
+                style={{
+                    ...qk.style
+                }}
+                className={`qkbtn handcr prtclk ${qk.id}`}
+                onClick={clickDispatch}
+                data-action={qk.action}
+                data-payload={qk.payload || qk.state}
+                data-state={pnstates[qk.state]}
+                onTouchEnd={handleTouchEnd}
+                onTouchStart={handleTouchStart}
+            >
+                {Object.keys(md).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = md[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : Object.keys(fi).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = fi[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : Object.keys(fa).includes(qk.src) ? (
+                    (() => {
+                        const WinApp = fa[qk.src];
+                        return <WinApp />;
+                    })()
+                ) : (
+                    <Icon
+                        className="quickIcon"
+                        ui={qk.ui}
+                        src={qk.src}
+                        width={14}
+                        invert={pnstates[qk.state] ? true : null}
+                    />
+                )}
+            </div>
+            <div className="qktext">{t[qk.name]}</div>
+
+            {isShowExplain ? (
+                <div className="qkExplainTextMobile">
+                    <h6 className="text-xs text-center">{t[qk.name]}</h6>
+                    {qk.explain ? (
+                        <p className="text-[8px] text-center mt-1">
+                            {t[qk.explain]}
+                        </p>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     );
 };
 
-export const LogMaintain = () => {
+const MobileShortCutBtn = ({ qk }) => {
+    const t = useAppSelector((state) => state.globals.translation);
+
+    const [isShowExplain, setShowExplain] = useState(false);
+    const touchTimerRef = useRef(null);
+
+    const handleTouchStart = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+        }
+
+        touchTimerRef.current = setTimeout(() => {
+            setShowExplain(true);
+        }, 1000); // 1 giây
+    };
+
+    const handleTouchEnd = () => {
+        if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
+            touchTimerRef.current = null;
+        }
+        setShowExplain(false);
+    };
+
     return (
-        <div class="bg-red-600 absolute flex gap-4 items-center right-[50%] translate-x-[50%] top-0 text-white font-bold py-2 px-4 rounded">
-            <md.MdOutlineSettingsSuggest
-                fontSize={'1.5rem'}
-            ></md.MdOutlineSettingsSuggest>
-            Server is offline
+        <div className="qkGrp">
+            <div
+                className={`qkbtn handcr prtclk`}
+                onClick={() => Actions.clickShortCut(qk.val)}
+                onTouchEnd={handleTouchEnd}
+                onTouchStart={handleTouchStart}
+                style={{
+                    fontSize: '0.6rem'
+                }}
+            >
+                {qk.name}
+            </div>
+
+            {isShowExplain ? (
+                <div className="qkExplainTextMobile">
+                    <h6 className="text-xs text-center">{qk.name}</h6>
+                    {qk.explain ? (
+                        <p className="text-[8px] text-center mt-1">
+                            {t[qk.explain]}
+                        </p>
+                    ) : null}
+                </div>
+            ) : null}
         </div>
     );
 };
+function MobileComponent({
+    data: { pnstates, sidepane, shutdownable, active }
+}) {
+    let blacklist = [];
+    if (shutdownable != 'started') blacklist = ['shutDownVm'];
 
-function MobileComponent({ pnstates }) {
-    const sidepane = useAppSelector((state) => state.sidepane);
-    const t = useAppSelector((state) => state.globals.translation);
+    const renderList = sidepane.mobileControl.buttons.filter(
+        (x) => !blacklist.includes(x.action)
+    );
 
     return (
         <>
             <div className="listBtn">
-                {sidepane.mobileControl.buttons.map((qk, idx) => (
-                    <div key={idx} className="qkGrp">
-                        <div
-                            style={{
-                                ...qk.style
-                            }}
-                            className="qkbtn handcr prtclk"
-                            onClick={clickDispatch}
-                            data-action={qk.action}
-                            data-payload={qk.payload || qk.state}
-                            data-state={pnstates[idx]}
-                        >
-                            {Object.keys(md).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = md[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : Object.keys(fi).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = fi[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : Object.keys(fa).includes(qk.src) ? (
-                                (() => {
-                                    const WinApp = fa[qk.src];
-                                    return <WinApp />;
-                                })()
-                            ) : (
-                                <Icon
-                                    className="quickIcon"
-                                    ui={qk.ui}
-                                    src={qk.src}
-                                    width={14}
-                                    invert={pnstates[idx] ? true : null}
-                                />
-                            )}
-                        </div>
-                        <div className="qktext">{t[qk.name]}</div>
-                    </div>
+                {renderList.map((qk, idx) => (
+                    <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
-            </div>
-            <div className="shortcuts">
-                <hr className="mb-4" />
-                <div className="listBtn">
-                    {sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                        <div key={idx} className="qkGrp t">
-                            <div
-                                style={{
-                                    fontSize: '0.6rem'
-                                }}
-                                className="qkbtn handcr prtclk"
-                                onClick={() => Actions.clickShortCut(qk.val)}
-                            >
-                                {qk.name}
-                            </div>
-                            {/*<div className="qktext">{t[qk.name]}</div>*/}
-                        </div>
-                    ))}
-                </div>
+                {active
+                    ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
+                          <MobileShortCutBtn key={idx} qk={qk} />
+                      ))
+                    : null}
             </div>
         </>
     );
 }
-function DesktopComponent({ pnstates }) {
+function DesktopComponent({
+    data: { pnstates, sidepane, shutdownable, active }
+}) {
     const t = useAppSelector((state) => state.globals.translation);
-    const sidepane = useAppSelector((state) => state.sidepane);
+
+    let blacklist = [];
+    if (shutdownable != 'started') blacklist = ['shutDownVm'];
+
+    const renderList = sidepane.desktopControl.buttons.filter(
+        (x) => !blacklist.includes(x.action)
+    );
 
     return (
         <>
             <div className="listBtn">
-                {sidepane.quicks.map((qk, idx) => (
+                {renderList.map((qk, idx) => (
                     <div key={idx} className="qkGrp">
                         <div
                             style={{
                                 ...qk.style
                             }}
-                            className="qkbtn handcr prtclk"
+                            className={`qkbtn handcr prtclk ${qk.id}`}
                             onClick={clickDispatch}
                             data-action={qk.action}
                             data-payload={qk.payload || qk.state}
-                            data-state={pnstates[idx]}
+                            data-state={pnstates[qk.state]}
                         >
                             {Object.keys(md).includes(qk.src) ? (
                                 (() => {
@@ -529,33 +648,52 @@ function DesktopComponent({ pnstates }) {
                                     ui={qk.ui}
                                     src={qk.src}
                                     width={14}
-                                    invert={pnstates[idx] ? true : null}
+                                    invert={pnstates[qk.state] ? true : null}
                                 />
                             )}
                         </div>
-                        <div className="qktext">{t[qk.name]}</div>
+                        <div className="qktext flex items-center gap-2">
+                            {t[qk.name]}
+
+                            {qk.explain ? (
+                                <div className="qkExplainCtn">
+                                    <AiOutlineQuestionCircle fontSize="1rem" />
+                                    <div className="qkExplainText">
+                                        {t[qk.explain]}
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        {/*{
+                            qk.explain ? <div className="qkExplain">
+                                {
+                                    <div className="qktext">{t[qk.name]}</div>
+                                }
+                            </div> : null
+                        }*/}
                     </div>
                 ))}
+                {active
+                    ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
+                          <div key={idx} className="qkGrp t">
+                              <div
+                                  style={{
+                                      fontSize: '0.8rem'
+                                  }}
+                                  className="qkbtn handcr prtclk"
+                                  onClick={() => Actions.clickShortCut(qk.val)}
+                              >
+                                  {qk.name}
+                              </div>
+                              {qk?.explain ? (
+                                  <div className="qktext">{t[qk.explain]}</div>
+                              ) : null}
+                          </div>
+                      ))
+                    : null}
             </div>
-            <div className="shortcuts">
-                <hr className="mb-4" />
-                <div className="listBtn">
-                    {sidepane.shortcuts.map((qk, idx) => (
-                        <div key={idx} className="qkGrp t">
-                            <div
-                                style={{
-                                    fontSize: '0.8rem'
-                                }}
-                                className="qkbtn handcr prtclk"
-                                onClick={() => Actions.clickShortCut(qk.val)}
-                            >
-                                {qk.name}
-                            </div>
-                            {/*<div className="qktext">{t[qk.name]}</div>*/}
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <hr className="mb-2 lg:mb-1" />
         </>
     );
 }

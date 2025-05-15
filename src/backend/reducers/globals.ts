@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from './fetch/createClient';
+import { RootState, store } from '.';
+import { GLOBAL, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 export type Translation = Map<Languages, Map<Contents, string>>;
@@ -8,20 +9,37 @@ const translation = language();
 export type TranslationResult = {
     [key in Contents]: string;
 };
-interface IGame {
+
+export type ErrorMessage = {
+    code: number;
+    vi: string;
+    en: string;
+    id: string;
+};
+
+type IGame = {
+    id: number;
     name: string;
-    logo: string;
-    publisher: string;
-    created_at: string;
-    metadata: {
-        hide: boolean;
+    code_name: string;
+    publishers: any;
+    short_description: any;
+    path_full: any;
+    tag: {
+        samenode: boolean;
+        hasaccount: boolean;
     };
-}
+};
+
 interface Maintain {
     created_at: string;
     ended_at: string;
-    isMaintaining?: boolean;
 }
+
+type Domain = {
+    domain: string;
+    free: number;
+};
+
 const initialState = {
     lays: [
         [
@@ -192,42 +210,76 @@ const initialState = {
     ],
 
     service_available: false,
+    tutorial: false,
     translation: {} as TranslationResult,
+    error_messages: [] as ErrorMessage[],
     maintenance: {} as Maintain,
-    apps: [],
-    games: [] as IGame[]
+    games: [] as IGame[],
+    domains: [] as Domain[],
+    opening: null as IGame | null,
+    chat: false as boolean
+};
+
+type Data = {
+    games: IGame[];
+    domains: Domain[];
+    error_messages: ErrorMessage[];
 };
 
 export const globalAsync = {
-    fetch_store: createAsyncThunk('fetch_store', async () => {
-        const { data, error } = await supabase.rpc('fetch_store');
+    fetch_domain: createAsyncThunk(
+        'fetch_domain',
+        async (): Promise<Domain[]> => {
+            const { data: domains_v3, error: err } = await GLOBAL().rpc(
+                'get_domains_availability_v3'
+            );
+            if (err) throw err;
+            else return domains_v3;
+        }
+    ),
+    update_game_tag: createAsyncThunk(
+        'update_game_tag',
+        async (): Promise<string[]> => {
+            const { data: tree, currentAddress } = store.getState().worker;
+            const volumes = tree[currentAddress]?.Volumes;
+            if (volumes == undefined || volumes.length == 0) return [];
 
+            const node = volumes.find((x) => x.pool == 'user_data')?.node;
+            if (node == undefined) return [];
+
+            const samenodes = volumes
+                .filter((x) => x.node == node && x.pool == 'app_data')
+                .map((x) => x.name);
+
+            return samenodes;
+        }
+    ),
+    fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
+        const { data, error } = await GLOBAL()
+            .from('stores')
+            .select(
+                'id,code_name,name,metadata->publishers,metadata->short_description,metadata->screenshots->0->>path_full,management->>kickey'
+            )
+            .not('metadata->screenshots->0->>path_full', 'is', null)
+            .order('management->>priority');
         if (error) throw new Error(error.message);
 
-        return data as IGame[];
+        return data.map((x) => ({
+            ...x,
+            tag: {
+                samenode: false,
+                hasaccount: x.kickey == 'true'
+            }
+        }));
     }),
-    fetch_under_maintenance: createAsyncThunk(
-        'fetch_under_maintenance',
-        async () => {
-            const { data, error } = await supabase.rpc(
-                'fetch_under_maintenance'
-            );
+    fetch_error_message: createAsyncThunk(
+        'fetch_error_message',
+        async (): Promise<ErrorMessage[]> => {
+            const { data, error } = await GLOBAL().rpc('get_error_message');
 
             if (error) throw new Error(error.message);
 
-            let isMaintaining = false;
-
-            const info = data.at(0);
-            if (
-                new Date() > new Date(info.created_at) &&
-                new Date() < new Date(info.ended_at)
-            )
-                isMaintaining = true;
-
-            return {
-                ...info,
-                isMaintaining
-            };
+            return data;
         }
     )
 };
@@ -245,25 +297,54 @@ export const globalSlice = createSlice({
                 });
             });
         },
-        update_store_data: (state, payload: any) => {
-            state.games = payload;
+        open_game: (state, payload: PayloadAction<IGame>) => {
+            state.opening = payload.payload;
+        },
+        show_chat: (state, payload: PayloadAction<boolean | undefined>) => {
+            if ((window as any).OpenWidget != undefined)
+                (window as any).OpenWidget.call('maximize');
+        },
+        show_tutorial: (
+            state,
+            action: PayloadAction<'open' | 'close' | undefined>
+        ) => {
+            if (action.payload) state.tutorial = action.payload == 'open';
+            else state.tutorial = !state.tutorial;
         }
     },
     extraReducers: (builder) => {
-        BuilderHelper(
+        BuilderHelper<Data, any, any>(
             builder,
             {
                 fetch: globalAsync.fetch_store,
                 hander: (state, action: PayloadAction<IGame[]>) => {
-                    state.games = action.payload.filter(
-                        (g) => g.metadata?.hide != true
-                    );
+                    state.games = action.payload;
                 }
             },
             {
-                fetch: globalAsync.fetch_under_maintenance,
-                hander: (state, action: PayloadAction<Maintain>) => {
-                    state.maintenance = action.payload;
+                fetch: globalAsync.update_game_tag,
+                hander: (state, action: PayloadAction<string[]>) => {
+                    state.games = state.games.map((x) => ({
+                        ...x,
+                        tag: {
+                            ...x.tag,
+                            samenode: action.payload.includes(
+                                `${x.code_name}.template`
+                            )
+                        }
+                    }));
+                }
+            },
+            {
+                fetch: globalAsync.fetch_domain,
+                hander: (state, action: PayloadAction<Domain[]>) => {
+                    state.domains = action.payload;
+                }
+            },
+            {
+                fetch: globalAsync.fetch_error_message,
+                hander: (state, action: PayloadAction<ErrorMessage[]>) => {
+                    state.error_messages = action.payload;
                 }
             }
         );
