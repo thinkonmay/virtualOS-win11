@@ -371,6 +371,8 @@ export const remoteSlice = createSlice({
             state,
             action: PayloadAction<boolean | undefined>
         ) => {
+            action.payload =
+                typeof action.payload == 'boolean' ? action.payload : undefined;
             state.scancode = action.payload ?? !state.scancode;
             if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },

@@ -10,7 +10,7 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
     const knobRef = useRef(null);
 
     const updatePosition = (event) => {
-        const touch = event.changedTouches?.[0]
+        const touch = event.changedTouches?.[0];
         const rect = ref.current.getBoundingClientRect();
         let x = (touch.clientX - rect.left - rect.width / 2) * speed;
         let y = (touch.clientY - rect.top - rect.height / 2) * speed;
@@ -30,7 +30,7 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
         knobRef.current.style.transform = `translate(${x}px, ${y}px)`;
     };
 
-    const handlePointerMove = (e) => updatePosition(e)
+    const handlePointerMove = (e) => updatePosition(e);
 
     const handlePointerUp = async () => {
         knobRef.current.style.transform = 'translate(0px, 0px)';
