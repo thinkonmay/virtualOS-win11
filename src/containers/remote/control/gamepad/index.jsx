@@ -42,9 +42,6 @@ export const VirtualGamepad = (props) => {
     return (
         <>
             <div
-                onTouchStart={e => e.preventDefault()}
-                onTouchEnd={e => e.preventDefault()}
-                onTouchCancel={e => e.preventDefault()}
                 className={`virtGamepad slide-in  ${
                     draggable ? 'draggable' : ''
                 }`}
