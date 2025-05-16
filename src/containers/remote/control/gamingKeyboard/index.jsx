@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, memo, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import {
     appDispatch,
     decrease_key_gamingKeyboard,
     delete_key_gamingKeyboard,
+    hide_gaming_keyboard,
     increase_key_gamingKeyboard,
     move_key_gamingKeyboard,
     save_gamingKeyboard_to_local,
@@ -13,7 +14,6 @@ import {
     set_keyboard_edit_state,
     useAppSelector
 } from '../../../../backend/reducers';
-import { CustomJoyStick } from '../gamepad/button/joystick';
 import { GamingKeyboardButton } from './components/button';
 
 import {
@@ -43,7 +43,6 @@ function GamingKeyboard() {
         deviceHeight: window.innerHeight
     });
 
-    const joystickRef = useRef(null);
     const joystickWrapperRef = useRef(null);
     useEffect(() => {
         window.addEventListener('resize', handleResize);
@@ -129,32 +128,29 @@ function GamingKeyboard() {
             switch (key.type) {
                 case 'joystick':
                     return (
-                        <Draggable
-                            key={key.id}
-                            disabled={true}
-                            nodeRef={joystickWrapperRef}
-                            position={{
-                                x:
-                                    deviceResolution.deviceWidth *
-                                    key.position.x,
-                                y:
-                                    deviceResolution.deviceHeight *
-                                    key.position.y
-                            }}
-                        >
-                            <div
-                                id={key.id}
-                                className="wrapperDraggable"
-                                ref={joystickWrapperRef}
+                        <div className="fixed">
+                            <Draggable
+                                key={key.id}
+                                disabled={true}
+                                nodeRef={joystickWrapperRef}
+                                position={{
+                                    x:
+                                        deviceResolution.deviceWidth *
+                                        key.position.x,
+                                    y:
+                                        deviceResolution.deviceHeight *
+                                        key.position.y
+                                }}
                             >
-                                <CustomJoyStick
-                                    ref={joystickRef}
-                                    draggable={false}
-                                    size={100}
-                                    isRight={true}
-                                />
-                            </div>
-                        </Draggable>
+                                <div
+                                    id={key.id}
+                                    className="wrapperDraggable"
+                                    ref={joystickWrapperRef}
+                                >
+                                    <VirtualASDW keycallback={console.log} />
+                                </div>
+                            </Draggable>
+                        </div>
                     );
                 case 'key':
                     return (
@@ -216,6 +212,35 @@ function GamingKeyboard() {
                             }}
                         >
                             <Icon fontSize="1.2rem"></Icon>
+                        </GamingKeyboardButton>
+                    );
+                case 'close':
+                    return (
+                        <GamingKeyboardButton
+                            id={key.id}
+                            key={key.id}
+                            onTouchStart={() => {}}
+                            onTouchEnd={() =>
+                                appDispatch(hide_gaming_keyboard())
+                            }
+                            onStop={handleStop}
+                            onDrag={handleDrag}
+                            draggable={gamingKeyboard.editState == 'draggable'}
+                            style={{
+                                // backgroundColor: '#da5102',
+                                width: `${50 * key.size}px`,
+                                height: `${50 * key.size}px`
+                            }}
+                            pos={{
+                                x:
+                                    deviceResolution.deviceWidth *
+                                    key.position.x,
+                                y:
+                                    deviceResolution.deviceHeight *
+                                    key.position.y
+                            }}
+                        >
+                            close
                         </GamingKeyboardButton>
                     );
             }
@@ -369,3 +394,76 @@ const NavAddingKey = () => {
         </>
     );
 };
+
+const VirtualASDW = memo(({ size = 100, keycallback }) => {
+    const id = useId();
+    const ref = useRef(null);
+    const knobRef = useRef(null);
+    const [currentKey, setCurrentKey] = useState(null);
+
+    const handlePointerMove = (event) => {
+        event.preventDefault();
+        const touch = event.changedTouches?.[0];
+        const rect = ref.current.getBoundingClientRect();
+        let x = (touch.clientX - rect.left - rect.width / 2) * speed;
+        let y = (touch.clientY - rect.top - rect.height / 2) * speed;
+
+        const distance = Math.sqrt(x * x + y * y);
+        const maxDistance = size / 2;
+        if (distance > maxDistance) {
+            const scale = maxDistance / distance;
+            x *= scale;
+            y *= scale;
+        }
+
+        knobRef.current.style.transform = `translate(${x}px, ${y}px)`;
+
+        const ratio = x / y;
+        console.log(`${ratio} ${x >= 0}`);
+    };
+
+    const handlePointerUp = (e) => {
+        e.preventDefault();
+        knobRef.current.style.transform = 'translate(0px, 0px)';
+        if (currentKey != null) {
+            keycallback(currentKey);
+            setCurrentKey(null);
+        }
+    };
+
+    return (
+        <div
+            ref={ref}
+            className="joystick"
+            id={id}
+            style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                borderRadius: '50%',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                touchAction: 'none',
+                position: 'relative'
+            }}
+            onTouchMove={handlePointerMove}
+            onTouchEnd={handlePointerUp}
+            onTouchCancel={handlePointerUp}
+        >
+            <div
+                ref={knobRef}
+                style={{
+                    width: `${knobRadius * size}px`,
+                    height: `${knobRadius * size}px`,
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255, 255, 255,0.5',
+                    position: 'absolute',
+                    boxShadow: 'rgba(255, 255, 255, 0.1) 0px 0px 4px 5px',
+                    transition: 'none'
+                }}
+            />
+        </div>
+    );
+});

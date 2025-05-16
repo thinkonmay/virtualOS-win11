@@ -1,302 +1,272 @@
-.virtGamepad {
-	width: 100vw;
-	height: 100vh;
-	position: fixed;
-	opacity: 0;
-	z-index: -1;
 
-	&.slide-in {
-		opacity: 1;
-		z-index: 9;
+.containerSubButton {
+	display: flex;
+	gap: 8px;
+	width: max-content;
+	position: absolute;
+	z-index: 1;
+}
 
+.wrapperDraggable {
+	width: max-content;
+	position: absolute;
+	z-index: 1;
+
+	&.selected {
+		border: 1px solid rgb(175, 169, 169);
+		padding: 2px;
+		box-sizing: border-box;
 	}
+}
 
-	&.slide-out {
-		opacity: 0;
 
-	}
+.navSetting {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 2;
+	height: 56px;
 
-	&.draggable {
-		background-color: rgba($color: #000, $alpha: 0.5);
-	}
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 32px;
+	background-color: black;
+	border-bottom: 1px solid rgba(143, 137, 137, 0.514);
 
-	.containerSubButton {
+
+
+	.wrapperLeft {
 		display: flex;
-		gap: 8px;
-		width: max-content;
-		position: absolute;
-	}
+		gap: 16px;
 
-	.wrapperDraggable {
-		width: max-content;
-		position: absolute;
-
-		&.selected {
-			border: 1px solid rgb(175, 169, 169);
-			padding: 2px;
-			box-sizing: border-box;
-		}
-	}
-
-
-	.navSetting {
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		z-index: 2;
-		height: 56px;
-
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 16px 32px;
-		transform: translateY(-100%);
-
-		background-color: black;
-		border-bottom: 1px solid rgba(143, 137, 137, 0.514);
-
-
-		&.slide-in {
-			transform: translateY(0%)
-		}
-
-		&.slide-out {
-			transform: translateY(-100%)
-		}
-
-		.wrapperLeft {
+		.ctnContent {
 			display: flex;
-			gap: 16px;
-
-			.ctnContent {
-				display: flex;
-				gap: 8px;
-				color: white;
-				font-size: 12px;
-
-				.title {
-					font-weight: 600;
-				}
-			}
-
-			.btnGroup {
-				display: flex;
-				align-items: center;
-				gap: 6px;
-
-				button {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-
-					background-color: transparent;
-
-					outline: none;
-
-				}
-			}
-		}
-
-		.ctnBtns {
-			display: flex;
-			align-items: center;
 			gap: 8px;
+			color: white;
+			font-size: 12px;
 
-			.instbtn {
-				padding: 8px 12px;
+			.title {
 				font-weight: 600;
 			}
 		}
+
+		.btnGroup {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+
+			button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				background-color: transparent;
+
+				outline: none;
+
+			}
+		}
 	}
 
-	.defaultButton {
+	.ctnBtns {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		outline: none;
-		width: inherit;
-		height: inherit;
-		color: rgba(255, 255, 255);
-		border: 1.5px solid rgba($color: rgb(255, 255, 255), $alpha: 0.2);
-		font-size: 12px;
-		font-weight: 600;
-		background-color: rgba($color: #2d2b2b, $alpha: 0.5);
-		-webkit-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-		-webkit-tap-highlight-color: transparent;
-		overflow: hidden;
+		gap: 8px;
 
-		//&:active {
-		//	background-color: rgba($color: #ffffff, $alpha: 0.4);
-		//}
-		&.circle {
-			border-radius: 50%;
-		}
-
-		&.rectangle {
-			border-radius: 1em;
-		}
-
-		&.hold {
-			box-shadow: rgba(2, 2, 255, 0.2) 0px 0px 2px 3px;
-			//border-color: unset;
-			//border: unset;/
-		}
-
-	}
-
-	.centerButton {
-		width: 50px;
-		height: 25px;
-		outline: none;
-		background-color: transparent;
-		color: #C3B5B5;
-		border: 1px solid #C3B5B5;
-		border-radius: 10px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		&:active {
-			//background-color: rgba($color: #ffffff, $alpha: 0.5);
-			box-shadow: rgba(2, 2, 255, 0.3) 0px 0px 4px 5px;
-
+		.instbtn {
+			padding: 8px 12px;
+			font-weight: 600;
 		}
 	}
+}
 
-	.ybxa {
-		position: absolute;
-		top: 48%;
-		right: 30%;
+.defaultButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
+	width: inherit;
+	height: inherit;
+	color: rgba(255, 255, 255);
+	border: 1.5px solid rgba($color: rgb(255, 255, 255), $alpha: 0.2);
+	font-size: 12px;
+	font-weight: 600;
+	background-color: rgba($color: #2d2b2b, $alpha: 0.5);
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	overflow: hidden;
 
-		.mainContent {
-			position: relative;
-
-			.button-y {
-				position: absolute;
-				@extend .defaultButton;
-				top: 0;
-				right: 50%;
-				transform: translate(50%, -100%);
-			}
-
-			.button-b {
-				position: absolute;
-				@extend .defaultButton;
-				bottom: 0;
-				right: 50%;
-				transform: translate(50%, 100%);
-			}
-
-			.button-x {
-				position: absolute;
-				@extend .defaultButton;
-				right: 0;
-				top: 50%;
-				transform: translate(100%, -50%);
-			}
-
-			.button-a {
-				position: absolute;
-				@extend .defaultButton;
-				top: 50%;
-				left: 0%;
-				transform: translate(-100%, -50%);
-			}
-		}
+	//&:active {
+	//	background-color: rgba($color: #ffffff, $alpha: 0.4);
+	//}
+	&.circle {
+		border-radius: 50%;
 	}
 
-	.dpad {
+	&.rectangle {
+		border-radius: 1em;
+	}
+
+	&.hold {
+		box-shadow: rgba(2, 2, 255, 0.2) 0px 0px 2px 3px;
+		//border-color: unset;
+		//border: unset;/
+	}
+
+}
+
+.centerButton {
+	width: 50px;
+	height: 25px;
+	outline: none;
+	background-color: transparent;
+	color: #C3B5B5;
+	border: 1px solid #C3B5B5;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&:active {
+		//background-color: rgba($color: #ffffff, $alpha: 0.5);
+		box-shadow: rgba(2, 2, 255, 0.3) 0px 0px 4px 5px;
+
+	}
+}
+
+.ybxa {
+	position: absolute;
+	top: 48%;
+	right: 30%;
+
+	.mainContent {
 		position: relative;
-		--veritcalBtnWith: 52px;
-		--horizontalWith: 37px;
 
-		.dpadBtn {
-			@extend .defaultButton;
-
-			width: inherit;
-			height: inherit;
-			border-top-left-radius: 8px;
-			border-top-right-radius: 8px;
-		}
-
-		.top {
-			//@extend .defaultButton;
+		.button-y {
 			position: absolute;
+			@extend .defaultButton;
 			top: 0;
 			right: 50%;
 			transform: translate(50%, -100%);
-
-
-
-
 		}
 
-		.right {
-			//@extend .defaultButton;
+		.button-b {
 			position: absolute;
-			bottom: 50%;
-			right: -26%;
-			//top: 0;
-			//right: 50%;
-			transform: translate(100%, 50%) rotate(90deg);
-			//transform: ;
-
-
-
-
-		}
-
-		.left {
-			//@extend .defaultButton;
-			position: absolute;
-			bottom: 50%;
-			left: -26%;
-			transform: translate(-100%, 50%) rotate(270deg);
-
-
-
-
-
-		}
-
-		.bottom {
-			//@extend .defaultButton;
-			position: absolute;
-			bottom: 0%;
+			@extend .defaultButton;
+			bottom: 0;
 			right: 50%;
-			transform: translate(50%, 100%) rotate(180deg);
-
-
-
-
-
+			transform: translate(50%, 100%);
 		}
 
-		button {}
+		.button-x {
+			position: absolute;
+			@extend .defaultButton;
+			right: 0;
+			top: 50%;
+			transform: translate(100%, -50%);
+		}
+
+		.button-a {
+			position: absolute;
+			@extend .defaultButton;
+			top: 50%;
+			left: 0%;
+			transform: translate(-100%, -50%);
+		}
+	}
+}
+
+.dpad {
+	position: relative;
+	--veritcalBtnWith: 52px;
+	--horizontalWith: 37px;
+
+	.dpadBtn {
+		@extend .defaultButton;
+
+		width: inherit;
+		height: inherit;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+	}
+
+	.top {
+		//@extend .defaultButton;
+		position: absolute;
+		top: 0;
+		right: 50%;
+		transform: translate(50%, -100%);
+
 
 
 
 	}
 
-	.funcBtn {
-		display: flex;
-		gap: 18px;
-		width: max-content;
-	}
+	.right {
+		//@extend .defaultButton;
+		position: absolute;
+		bottom: 50%;
+		right: -26%;
+		//top: 0;
+		//right: 50%;
+		transform: translate(100%, 50%) rotate(90deg);
+		//transform: ;
 
-	.rightFuncBtn {
-		@extend .funcBtn;
-		align-items: flex-start;
 
-	}
 
-	.leftFuncBtn {
-		@extend .funcBtn;
-		align-items: flex-end;
 
 	}
+
+	.left {
+		//@extend .defaultButton;
+		position: absolute;
+		bottom: 50%;
+		left: -26%;
+		transform: translate(-100%, 50%) rotate(270deg);
+
+
+
+
+
+	}
+
+	.bottom {
+		//@extend .defaultButton;
+		position: absolute;
+		bottom: 0%;
+		right: 50%;
+		transform: translate(50%, 100%) rotate(180deg);
+
+
+
+
+
+	}
+
+	button {}
+
+
+
+}
+
+.funcBtn {
+	display: flex;
+	gap: 18px;
+	width: max-content;
+}
+
+.rightFuncBtn {
+	@extend .funcBtn;
+	align-items: flex-start;
+
+}
+
+.leftFuncBtn {
+	@extend .funcBtn;
+	align-items: flex-end;
 
 }

@@ -4,7 +4,6 @@ import { Contents } from './locales';
 import { Message } from './sidepane';
 
 export type IGamePadSetting = {
-    open: boolean;
     btnSize: 1 | 2 | 3;
     draggable: boolean;
     isDefaultPos: boolean;
@@ -69,25 +68,7 @@ export const btnGamepadSizes: IGamePadBtnSize = {
     rb: 1
 };
 
-export const listMobileShortCut = [
-    {
-        name: 'Esc',
-        val: ['Escape']
-    },
-    {
-        name: 'Win D',
-        val: ['lwin', 'd'],
-        explain: [Contents.WIN_D_SHORTCUT]
-    },
-    {
-        name: 'Ctrl C',
-        val: ['control', 'c']
-    },
-    {
-        name: 'Ctrl V',
-        val: ['control', 'v']
-    }
-];
+export const listMobileShortCut = [];
 export const listMobileSettings = [
     {
         ui: true,
@@ -109,18 +90,18 @@ export const listMobileSettings = [
     {
         ui: true,
         id: 'virtKeyboardBtn',
-        src: 'MdOutlineKeyboard',
-        name: [Contents.OPEN_KEYBOARD],
-        state: 'keyboardOpen',
-        action: 'sidepane/toggle_keyboard'
+        src: 'MdGamepad',
+        name: [Contents.OPEN_GAMEPAD],
+        state: 'draggable',
+        action: 'sidepane/set_keyboard_edit_state'
     },
     {
         ui: true,
         id: 'virtGamepadBtn',
         src: 'MdOutlineSportsEsports',
         name: [Contents.OPEN_GAMEPAD],
-        state: 'gamePadOpen',
-        action: 'sidepane/toggle_gamepad_setting'
+        state: 'draggable',
+        action: 'sidepane/toggle_gamepad_draggable'
     },
     {
         ui: true,
@@ -211,17 +192,27 @@ export const listDesktopSettings = [
           ])
 ];
 
-export interface IGamingKey {
-    position: {
-        x: number;
-        y: number;
-    };
-    size: number;
-    value: string;
-    name: string;
-    type: 'mouse' | 'key' | 'joystick';
-    id: string;
-}
+export type IGamingKey =
+    | {
+          position: {
+              x: number;
+              y: number;
+          };
+          size: number;
+          value: string;
+          name: string;
+          type: 'mouse' | 'key' | 'joystick';
+          id: string;
+      }
+    | {
+          id: string;
+          size: number;
+          type: 'close';
+          position: {
+              x: number;
+              y: number;
+          };
+      };
 interface IGamingKeyboard {
     open: boolean;
     data: Array<IGamingKey>;
@@ -310,6 +301,15 @@ export const initialGamingKeyboard: IGamingKeyboard = {
             },
             type: 'key',
             size: 1
+        },
+        {
+            id: uuidv4(),
+            type: 'close',
+            size: 1,
+            position: {
+                x: 0.4,
+                y: 0.8
+            }
         },
         {
             value: 'x',

@@ -121,22 +121,6 @@ const mobileGuide = [
         },
         target: '#settingBtn',
         sidepane_paneopen: true
-    },
-    {
-        placement: 'bottom',
-        target: '.virtKeyboardBtn',
-        content: 'Lưu ý: Khi đang mở bàn phím ảo sẽ không sử dụng được chuột',
-        title: 'Mở bàn phím ảo',
-        spotlightPadding: 0,
-        sidepane_paneopen: true
-    },
-    {
-        placement: 'auto',
-        target: '.virtGamepadBtn',
-        content: 'Lưu ý: Khi đang mở tay cầm ảo sẽ không sử dụng được chuột',
-        title: 'Mở bàn tay cầm ảo',
-        spotlightPadding: 0,
-        sidepane_paneopen: true
     }
 ];
 const desktopGuide = [
