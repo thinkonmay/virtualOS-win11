@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, memo, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import {
     appDispatch,
