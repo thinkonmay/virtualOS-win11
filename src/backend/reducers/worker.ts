@@ -146,7 +146,7 @@ export const workerAsync = {
                               finish
                                   ? new Promise(() => {})
                                   : workerAsync.showPosition(
-                                    code != null ? formatError(code): status
+                                    (code != undefined || code != null) ? formatError(code): status
                                   )
                         : undefined
                 );
