@@ -41,15 +41,9 @@ export const VirtualGamepad = (props) => {
 
     return (
         <>
-            <div
-                className={`virtGamepad slide-in  ${
-                    draggable ? 'draggable' : ''
-                }`}
-            >
-                <NavSettings show={draggable} />
-                <ButtonGroupRight draggable={draggable} />
-                <ButtonGroupLeft draggable={draggable} />
-            </div>
+            <NavSettings show={draggable} />
+            <ButtonGroupRight draggable={draggable} />
+            <ButtonGroupLeft draggable={draggable} />
         </>
     );
 };
@@ -694,8 +688,11 @@ const NavSettings = ({ show }) => {
             JSON.stringify(btnSizes)
         );
     };
+
+
+    if (!show) return null
     return (
-        <div className={`${show ? 'slide-in' : 'slide-out'} navSetting`}>
+        <div className={`navSetting`}>
             <div className="wrapperLeft">
                 <div className="ctnContent items-center">
                     <p className="title">Kích cỡ:</p>

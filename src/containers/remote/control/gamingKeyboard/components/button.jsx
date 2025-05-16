@@ -13,7 +13,6 @@ export const GamingKeyboardButton = ({
     onTouchEnd,
     className,
     id,
-    value,
     pos,
     draggable,
     onStop = () => {},
