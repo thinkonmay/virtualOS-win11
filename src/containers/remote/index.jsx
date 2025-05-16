@@ -11,12 +11,7 @@ import {
     VideoWrapper,
     isMobile
 } from '../../../src-tauri/core';
-import {
-    Assign,
-    CLIENT,
-    ready,
-    virtMouseWheel
-} from '../../../src-tauri/singleton';
+import { Assign, ready, virtMouseWheel } from '../../../src-tauri/singleton';
 import { clickShortCut, showConnect } from '../../backend/actions';
 import {
     appDispatch,
@@ -60,14 +55,6 @@ export const Remote = () => {
         setupWebRTC();
         ready().then(() => appDispatch(popup_close()));
     }, [active]);
-
-    useEffect(() => {
-        if (CLIENT)
-            CLIENT.touch.touch_callback = async () => {
-                if (keyboard && CLIENT.touch.mode == 'none')
-                    appDispatch(toggle_keyboard());
-            };
-    }, [keyboard]);
 
     const setupWebRTC = () =>
         Assign(

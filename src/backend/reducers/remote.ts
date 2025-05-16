@@ -153,14 +153,6 @@ export const remoteAsync = {
         else if (CLIENT == undefined || !CLIENT?.ready()) return;
         if (isMobile()) CLIENT.PointerVisible(true);
 
-        const {
-            gamePadHide,
-            keyboardHide,
-            gamepadSetting: { draggable }
-        } = store.getState().sidepane.mobileControl;
-        CLIENT.touch.mode =
-            gamePadHide && keyboardHide && !draggable ? 'trackpad' : 'none';
-
         appDispatch(
             remoteSlice.actions.metrics({
                 packetloss: CLIENT.Metrics.video.packetloss.last,
