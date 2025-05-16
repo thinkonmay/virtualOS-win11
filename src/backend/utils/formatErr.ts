@@ -20,10 +20,16 @@ const includeErrCode = (code = 0) => {
     const errThrow = errMsg.find((e) => e.code == code);
     switch (languageLocal) {
         case 'ENG':
+            if (errThrow == undefined)
+                return `404: Unknown Error, Contact ADMIN for support`
             return `${errThrow.code}: ${errThrow.en ?? "Unknown Error, Contact ADMIN for support!"}`;
         case 'VN':
+            if (errThrow == undefined)
+                return `404: Lỗi không xác định, liên hệ ADMIN để hỗ trợ!`
             return `${errThrow.code}: ${errThrow.vi ?? "Lỗi không xác định, liên hệ ADMIN!"}`;
         case 'ID':
+            if (errThrow == undefined)
+                return `404: Unknown Error, Contact ADMIN for support!`;
             return `${errThrow.code}: ${errThrow.id ?? "Unknown Error, Contact ADMIN for support!"}`;
         default:
             return `${errThrow.code}: ${errThrow.en ?? "Unknown Error, Contact ADMIN for support!"}`;    
