@@ -5,6 +5,7 @@ import { localStorageKey } from './constant';
 
 export function formatError(error: APIError | Error | any): string {
     if (error.code != undefined) return includeErrCode(error.code);
+    else if (typeof error === 'number') return includeErrCode(error);
     else if (error instanceof Error) return error.message;
     else return error.message;
 }
