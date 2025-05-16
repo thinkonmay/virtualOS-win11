@@ -5,7 +5,6 @@ import { localStorageKey } from './constant';
 
 export function formatError(error: APIError | Error | any): string {
     if (error.code != undefined) return includeErrCode(error.code);
-    else if (typeof error === 'number') return includeErrCode(error);
     else if (error instanceof Error) return error.message;
     else return error.message;
 }
@@ -16,16 +15,16 @@ const includeErrCode = (code = 0) => {
     let languageLocal =
         localStorage.getItem(localStorageKey.language) ?? 'VN';
     if (!allowed_language.includes(languageLocal)) languageLocal = 'ENG';
-
+    
     const errThrow = errMsg.find((e) => e.code == code);
     switch (languageLocal) {
         case 'ENG':
-            return `${errThrow.code}: ${errThrow.en ?? "Unknown Error, Contact ADMIN for support!"}`;
+            return errThrow.en ?? "Unknown Error, Contact ADMIN for support!";
         case 'VN':
-            return `${errThrow.code}: ${errThrow.vi ?? "Lỗi không xác định, liên hệ ADMIN!"}`;
+            return errThrow.vi ?? "Lỗi không xác định, liên hệ ADMIN!"
         case 'ID':
-            return `${errThrow.code}: ${errThrow.id ?? "Unknown Error, Contact ADMIN for support!"}`;
+            return errThrow.id ?? "Unknown Error, Contact ADMIN for support!";
         default:
-            return `${errThrow.code}: ${errThrow.en ?? "Unknown Error, Contact ADMIN for support!"}`;    
+            return errThrow.en ?? "Unknown Error, Contact ADMIN for support!";    
     } 
 };

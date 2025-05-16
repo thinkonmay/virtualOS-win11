@@ -142,12 +142,10 @@ export const workerAsync = {
                     info.virtReady ? { HideVM: HideVM } : undefined,
                     preferred_codec,
                     info.virtReady
-                        ? (status, code) =>
+                        ? (txt) =>
                               finish
                                   ? new Promise(() => {})
-                                  : workerAsync.showPosition(
-                                    code != null ? formatError(code): status
-                                  )
+                                  : workerAsync.showPosition(txt)
                         : undefined
                 );
                 finish = true;
