@@ -16,8 +16,8 @@ const DPad = (props) => {
                     width: `${props.size}px`,
                     height: `${props.size * 1.5}px`
                 }}
-                onTouchStart={() => gamepadButton(12, true)}
-                onTouchEnd={() => gamepadButton(12)}
+                onTouchStart={gamepadButton(12, true)}
+                onTouchEnd={gamepadButton(12)}
             >
                 <MdOutlineArrowDropUp
                     sx={{ color: '#C3B5B5', fontSize: '12px' }}
@@ -29,8 +29,8 @@ const DPad = (props) => {
                     width: `${props.size}px`,
                     height: `${props.size * 1.5}px`
                 }}
-                onTouchStart={() => gamepadButton(13, true)}
-                onTouchEnd={() => gamepadButton(13)}
+                onTouchStart={gamepadButton(13, true)}
+                onTouchEnd={gamepadButton(13)}
             >
                 <MdOutlineArrowDropUp sx={{ color: '#C3B5B5' }} />
             </button>
@@ -40,8 +40,8 @@ const DPad = (props) => {
                     width: `${props.size}px`,
                     height: `${props.size * 1.5}px`
                 }}
-                onTouchStart={() => gamepadButton(15, true)}
-                onTouchEnd={() => gamepadButton(15)}
+                onTouchStart={gamepadButton(15, true)}
+                onTouchEnd={gamepadButton(15)}
             >
                 <MdOutlineArrowDropUp sx={{ color: '#C3B5B5' }} />
             </button>
@@ -51,8 +51,8 @@ const DPad = (props) => {
                     width: `${props.size}px`,
                     height: `${props.size * 1.5}px`
                 }}
-                onTouchStart={() => gamepadButton(14, true)}
-                onTouchEnd={() => gamepadButton(14)}
+                onTouchStart={gamepadButton(14, true)}
+                onTouchEnd={gamepadButton(14)}
             >
                 <MdOutlineArrowDropUp sx={{ color: '#C3B5B5' }} />
             </button>

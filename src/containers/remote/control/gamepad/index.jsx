@@ -244,8 +244,8 @@ export const ButtonGroupRight = (props) => {
         <>
             <GamepadButton
                 id={'rt'}
-                onTouchStart={() => gamepadButton(7, true)}
-                onTouchEnd={() => gamepadButton(7)}
+                onTouchStart={gamepadButton(7, true)}
+                onTouchEnd={gamepadButton(7)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -264,8 +264,8 @@ export const ButtonGroupRight = (props) => {
 
             <GamepadButton
                 id={'rb'}
-                onTouchStart={() => gamepadButton(5, true)}
-                onTouchEnd={() => gamepadButton(5)}
+                onTouchStart={gamepadButton(5, true)}
+                onTouchEnd={gamepadButton(5)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -284,8 +284,8 @@ export const ButtonGroupRight = (props) => {
 
             <GamepadButton
                 id={'btnY'}
-                onTouchStart={() => gamepadButton(3, true)}
-                onTouchEnd={() => gamepadButton(3)}
+                onTouchStart={gamepadButton(3, true)}
+                onTouchEnd={gamepadButton(3)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -302,8 +302,8 @@ export const ButtonGroupRight = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'btnA'}
-                onTouchStart={() => gamepadButton(0, true)}
-                onTouchEnd={() => gamepadButton(0)}
+                onTouchStart={gamepadButton(0, true)}
+                onTouchEnd={gamepadButton(0)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -320,8 +320,8 @@ export const ButtonGroupRight = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'btnB'}
-                onTouchStart={() => gamepadButton(1, true)}
-                onTouchEnd={() => gamepadButton(1)}
+                onTouchStart={gamepadButton(1, true)}
+                onTouchEnd={gamepadButton(1)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -338,8 +338,8 @@ export const ButtonGroupRight = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'btnX'}
-                onTouchStart={() => gamepadButton(2, true)}
-                onTouchEnd={() => gamepadButton(2)}
+                onTouchStart={gamepadButton(2, true)}
+                onTouchEnd={gamepadButton(2)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -390,8 +390,8 @@ export const ButtonGroupRight = (props) => {
                 <div ref={subBtnRef} className="containerSubButton" id="subBtn">
                     <div
                         className="centerButton"
-                        onTouchStart={() => gamepadButton(8, true)}
-                        onTouchEnd={() => gamepadButton(8)}
+                        onTouchStart={gamepadButton(8, true)}
+                        onTouchEnd={gamepadButton(8)}
                     >
                         <MdArrowLeft />
                     </div>
@@ -403,8 +403,8 @@ export const ButtonGroupRight = (props) => {
                     </div>
                     <div
                         className="centerButton"
-                        onTouchStart={() => gamepadButton(9, true)}
-                        onTouchEnd={() => gamepadButton(9)}
+                        onTouchStart={gamepadButton(9, true)}
+                        onTouchEnd={gamepadButton(9)}
                     >
                         <MdArrowRight />
                     </div>
@@ -413,8 +413,8 @@ export const ButtonGroupRight = (props) => {
 
             <GamepadButton
                 id={'rs'}
-                onTouchStart={() => gamepadButton(11, true)}
-                onTouchEnd={() => gamepadButton(11)}
+                onTouchStart={gamepadButton(11, true)}
+                onTouchEnd={gamepadButton(11)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -566,8 +566,8 @@ export const ButtonGroupLeft = (props) => {
         <>
             <GamepadButton
                 id={'lt'}
-                onTouchStart={() => gamepadButton(6, true)}
-                onTouchEnd={() => gamepadButton(6)}
+                onTouchStart={gamepadButton(6, true)}
+                onTouchEnd={gamepadButton(6)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -585,8 +585,8 @@ export const ButtonGroupLeft = (props) => {
             </GamepadButton>
             <GamepadButton
                 id={'lb'}
-                onTouchStart={() => gamepadButton(4, true)}
-                onTouchEnd={() => gamepadButton(4)}
+                onTouchStart={gamepadButton(4, true)}
+                onTouchEnd={gamepadButton(4)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
@@ -624,8 +624,8 @@ export const ButtonGroupLeft = (props) => {
             </Draggable>
             <GamepadButton
                 id={'ls'}
-                onTouchStart={() => gamepadButton(10, true)}
-                onTouchEnd={() => gamepadButton(10)}
+                onTouchStart={gamepadButton(10, true)}
+                onTouchEnd={gamepadButton(10)}
                 onStop={handleStop}
                 onDrag={handleDrag}
                 draggable={props.draggable}
