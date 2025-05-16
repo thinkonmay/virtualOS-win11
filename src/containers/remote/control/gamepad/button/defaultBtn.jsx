@@ -28,14 +28,17 @@ const GamepadButton = ({
     const buttonRef = useRef(null);
 
     const handleTouchStart = (e) => {
+        e.preventDefault();
         onTouchStart();
         setHolding(true);
     };
     const handleTouchEnd = (e) => {
+        e.preventDefault();
         onTouchEnd();
         setHolding(false);
     };
     const handleTouchCancel = (e) => {
+        e.preventDefault();
         onTouchEnd();
         setHolding(false);
     };

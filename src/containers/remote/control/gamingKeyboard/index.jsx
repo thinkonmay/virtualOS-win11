@@ -135,12 +135,12 @@ function GamingKeyboard() {
                                 disabled={true}
                                 nodeRef={joystickWrapperRef}
                                 position={{
-                                x:
-                                    deviceResolution.deviceWidth *
-                                    key.position.x,
-                                y:
-                                    deviceResolution.deviceHeight *
-                                    key.position.y
+                                    x:
+                                        deviceResolution.deviceWidth *
+                                        key.position.x,
+                                    y:
+                                        deviceResolution.deviceHeight *
+                                        key.position.y
                                 }}
                             >
                                 <div

@@ -10,6 +10,7 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
     const knobRef = useRef(null);
 
     const handlePointerMove = (event) => {
+        event.preventDefault();
         const touch = event.changedTouches?.[0];
         const rect = ref.current.getBoundingClientRect();
         let x = (touch.clientX - rect.left - rect.width / 2) * speed;
@@ -30,7 +31,8 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
         knobRef.current.style.transform = `translate(${x}px, ${y}px)`;
     };
 
-    const handlePointerUp = () => {
+    const handlePointerUp = (e) => {
+        e.preventDefault();
         knobRef.current.style.transform = 'translate(0px, 0px)';
         gamepadAxis(0, 0, isRight);
     };
@@ -79,6 +81,7 @@ export const VirtualASDW = memo(({ size = 100, keycallback }) => {
     const [currentKey, setCurrentKey] = useState(null);
 
     const handlePointerMove = (event) => {
+        event.preventDefault();
         const touch = event.changedTouches?.[0];
         const rect = ref.current.getBoundingClientRect();
         let x = (touch.clientX - rect.left - rect.width / 2) * speed;
@@ -98,7 +101,8 @@ export const VirtualASDW = memo(({ size = 100, keycallback }) => {
         console.log(`${ratio} ${x >= 0}`);
     };
 
-    const handlePointerUp = () => {
+    const handlePointerUp = (e) => {
+        e.preventDefault();
         knobRef.current.style.transform = 'translate(0px, 0px)';
         if (currentKey != null) {
             keycallback(currentKey);
