@@ -46,7 +46,10 @@ const initialState: SidePaneData = {
             btnSizes: btnGamepadSizes,
             currentSelected: ''
         },
-        gamingKeyBoard: initialGamingKeyboard
+        gamingKeyBoard: {
+            ...initialGamingKeyboard,
+            data: [...initialGamingKeyboard.data, closeBtn]
+        }
     },
 
     notifications: [],
