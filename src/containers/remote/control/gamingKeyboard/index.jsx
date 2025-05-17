@@ -38,6 +38,10 @@ function GamingKeyboard() {
     const gamingKeyboard = useAppSelector(
         (state) => state.sidepane.mobileControl.gamingKeyBoard
     );
+    const draggable = useAppSelector(
+        (state) =>
+            state.sidepane.mobileControl.gamingKeyBoard.editState == 'draggable'
+    );
     const [deviceResolution, setDeviceResolution] = useState({
         deviceWidth: window.innerWidth,
         deviceHeight: window.innerHeight
@@ -157,20 +161,24 @@ function GamingKeyboard() {
                         <GamingKeyboardButton
                             id={key.id}
                             key={key.id}
-                            onTouchStart={() => {
-                                keyboard({
-                                    val: key.value,
-                                    isDown: true
-                                });
-                            }}
-                            onTouchEnd={() => {
-                                keyboard({
-                                    val: key.value
-                                });
-                            }}
+                            onTouchStart={() =>
+                                draggable
+                                    ? null
+                                    : keyboard({
+                                          val: key.value,
+                                          isDown: true
+                                      })
+                            }
+                            onTouchEnd={() =>
+                                draggable
+                                    ? null
+                                    : keyboard({
+                                          val: key.value
+                                      })
+                            }
                             onStop={handleStop}
                             onDrag={handleDrag}
-                            draggable={gamingKeyboard.editState == 'draggable'}
+                            draggable={draggable}
                             style={{
                                 width: `${50 * key.size}px`,
                                 height: `${50 * key.size}px`
@@ -193,11 +201,15 @@ function GamingKeyboard() {
                         <GamingKeyboardButton
                             id={key.id}
                             key={key.id}
-                            onTouchStart={() => virtMouse(key.value, true)}
-                            onTouchEnd={() => virtMouse(key.value)}
+                            onTouchStart={() =>
+                                draggable ? null : virtMouse(key.value, true)
+                            }
+                            onTouchEnd={() =>
+                                draggable ? null : virtMouse(key.value)
+                            }
                             onStop={handleStop}
                             onDrag={handleDrag}
-                            draggable={gamingKeyboard.editState == 'draggable'}
+                            draggable={draggable}
                             style={{
                                 width: `${50 * key.size}px`,
                                 height: `${50 * key.size}px`
@@ -221,7 +233,9 @@ function GamingKeyboard() {
                             key={key.id}
                             onTouchStart={() => {}}
                             onTouchEnd={() =>
-                                appDispatch(hide_gaming_keyboard())
+                                draggable
+                                    ? null
+                                    : appDispatch(hide_gaming_keyboard())
                             }
                             onStop={handleStop}
                             onDrag={handleDrag}
