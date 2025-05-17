@@ -231,7 +231,7 @@ export const globalAsync = {
         'fetch_domain',
         async (): Promise<Domain[]> => {
             const { data: domains_v3, error: err } = await GLOBAL().rpc(
-                'get_domains_availability_v3'
+                'get_domains_availability_v4'
             );
             if (err) throw err;
             else return domains_v3;
