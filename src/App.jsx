@@ -4,7 +4,10 @@ import { Toaster } from 'react-hot-toast';
 import { UserEvents } from '../src-tauri/api';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
-
+import { VirtualGamepad } from './containers/remote/control/gamepad';
+import GamingKeyboard from './containers/remote/control/gamingKeyboard';
+import { Plugin } from './containers/remote/control/plugin';
+import { VirtKeyboard } from './containers/remote/control/keyboard';
 import {
     appDispatch,
     menu_show,
@@ -25,6 +28,7 @@ import { Remote } from './containers/remote';
 import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
+import { isMobile } from '../src-tauri/core';
 
 function App() {
     document.body.dataset.theme = 'dark';
@@ -35,6 +39,18 @@ function App() {
     const pointerLock = useAppSelector((state) => state.remote.pointer_lock);
     const [booting, setLockscreen] = useState(true);
     const [loadingText, setloadingText] = useState(Contents.BOOTING);
+
+    const keyboard = useAppSelector(
+        (state) => !state.sidepane.mobileControl.keyboardHide
+    );
+    const gamingKeyboard = useAppSelector(
+        (state) => state.sidepane.mobileControl.gamingKeyBoard.open
+    );
+    const gamepad = useAppSelector(
+        (state) =>
+            !state.sidepane.mobileControl.gamePadHide ||
+            state.sidepane.mobileControl.gamepadSetting.draggable
+    );
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -166,7 +182,10 @@ function App() {
                 <div className="appwrap ">
                     {pointerLock ? null : (
                         <>
-                            <Taskbar />
+                            {(keyboard || gamepad || gamingKeyboard) &&
+                            !remote.active ? null : (
+                                <Taskbar />
+                            )}
                             <ActMenu />
                             <StartMenu />
                             <SidePane />
@@ -181,8 +200,20 @@ function App() {
                         </>
                     )}
                     {remote.active && !pointerLock ? <Status /> : null}
+                    {isMobile() ? (
+                        keyboard ? (
+                            <VirtKeyboard />
+                        ) : gamepad ? (
+                            <VirtualGamepad />
+                        ) : gamingKeyboard ? (
+                            <GamingKeyboard />
+                        ) : null
+                    ) : null}
                     {remote.active && loggedIn ? (
-                        <Remote />
+                        <>
+                            <Plugin />
+                            <Remote />
+                        </>
                     ) : (
                         <>
                             <Background />
