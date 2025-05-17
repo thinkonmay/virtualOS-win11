@@ -211,7 +211,9 @@ function App() {
                     ) : null}
                     {remote.active && loggedIn ? (
                         <>
-                            <Plugin />
+                            {keyboard || gamepad || gamingKeyboard ? null : (
+                                <Plugin />
+                            )}
                             <Remote />
                         </>
                     ) : (
