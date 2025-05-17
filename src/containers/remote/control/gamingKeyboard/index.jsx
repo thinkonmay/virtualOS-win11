@@ -239,7 +239,7 @@ function GamingKeyboard() {
                             }
                             onStop={handleStop}
                             onDrag={handleDrag}
-                            draggable={draggable}
+                            draggable={gamingKeyboard.editState == 'draggable'}
                             className='text-yellow-600'
                             style={{
                                 width: `${60 * key.size}px`,
@@ -282,7 +282,7 @@ const NavSettings = () => {
                 true ? 'slide-in' : 'slide-out'
             } navGamingKeyBoardSetting`}
         >
-            {draggable ? (
+            {gamingKeyboard.editState == 'draggable' ? (
                 <NavDraggable />
             ) : gamingKeyboard.editState == 'addingKey' ? (
                 <NavAddingKey />
