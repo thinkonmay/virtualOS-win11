@@ -239,11 +239,11 @@ function GamingKeyboard() {
                             }
                             onStop={handleStop}
                             onDrag={handleDrag}
-                            draggable={gamingKeyboard.editState == 'draggable'}
+                            draggable={draggable}
+                            className='text-yellow-600'
                             style={{
-                                // backgroundColor: '#da5102',
-                                width: `${50 * key.size}px`,
-                                height: `${50 * key.size}px`
+                                width: `${60 * key.size}px`,
+                                height: `${40 * key.size}px`
                             }}
                             pos={{
                                 x:
@@ -282,7 +282,7 @@ const NavSettings = () => {
                 true ? 'slide-in' : 'slide-out'
             } navGamingKeyBoardSetting`}
         >
-            {gamingKeyboard.editState == 'draggable' ? (
+            {draggable ? (
                 <NavDraggable />
             ) : gamingKeyboard.editState == 'addingKey' ? (
                 <NavAddingKey />
