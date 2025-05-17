@@ -56,7 +56,8 @@ export function maintainance({ data: {} }) {
                             <br />
                             play2 chuyển sang saigon2
                             <br />
-                            Nếu gặp khó khăn, vui lòng nhắn tin cho fanpage Thinkmay.
+                            Nếu gặp khó khăn, vui lòng nhắn tin cho fanpage
+                            Thinkmay.
                         </h3>
                     </div>
                     <div className="flex gap-2">

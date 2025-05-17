@@ -5,6 +5,7 @@ import {
     IGamingKey,
     SidePaneData,
     btnGamepadSizes,
+    closeBtn,
     initialGamingKeyboard,
     listDesktopSettings,
     listDesktopShortCut,
@@ -196,16 +197,17 @@ export const sidepaneSlice = createSlice({
                 type = 'key'
             } = action.payload;
 
-            const currentState = state.mobileControl.gamingKeyBoard.data;
-            currentState.push({
-                value,
-                name,
-                position,
-                size,
-                id: uuidv4(),
-                type
-            });
-            state.mobileControl.gamingKeyBoard.data = currentState;
+            state.mobileControl.gamingKeyBoard.data = [
+                ...state.mobileControl.gamingKeyBoard.data,
+                {
+                    value,
+                    name,
+                    position,
+                    size,
+                    id: uuidv4(),
+                    type
+                }
+            ];
         },
 
         delete_key_gamingKeyboard: (state, action) => {
@@ -227,8 +229,10 @@ export const sidepaneSlice = createSlice({
             );
         },
         set_default_gamingKeyboard: (state, action) => {
-            state.mobileControl.gamingKeyBoard.data =
-                initialGamingKeyboard.data;
+            state.mobileControl.gamingKeyBoard.data = [
+                ...initialGamingKeyboard.data,
+                closeBtn as any
+            ];
         },
 
         increase_key_gamingKeyboard: (state, action) => {
@@ -304,8 +308,11 @@ export const sidepaneSlice = createSlice({
             }
         },
         set_gamingKeyboard_data: (state, action) => {
-            const parsePayload = JSON.parse(action.payload);
-            state.mobileControl.gamingKeyBoard.data = parsePayload;
+            const parsePayload = JSON.parse(action.payload) as IGamingKey[];
+            state.mobileControl.gamingKeyBoard.data = [
+                ...parsePayload.filter((x) => x.type != 'close'),
+                closeBtn
+            ];
         },
         toggle_status_connection: (state) => {
             state.statusConnection = !state.statusConnection;
