@@ -1,17 +1,16 @@
-import { memo, useId, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { gamepadAxis } from '../../../../../../src-tauri/singleton';
 
 const speed = 0.48;
 const knobRadius = 0.6;
 
-export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
-    const id = useId();
+export const CustomJoyStick = ({ size = 100, isRight = true }) => {
     const ref = useRef(null);
     const knobRef = useRef(null);
 
     const handlePointerMove = (event) => {
+        const touch = event
         event.preventDefault();
-        const touch = event.changedTouches?.[0];
         const rect = ref.current.getBoundingClientRect();
         let x = (touch.clientX - rect.left - rect.width / 2) * speed;
         let y = (touch.clientY - rect.top - rect.height / 2) * speed;
@@ -41,7 +40,6 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
         <div
             ref={ref}
             className="joystick"
-            id={id}
             style={{
                 width: `${size}px`,
                 height: `${size}px`,
@@ -54,9 +52,9 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
                 touchAction: 'none',
                 position: 'relative'
             }}
-            onTouchMove={handlePointerMove}
-            onTouchEnd={handlePointerUp}
-            onTouchCancel={handlePointerUp}
+            onPointerMove={handlePointerMove}
+            onPointerOut={handlePointerUp}
+            onPointerCancel={handlePointerUp}
         >
             <div
                 ref={knobRef}
@@ -72,4 +70,4 @@ export const CustomJoyStick = memo(({ size = 100, isRight = true }) => {
             />
         </div>
     );
-});
+};

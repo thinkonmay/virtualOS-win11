@@ -203,12 +203,14 @@ export const remoteAsync = {
         async (info: RemoteCredential): Promise<string> => {
             const audio = new URL(info.audioUrl).searchParams.get('token');
             const video = new URL(info.videoUrl).searchParams.get('token');
+            const mic = new URL(info.microUrl).searchParams.get('token');
             const data = new URL(info.dataUrl).searchParams.get('token');
             const host = new URL(info.dataUrl).hostname;
 
             const url = new URL(originalurl.toString());
             url.searchParams.set('audio', audio);
             url.searchParams.set('video', video);
+            url.searchParams.set('mic', mic);
             url.searchParams.set('data', data);
             url.searchParams.set('host', host);
             return url.toString();
