@@ -5,7 +5,6 @@ import {
     IGamingKey,
     SidePaneData,
     btnGamepadSizes,
-    closeBtn,
     initialGamingKeyboard,
     listDesktopSettings,
     listDesktopShortCut,
@@ -46,10 +45,7 @@ const initialState: SidePaneData = {
             btnSizes: btnGamepadSizes,
             currentSelected: ''
         },
-        gamingKeyBoard: {
-            ...initialGamingKeyboard,
-            data: [...initialGamingKeyboard.data, closeBtn]
-        }
+        gamingKeyBoard: initialGamingKeyboard
     },
 
     notifications: [],
@@ -232,10 +228,8 @@ export const sidepaneSlice = createSlice({
             );
         },
         set_default_gamingKeyboard: (state, action) => {
-            state.mobileControl.gamingKeyBoard.data = [
-                ...initialGamingKeyboard.data,
-                closeBtn as any
-            ];
+            state.mobileControl.gamingKeyBoard.data =
+                initialGamingKeyboard.data;
         },
 
         increase_key_gamingKeyboard: (state, action) => {
@@ -312,10 +306,9 @@ export const sidepaneSlice = createSlice({
         },
         set_gamingKeyboard_data: (state, action) => {
             const parsePayload = JSON.parse(action.payload) as IGamingKey[];
-            state.mobileControl.gamingKeyBoard.data = [
-                ...parsePayload.filter((x) => x.type != 'close'),
-                closeBtn
-            ];
+            state.mobileControl.gamingKeyBoard.data = parsePayload.filter(
+                (x) => x.type != 'close'
+            );
         },
         toggle_status_connection: (state) => {
             state.statusConnection = !state.statusConnection;

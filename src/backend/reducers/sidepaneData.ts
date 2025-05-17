@@ -220,16 +220,6 @@ interface IGamingKeyboard {
     currentSelected?: IGamingKey;
 }
 
-export const closeBtn: IGamingKey = {
-    id: uuidv4(),
-    type: 'close',
-    size: 0.6,
-    position: {
-        x: 0.4,
-        y: 0.8
-    }
-};
-
 export const initialGamingKeyboard: IGamingKeyboard = {
     open: false,
     editState: 'idle',

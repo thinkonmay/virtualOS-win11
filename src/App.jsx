@@ -51,6 +51,13 @@ function App() {
             !state.sidepane.mobileControl.gamePadHide ||
             state.sidepane.mobileControl.gamepadSetting.draggable
     );
+    const editting = useAppSelector(
+        (state) =>
+            (state.sidepane.mobileControl.gamingKeyBoard.open &&
+                state.sidepane.mobileControl.gamingKeyBoard.editState ==
+                    'draggable') ||
+            state.sidepane.mobileControl.gamepadSetting.draggable
+    );
 
     const ctxmenu = (e) => {
         afterMath(e);
@@ -183,6 +190,7 @@ function App() {
                     {pointerLock ? null : (
                         <>
                             {(keyboard || gamepad || gamingKeyboard) &&
+                            editting &&
                             !remote.active ? null : (
                                 <Taskbar />
                             )}

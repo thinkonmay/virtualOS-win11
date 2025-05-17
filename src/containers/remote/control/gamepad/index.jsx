@@ -397,12 +397,6 @@ export const ButtonGroupRight = (props) => {
                     </div>
                     <div
                         className="centerButton"
-                        onClick={() => appDispatch(toggle_gamepad())}
-                    >
-                        close
-                    </div>
-                    <div
-                        className="centerButton"
                         onTouchStart={gamepadButton(9, true)}
                         onTouchEnd={gamepadButton(9)}
                     >
