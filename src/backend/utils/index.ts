@@ -63,6 +63,13 @@ const apps: AppData[] = [
         size: 'mini'
     },
     {
+        name: [Contents.STORAGE_APP],
+        id: 'steam',
+        action: 'claim_steam',
+        image: 'steam',
+        size: 'mini'
+    },
+    {
         name: [Contents.DISCORD_APP],
         id: 'discord',
         icon: 'discord',
@@ -88,6 +95,7 @@ var { taskbar, desktop } = {
         'store',
         'connectPc',
         'storage',
+        'steam',
         'payment',
         'facebook',
         ...(DevEnv ? ['worker'] : [])
