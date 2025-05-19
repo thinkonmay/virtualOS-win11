@@ -9,7 +9,7 @@ export const CustomJoyStick = ({ size = 100, isRight = true }) => {
     const knobRef = useRef(null);
 
     const handlePointerMove = (event) => {
-        const touch = event
+        const touch = event;
         event.preventDefault();
         const rect = ref.current.getBoundingClientRect();
         let x = (touch.clientX - rect.left - rect.width / 2) * speed;

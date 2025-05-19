@@ -63,7 +63,7 @@ const apps: AppData[] = [
         size: 'mini'
     },
     {
-        name: [Contents.STORAGE_APP],
+        name: [Contents.STEAM_APP],
         id: 'steam',
         action: 'claim_steam',
         image: 'steam',

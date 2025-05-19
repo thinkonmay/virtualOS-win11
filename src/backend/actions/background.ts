@@ -101,8 +101,10 @@ const updateUI = async () => {
         worker: { currentAddress, bucket, app_access }
     } = store.getState();
 
-    if (bucket == undefined) appDispatch(app_remove('storage'));
-    if (app_access == undefined) appDispatch(app_remove('steam'));
+    if (bucket == undefined && getOS() != 'Windows')
+        appDispatch(app_remove('storage'));
+    if (app_access == undefined && getOS() != 'Windows')
+        appDispatch(app_remove('steam'));
     const unknown_user = email == undefined || email == 'unkown' || email == '';
 
     const rms = [];
