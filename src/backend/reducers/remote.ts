@@ -15,6 +15,7 @@ import {
     toggle_high_mtu,
     toggle_high_queue,
     toggle_hq,
+    toggle_microphone,
     toggle_remote,
     worker_refresh
 } from '.';
@@ -55,6 +56,7 @@ type Data = {
     prev_hq: boolean;
     direct_access: boolean;
     preferred_codec: 'h264' | 'h265';
+    enable_microphone: boolean;
 
     scancode: boolean;
     no_strict_timing: boolean;
@@ -92,6 +94,7 @@ const initialState: Data = {
     pointer_lock: false,
     relative_mouse: false,
     preferred_codec: 'h264',
+    enable_microphone: false,
 
     frame_drop: false,
     bitrate: 0,
@@ -222,13 +225,19 @@ export const remoteAsync = {
             const user = (getState() as RootState).user.id;
             const { HideVM, HighMTU, HighQueue } = (getState() as RootState)
                 .worker;
-            const { hq, bitrate, framerate, scancode, preferred_codec } = (
-                getState() as RootState
-            ).remote;
+            const {
+                hq,
+                bitrate,
+                framerate,
+                scancode,
+                preferred_codec,
+                enable_microphone
+            } = (getState() as RootState).remote;
 
             const setting = {
                 hq,
                 preferred_codec,
+                enable_microphone,
                 HideVM,
                 HighMTU,
                 scancode,
@@ -270,6 +279,7 @@ export const remoteAsync = {
             setting: {
                 hq?: boolean;
                 preferred_codec?: 'h264' | 'h265';
+                enable_microphone?: boolean;
                 HideVM?: boolean;
                 HighMTU?: boolean;
                 HighQueue?: boolean;
@@ -287,6 +297,7 @@ export const remoteAsync = {
                         HighMTU,
                         HighQueue,
                         preferred_codec,
+                        enable_microphone,
                         scancode: _scancode
                     }
                 }
@@ -294,6 +305,7 @@ export const remoteAsync = {
             appDispatch(toggle_hide_vm(HideVM));
             appDispatch(toggle_high_mtu(HighMTU));
             appDispatch(toggle_high_queue(HighQueue));
+            appDispatch(toggle_microphone(enable_microphone));
             appDispatch(toggle_hq(hq));
             if (['h264', 'h265'].includes(preferred_codec))
                 appDispatch(change_preferred_codec(preferred_codec));
@@ -323,6 +335,7 @@ export const remoteSlice = createSlice({
             { payload: data }: PayloadAction<RemoteCredential>
         ) => {
             state.auth = data;
+            if (!state.enable_microphone) state.auth.microUrl = undefined;
             state.active = true;
             state.fullscreen = true;
             state.ready = false;
@@ -443,6 +456,13 @@ export const remoteSlice = createSlice({
         },
         change_bitrate: (state, action: PayloadAction<number>) => {
             state.bitrate = action.payload;
+        },
+        toggle_microphone: (
+            state,
+            action: PayloadAction<boolean | undefined>
+        ) => {
+            state.enable_microphone =
+                action.payload ?? !state.enable_microphone;
         },
         change_preferred_codec: (
             state,

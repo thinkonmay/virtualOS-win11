@@ -148,6 +148,7 @@ export const {
     change_bitrate,
     change_framerate,
     change_preferred_codec,
+    toggle_microphone,
     toggle_fullscreen,
     set_fullscreen,
     pointer_lock,
