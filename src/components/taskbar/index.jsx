@@ -8,7 +8,8 @@ import {
     MdGamepad,
     MdOutlineVideoSettings,
     MdOutlineSportsEsports,
-    MdShare
+    MdShare,
+    MdOutlineKeyboard
 } from 'react-icons/md';
 import { afterMath, showLinkShare } from '../../backend/actions';
 import {
@@ -17,6 +18,7 @@ import {
     show_chat,
     startogg,
     toggle_gamepad,
+    toggle_keyboard,
     useAppSelector
 } from '../../backend/reducers';
 import { Contents } from '../../backend/reducers/locales';
@@ -85,6 +87,17 @@ const Taskbar = () => {
                             ></MdArrowBackIos>
                         )}
                     </button>
+                    {gamepad || gamingKeyboard ? (
+                        <div
+                            className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded text-white"
+                            onClick={() => appDispatch(toggle_keyboard())}
+                        >
+                            <MdOutlineKeyboard
+                                strokeWidth={'0rem'}
+                                fontSize={'1.5rem'}
+                            />
+                        </div>
+                    ) : null}
                     {gamepad ? (
                         <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded text-red-500"
