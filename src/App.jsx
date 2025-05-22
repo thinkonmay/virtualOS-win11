@@ -77,7 +77,6 @@ function App() {
     };
 
     useEffect(() => {
-        window.OpenWidget.call('minimize');
         window.onbeforeunload = (e) => {
             const text = 'Are you sure (｡◕‿‿◕｡)';
             e = e || window.event;
