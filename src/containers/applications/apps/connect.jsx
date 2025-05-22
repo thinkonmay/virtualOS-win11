@@ -9,6 +9,7 @@ import {
     popup_open,
     scancode_toggle,
     show_chat,
+    toggle_microphone,
     useAppSelector,
     wait_and_claim_volume,
     worker_refresh_ui
@@ -263,7 +264,7 @@ function Customize({ onClose: close }) {
 
     const { configuration } = metadata ?? { configuration: {} };
 
-    const { scancode, hq, preferred_codec } = useAppSelector(
+    const { scancode, hq, enable_microphone, preferred_codec } = useAppSelector(
         (state) => state.remote
     );
 
@@ -302,6 +303,11 @@ function Customize({ onClose: close }) {
                         preferred_codec == 'h265' ? 'h264' : 'h265'
                     )
                 )
+        },
+        {
+            name: `Microphone`,
+            state: enable_microphone,
+            action: () => appDispatch(toggle_microphone())
         }
     ];
 

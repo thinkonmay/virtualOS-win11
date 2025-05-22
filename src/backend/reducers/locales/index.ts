@@ -216,6 +216,7 @@ export enum Contents {
     TEMPLATE_APP,
     CONNECT_APP,
     STORAGE_APP,
+    STEAM_APP,
     DISCORD_APP,
     FANPAGE_APP,
     MESSAGE_APP,
@@ -612,6 +613,10 @@ export function language() {
     vn.set(Contents.STORAGE_APP, 'Truy cập dữ liệu');
     id.set(Contents.STORAGE_APP, 'Open cloud storage');
 
+    en.set(Contents.STEAM_APP, 'Login steam');
+    vn.set(Contents.STEAM_APP, 'Truy cập steam');
+    id.set(Contents.STEAM_APP, 'Login steam');
+
     en.set(Contents.FANPAGE_APP, 'Fanpage');
     vn.set(Contents.FANPAGE_APP, 'Fanpage');
     id.set(Contents.FANPAGE_APP, 'Halaman penggemar');
@@ -944,10 +949,6 @@ export function language() {
     en.set(Contents.SIGN_IN, 'Sign In');
     vn.set(Contents.SIGN_IN, 'Đăng nhập');
     id.set(Contents.SIGN_IN, 'Masuk');
-
-    en.set(Contents.SUPPORT, 'Support now!');
-    vn.set(Contents.SUPPORT, 'Hỗ trợ ngay!');
-    id.set(Contents.SUPPORT, 'Dukung sekarang!');
 
     en.set(Contents.SETTING, 'Setting');
     vn.set(Contents.SETTING, 'Cài đặt');

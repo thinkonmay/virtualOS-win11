@@ -68,13 +68,6 @@ const setDomain = async () => {
 };
 const startAnalytics = async () => {
     const email = store.getState().user.email;
-    if (
-        email != 'unknown' &&
-        email != '' &&
-        email != undefined &&
-        email != null
-    )
-        (window as any).OpenWidget.call('set_customer_email', email);
     await UserSession(email);
 };
 
@@ -98,10 +91,13 @@ const updateGametag = () => appDispatch(update_game_tag());
 const updateUI = async () => {
     const {
         user: { subscription, email, discounts },
-        worker: { currentAddress, bucket }
+        worker: { currentAddress, bucket, app_access }
     } = store.getState();
 
-    if (bucket == undefined) appDispatch(app_remove('storage'));
+    if (bucket == undefined || getOS() != 'Windows')
+        appDispatch(app_remove('storage'));
+    if (app_access == undefined || getOS() != 'Windows')
+        appDispatch(app_remove('steam'));
     const unknown_user = email == undefined || email == 'unkown' || email == '';
 
     const rms = [];

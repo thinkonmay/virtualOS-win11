@@ -3,6 +3,7 @@ import { RootState, store } from '.';
 import { GLOBAL, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
+import { externalLink } from '../utils/constant';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
@@ -301,8 +302,7 @@ export const globalSlice = createSlice({
             state.opening = payload.payload;
         },
         show_chat: (state, payload: PayloadAction<boolean | undefined>) => {
-            if ((window as any).OpenWidget != undefined)
-                (window as any).OpenWidget.call('maximize');
+            window.location.href = externalLink.MESSAGE_LINK
         },
         show_tutorial: (
             state,
