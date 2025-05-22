@@ -950,10 +950,6 @@ export function language() {
     vn.set(Contents.SIGN_IN, 'Đăng nhập');
     id.set(Contents.SIGN_IN, 'Masuk');
 
-    en.set(Contents.SUPPORT, 'Support now!');
-    vn.set(Contents.SUPPORT, 'Hỗ trợ ngay!');
-    id.set(Contents.SUPPORT, 'Dukung sekarang!');
-
     en.set(Contents.SETTING, 'Setting');
     vn.set(Contents.SETTING, 'Cài đặt');
     id.set(Contents.SETTING, 'Pengaturan');

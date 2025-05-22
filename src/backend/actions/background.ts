@@ -68,13 +68,6 @@ const setDomain = async () => {
 };
 const startAnalytics = async () => {
     const email = store.getState().user.email;
-    if (
-        email != 'unknown' &&
-        email != '' &&
-        email != undefined &&
-        email != null
-    )
-        (window as any).OpenWidget.call('set_customer_email', email);
     await UserSession(email);
 };
 
