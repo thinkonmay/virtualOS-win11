@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
+import { v4 } from 'uuid';
 import {
     app_full,
     appDispatch,
@@ -18,6 +20,7 @@ import {
     ClaimStorage,
     CloseSession,
     Computer,
+    CreateSession,
     GetInfo,
     getRemoteSession,
     GLOBAL,
@@ -29,11 +32,10 @@ import {
     Steam
 } from '../../../src-tauri/api';
 import { ready } from '../../../src-tauri/singleton';
+import { create_or_replace_resources } from '../actions';
+import { formatError } from '../utils/formatErr';
 import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
-import toast from 'react-hot-toast';
-import { formatError } from '../utils/formatErr';
-import { create_or_replace_resources } from '../actions';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
@@ -143,9 +145,9 @@ export const workerAsync = {
                     preferred_codec,
                     info.virtReady
                         ? (txt) =>
-                              finish
-                                  ? new Promise(() => {})
-                                  : workerAsync.showPosition(txt)
+                            finish
+                                ? new Promise(() => { })
+                                : workerAsync.showPosition(txt)
                         : undefined
                 );
                 finish = true;
@@ -177,11 +179,11 @@ export const workerAsync = {
     ),
     unclaim_steam: createAsyncThunk(
         'unclaim_steam',
-        async (_: Session, { getState }): Promise<void> => {}
+        async (_: Session, { getState }): Promise<void> => { }
     ),
     unclaim_storage: createAsyncThunk(
         'unclaim_storage',
-        async (_: Session, { getState }): Promise<void> => {}
+        async (_: Session, { getState }): Promise<void> => { }
     ),
     claim_steam: createAsyncThunk(
         'claim_steam',
@@ -205,6 +207,48 @@ export const workerAsync = {
             const session = await ClaimStorage(currentAddress);
             if (session instanceof APIError) throw session;
             else return session;
+        }
+    ),
+    access_steam: createAsyncThunk(
+        'access_steam',
+        async (_: void, { getState }): Promise<void> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
+
+            const session = await CreateSession(currentAddress, {
+                id: v4(),
+                app: {} as Steam
+            });
+            if (session instanceof APIError) throw session;
+        }
+    ),
+    access_storage: createAsyncThunk(
+        'access_storage',
+        async (_: void, { getState }): Promise<void> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
+
+            const session = await CreateSession(currentAddress, {
+                id: v4(),
+                s3bucket: {} as S3Credential,
+            });
+            if (session instanceof APIError) throw session;
+        }
+    ),
+    restore_game: createAsyncThunk(
+        'restore_game',
+        async (_: void, { getState }): Promise<void> => {
+            const {
+                worker: { currentAddress }
+            } = getState() as RootState;
+
+            const session = await CreateSession(currentAddress, {
+                id: v4(),
+                backup: {}
+            });
+            if (session instanceof APIError) throw session;
         }
     ),
     update_local_worker: createAsyncThunk(
@@ -253,13 +297,13 @@ export const workerAsync = {
                 workerAsync.update_local_worker(
                     result instanceof APIError
                         ? {
-                              info: {},
-                              currentAddress: address
-                          }
+                            info: {},
+                            currentAddress: address
+                        }
                         : {
-                              info: result,
-                              currentAddress: address
-                          }
+                            info: result,
+                            currentAddress: address
+                        }
                 )
             );
         }
@@ -313,9 +357,9 @@ export const workerAsync = {
         'fetch_app_access',
         async (): Promise<
             | {
-                  id: string;
-                  app_id: string;
-              }
+                id: string;
+                app_id: string;
+            }
             | undefined
         > => {
             const volumes = await POCKETBASE()
@@ -459,7 +503,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.claim_steam,
@@ -475,7 +519,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.fetch_configuration,
@@ -497,7 +541,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.change_app_access,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             }
         );
     }
