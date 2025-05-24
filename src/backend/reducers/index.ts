@@ -170,6 +170,7 @@ export const {
     access_steam,
     access_storage,
     restore_game,
+    backup_game,
     unclaim_steam,
     unclaim_storage,
     unclaim_volume

@@ -491,7 +491,7 @@ function MobileComponent({
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
             </div>
-                    <hr className="mb-2 lg:mb-1" />
+            <hr className="mb-2 lg:mb-1" />
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />

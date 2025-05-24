@@ -251,6 +251,20 @@ export const workerAsync = {
             if (session instanceof APIError) throw session;
         }
     ),
+    backup_game: createAsyncThunk(
+        'backup_game',
+        async (_: void, { getState }): Promise<void> => {
+            const {
+                worker: { currentAddress, data }
+            } = getState() as RootState;
+
+            const session = data[currentAddress]?.Sessions?.find(
+                (x) => x.vm != undefined
+            )?.vm?.Sessions?.find((x) => x.backup != undefined);
+            await CloseSession(currentAddress, session);
+            if (session instanceof APIError) throw session;
+        }
+    ),
     update_local_worker: createAsyncThunk(
         'update_local_worker',
         async ({

@@ -43,8 +43,14 @@ const generalControl = [
         src: 'FaCloudUploadAlt',
         name: [Contents.STORAGE_APP],
         state: 'storage',
-        action: 'restore_game',
+        action: 'restore_game'
     },
+    {
+        src: 'FaCloudDownloadAlt',
+        name: [Contents.STORAGE_APP],
+        state: 'storage',
+        action: 'backup_game'
+    }
 ];
 
 const initialState: SidePaneData = {
