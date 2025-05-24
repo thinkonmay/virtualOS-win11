@@ -38,7 +38,13 @@ const generalControl = [
         state: 'shutdown',
         action: 'shutDownVm',
         style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-    }
+    },
+    {
+        src: 'FaCloudUploadAlt',
+        name: [Contents.STORAGE_APP],
+        state: 'storage',
+        action: 'restore_game',
+    },
 ];
 
 const initialState: SidePaneData = {
