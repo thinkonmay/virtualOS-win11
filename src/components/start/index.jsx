@@ -153,8 +153,7 @@ export const SidePane = () => {
     const data = {
         pnstates,
         sidepane,
-        shutdownable,
-        active
+        shutdownable
     };
 
     return (
@@ -480,39 +479,84 @@ function MobileComponent({
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
 
-    const renderList = sidepane.mobileControl.buttons.filter(
+    const renderList = sidepane.mobileControl.buttons;
+    const generalList = sidepane.generalControl.filter(
         (x) => !blacklist.includes(x.action)
     );
 
     return (
         <>
             <div className="listBtn">
+                {generalList.map((qk, idx) => (
+                    <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
+                ))}
+            </div>
+                    <hr className="mb-2 lg:mb-1" />
+            <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
-                {active
-                    ? sidepane.mobileControl.shortcuts.map((qk, idx) => (
-                          <MobileShortCutBtn key={idx} qk={qk} />
-                      ))
-                    : null}
+                {sidepane.mobileControl.shortcuts.map((qk, idx) => (
+                    <MobileShortCutBtn key={idx} qk={qk} />
+                ))}
             </div>
         </>
     );
 }
-function DesktopComponent({
-    data: { pnstates, sidepane, shutdownable, active }
-}) {
+function DesktopComponent({ data: { pnstates, sidepane, shutdownable } }) {
     const t = useAppSelector((state) => state.globals.translation);
-
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
 
-    const renderList = sidepane.desktopControl.buttons.filter(
+    const renderList = sidepane.desktopControl.buttons;
+    const generalList = sidepane.generalControl.filter(
         (x) => !blacklist.includes(x.action)
     );
 
     return (
         <>
+            <div className="listBtn">
+                {generalList.map((qk, idx) => (
+                    <div key={idx} className="qkGrp">
+                        <div
+                            style={{
+                                ...qk.style
+                            }}
+                            className={`qkbtn handcr prtclk ${qk.id}`}
+                            onClick={clickDispatch}
+                            data-action={qk.action}
+                            data-payload={qk.payload || qk.state}
+                            data-state={pnstates[qk.state]}
+                        >
+                            {Object.keys(md).includes(qk.src) ? (
+                                (() => {
+                                    const WinApp = md[qk.src];
+                                    return <WinApp />;
+                                })()
+                            ) : Object.keys(fi).includes(qk.src) ? (
+                                (() => {
+                                    const WinApp = fi[qk.src];
+                                    return <WinApp />;
+                                })()
+                            ) : Object.keys(fa).includes(qk.src) ? (
+                                (() => {
+                                    const WinApp = fa[qk.src];
+                                    return <WinApp />;
+                                })()
+                            ) : (
+                                <Icon
+                                    className="quickIcon"
+                                    ui={qk.ui}
+                                    src={qk.src}
+                                    width={14}
+                                    invert={pnstates[qk.state] ? true : null}
+                                />
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <hr className="mb-2 lg:mb-1" />
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <div key={idx} className="qkGrp">
@@ -563,36 +607,25 @@ function DesktopComponent({
                                 </div>
                             ) : null}
                         </div>
-
-                        {/*{
-                            qk.explain ? <div className="qkExplain">
-                                {
-                                    <div className="qktext">{t[qk.name]}</div>
-                                }
-                            </div> : null
-                        }*/}
                     </div>
                 ))}
-                {active
-                    ? sidepane.desktopControl.shortcuts.map((qk, idx) => (
-                          <div key={idx} className="qkGrp t">
-                              <div
-                                  style={{
-                                      fontSize: '0.8rem'
-                                  }}
-                                  className="qkbtn handcr prtclk"
-                                  onClick={() => Actions.clickShortCut(qk.val)}
-                              >
-                                  {qk.name}
-                              </div>
-                              {qk?.explain ? (
-                                  <div className="qktext">{t[qk.explain]}</div>
-                              ) : null}
-                          </div>
-                      ))
-                    : null}
+                {sidepane.desktopControl.shortcuts.map((qk, idx) => (
+                    <div key={idx} className="qkGrp t">
+                        <div
+                            style={{
+                                fontSize: '0.8rem'
+                            }}
+                            className="qkbtn handcr prtclk"
+                            onClick={() => Actions.clickShortCut(qk.val)}
+                        >
+                            {qk.name}
+                        </div>
+                        {qk?.explain ? (
+                            <div className="qktext">{t[qk.explain]}</div>
+                        ) : null}
+                    </div>
+                ))}
             </div>
-            <hr className="mb-2 lg:mb-1" />
         </>
     );
 }

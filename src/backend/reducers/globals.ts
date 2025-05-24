@@ -302,7 +302,7 @@ export const globalSlice = createSlice({
             state.opening = payload.payload;
         },
         show_chat: (state, payload: PayloadAction<boolean | undefined>) => {
-            window.location.href = externalLink.MESSAGE_LINK
+            window.location.href = externalLink.MESSAGE_LINK;
         },
         show_tutorial: (
             state,

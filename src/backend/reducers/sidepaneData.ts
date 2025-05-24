@@ -29,6 +29,7 @@ export type SidePaneData = {
 
     desktopControl: DesktopControl;
     mobileControl: MobileControl;
+    generalControl: any[];
     hide: boolean;
     banhide: boolean;
     statusConnection: boolean;
@@ -104,16 +105,6 @@ export const listMobileSettings = [
         action: 'sidepane/toggle_gamepad_draggable'
     },
     {
-        ui: true,
-        id: 'shutdownBtn',
-
-        src: 'MdOutlinePowerSettingsNew',
-        name: [Contents.SHUT_DOWN],
-        state: 'shutdown',
-        action: 'shutDownVm',
-        style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
-    },
-    {
         id: 'fixKeyboardBtnMobile',
         src: 'MdAutoFixHigh',
         name: [Contents.SCAN_CODE],
@@ -167,16 +158,6 @@ export const listDesktopSettings = [
         state: 'relative_mouse',
         action: 'remote/relative_mouse',
         explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
-    },
-    {
-        ui: true,
-        id: 'shutdownBtn',
-
-        src: 'MdOutlinePowerSettingsNew',
-        name: [Contents.SHUT_DOWN],
-        state: 'shutdown',
-        action: 'shutDownVm',
-        style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
     },
     ...(!DevEnv
         ? []

@@ -145,9 +145,9 @@ export const workerAsync = {
                     preferred_codec,
                     info.virtReady
                         ? (txt) =>
-                            finish
-                                ? new Promise(() => { })
-                                : workerAsync.showPosition(txt)
+                              finish
+                                  ? new Promise(() => {})
+                                  : workerAsync.showPosition(txt)
                         : undefined
                 );
                 finish = true;
@@ -179,11 +179,11 @@ export const workerAsync = {
     ),
     unclaim_steam: createAsyncThunk(
         'unclaim_steam',
-        async (_: Session, { getState }): Promise<void> => { }
+        async (_: Session, { getState }): Promise<void> => {}
     ),
     unclaim_storage: createAsyncThunk(
         'unclaim_storage',
-        async (_: Session, { getState }): Promise<void> => { }
+        async (_: Session, { getState }): Promise<void> => {}
     ),
     claim_steam: createAsyncThunk(
         'claim_steam',
@@ -232,7 +232,7 @@ export const workerAsync = {
 
             const session = await CreateSession(currentAddress, {
                 id: v4(),
-                s3bucket: {} as S3Credential,
+                s3bucket: {} as S3Credential
             });
             if (session instanceof APIError) throw session;
         }
@@ -297,13 +297,13 @@ export const workerAsync = {
                 workerAsync.update_local_worker(
                     result instanceof APIError
                         ? {
-                            info: {},
-                            currentAddress: address
-                        }
+                              info: {},
+                              currentAddress: address
+                          }
                         : {
-                            info: result,
-                            currentAddress: address
-                        }
+                              info: result,
+                              currentAddress: address
+                          }
                 )
             );
         }
@@ -357,9 +357,9 @@ export const workerAsync = {
         'fetch_app_access',
         async (): Promise<
             | {
-                id: string;
-                app_id: string;
-            }
+                  id: string;
+                  app_id: string;
+              }
             | undefined
         > => {
             const volumes = await POCKETBASE()
@@ -503,7 +503,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.claim_steam,
@@ -519,7 +519,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.fetch_configuration,
@@ -541,7 +541,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.change_app_access,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }

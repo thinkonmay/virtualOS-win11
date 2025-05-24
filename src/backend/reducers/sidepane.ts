@@ -11,6 +11,7 @@ import {
     listMobileSettings,
     listMobileShortCut
 } from './sidepaneData';
+import { Contents } from './locales';
 
 type Notification = {
     urlToImage?: string;
@@ -26,6 +27,19 @@ export type Message = {
     recipient: 'everyone' | 'thinkmay' | string;
     content: string;
 };
+
+const generalControl = [
+    {
+        ui: true,
+        id: 'shutdownBtn',
+
+        src: 'MdOutlinePowerSettingsNew',
+        name: [Contents.SHUT_DOWN],
+        state: 'shutdown',
+        action: 'shutDownVm',
+        style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
+    }
+];
 
 const initialState: SidePaneData = {
     desktopControl: {
@@ -47,6 +61,7 @@ const initialState: SidePaneData = {
         },
         gamingKeyBoard: initialGamingKeyboard
     },
+    generalControl,
 
     notifications: [],
     message: [],
