@@ -39,6 +39,7 @@ import { BuilderHelper } from './helper';
 
 type innerComputer = Computer & {
     availability?: 'no_node' | 'ready' | 'started'; // private
+    backup?: 'capable' | 'ongoing';
     available_templates: string[];
 };
 
@@ -249,6 +250,7 @@ export const workerAsync = {
                 backup: {}
             });
             if (session instanceof APIError) throw session;
+            await appDispatch(workerAsync.worker_refresh())
         }
     ),
     backup_game: createAsyncThunk(
@@ -261,8 +263,13 @@ export const workerAsync = {
             const session = data[currentAddress]?.Sessions?.find(
                 (x) => x.vm != undefined
             )?.vm?.Sessions?.find((x) => x.backup != undefined);
-            await CloseSession(currentAddress, session);
-            if (session instanceof APIError) throw session;
+            if (session == undefined)
+                throw new Error('no backup session available');
+            const info = await CloseSession(currentAddress, session);
+            if (info instanceof APIError) throw info;
+            appDispatch(workerAsync.update_local_worker({
+                currentAddress, info
+            }))
         }
     ),
     update_local_worker: createAsyncThunk(
@@ -276,6 +283,7 @@ export const workerAsync = {
         }): Promise<{ [address: string]: innerComputer }> => {
             const available_templates: string[] = [];
             let availability = undefined;
+            let backup = undefined;
 
             if (info.remoteReady) {
                 if (info.Sessions?.length > 0) availability = 'started';
@@ -296,10 +304,30 @@ export const workerAsync = {
                         ? available_templates.push(name)
                         : null
                 );
+
+                if (
+                    info.Sessions?.find(
+                        (x) => x.vm != undefined
+                    )?.vm?.Sessions?.find((x) => x.backup != undefined) !=
+                    undefined
+                )
+                    backup = 'ongoing';
+                else if (
+                    info.Sessions?.find(
+                        (x) => x.vm != undefined
+                    )?.vm?.Sessions?.find((x) => x.s3bucket != undefined) !=
+                    undefined
+                )
+                    backup = 'capable';
             } else availability = undefined;
 
             return {
-                [currentAddress]: { ...info, availability, available_templates }
+                [currentAddress]: {
+                    ...info,
+                    availability,
+                    available_templates,
+                    backup
+                }
             };
         }
     ),

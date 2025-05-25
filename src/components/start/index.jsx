@@ -95,7 +95,9 @@ export const SidePane = () => {
     const shutdownable = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
-    const active = useAppSelector((state) => state.remote.active);
+    const backupable = useAppSelector(
+        (state) => state.worker.data[state.worker.currentAddress]?.backup
+    );
     const setBitrate = (e) => {
         appDispatch(change_bitrate(e.target.value));
         localStorage.setItem('bitrate', e.target.value);
@@ -153,6 +155,7 @@ export const SidePane = () => {
     const data = {
         pnstates,
         sidepane,
+        backupable,
         shutdownable
     };
 
@@ -473,11 +476,12 @@ const MobileShortCutBtn = ({ qk }) => {
         </div>
     );
 };
-function MobileComponent({
-    data: { pnstates, sidepane, shutdownable, active }
-}) {
+function MobileComponent({ data: { pnstates, sidepane, shutdownable, backupable } }) {
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
+    if (backupable == 'ongoing') blacklist.push('restore_game');
+    else if (backupable == 'capable') blacklist.push('backup_game');
+    else blacklist.push('backup_game','restore_game')
 
     const renderList = sidepane.mobileControl.buttons;
     const generalList = sidepane.generalControl.filter(
@@ -503,10 +507,13 @@ function MobileComponent({
         </>
     );
 }
-function DesktopComponent({ data: { pnstates, sidepane, shutdownable } }) {
+function DesktopComponent({ data: { pnstates, sidepane, shutdownable,backupable } }) {
     const t = useAppSelector((state) => state.globals.translation);
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
+    if (backupable == 'ongoing') blacklist.push('restore_game');
+    else if (backupable == 'capable') blacklist.push('backup_game');
+    else blacklist.push('backup_game','restore_game')
 
     const renderList = sidepane.desktopControl.buttons;
     const generalList = sidepane.generalControl.filter(
