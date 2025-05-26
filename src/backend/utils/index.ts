@@ -58,7 +58,7 @@ const apps: AppData[] = [
     {
         name: [Contents.STORAGE_APP],
         id: 'storage',
-        action: 'access_storage',
+        action: 'claim_storage',
         image: 'explorer',
         size: 'mini'
     },
