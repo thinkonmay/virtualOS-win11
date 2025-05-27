@@ -250,7 +250,7 @@ export const workerAsync = {
                 backup: {}
             });
             if (session instanceof APIError) throw session;
-            await appDispatch(workerAsync.worker_refresh())
+            await appDispatch(workerAsync.worker_refresh());
         }
     ),
     backup_game: createAsyncThunk(
@@ -267,9 +267,12 @@ export const workerAsync = {
                 throw new Error('no backup session available');
             const info = await CloseSession(currentAddress, session);
             if (info instanceof APIError) throw info;
-            appDispatch(workerAsync.update_local_worker({
-                currentAddress, info
-            }))
+            appDispatch(
+                workerAsync.update_local_worker({
+                    currentAddress,
+                    info
+                })
+            );
         }
     ),
     update_local_worker: createAsyncThunk(
@@ -550,13 +553,13 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.claim_steam,
                 hander: (state, action) => {
-                    window.open(`thinkmay:${action.payload}`);
+                    window.open(`thinkmay:${action.payload}`, '_top');
                 }
             },
             {
                 fetch: workerAsync.claim_storage,
                 hander: (state, action) => {
-                    window.open(`thinkmay:${action.payload}`);
+                    window.open(`thinkmay:${action.payload}`, '_top');
                 }
             },
             {

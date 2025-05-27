@@ -495,7 +495,9 @@ function MobileComponent({ data: { pnstates, sidepane, shutdownable, backupable 
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
             </div>
+            {generalList.length > 0 ? 
             <hr className="mb-2 lg:mb-1" />
+            : null}
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
@@ -563,7 +565,9 @@ function DesktopComponent({ data: { pnstates, sidepane, shutdownable,backupable 
                     </div>
                 ))}
             </div>
+            {generalList.length > 0 ? 
             <hr className="mb-2 lg:mb-1" />
+            : null}
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <div key={idx} className="qkGrp">
