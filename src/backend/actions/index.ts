@@ -1,17 +1,11 @@
 import toast from 'react-hot-toast';
-import {
-    APIError,
-    Computer,
-    GetInfo,
-    POCKETBASE
-} from '../../../src-tauri/api';
+import { APIError, GetInfo, POCKETBASE } from '../../../src-tauri/api';
 import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
-    app_close,
-    app_toggle,
     appDispatch,
+    backup_game,
     close_remote,
     desk_hide,
     desk_show,
@@ -32,8 +26,8 @@ import {
     worker_refresh
 } from '../reducers/index';
 import { Contents } from '../reducers/locales';
-import { originalurl, preload, preloadSilent } from './background';
 import { formatError } from '../utils/formatErr';
+import { originalurl, preload, preloadSilent } from './background';
 
 export const refresh = async () => {
     appDispatch(desk_hide());
@@ -232,6 +226,7 @@ export const remotelogin = async (domain: string, email: string) => {
 };
 
 export const shutDownVm = async () => {
+    await appDispatch(backup_game());
     await appDispatch(unclaim_volume());
     appDispatch(close_remote());
 };

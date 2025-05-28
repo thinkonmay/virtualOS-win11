@@ -587,6 +587,14 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.change_app_access,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.restore_game,
+                hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.backup_game,
+                hander: (state, action) => {}
             }
         );
     }

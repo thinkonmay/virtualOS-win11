@@ -41,13 +41,13 @@ const generalControl = [
     },
     {
         src: 'FaCloudUploadAlt',
-        name: [Contents.STORAGE_APP],
+        name: [Contents.RESTORE_GAME],
         state: 'storage',
         action: 'restore_game'
     },
     {
         src: 'FaCloudDownloadAlt',
-        name: [Contents.STORAGE_APP],
+        name: [Contents.BACKUP_GAME],
         state: 'storage',
         action: 'backup_game'
     }

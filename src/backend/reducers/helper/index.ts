@@ -14,6 +14,8 @@ const filterActions = [
     'change_app_access',
     'change_node',
     'unclaim_volume',
+    'restore_game',
+    'backup_game',
     'worker_refresh_ui'
 ];
 const uiAction = (acctionType: string) => {

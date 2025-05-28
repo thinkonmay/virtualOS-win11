@@ -201,6 +201,8 @@ export enum Contents {
     PLAN_USAGE_TIME,
     ADDITIONAL_TIME,
     SHUT_DOWN,
+    RESTORE_GAME,
+    BACKUP_GAME,
     OPEN_GAMEPAD,
     OPEN_KEYBOARD,
     ADJUST_GAMEPAD,
@@ -910,6 +912,14 @@ export function language() {
     en.set(Contents.SHUT_DOWN, 'Shut down');
     vn.set(Contents.SHUT_DOWN, 'Tắt máy');
     id.set(Contents.SHUT_DOWN, 'Matikan');
+
+    en.set(Contents.RESTORE_GAME, 'Restore game progress');
+    vn.set(Contents.RESTORE_GAME, 'Tải tiến trình');
+    id.set(Contents.RESTORE_GAME, 'Restore game progress');
+
+    en.set(Contents.BACKUP_GAME, 'Backup game progress');
+    vn.set(Contents.BACKUP_GAME, 'Lưu tiến trình');
+    id.set(Contents.BACKUP_GAME, 'Backup game progress');
 
     en.set(Contents.OPEN_GAMEPAD, 'Gamepad');
     vn.set(Contents.OPEN_GAMEPAD, 'Gamepad');

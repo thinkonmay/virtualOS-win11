@@ -476,12 +476,14 @@ const MobileShortCutBtn = ({ qk }) => {
         </div>
     );
 };
-function MobileComponent({ data: { pnstates, sidepane, shutdownable, backupable } }) {
+function MobileComponent({
+    data: { pnstates, sidepane, shutdownable, backupable }
+}) {
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
     if (backupable == 'ongoing') blacklist.push('restore_game');
     else if (backupable == 'capable') blacklist.push('backup_game');
-    else blacklist.push('backup_game','restore_game')
+    else blacklist.push('backup_game', 'restore_game');
 
     const renderList = sidepane.mobileControl.buttons;
     const generalList = sidepane.generalControl.filter(
@@ -495,9 +497,7 @@ function MobileComponent({ data: { pnstates, sidepane, shutdownable, backupable 
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
                 ))}
             </div>
-            {generalList.length > 0 ? 
-            <hr className="mb-2 lg:mb-1" />
-            : null}
+            {generalList.length > 0 ? <hr className="mb-2 lg:mb-1" /> : null}
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <MobileBtn key={idx} pnstates={pnstates} qk={qk} />
@@ -509,13 +509,15 @@ function MobileComponent({ data: { pnstates, sidepane, shutdownable, backupable 
         </>
     );
 }
-function DesktopComponent({ data: { pnstates, sidepane, shutdownable,backupable } }) {
+function DesktopComponent({
+    data: { pnstates, sidepane, shutdownable, backupable }
+}) {
     const t = useAppSelector((state) => state.globals.translation);
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
     if (backupable == 'ongoing') blacklist.push('restore_game');
     else if (backupable == 'capable') blacklist.push('backup_game');
-    else blacklist.push('backup_game','restore_game')
+    else blacklist.push('backup_game', 'restore_game');
 
     const renderList = sidepane.desktopControl.buttons;
     const generalList = sidepane.generalControl.filter(
@@ -562,12 +564,13 @@ function DesktopComponent({ data: { pnstates, sidepane, shutdownable,backupable 
                                 />
                             )}
                         </div>
+                        <div className="qktext flex items-center gap-2">
+                            {t[qk.name]}
+                        </div>
                     </div>
                 ))}
             </div>
-            {generalList.length > 0 ? 
-            <hr className="mb-2 lg:mb-1" />
-            : null}
+            {generalList.length > 0 ? <hr className="mb-2 lg:mb-1" /> : null}
             <div className="listBtn">
                 {renderList.map((qk, idx) => (
                     <div key={idx} className="qkGrp">
