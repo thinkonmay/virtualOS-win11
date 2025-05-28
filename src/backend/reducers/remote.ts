@@ -237,7 +237,7 @@ export const remoteAsync = {
                 dataUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
             })
         );
-        if (!(await ready())) appDispatch(close_remote());
+        if (await ready() instanceof Error) appDispatch(close_remote());
         else appDispatch(remote_ready());
         return true;
     }),

@@ -176,7 +176,7 @@ export const workerAsync = {
             await appDispatch(save_reference(result));
 
             appDispatch(remote_connect(result));
-            if (!(await ready())) appDispatch(close_remote());
+            if (await ready() instanceof Error) appDispatch(close_remote());
             else appDispatch(remote_ready());
         }
     ),

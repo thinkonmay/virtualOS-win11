@@ -226,7 +226,12 @@ export const remotelogin = async (domain: string, email: string) => {
 };
 
 export const shutDownVm = async () => {
-    await appDispatch(backup_game());
+    const { worker: { currentAddress, data } } = store.getState() 
+    const session = data[currentAddress]?.Sessions?.find(
+        (x) => x.vm != undefined
+    )?.vm?.Sessions?.find((x) => x.backup != undefined);
+    if (session != undefined) await appDispatch(backup_game());
+
     await appDispatch(unclaim_volume());
     appDispatch(close_remote());
 };
