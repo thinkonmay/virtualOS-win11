@@ -24,6 +24,19 @@ export const Remote = () => {
     const remoteAudio = useRef(null);
 
     useEffect(() => {
+        window.onbeforeunload = (e) => {
+            const text = 'Are you sure (｡◕‿‿◕｡)';
+            e = e || window.event;
+            if (e) e.returnValue = text;
+            return text;
+        };
+
+        return () => {
+            window.onbeforeunload = null
+        }
+    },[])
+
+    useEffect(() => {
         if (!active || auth == undefined) return;
         if (isMobile()) appDispatch(toggle_objectfit());
 

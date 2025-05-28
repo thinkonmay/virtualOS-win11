@@ -77,13 +77,6 @@ function App() {
     };
 
     useEffect(() => {
-        window.onbeforeunload = (e) => {
-            const text = 'Are you sure (｡◕‿‿◕｡)';
-            e = e || window.event;
-            if (e) e.returnValue = text;
-            return text;
-        };
-
         const now = () => new Date().getTime();
         const start_fetch = now();
         PreloadBackground().finally(async () => {
