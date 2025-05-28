@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import { localStorageKey } from '../utils/constant';
+import { Contents } from './locales';
 import {
     IGamingKey,
     SidePaneData,
@@ -11,7 +12,6 @@ import {
     listMobileSettings,
     listMobileShortCut
 } from './sidepaneData';
-import { Contents } from './locales';
 
 type Notification = {
     urlToImage?: string;
@@ -29,6 +29,11 @@ export type Message = {
 };
 
 const generalControl = [
+    {
+        src: 'MdOutlineConnectedTv',
+        name: [Contents.CLOSE_REMOTE],
+        action: 'close_remote',
+    },
     {
         ui: true,
         id: 'shutdownBtn',

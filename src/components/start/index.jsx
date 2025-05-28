@@ -156,7 +156,8 @@ export const SidePane = () => {
         pnstates,
         sidepane,
         backupable,
-        shutdownable
+        shutdownable,
+        remote
     };
 
     return (
@@ -185,7 +186,7 @@ export const SidePane = () => {
                                             100) *
                                             remote.bitrate +
                                             MIN_BITRATE()) /
-                                            1000
+                                        1000
                                     )}
                                 </span>
                             </div>
@@ -213,8 +214,8 @@ export const SidePane = () => {
                                     {Math.round(
                                         ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                             100) *
-                                            remote.framerate +
-                                            MIN_FRAMERATE
+                                        remote.framerate +
+                                        MIN_FRAMERATE
                                     )}
                                 </span>
                             </div>
@@ -477,10 +478,11 @@ const MobileShortCutBtn = ({ qk }) => {
     );
 };
 function MobileComponent({
-    data: { pnstates, sidepane, shutdownable, backupable }
+    data: { pnstates, sidepane, shutdownable, backupable, remote }
 }) {
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
+    if (!remote.active) blacklist.push('close_remote');
     if (backupable == 'ongoing') blacklist.push('restore_game');
     else if (backupable == 'capable') blacklist.push('backup_game');
     else blacklist.push('backup_game', 'restore_game');
@@ -510,11 +512,12 @@ function MobileComponent({
     );
 }
 function DesktopComponent({
-    data: { pnstates, sidepane, shutdownable, backupable }
+    data: { pnstates, sidepane, shutdownable, backupable, remote }
 }) {
     const t = useAppSelector((state) => state.globals.translation);
     let blacklist = [];
     if (shutdownable != 'started') blacklist = ['shutDownVm'];
+    if (!remote.active) blacklist.push('close_remote');
     if (backupable == 'ongoing') blacklist.push('restore_game');
     else if (backupable == 'capable') blacklist.push('backup_game');
     else blacklist.push('backup_game', 'restore_game');

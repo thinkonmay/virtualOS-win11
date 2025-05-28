@@ -200,6 +200,7 @@ export enum Contents {
     THINKMAY_DESC,
     PLAN_USAGE_TIME,
     ADDITIONAL_TIME,
+    CLOSE_REMOTE,
     SHUT_DOWN,
     RESTORE_GAME,
     BACKUP_GAME,
@@ -908,6 +909,10 @@ export function language() {
     en.set(Contents.ADDITIONAL_TIME, 'Additional time');
     vn.set(Contents.ADDITIONAL_TIME, 'Thời gian cộng thêm');
     id.set(Contents.ADDITIONAL_TIME, 'Waktu tambahan');
+
+    en.set(Contents.CLOSE_REMOTE, 'Close remote');
+    vn.set(Contents.CLOSE_REMOTE, 'Thoát remote');
+    id.set(Contents.CLOSE_REMOTE, 'Close remote');
 
     en.set(Contents.SHUT_DOWN, 'Shut down');
     vn.set(Contents.SHUT_DOWN, 'Tắt máy');
