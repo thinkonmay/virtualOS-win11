@@ -15,6 +15,7 @@ import {
     useAppSelector
 } from '../../backend/reducers';
 import './remote.scss';
+import toast from 'react-hot-toast';
 
 export const Remote = () => {
     const { active, auth, relative_mouse, fullscreen, objectFit } =
@@ -28,7 +29,19 @@ export const Remote = () => {
 
         showConnect();
         setupWebRTC();
-        ready().then(() => appDispatch(popup_close()));
+        ready().then((err) => {
+            if (err instanceof Error)
+                toast(err.message, {
+                    icon: 'ℹ️',
+                    duration: 15000,
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff'
+                    }
+                });
+            appDispatch(popup_close());
+        });
     }, [active]);
 
     const setupWebRTC = () =>

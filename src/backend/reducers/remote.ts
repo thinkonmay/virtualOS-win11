@@ -19,7 +19,12 @@ import {
     toggle_remote,
     worker_refresh
 } from '.';
-import { POCKETBASE, RemoteCredential } from '../../../src-tauri/api';
+import {
+    APIError,
+    GetVmLog,
+    POCKETBASE,
+    RemoteCredential
+} from '../../../src-tauri/api';
 import { isMobile } from '../../../src-tauri/core';
 import {
     Assign,
@@ -128,17 +133,52 @@ export const remoteAsync = {
         const {
             worker: { data, currentAddress }
         } = store.getState();
-        if (data[currentAddress].availability != 'started') {
-            appDispatch(close_remote());
-            toast(`Your PC was shutted down`, {
-                icon: 'ℹ️',
-                duration: 5000,
-                style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff'
+        switch (data[currentAddress].availability) {
+            case 'started':
+                const log = await GetVmLog(
+                    currentAddress,
+                    data[currentAddress]
+                );
+                if (log instanceof APIError) throw log;
+                if (CLIENT?.authFailed()) {
+                    appDispatch(close_remote());
+                    toast(`Streaming auth failure`, {
+                        icon: 'ℹ️',
+                        duration: 15000,
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff'
+                        }
+                    });
                 }
-            });
+                break;
+            case 'no_node':
+                appDispatch(close_remote());
+                toast(`Your node is down`, {
+                    icon: 'ℹ️',
+                    duration: 15000,
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff'
+                    }
+                });
+                break;
+            case 'ready':
+                appDispatch(close_remote());
+                toast(`Your PC was shutted down`, {
+                    icon: 'ℹ️',
+                    duration: 15000,
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff'
+                    }
+                });
+                break;
+            default:
+                break;
         }
     },
     sync: () => {
