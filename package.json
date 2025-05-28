@@ -8,7 +8,7 @@
     "dev": "vite --port 3000",
     "format": "prettier --write \"./src-tauri/**/*.{jsx,ts,js,tsx}\" && prettier --write \"./src/**/*.{jsx,ts,js,tsx}\" && tsc",
     "build": "tsc && flowbite-react patch && vite build",
-    "preview": "vite --port 3000 --host 0.0.0.0"
+    "preview": "npm run build && vite preview --port 3000 --host 0.0.0.0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
