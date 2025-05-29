@@ -32,9 +32,9 @@ export const Remote = () => {
         };
 
         return () => {
-            window.onbeforeunload = null
-        }
-    },[])
+            window.onbeforeunload = null;
+        };
+    }, []);
 
     useEffect(() => {
         if (!active || auth == undefined) return;

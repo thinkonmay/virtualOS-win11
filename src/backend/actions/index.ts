@@ -226,7 +226,9 @@ export const remotelogin = async (domain: string, email: string) => {
 };
 
 export const shutDownVm = async () => {
-    const { worker: { currentAddress, data } } = store.getState() 
+    const {
+        worker: { currentAddress, data }
+    } = store.getState();
     const session = data[currentAddress]?.Sessions?.find(
         (x) => x.vm != undefined
     )?.vm?.Sessions?.find((x) => x.backup != undefined);

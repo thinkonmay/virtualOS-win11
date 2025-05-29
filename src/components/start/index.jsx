@@ -186,7 +186,7 @@ export const SidePane = () => {
                                             100) *
                                             remote.bitrate +
                                             MIN_BITRATE()) /
-                                        1000
+                                            1000
                                     )}
                                 </span>
                             </div>
@@ -214,8 +214,8 @@ export const SidePane = () => {
                                     {Math.round(
                                         ((MAX_FRAMERATE - MIN_FRAMERATE) /
                                             100) *
-                                        remote.framerate +
-                                        MIN_FRAMERATE
+                                            remote.framerate +
+                                            MIN_FRAMERATE
                                     )}
                                 </span>
                             </div>

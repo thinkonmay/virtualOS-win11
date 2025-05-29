@@ -94,6 +94,10 @@ type PopupData =
           };
       }
     | {
+          type: 'versionUpdate';
+          data: {};
+      }
+    | {
           type: 'serversInfo';
           data: {
               domains: any[];

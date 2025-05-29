@@ -7,3 +7,4 @@ export { extendService } from './extend';
 export { newGame } from './newgame';
 export { maintainance } from './maintainance';
 export { shareBanner } from './referral';
+export { versionUpdate } from './updates';

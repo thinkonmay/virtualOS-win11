@@ -32,7 +32,7 @@ const generalControl = [
     {
         src: 'MdOutlineConnectedTv',
         name: [Contents.CLOSE_REMOTE],
-        action: 'close_remote',
+        action: 'close_remote'
     },
     {
         ui: true,
@@ -45,13 +45,13 @@ const generalControl = [
         style: { backgroundColor: '#d92d20', color: '#f3f4f5' }
     },
     {
-        src: 'FaCloudUploadAlt',
+        src: 'FaCloudDownloadAlt',
         name: [Contents.RESTORE_GAME],
         state: 'storage',
         action: 'restore_game'
     },
     {
-        src: 'FaCloudDownloadAlt',
+        src: 'FaCloudUploadAlt',
         name: [Contents.BACKUP_GAME],
         state: 'storage',
         action: 'backup_game'

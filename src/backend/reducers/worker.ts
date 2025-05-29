@@ -149,8 +149,10 @@ export const workerAsync = {
                               finish
                                   ? new Promise(() => {})
                                   : workerAsync.showPosition(
-                                    (code != undefined || code != null) ? formatError(code): status
-                                  )
+                                        code != undefined || code != null
+                                            ? formatError(code)
+                                            : status
+                                    )
                         : undefined
                 );
                 finish = true;
@@ -176,7 +178,7 @@ export const workerAsync = {
             await appDispatch(save_reference(result));
 
             appDispatch(remote_connect(result));
-            if (await ready() instanceof Error) appDispatch(close_remote());
+            if ((await ready()) instanceof Error) appDispatch(close_remote());
             else appDispatch(remote_ready());
         }
     ),

@@ -121,7 +121,7 @@ const Taskbar = () => {
                     ) : null}
                     <div
                         className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
-                        onClick={() => appDispatch(showLinkShare())}
+                        onClick={showLinkShare}
                     >
                         <MdShare fontSize={'1.5rem'} />
                         <span className="hidden md:block">
@@ -256,7 +256,7 @@ const Taskbar = () => {
                         ) : null}
                         <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
-                            onClick={() => appDispatch(showLinkShare())}
+                            onClick={showLinkShare}
                         >
                             <MdShare strokeWidth={'0rem'} fontSize={'1.5rem'} />
                             <span className="hidden md:block">

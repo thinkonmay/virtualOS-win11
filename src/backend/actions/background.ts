@@ -253,21 +253,11 @@ const updateUI = async () => {
                 data: {}
             })
         );
-    else if (!unknown_user)
-        appDispatch(
-            popup_open({
-                type: 'shareBanner',
-                data: {}
-            })
-        );
     else
         appDispatch(
             popup_open({
-                type: 'newGame',
-                data: {
-                    image: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/ss_86c4b7462bba219a0d0b89931a35812b9f188976.1920x1080.jpg?t=1739542141',
-                    app_name: 'wukong'
-                }
+                type: 'versionUpdate',
+                data: {}
             })
         );
 };
