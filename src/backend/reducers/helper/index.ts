@@ -16,6 +16,8 @@ const filterActions = [
     'unclaim_volume',
     'restore_game',
     'backup_game',
+    'claim_steam',
+    'claim_storage',
     'worker_refresh_ui'
 ];
 const uiAction = (acctionType: string) => {
