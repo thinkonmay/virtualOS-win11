@@ -5,6 +5,7 @@ import {
     change_bitrate,
     change_framerate,
     change_preferred_codec,
+    change_preferred_proto,
     close_remote,
     remote_connect,
     remote_ready,
@@ -61,6 +62,7 @@ type Data = {
     prev_hq: boolean;
     direct_access: boolean;
     preferred_codec: 'h264' | 'h265';
+    preferred_proto: 'quic' | 'udp';
     enable_microphone: boolean;
 
     scancode: boolean;
@@ -99,6 +101,7 @@ const initialState: Data = {
     pointer_lock: false,
     relative_mouse: false,
     preferred_codec: 'h264',
+    preferred_proto: 'udp',
     enable_microphone: false,
 
     frame_drop: false,
@@ -189,6 +192,7 @@ export const remoteAsync = {
             prev_bitrate,
             prev_framerate,
             prev_hq,
+            scancode,
             hq,
             prev_size
         } = store.getState().remote;
@@ -214,6 +218,8 @@ export const remoteAsync = {
             prev_size != SIZE()
         )
             appDispatch(remoteSlice.actions.internal_sync());
+
+        CLIENT.hid.scancode = scancode;
     },
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
         const address = url.searchParams.get('host');
@@ -271,12 +277,14 @@ export const remoteAsync = {
                 framerate,
                 scancode,
                 preferred_codec,
+                preferred_proto,
                 enable_microphone
             } = (getState() as RootState).remote;
 
             const setting = {
                 hq,
                 preferred_codec,
+                preferred_proto,
                 enable_microphone,
                 HideVM,
                 HighMTU,
@@ -319,6 +327,7 @@ export const remoteAsync = {
             setting: {
                 hq?: boolean;
                 preferred_codec?: 'h264' | 'h265';
+                preferred_proto?: 'udp' | 'quic';
                 enable_microphone?: boolean;
                 HideVM?: boolean;
                 HighMTU?: boolean;
@@ -337,6 +346,7 @@ export const remoteAsync = {
                         HighMTU,
                         HighQueue,
                         preferred_codec,
+                        preferred_proto,
                         enable_microphone,
                         scancode: _scancode
                     }
@@ -349,6 +359,8 @@ export const remoteAsync = {
             appDispatch(toggle_hq(hq));
             if (['h264', 'h265'].includes(preferred_codec))
                 appDispatch(change_preferred_codec(preferred_codec));
+            if (['quic', 'udp'].includes(preferred_proto))
+                appDispatch(change_preferred_proto(preferred_proto));
             if (_scancode) appDispatch(scancode(_scancode));
         }
     }),
@@ -421,11 +433,9 @@ export const remoteSlice = createSlice({
             action.payload =
                 typeof action.payload == 'boolean' ? action.payload : undefined;
             state.scancode = action.payload ?? !state.scancode;
-            if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         scancode: (state, action: PayloadAction<boolean>) => {
             state.scancode = action.payload;
-            if (CLIENT) CLIENT.hid.scancode = state.scancode;
         },
         framedrop: (state, action: PayloadAction<boolean>) => {
             if (state.active) state.frame_drop = action.payload;
@@ -503,6 +513,12 @@ export const remoteSlice = createSlice({
         ) => {
             state.enable_microphone =
                 action.payload ?? !state.enable_microphone;
+        },
+        change_preferred_proto: (
+            state,
+            action: PayloadAction<'udp' | 'quic'>
+        ) => {
+            state.preferred_proto = action.payload;
         },
         change_preferred_codec: (
             state,

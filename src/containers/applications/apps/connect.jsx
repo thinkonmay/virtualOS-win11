@@ -4,6 +4,7 @@ import {
     app_toggle,
     cache_setting,
     change_preferred_codec,
+    change_preferred_proto,
     fetch_app_access,
     fetch_configuration,
     popup_open,
@@ -264,9 +265,13 @@ function Customize({ onClose: close }) {
 
     const { configuration } = metadata ?? { configuration: {} };
 
-    const { scancode, hq, enable_microphone, preferred_codec } = useAppSelector(
-        (state) => state.remote
-    );
+    const {
+        scancode,
+        hq,
+        enable_microphone,
+        preferred_codec,
+        preferred_proto
+    } = useAppSelector((state) => state.remote);
 
     const actions = [
         {
@@ -301,6 +306,16 @@ function Customize({ onClose: close }) {
                 appDispatch(
                     change_preferred_codec(
                         preferred_codec == 'h265' ? 'h264' : 'h265'
+                    )
+                )
+        },
+        {
+            name: `QUIC proto`,
+            state: preferred_proto == 'quic',
+            action: () =>
+                appDispatch(
+                    change_preferred_proto(
+                        preferred_proto == 'quic' ? 'udp' : 'quic'
                     )
                 )
         },

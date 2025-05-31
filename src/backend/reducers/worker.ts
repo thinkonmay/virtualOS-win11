@@ -118,7 +118,7 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const {
-                remote: { preferred_codec },
+                remote: { preferred_codec, preferred_proto },
                 worker: { HideVM, HighMTU, HighQueue, currentAddress }
             } = getState() as RootState;
 
@@ -144,6 +144,7 @@ export const workerAsync = {
                     currentAddress,
                     info.virtReady ? { HideVM: HideVM } : undefined,
                     preferred_codec,
+                    preferred_proto,
                     info.virtReady
                         ? (status, code) =>
                               finish
