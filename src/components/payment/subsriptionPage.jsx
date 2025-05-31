@@ -131,7 +131,7 @@ function DomainSelection() {
                 className="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-50 py-2.5 px-4 focus:outline-none justify-self-center cursor-pointer"
             >
                 {domains.map((domain, index) => (
-                    <option key={index} value={domain.domain}>
+                    <option key={index} value={domain.domain} disabled={!domain.allow_pay}>
                         {domain.domain}
                     </option>
                 ))}

@@ -39,6 +39,7 @@ interface Maintain {
 type Domain = {
     domain: string;
     free: number;
+    allow_pay: boolean;
 };
 
 const initialState = {
@@ -231,11 +232,11 @@ export const globalAsync = {
     fetch_domain: createAsyncThunk(
         'fetch_domain',
         async (): Promise<Domain[]> => {
-            const { data: domains_v3, error: err } = await GLOBAL().rpc(
-                'get_domains_availability_v4'
+            const { data: domains_v5, error: err } = await GLOBAL().rpc(
+                'get_domains_availability_v5'
             );
             if (err) throw err;
-            else return domains_v3;
+            else return domains_v5;
         }
     ),
     update_game_tag: createAsyncThunk(
