@@ -38,7 +38,12 @@ import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 
 type innerComputer = Computer & {
-    availability?: 'no_node' | 'ready' | 'started'; // private
+    availability?:
+        | 'no_node'
+        | 'ready'
+        | 'started'
+        | 'waiting_shutdown'
+        | 'closable';
     backup?: 'capable' | 'ongoing';
     available_templates: string[];
 };
@@ -303,9 +308,24 @@ export const workerAsync = {
                 )
                     availability = 'no_node';
                 else if (
+                    info.Volumes?.find((x) => x.pool == 'user_data')?.inuse &&
                     info.Sessions?.filter((x) => x.vm != undefined)?.length > 0
                 )
                     availability = 'started';
+                else if (
+                    info.Volumes?.find((x) => x.pool == 'user_data')?.inuse &&
+                    info.Sessions?.filter((x) => x.vm != undefined)?.length ==
+                        0 &&
+                    info.Sessions?.length == 0
+                )
+                    availability = 'waiting_shutdown';
+                else if (
+                    info.Volumes?.find((x) => x.pool == 'user_data')?.inuse &&
+                    info.Sessions?.filter((x) => x.vm != undefined)?.length ==
+                        0 &&
+                    info.Sessions?.length > 0
+                )
+                    availability = 'closable';
                 else availability = 'ready';
 
                 info.Volumes?.filter(
@@ -498,23 +518,21 @@ export const workerAsync = {
             } = getState() as RootState;
             const computer = data[currentAddress];
 
-            let session = undefined;
-            if (computer.remoteReady)
-                session = computer.Sessions.find(
-                    (x) => x.thinkmay != undefined
+            for (const session of computer.Sessions.filter(
+                (x) =>
+                    x.vm != undefined ||
+                    x.thinkmay != undefined ||
+                    x.ndisk != undefined
+            )) {
+                const info = await CloseSession(currentAddress, session);
+                if (info instanceof APIError) throw formatError(info);
+                await appDispatch(
+                    workerAsync.update_local_worker({
+                        info,
+                        currentAddress: currentAddress
+                    })
                 );
-            else if (computer.virtReady)
-                session = computer.Sessions.find((x) => x.vm != undefined);
-            if (session == undefined)
-                throw new Error(`no session available on ${currentAddress}`);
-            const info = await CloseSession(currentAddress, session);
-            if (info instanceof APIError) throw formatError(info);
-            await appDispatch(
-                workerAsync.update_local_worker({
-                    info,
-                    currentAddress: currentAddress
-                })
-            );
+            }
         }
     )
 };

@@ -138,6 +138,7 @@ export const remoteAsync = {
         } = store.getState();
         switch (data[currentAddress].availability) {
             case 'started':
+            case 'closable':
                 const log = await GetVmLog(
                     currentAddress,
                     data[currentAddress]

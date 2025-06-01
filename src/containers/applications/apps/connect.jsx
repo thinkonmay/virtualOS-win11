@@ -11,6 +11,7 @@ import {
     scancode_toggle,
     show_chat,
     toggle_microphone,
+    unclaim_volume,
     useAppSelector,
     wait_and_claim_volume,
     worker_refresh_ui
@@ -56,13 +57,6 @@ export const ConnectApp = () => {
         (state) => state.worker.data[state.worker.currentAddress]?.availability
     );
 
-    const inUse = useAppSelector(
-        (state) =>
-            state.worker.data[state.worker.currentAddress]?.Volumes?.find(
-                (e) => e.inuse && e.pool == 'user_data'
-            ) ?? false
-    );
-
     const { cluster, metadata } = useAppSelector(
         (state) => state.user.subscription ?? {}
     );
@@ -83,7 +77,8 @@ export const ConnectApp = () => {
         if (limitClick) return;
         // if (reach_time_limit) appDispatch(limit('time_limit'));
         // else if (reach_date_limit) appDispatch(limit('date_limit'));
-        else if (inUse && available == 'ready')
+        else if (available == 'closable') appDispatch(unclaim_volume());
+        else if (available == 'waiting_shutdown')
             appDispatch(worker_refresh_ui());
         else appDispatch(wait_and_claim_volume());
         setLimitClick(true);
@@ -154,7 +149,7 @@ export const ConnectApp = () => {
                                         className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
                                     >
                                         {available == 'ready'
-                                            ? inUse
+                                            ? ['waiting_shutdown','closable'].includes(available)
                                                 ? t[Contents.CA_INUSE]
                                                 : t[Contents.CA_TURN_ON_PC]
                                             : t[Contents.CA_CONNECT]}

@@ -481,7 +481,8 @@ function MobileComponent({
     data: { pnstates, sidepane, shutdownable, backupable, remote }
 }) {
     let blacklist = [];
-    if (shutdownable != 'started') blacklist = ['shutDownVm'];
+    if (!['started', 'closable'].includes(shutdownable))
+        blacklist = ['shutDownVm'];
     if (!remote.active) blacklist.push('close_remote');
     if (backupable == 'ongoing') blacklist.push('restore_game');
     else if (backupable == 'capable') blacklist.push('backup_game');
@@ -516,7 +517,8 @@ function DesktopComponent({
 }) {
     const t = useAppSelector((state) => state.globals.translation);
     let blacklist = [];
-    if (shutdownable != 'started') blacklist = ['shutDownVm'];
+    if (!['started', 'closable'].includes(shutdownable))
+        blacklist = ['shutDownVm'];
     if (!remote.active) blacklist.push('close_remote');
     if (backupable == 'ongoing') blacklist.push('restore_game');
     else if (backupable == 'capable') blacklist.push('backup_game');
