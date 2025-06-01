@@ -302,7 +302,10 @@ export const workerAsync = {
                         ?.length == 0
                 )
                     availability = 'no_node';
-                else if (info.Sessions?.length > 0) availability = 'started';
+                else if (
+                    info.Sessions?.filter((x) => x.vm != undefined)?.length > 0
+                )
+                    availability = 'started';
                 else availability = 'ready';
 
                 info.Volumes?.filter(
