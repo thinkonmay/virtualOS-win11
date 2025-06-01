@@ -516,14 +516,21 @@ export const workerAsync = {
             const {
                 worker: { data, currentAddress }
             } = getState() as RootState;
-            const computer = data[currentAddress];
+            const computer = data[currentAddress] as innerComputer;
 
-            for (const session of computer.Sessions.filter(
+            const vmss = computer.Sessions.filter(
                 (x) =>
-                    x.vm != undefined ||
+                    x.vm != undefined 
+            )
+            const rest = computer.Sessions.filter(
+                (x) =>
                     x.thinkmay != undefined ||
                     x.ndisk != undefined
-            )) {
+            )
+
+            
+
+            for (const session of vmss.concat(rest)) {
                 const info = await CloseSession(currentAddress, session);
                 if (info instanceof APIError) throw formatError(info);
                 await appDispatch(
