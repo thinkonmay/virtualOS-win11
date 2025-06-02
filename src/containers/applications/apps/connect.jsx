@@ -149,7 +149,10 @@ export const ConnectApp = () => {
                                         className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
                                     >
                                         {available == 'ready'
-                                            ? ['waiting_shutdown','closable'].includes(available)
+                                            ? [
+                                                  'waiting_shutdown',
+                                                  'closable'
+                                              ].includes(available)
                                                 ? t[Contents.CA_INUSE]
                                                 : t[Contents.CA_TURN_ON_PC]
                                             : t[Contents.CA_CONNECT]}
