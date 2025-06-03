@@ -208,10 +208,10 @@ export const userAsync = {
             const { data, error } = await GLOBAL()
                 .from('plans')
                 .select(
-                    'name, policy->size, policy->limit_hour, policy->total_days , price->amount, metadata->allow_payment'
+                    'name, policy->size, policy->limit_hour, policy->total_days, policy->refund_days, policy->refund_usage, policy->resources->disk, price->amount, metadata->allow_payment, cluster_pool'
                 )
-                .is('metadata->>disable', null)
-                .eq('active', true);
+                .eq('active', true)
+                .is('metadata->>disable', null);
 
             if (error != null)
                 throw new Error(
@@ -226,7 +226,16 @@ export const userAsync = {
                             limit_hour: Number(e.limit_hour),
                             total_days: Number(e.total_days),
                             amount: Number(e.amount),
-                            allow_payment: Boolean(e.allow_payment)
+                            allow_payment: Boolean(e.allow_payment),
+                            bonus: {
+                                time: Number(e.limit_hour),
+                                storage_limit: Number(e.disk),
+                                // storage_credit: 0,
+                                no_waiting_line: e.cluster_pool.length > 0 ? true : false,
+                                multiple_cluster: e.cluster_pool.length > 0 ? true : false,
+                                refundtime: Number(e.refund_usage),
+                                refundday: Number(e.refund_days)
+                            }
                         }) as Plan
                 );
         }

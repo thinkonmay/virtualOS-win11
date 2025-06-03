@@ -193,6 +193,44 @@ const Addon = {
             </span>
         </li>
     ),
+    refundday: ({ value }) => (
+        <li className="flex items-center space-x-3">
+            <svg
+                className="flex-shrink-0 w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                <path
+                    fillRule="evenodd"
+                    d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                    clipRule="evenodd"
+                ></path>
+            </svg>
+            <span>Hoàn tiền trong {value} ngày đầu</span>
+        </li>
+    ),
+    refundtime: ({ value }) => (
+        <li className="flex items-center space-x-3">
+            <svg
+                className="flex-shrink-0 w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                <path
+                    fillRule="evenodd"
+                    d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                    clipRule="evenodd"
+                ></path>
+            </svg>
+            <span>Hoàn tiền trong {value}h chơi đầu</span>
+        </li>
+    ),
+    
+    
     time: ({ value }) => (
         <li className="flex items-center space-x-3">
             <svg
@@ -341,7 +379,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                         ) : null;
                     })}
                 </ul>
-            </div>
+            </div>  
         );
     };
 
@@ -361,11 +399,11 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                 ) : null}
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
                     {plans
-                        .map((x) => ({
-                            ...x,
-                            ...(subcontents.find((y) => y.name == x.name) ?? {})
-                        }))
-                        .filter((val) => val.title != null)
+                        // .map((x) => ({
+                        //     ...x,
+                        //     ...(subcontents.find((y) => y.name == x.name) ?? {})
+                        // }))
+                        .filter((val) => val.name != null)
                         .sort((a, b) => a.amount - b.amount)
                         .map(renderPlan)}
                 </div>
