@@ -119,7 +119,7 @@ const Taskbar = () => {
                             />
                         </div>
                     ) : null}
-                    {/* <div
+                    <div
                         className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
                         onClick={showLinkShare}
                     >
@@ -127,7 +127,7 @@ const Taskbar = () => {
                         <span className="hidden md:block">
                             {t[Contents.SHARE]}
                         </span>
-                    </div> */}
+                    </div>
                     <div
                         id="supportNow"
                         className="settingBtn flex gap-2 items-center font-semibold  p-2 prtclk handcr hvlight rounded "
@@ -254,7 +254,7 @@ const Taskbar = () => {
                                 />
                             </div>
                         ) : null}
-                        {/* <div
+                        <div
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
                             onClick={showLinkShare}
                         >
@@ -262,7 +262,7 @@ const Taskbar = () => {
                             <span className="hidden md:block">
                                 {t[Contents.SHARE]}
                             </span>
-                        </div> */}
+                        </div>
                         <div
                             id="supportNow"
                             className="settingBtn p-2 prtclk handcr hvlight flex gap-2 items-center font-semibold  rounded "
