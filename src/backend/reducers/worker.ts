@@ -39,12 +39,13 @@ import { BuilderHelper } from './helper';
 
 type innerComputer = Computer & {
     availability?:
-        | 'no_node'
-        | 'ready'
-        | 'started'
-        | 'waiting_shutdown'
-        | 'closable';
+    | 'no_node'
+    | 'ready'
+    | 'started'
+    | 'waiting_shutdown'
+    | 'closable';
     backup?: 'capable' | 'ongoing';
+    network_disk: boolean;
     available_templates: string[];
 };
 
@@ -152,13 +153,13 @@ export const workerAsync = {
                     preferred_proto,
                     info.virtReady
                         ? (status, code) =>
-                              finish
-                                  ? new Promise(() => {})
-                                  : workerAsync.showPosition(
-                                        code != undefined || code != null
-                                            ? formatError(code)
-                                            : status
-                                    )
+                            finish
+                                ? new Promise(() => { })
+                                : workerAsync.showPosition(
+                                    code != undefined || code != null
+                                        ? formatError(code)
+                                        : status
+                                )
                         : undefined
                 );
                 finish = true;
@@ -190,11 +191,11 @@ export const workerAsync = {
     ),
     unclaim_steam: createAsyncThunk(
         'unclaim_steam',
-        async (_: Session, { getState }): Promise<void> => {}
+        async (_: Session, { getState }): Promise<void> => { }
     ),
     unclaim_storage: createAsyncThunk(
         'unclaim_storage',
-        async (_: Session, { getState }): Promise<void> => {}
+        async (_: Session, { getState }): Promise<void> => { }
     ),
     claim_steam: createAsyncThunk(
         'claim_steam',
@@ -297,35 +298,24 @@ export const workerAsync = {
             const available_templates: string[] = [];
             let availability = undefined;
             let backup = undefined;
+            const network_disk =
+                info.Sessions?.find((x) => x.ndisk != undefined) != undefined;
 
             if (info.remoteReady) {
                 if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
             } else if (info.virtReady) {
-                if (
-                    info.Volumes?.filter((x) => x.pool == 'user_data')
-                        ?.length == 0
-                )
-                    availability = 'no_node';
-                else if (
-                    info.Volumes?.find((x) => x.pool == 'user_data')?.inuse &&
-                    info.Sessions?.filter((x) => x.vm != undefined)?.length > 0
-                )
-                    availability = 'started';
-                else if (
-                    info.Volumes?.find((x) => x.pool == 'user_data')?.inuse &&
-                    info.Sessions?.filter((x) => x.vm != undefined)?.length ==
-                        0 &&
-                    info.Sessions?.length == 0
-                )
-                    availability = 'waiting_shutdown';
-                else if (
-                    info.Volumes?.find((x) => x.pool == 'user_data')?.inuse &&
-                    info.Sessions?.filter((x) => x.vm != undefined)?.length ==
-                        0 &&
-                    info.Sessions?.length > 0
-                )
-                    availability = 'closable';
+                const volume = info.Volumes?.find((x) => x.pool == 'user_data')
+                const inuse = volume?.inuse;
+                const has_vm =
+                    info.Sessions?.find((x) => x.vm != undefined) != undefined;
+
+                if (volume == undefined) availability = 'no_node';
+                else if (inuse && has_vm) availability = 'started';
+                else if (inuse && !has_vm)
+                    availability = network_disk
+                        ? 'closable'
+                        : 'waiting_shutdown';
                 else availability = 'ready';
 
                 info.Volumes?.filter(
@@ -355,6 +345,7 @@ export const workerAsync = {
             return {
                 [currentAddress]: {
                     ...info,
+                    network_disk,
                     availability,
                     available_templates,
                     backup
@@ -370,13 +361,13 @@ export const workerAsync = {
                 workerAsync.update_local_worker(
                     result instanceof APIError
                         ? {
-                              info: {},
-                              currentAddress: address
-                          }
+                            info: {},
+                            currentAddress: address
+                        }
                         : {
-                              info: result,
-                              currentAddress: address
-                          }
+                            info: result,
+                            currentAddress: address
+                        }
                 )
             );
         }
@@ -430,9 +421,9 @@ export const workerAsync = {
         'fetch_app_access',
         async (): Promise<
             | {
-                  id: string;
-                  app_id: string;
-              }
+                id: string;
+                app_id: string;
+            }
             | undefined
         > => {
             const volumes = await POCKETBASE()
@@ -577,7 +568,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.claim_steam,
@@ -593,7 +584,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.fetch_configuration,
@@ -615,15 +606,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.change_app_access,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.restore_game,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             },
             {
                 fetch: workerAsync.backup_game,
-                hander: (state, action) => {}
+                hander: (state, action) => { }
             }
         );
     }

@@ -229,8 +229,7 @@ const Addon = {
             <span>Hoàn tiền trong {value}h chơi đầu</span>
         </li>
     ),
-    
-    
+
     time: ({ value }) => (
         <li className="flex items-center space-x-3">
             <svg
@@ -379,7 +378,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                         ) : null;
                     })}
                 </ul>
-            </div>  
+            </div>
         );
     };
 

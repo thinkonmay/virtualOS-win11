@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { create_or_replace_resources } from '../../../backend/actions';
 import {
     appDispatch,
     app_full,
@@ -7,9 +9,14 @@ import {
     change_preferred_proto,
     fetch_app_access,
     fetch_configuration,
+    popup_close,
     popup_open,
     scancode_toggle,
     show_chat,
+    toggle_hide_vm,
+    toggle_high_mtu,
+    toggle_high_queue,
+    toggle_hq,
     toggle_microphone,
     unclaim_volume,
     useAppSelector,
@@ -21,22 +28,13 @@ import {
     LazyComponent,
     ToolBar
 } from '../../../components/shared/general';
-import { useEffect, useState } from 'react';
-import {
-    popup_close,
-    toggle_hide_vm,
-    toggle_high_mtu,
-    toggle_high_queue,
-    toggle_hq
-} from '../../../backend/reducers';
-import { create_or_replace_resources } from '../../../backend/actions';
 
+import toast from 'react-hot-toast';
+import { isMobile } from '../../../../src-tauri/core';
+import { preload } from '../../../backend/actions/background';
 import { Contents } from '../../../backend/reducers/locales';
 import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
-import { preload } from '../../../backend/actions/background';
-import toast from 'react-hot-toast';
-import { isMobile } from '../../../../src-tauri/core';
 
 export const ConnectApp = () => {
     const t = useAppSelector((state) => state.globals.translation);
@@ -77,10 +75,12 @@ export const ConnectApp = () => {
         if (limitClick) return;
         if (reach_time_limit) appDispatch(limit('time_limit'));
         else if (reach_date_limit) appDispatch(limit('date_limit'));
-        else if (available == 'closable') appDispatch(unclaim_volume());
         else if (available == 'waiting_shutdown')
             appDispatch(worker_refresh_ui());
-        else appDispatch(wait_and_claim_volume());
+        else if (available == 'closable') {
+            appDispatch(unclaim_volume());
+            appDispatch(wait_and_claim_volume());
+        } else appDispatch(wait_and_claim_volume());
         setLimitClick(true);
     };
 
@@ -142,20 +142,33 @@ export const ConnectApp = () => {
                                     </div>
                                 </div>
                             ) : null}
-                            {available == 'ready' || available == 'started' ? (
+                            {available == 'ready' ? (
                                 <>
                                     <button
                                         onClick={connect}
                                         className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
                                     >
-                                        {available == 'ready'
-                                            ? [
-                                                  'waiting_shutdown',
-                                                  'closable'
-                                              ].includes(available)
-                                                ? t[Contents.CA_INUSE]
-                                                : t[Contents.CA_TURN_ON_PC]
-                                            : t[Contents.CA_CONNECT]}
+                                        {t[Contents.CA_TURN_ON_PC]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        {t[Contents.CA_CONNECT_EXPLAIN]}
+                                        <br />
+                                        {t[Contents.CA_CONNECT_EXPLAIN_1]}
+                                    </p>
+                                    <button
+                                        onClick={() => openCustomization(true)}
+                                        className="text-gray-400 text-l font-light bg-transparent underline mt-4 cursor-pointer"
+                                    >
+                                        Tùy chỉnh cấu hình
+                                    </button>
+                                </>
+                            ) : available == 'started' ? (
+                                <>
+                                    <button
+                                        onClick={connect}
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
+                                    >
+                                        {t[Contents.CA_CONNECT]}
                                     </button>
                                     <p className="text-xs text-center mt-3">
                                         {t[Contents.CA_CONNECT_EXPLAIN]}
@@ -180,6 +193,27 @@ export const ConnectApp = () => {
                                     <p className="text-xs text-center mt-3">
                                         Hãy nhắn hỗ trợ nếu đợi quá 5'!
                                     </p>
+                                </>
+                            ) : available == 'waiting_shutdown' ? (
+                                <>
+                                    <button
+                                        onClick={connect}
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
+                                    >
+                                        {t[Contents.CA_INUSE]}
+                                    </button>
+                                    <p className="text-xs text-center mt-3">
+                                        Hãy nhắn hỗ trợ nếu đợi quá 5'!
+                                    </p>
+                                </>
+                            ) : available == 'closable' ? (
+                                <>
+                                    <button
+                                        onClick={connect}
+                                        className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-2xl"
+                                    >
+                                        {t[Contents.CA_INUSE]}
+                                    </button>
                                 </>
                             ) : available == undefined ? (
                                 cluster != undefined ? (
