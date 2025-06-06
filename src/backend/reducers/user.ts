@@ -213,10 +213,8 @@ export const userAsync = {
                 .eq('active', true)
                 .is('metadata->>disable', null);
 
-            if (error != null)
-                throw new Error(
-                    `Failed to query plan table + ${error.message}`
-                );
+            if (error)
+                return [];
             else
                 return data.map(
                     (e) =>

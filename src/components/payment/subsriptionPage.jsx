@@ -307,36 +307,50 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
     const subcontents = [
         {
             title: 'Gói 2 tuần',
-            name: 'week1',
+            highlight: false,
+            _name: 'week1',
+            amount: 199000,
+            total_days: 14,
             bonus: {
                 time: 50,
                 storage_limit: 200,
-                storage_credit: 150 * 15,
+                // storage_credit: 150 * 15,
                 no_waiting_line: false,
-                multiple_cluster: false
+                multiple_cluster: false,
+                refundday: 2,
+                refundtime: 5
             }
         },
         {
             title: 'Gói tháng',
             highlight: true,
-            name: 'month1',
+            _name: 'month1',
+            amount: 299000,
+            total_days: 30,
             bonus: {
                 time: 120,
-                storage_limit: 400,
-                storage_credit: 200 * 30,
+                storage_limit: 200,
+                // storage_credit: 200 * 30,
                 no_waiting_line: false,
-                multiple_cluster: false
+                multiple_cluster: false,
+                refundday: 3,
+                refundtime: 12
             }
         },
         {
             title: 'Gói tháng cao cấp',
-            name: 'month2',
+            highlight: false,
+            _name: 'month2',
+            amount: 499000,
+            total_days: 30,
             bonus: {
                 time: 0,
-                storage_limit: 0,
-                storage_credit: 0,
+                storage_limit: 400,
+                // storage_credit: 0,
                 no_waiting_line: true,
-                multiple_cluster: true
+                multiple_cluster: true,
+                refundday: 3,
+                refundtime: 18
             }
         }
     ];
@@ -397,11 +411,11 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                     </div>
                 ) : null}
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
-                    {plans
-                        // .map((x) => ({
-                        //     ...x,
-                        //     ...(subcontents.find((y) => y.name == x.name) ?? {})
-                        // }))
+                    { plans.length == 0 ? 
+                        subcontents.filter((val) => val.title != null)
+                        .sort((a, b) => a.amount - b.amount)
+                        .map(renderPlan):
+                    plans
                         .filter((val) => val.name != null)
                         .sort((a, b) => a.amount - b.amount)
                         .map(renderPlan)}
