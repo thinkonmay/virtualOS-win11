@@ -208,7 +208,7 @@ export const userAsync = {
             const { data, error } = await GLOBAL()
                 .from('plans')
                 .select(
-                    'name, policy->size, policy->limit_hour, policy->total_days, policy->refund_days, policy->refund_usage, policy->resources->disk, price->amount, metadata->allow_payment, cluster_pool'
+                    'name, policy->size, policy->limit_hour, policy->total_days, policy->refund_days, policy->refund_usage, policy->resources->disk, policy->>title, price->amount, metadata->allow_payment, cluster_pool'
                 )
                 .eq('active', true)
                 .is('metadata->>disable', null);
@@ -220,6 +220,7 @@ export const userAsync = {
                     (e) =>
                         ({
                             name: e.name,
+                            title: e.title,
                             size: Number(e.size),
                             limit_hour: Number(e.limit_hour),
                             total_days: Number(e.total_days),

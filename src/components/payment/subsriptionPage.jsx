@@ -245,7 +245,7 @@ const Addon = {
                     clipRule="evenodd"
                 ></path>
             </svg>
-            {value == 0 ? (
+            {value == 9999 ? (
                 <span className="line-through">Giới hạn giờ chơi</span>
             ) : (
                 <span>Tối đa {value}h chơi</span>
@@ -344,7 +344,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
             amount: 499000,
             total_days: 30,
             bonus: {
-                time: 0,
+                time: 9999,
                 storage_limit: 400,
                 // storage_credit: 0,
                 no_waiting_line: true,
@@ -360,7 +360,7 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                 key={index}
                 className="flex flex-col p-6 mx-auto max-w-xl text-center bg-white rounded-lg border shadow xl:max-w-lg border-primary-600 dark:bg-gray-800 xl:p-8"
             >
-                {plan.highlight ? (
+                {plan.total_days == 30 ? (
                     <div className="mb-2">
                         <span className="py-1 px-3 text-sm text-primary-800 bg-primary-100 rounded dark:bg-primary-200 dark:text-primary-800">
                             Phổ biến
