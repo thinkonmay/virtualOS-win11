@@ -233,6 +233,18 @@ export const remoteAsync = {
         if (address == null || audio == null || video == null || data == null)
             return false;
 
+        // add demo ref here
+        const record = await POCKETBASE().collection('users').getOne(POCKETBASE().authStore.model.id);
+
+        await POCKETBASE()
+        .collection('users')
+        .update(POCKETBASE().authStore.model.id, {
+            metadata: { 
+                ...record.metadata,
+                demo: originalurl.searchParams.get('demo')
+            }
+        });
+
         const opt = `&queue_size=${high_queue ? 64 : 16}&mtu=${
             high_mtu ? 1400 : 1200
         }`;
