@@ -213,8 +213,7 @@ export const userAsync = {
                 .eq('active', true)
                 .is('metadata->>disable', null);
 
-            if (error)
-                return [];
+            if (error) return [];
             else
                 return data.map(
                     (e) =>

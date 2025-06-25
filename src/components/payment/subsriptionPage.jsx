@@ -411,14 +411,15 @@ export const SubscriptionPage = ({ value, switchPage, onlyPlan }) => {
                     </div>
                 ) : null}
                 <div className="grid gap-8 xl:grid-cols-3 xl:gap-10">
-                    { plans.length == 0 ? 
-                        subcontents.filter((val) => val.title != null)
-                        .sort((a, b) => a.amount - b.amount)
-                        .map(renderPlan):
-                    plans
-                        .filter((val) => val.name != null)
-                        .sort((a, b) => a.amount - b.amount)
-                        .map(renderPlan)}
+                    {plans.length == 0
+                        ? subcontents
+                              .filter((val) => val.title != null)
+                              .sort((a, b) => a.amount - b.amount)
+                              .map(renderPlan)
+                        : plans
+                              .filter((val) => val.name != null)
+                              .sort((a, b) => a.amount - b.amount)
+                              .map(renderPlan)}
                 </div>
             </div>
         </section>

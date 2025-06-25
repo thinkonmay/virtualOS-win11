@@ -39,11 +39,11 @@ import { BuilderHelper } from './helper';
 
 type innerComputer = Computer & {
     availability?:
-    | 'no_node'
-    | 'ready'
-    | 'started'
-    | 'waiting_shutdown'
-    | 'closable';
+        | 'no_node'
+        | 'ready'
+        | 'started'
+        | 'waiting_shutdown'
+        | 'closable';
     backup?: 'capable' | 'ongoing';
     network_disk: boolean;
     available_templates: string[];
@@ -153,13 +153,13 @@ export const workerAsync = {
                     preferred_proto,
                     info.virtReady
                         ? (status, code) =>
-                            finish
-                                ? new Promise(() => { })
-                                : workerAsync.showPosition(
-                                    code != undefined || code != null
-                                        ? formatError(code)
-                                        : status
-                                )
+                              finish
+                                  ? new Promise(() => {})
+                                  : workerAsync.showPosition(
+                                        code != undefined || code != null
+                                            ? formatError(code)
+                                            : status
+                                    )
                         : undefined
                 );
                 finish = true;
@@ -191,11 +191,11 @@ export const workerAsync = {
     ),
     unclaim_steam: createAsyncThunk(
         'unclaim_steam',
-        async (_: Session, { getState }): Promise<void> => { }
+        async (_: Session, { getState }): Promise<void> => {}
     ),
     unclaim_storage: createAsyncThunk(
         'unclaim_storage',
-        async (_: Session, { getState }): Promise<void> => { }
+        async (_: Session, { getState }): Promise<void> => {}
     ),
     claim_steam: createAsyncThunk(
         'claim_steam',
@@ -305,7 +305,7 @@ export const workerAsync = {
                 if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
             } else if (info.virtReady) {
-                const volume = info.Volumes?.find((x) => x.pool == 'user_data')
+                const volume = info.Volumes?.find((x) => x.pool == 'user_data');
                 const inuse = volume?.inuse;
                 const has_vm =
                     info.Sessions?.find((x) => x.vm != undefined) != undefined;
@@ -361,13 +361,13 @@ export const workerAsync = {
                 workerAsync.update_local_worker(
                     result instanceof APIError
                         ? {
-                            info: {},
-                            currentAddress: address
-                        }
+                              info: {},
+                              currentAddress: address
+                          }
                         : {
-                            info: result,
-                            currentAddress: address
-                        }
+                              info: result,
+                              currentAddress: address
+                          }
                 )
             );
         }
@@ -421,9 +421,9 @@ export const workerAsync = {
         'fetch_app_access',
         async (): Promise<
             | {
-                id: string;
-                app_id: string;
-            }
+                  id: string;
+                  app_id: string;
+              }
             | undefined
         > => {
             const volumes = await POCKETBASE()
@@ -568,7 +568,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.claim_steam,
@@ -584,7 +584,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.fetch_configuration,
@@ -606,15 +606,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.change_app_access,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.restore_game,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.backup_game,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }

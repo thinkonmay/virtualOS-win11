@@ -183,9 +183,8 @@ export const signUpWithEmail = async (
     password: string,
     passwordConfirm: string
 ) => {
-
     if (!email.includes('@gmail.com'))
-        throw new Error("email must have @gmail.com")
+        throw new Error('email must have @gmail.com');
 
     return POCKETBASE()
         .collection('users')
