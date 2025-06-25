@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState, store } from '.';
-import { GLOBAL, UserEvents } from '../../../src-tauri/api';
+import { GLOBAL, POCKETBASE, UserEvents } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 import { externalLink } from '../utils/constant';
@@ -40,6 +40,21 @@ type Domain = {
     domain: string;
     free: number;
     allow_pay: boolean;
+};
+
+type ContentStyle = {
+    content: string;
+    style?: 'none' | 'italic' | 'bold' | 'underscore';
+};
+
+type Banner = {
+    image: string;
+    text1: ContentStyle;
+    text2: ContentStyle;
+    text3: ContentStyle;
+    detail: ContentStyle;
+    redirect_link: string;
+    redirect_text: ContentStyle;
 };
 
 const initialState = {
@@ -219,13 +234,15 @@ const initialState = {
     games: [] as IGame[],
     domains: [] as Domain[],
     opening: null as IGame | null,
-    chat: false as boolean
+    chat: false as boolean,
+    banner: [] as Banner[]
 };
 
 type Data = {
     games: IGame[];
     domains: Domain[];
     error_messages: ErrorMessage[];
+    banner: Banner[];
 };
 
 export const globalAsync = {
@@ -257,14 +274,14 @@ export const globalAsync = {
         }
     ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
-        const { data, error } = await GLOBAL()
-            .from('stores')
-            .select(
-                'id,code_name,name,metadata->publishers,metadata->short_description,metadata->screenshots->0->>path_full,management->>kickey'
-            )
-            .not('metadata->screenshots->0->>path_full', 'is', null)
-            .order('management->>priority');
-        if (error) throw new Error(error.message);
+        const email = POCKETBASE().authStore.model.email;
+
+        const { data, error } = await GLOBAL().rpc('get_store_v1', {
+            email
+        });
+
+        if (error != null)
+            throw new Error('Failed to fetch store' + error.message);
 
         return data.map((x) => ({
             ...x,
@@ -278,6 +295,16 @@ export const globalAsync = {
         'fetch_error_message',
         async (): Promise<ErrorMessage[]> => {
             const { data, error } = await GLOBAL().rpc('get_error_message');
+
+            if (error) throw new Error(error.message);
+
+            return data;
+        }
+    ),
+    fetch_banner: createAsyncThunk(
+        'fetch_banner',
+        async (): Promise<Banner[]> => {
+            const { data, error } = await GLOBAL().rpc('get_banner_v1');
 
             if (error) throw new Error(error.message);
 
@@ -346,6 +373,12 @@ export const globalSlice = createSlice({
                 fetch: globalAsync.fetch_error_message,
                 hander: (state, action: PayloadAction<ErrorMessage[]>) => {
                     state.error_messages = action.payload;
+                }
+            },
+            {
+                fetch: globalAsync.fetch_banner,
+                hander: (state, action: PayloadAction<Banner[]>) => {
+                    state.banner = action.payload;
                 }
             }
         );

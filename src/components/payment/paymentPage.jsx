@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+    create_or_replace_resources,
     create_payment_pocket,
     verify_transaction
 } from '../../backend/actions';
@@ -60,6 +61,12 @@ const subcontents = [
         type: 'resource',
         multiply: 30,
         name: 'ram20'
+    },
+    {
+        title: '[BETA] THINKMAY GAMEPASS',
+        type: 'resource',
+        multiply: 30,
+        name: 'steam15'
     }
 ];
 
@@ -602,8 +609,24 @@ const PaymentFlow = ({
             await appDispatch(fetch_wallet());
             setStep('deduct');
             if (has_subscription || plan_name == undefined) {
-                if (game_license != undefined)
+                if (game_license != undefined) {
                     await appDispatch(change_app_access(game_license));
+                } else if (plan_name == 'steam15') {
+                    const error = await appDispatch(
+                        create_or_replace_resources(plan_name)
+                    );
+                    if (error && error.message.includes('405')) {
+                        open_payment();
+                        appDispatch(popup_close());
+                        close();
+                        return;
+                    } else if (error instanceof Error) {
+                        toast(`Failed to apply your changes`, {});
+                        appDispatch(popup_close());
+                        close();
+                        return;
+                    }
+                }
             } else await register();
         }
     };
@@ -802,7 +825,7 @@ const PaymentFlow = ({
                     </dl>
                     <button
                         onClick={() =>
-                            total > 50000 ? setStep('requestQR') : null
+                            total > 20000 ? setStep('requestQR') : null
                         }
                         className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                     >

@@ -14,6 +14,7 @@ import {
     direct_access,
     fetch_active_discounts,
     fetch_app_access,
+    fetch_banner,
     fetch_buckets,
     fetch_configuration,
     fetch_domain,
@@ -36,6 +37,7 @@ import {
     update_subscription_metadata,
     worker_refresh
 } from '../reducers';
+import cluster from 'cluster';
 
 export const originalurl = new URL(window.location.href);
 
@@ -71,6 +73,7 @@ const startAnalytics = async () => {
     await UserSession(email);
 };
 
+const fetchBanners = () => appDispatch(fetch_banner());
 const fetchPayment = () => appDispatch(fetch_wallet());
 const fetchStore = () => appDispatch(fetch_store());
 const fetchSubscription = () => appDispatch(fetch_subscription());
@@ -187,6 +190,20 @@ const updateUI = async () => {
                 }
             })
         );
+    } else if (
+        originalurl.searchParams.get('resource') != null &&
+        !unknown_user
+    ) {
+        ops.pop();
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment',
+                value: {
+                    plan: originalurl.searchParams.get('resource')
+                }
+            })
+        );
     } else if (originalurl.searchParams.get('app') != null && !unknown_user) {
         ops.pop();
         appDispatch(
@@ -275,6 +292,7 @@ export const preloadSilent = async () => {
         startAnalytics(),
         fetchDomains(),
         fetchErrorMessages(),
+        fetchBanners(),
         fetchApp(),
         fetchPlans(),
         fetchStore(),

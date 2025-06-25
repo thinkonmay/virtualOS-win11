@@ -201,7 +201,8 @@ export const {
     fetch_store,
     fetch_domain,
     update_game_tag,
-    fetch_error_message
+    fetch_error_message,
+    fetch_banner
 } = globalAsync;
 
 export const dispatch_generic = async ({
