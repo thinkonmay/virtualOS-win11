@@ -7,10 +7,9 @@ import {
     useAppSelector
 } from '../../../backend/reducers';
 
-
 export function versionUpdate() {
     const close = () => appDispatch(popup_close());
-    const banners = useAppSelector((state) => state.globals.banner)
+    const banners = useAppSelector((state) => state.globals.banner);
     const [currentPage, setCurrentPage] = useState(0);
 
     const renderStyledContent = (contentStyle) => {
@@ -18,7 +17,7 @@ export function versionUpdate() {
         if (typeof contentStyle === 'string') {
             return <span>{contentStyle}</span>;
         }
-        
+
         // Handle array of ContentPart
         if (Array.isArray(contentStyle)) {
             return (
@@ -37,7 +36,7 @@ export function versionUpdate() {
                                     return '';
                             }
                         };
-    
+
                         return (
                             <span key={index} className={getStyleClasses()}>
                                 {part.content}
@@ -47,24 +46,22 @@ export function versionUpdate() {
                 </>
             );
         }
-        
+
         return null;
     };
-
 
     if (!banners || banners.length === 0) {
         return null;
     }
-    
+
     const totalPages = banners.length;
     const currentBanner = banners[currentPage];
 
-  
     useEffect(() => {
         if (totalPages <= 1) return;
 
         const timer = setInterval(() => {
-            setCurrentPage(prev => (prev + 1) % totalPages);
+            setCurrentPage((prev) => (prev + 1) % totalPages);
         }, 5000);
 
         return () => clearInterval(timer);
@@ -73,7 +70,6 @@ export function versionUpdate() {
         setCurrentPage(pageIndex);
     };
 
- 
     return (
         <div
             id="banner-popup"
@@ -95,7 +91,8 @@ export function versionUpdate() {
                                 clipRule="evenodd"
                             ></path>
                         </svg>
-                        Thông báo mới {totalPages > 1 && `(${currentPage + 1}/${totalPages})`}
+                        Thông báo mới{' '}
+                        {totalPages > 1 && `(${currentPage + 1}/${totalPages})`}
                     </span>
 
                     {/* Current Banner */}
@@ -111,25 +108,37 @@ export function versionUpdate() {
 
                         {/* Banner Content */}
                         <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-                            {(Array.isArray(currentBanner.text1) && currentBanner.text1.length > 0) || (typeof currentBanner.text1 === 'string' && currentBanner.text1) ? (
+                            {(Array.isArray(currentBanner.text1) &&
+                                currentBanner.text1.length > 0) ||
+                            (typeof currentBanner.text1 === 'string' &&
+                                currentBanner.text1) ? (
                                 <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
                                     {renderStyledContent(currentBanner.text1)}
                                 </h3>
                             ) : null}
-                            
-                            {(Array.isArray(currentBanner.text2) && currentBanner.text2.length > 0) || (typeof currentBanner.text2 === 'string' && currentBanner.text2) ? (
+
+                            {(Array.isArray(currentBanner.text2) &&
+                                currentBanner.text2.length > 0) ||
+                            (typeof currentBanner.text2 === 'string' &&
+                                currentBanner.text2) ? (
                                 <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
                                     {renderStyledContent(currentBanner.text2)}
                                 </h3>
                             ) : null}
-                            
-                            {(Array.isArray(currentBanner.text3) && currentBanner.text3.length > 0) || (typeof currentBanner.text3 === 'string' && currentBanner.text3) ? (
+
+                            {(Array.isArray(currentBanner.text3) &&
+                                currentBanner.text3.length > 0) ||
+                            (typeof currentBanner.text3 === 'string' &&
+                                currentBanner.text3) ? (
                                 <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
                                     {renderStyledContent(currentBanner.text3)}
                                 </h3>
                             ) : null}
 
-                            {(Array.isArray(currentBanner.detail) && currentBanner.detail.length > 0) || (typeof currentBanner.detail === 'string' && currentBanner.detail) ? (
+                            {(Array.isArray(currentBanner.detail) &&
+                                currentBanner.detail.length > 0) ||
+                            (typeof currentBanner.detail === 'string' &&
+                                currentBanner.detail) ? (
                                 <p className="text-sm mt-3">
                                     {renderStyledContent(currentBanner.detail)}
                                 </p>
@@ -137,30 +146,36 @@ export function versionUpdate() {
                         </div>
 
                         {/* Action Button for current banner */}
-                        {currentBanner.redirect_link && ((Array.isArray(currentBanner.redirect_text) && currentBanner.redirect_text.length > 0) || (typeof currentBanner.redirect_text === 'string' && currentBanner.redirect_text)) && (
-                            <div className="mb-4 flex">
-                                <button
-                                    onClick={() =>
-                                        appDispatch(
-                                            app_external(currentBanner.redirect_link)
-                                        )
-                                    }
-                                    type="button"
-                                    className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-white-200"
-                                >
-                                    {currentBanner.redirect_text[0].content}
-                                </button>
-                                 {/* Close Button */}
-                        <button
-                            onClick={close}
-                            type="button"
-                            className="py-2.5 px-5 bg-gray-300 shadow-sm rounded-full transition-all duration-500 text-base text-black font-semibold text-center w-fit block mx-auto hover:bg-gray-400"
-                        >
-                            Đóng
-                        </button>
-                            </div>
-                        )}
-                        
+                        {currentBanner.redirect_link &&
+                            ((Array.isArray(currentBanner.redirect_text) &&
+                                currentBanner.redirect_text.length > 0) ||
+                                (typeof currentBanner.redirect_text ===
+                                    'string' &&
+                                    currentBanner.redirect_text)) && (
+                                <div className="mb-4 flex">
+                                    <button
+                                        onClick={() =>
+                                            appDispatch(
+                                                app_external(
+                                                    currentBanner.redirect_link
+                                                )
+                                            )
+                                        }
+                                        type="button"
+                                        className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-white-200"
+                                    >
+                                        {currentBanner.redirect_text[0].content}
+                                    </button>
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={close}
+                                        type="button"
+                                        className="py-2.5 px-5 bg-gray-300 shadow-sm rounded-full transition-all duration-500 text-base text-black font-semibold text-center w-fit block mx-auto hover:bg-gray-400"
+                                    >
+                                        Đóng
+                                    </button>
+                                </div>
+                            )}
                     </div>
 
                     {/* Page Navigation */}
@@ -168,22 +183,24 @@ export function versionUpdate() {
                         <div className="flex flex-col items-center space-y-4 mb-6">
                             {/* Page Dots */}
                             <div className="flex space-x-2">
-                                {Array.from({ length: totalPages }).map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => goToPage(index)}
-                                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                                            index === currentPage
-                                                ? 'bg-blue-600'
-                                                : 'bg-gray-300 hover:bg-gray-400'
-                                        }`}
-                                    />
-                                ))}
+                                {Array.from({ length: totalPages }).map(
+                                    (_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => goToPage(index)}
+                                            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                                                index === currentPage
+                                                    ? 'bg-blue-600'
+                                                    : 'bg-gray-300 hover:bg-gray-400'
+                                            }`}
+                                        />
+                                    )
+                                )}
                             </div>
 
                             {/* Auto-advance Progress Bar */}
                             <div className="w-48 bg-gray-200 rounded-full h-1.5">
-                                <div 
+                                <div
                                     className="bg-blue-600 h-1.5 rounded-full transition-all duration-1000 ease-linear"
                                     style={{
                                         width: '100%',
@@ -199,11 +216,8 @@ export function versionUpdate() {
                             `}</style>
                         </div>
                     )}
-
-                   
                 </div>
             </div>
         </div>
     );
-
 }
