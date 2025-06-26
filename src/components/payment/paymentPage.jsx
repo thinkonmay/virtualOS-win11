@@ -10,6 +10,7 @@ import {
     appDispatch,
     change_app_access,
     fetch_wallet,
+    popup_close,
     useAppSelector
 } from '../../backend/reducers';
 import QRCode from 'react-qr-code';

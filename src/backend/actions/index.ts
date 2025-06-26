@@ -4,6 +4,7 @@ import { GLOBAL } from '../../../src-tauri/api/database';
 import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
+    app_full,
     appDispatch,
     backup_game,
     close_remote,
@@ -429,5 +430,18 @@ export const create_or_replace_resources = async (resource_name: string) => {
     await appDispatch(fetch_app_access());
     await appDispatch(fetch_configuration());
     await appDispatch(fetch_wallet());
+
+    // TODO: check a resource is template, if is template let open a app_full
+
+    if (resource_name == 'steam15')
+        appDispatch(
+            app_full({
+                id: 'store',
+                value: {
+                    app: 'steam15'
+                }
+            })
+        );
+
     return undefined;
 };

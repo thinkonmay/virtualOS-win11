@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { isMobile } from '../../../../src-tauri/core';
 import {
     app_external,
+    app_full,
     appDispatch,
     popup_close,
     useAppSelector
@@ -55,7 +56,7 @@ export function versionUpdate() {
     }
 
     const totalPages = banners.length;
-    const currentBanner = banners[currentPage];
+    const banner = banners[currentPage];
 
     useEffect(() => {
         if (totalPages <= 1) return;
@@ -98,9 +99,9 @@ export function versionUpdate() {
                     {/* Current Banner */}
                     <div className="mb-6">
                         {/* Banner Image */}
-                        {!isMobile() && currentBanner.image && (
+                        {!isMobile() && banner.image && (
                             <img
-                                src={currentBanner.image}
+                                src={banner.image}
                                 className="mb-4 max-h-[500px] w-full rounded bg-cover object-cover hidden md:block"
                                 alt={`banner ${currentPage + 1}`}
                             />
@@ -108,63 +109,79 @@ export function versionUpdate() {
 
                         {/* Banner Content */}
                         <div className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-                            {(Array.isArray(currentBanner.text1) &&
-                                currentBanner.text1.length > 0) ||
-                            (typeof currentBanner.text1 === 'string' &&
-                                currentBanner.text1) ? (
+                            {(Array.isArray(banner.text1) &&
+                                banner.text1.length > 0) ||
+                            (typeof banner.text1 === 'string' &&
+                                banner.text1) ? (
                                 <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
-                                    {renderStyledContent(currentBanner.text1)}
+                                    {renderStyledContent(banner.text1)}
                                 </h3>
                             ) : null}
 
-                            {(Array.isArray(currentBanner.text2) &&
-                                currentBanner.text2.length > 0) ||
-                            (typeof currentBanner.text2 === 'string' &&
-                                currentBanner.text2) ? (
+                            {(Array.isArray(banner.text2) &&
+                                banner.text2.length > 0) ||
+                            (typeof banner.text2 === 'string' &&
+                                banner.text2) ? (
                                 <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
-                                    {renderStyledContent(currentBanner.text2)}
+                                    {renderStyledContent(banner.text2)}
                                 </h3>
                             ) : null}
 
-                            {(Array.isArray(currentBanner.text3) &&
-                                currentBanner.text3.length > 0) ||
-                            (typeof currentBanner.text3 === 'string' &&
-                                currentBanner.text3) ? (
+                            {(Array.isArray(banner.text3) &&
+                                banner.text3.length > 0) ||
+                            (typeof banner.text3 === 'string' &&
+                                banner.text3) ? (
                                 <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
-                                    {renderStyledContent(currentBanner.text3)}
+                                    {renderStyledContent(banner.text3)}
                                 </h3>
                             ) : null}
 
-                            {(Array.isArray(currentBanner.detail) &&
-                                currentBanner.detail.length > 0) ||
-                            (typeof currentBanner.detail === 'string' &&
-                                currentBanner.detail) ? (
+                            {(Array.isArray(banner.detail) &&
+                                banner.detail.length > 0) ||
+                            (typeof banner.detail === 'string' &&
+                                banner.detail) ? (
                                 <p className="text-sm mt-3">
-                                    {renderStyledContent(currentBanner.detail)}
+                                    {renderStyledContent(banner.detail)}
                                 </p>
                             ) : null}
                         </div>
 
                         {/* Action Button for current banner */}
-                        {currentBanner.redirect_link &&
-                            ((Array.isArray(currentBanner.redirect_text) &&
-                                currentBanner.redirect_text.length > 0) ||
-                                (typeof currentBanner.redirect_text ===
-                                    'string' &&
-                                    currentBanner.redirect_text)) && (
+                        {banner.redirect_link &&
+                            ((Array.isArray(banner.redirect_text) &&
+                                banner.redirect_text.length > 0) ||
+                                (typeof banner.redirect_text === 'string' &&
+                                    banner.redirect_text)) && (
                                 <div className="mb-4 flex">
                                     <button
-                                        onClick={() =>
-                                            appDispatch(
+                                        onClick={() => {
+                                            if (banner.redirect_app != null) {
+                                                appDispatch(popup_close());
+                                                appDispatch(
+                                                    app_full({
+                                                        id: banner.redirect_app
+                                                            .app,
+                                                        app: banner.redirect_app
+                                                            .app,
+                                                        value: {
+                                                            ...banner
+                                                                .redirect_app
+                                                                .value
+                                                        }
+                                                    })
+                                                );
+                                            } else if (
+                                                banner.redirect_link != null
+                                            ) {
                                                 app_external(
-                                                    currentBanner.redirect_link
-                                                )
-                                            )
-                                        }
+                                                    banner.redirect_link
+                                                );
+                                            }
+                                        }}
                                         type="button"
                                         className="py-2.5 px-5 bg-blue-600 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-white-200"
                                     >
-                                        {currentBanner.redirect_text[0].content}
+                                        {banner.redirect_text[0].content}
                                     </button>
                                     {/* Close Button */}
                                     <button

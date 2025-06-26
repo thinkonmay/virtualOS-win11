@@ -55,6 +55,10 @@ type Banner = {
     detail: ContentStyle;
     redirect_link: string;
     redirect_text: ContentStyle;
+    redirect_app: {
+        app: string;
+        value: {};
+    };
 };
 
 const initialState = {
