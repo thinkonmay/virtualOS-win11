@@ -15,6 +15,7 @@ import {
     dispatch_generic,
     fetch_app_access,
     fetch_configuration,
+    fetch_store,
     fetch_wallet,
     menu_chng,
     menu_hide,
@@ -425,23 +426,25 @@ export const create_or_replace_resources = async (resource_name: string) => {
         email,
         resource_name
     });
-    if (error) return new Error(error.message);
 
-    await appDispatch(fetch_app_access());
-    await appDispatch(fetch_configuration());
-    await appDispatch(fetch_wallet());
-
-    // TODO: check a resource is template, if is template let open a app_full
-
-    if (resource_name == 'steam15')
-        appDispatch(
-            app_full({
+    Promise.all([
+        appDispatch(fetch_app_access()),
+        appDispatch(fetch_configuration()),
+        appDispatch(fetch_wallet()),
+    ]);
+    if (resource_name == 'steam15'){
+        await preload()
+        await Promise.all([
+            appDispatch(popup_close()),
+            appDispatch(app_full({
                 id: 'store',
+                page: 'store',
                 value: {
                     app: 'steam15'
                 }
-            })
-        );
-
+            }))
+        ])
+    }
+    if (error) return new Error(error.message);
     return undefined;
 };
