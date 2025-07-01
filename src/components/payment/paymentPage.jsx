@@ -640,24 +640,26 @@ const PaymentFlow = ({
     };
 
     const usePocketPaid = async () => {
+        let error;
         if (has_subscription && resource_names.length > 0) {
             for (let i = 0; i < resource_names.length; i++) {
-                const error = undefined;
+                error = undefined;
 
-                if (resource_names[i] == 'steam15')
+                if (resource_names[i] == 'steam15') {
                     error = await appDispatch(
                         create_or_replace_resources(resource_names[i])
                     );
-                if (error && error.message.includes('405')) {
-                    open_payment();
-                    appDispatch(popup_close());
-                    close();
-                    return;
-                } else if (error instanceof Error) {
-                    toast(`Failed to apply your changes`, {});
-                    appDispatch(popup_close());
-                    close();
-                    return;
+                    if (error && error.message.includes('405')) {
+                        open_payment();
+                        appDispatch(popup_close());
+                        close();
+                        return;
+                    } else if (error instanceof Error) {
+                        toast(`Failed to apply your changes`, {});
+                        appDispatch(popup_close());
+                        close();
+                        return;
+                    }
                 }
             }
         }
