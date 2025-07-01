@@ -15,6 +15,7 @@ import {
 } from '../../backend/reducers';
 import QRCode from 'react-qr-code';
 import { GLOBAL } from '../../../src-tauri/api';
+import toast from 'react-hot-toast';
 
 const subcontents = [
     {
@@ -88,6 +89,7 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
             ? 2
             : 1
     );
+    const picked_resources = [];
 
     useEffect(() => {
         if (promotionState == 'applying' && discount_codes.includes(promotion))
@@ -114,9 +116,11 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
         if (
             subcontents.find((x) => x.name == key)?.type == 'resource' &&
             planAmount[key] > 0
-        )
+        ) {
             gradual_deduction +=
                 resources.find((x) => x.name == key)?.amount * 30;
+            picked_resources.push(key);
+        }
 
     let picked_plan = plan;
     if (picked_plan == undefined)
@@ -481,6 +485,7 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
                                     step == 2 ? 'requestQR' : 'picking'
                                 }
                                 plan_name={picked_plan}
+                                resource_names={picked_resources}
                                 template={template?.code_name}
                                 game_license={account?.id}
                             />
@@ -514,6 +519,7 @@ const PaymentFlow = ({
     promotion,
 
     plan_name,
+    resource_names,
     template,
     game_license
 }) => {
@@ -543,6 +549,7 @@ const PaymentFlow = ({
         if (step == 'picking') stepCallback(1);
         else if (step == 'requestQR' || step == 'showQR') stepCallback(2);
         else if (step == 'deduct') stepCallback(3);
+        else if (step == 'usePocket') stepCallback(4);
     }, [step]);
 
     const requestQR = async () => {
@@ -609,7 +616,7 @@ const PaymentFlow = ({
             await GLOBAL().rpc('verify_all_deposits');
             await appDispatch(fetch_wallet());
             setStep('deduct');
-            if (has_subscription || plan_name == undefined) {
+            if (has_subscription || plan_name != undefined) {
                 if (game_license != undefined) {
                     await appDispatch(change_app_access(game_license));
                 } else if (plan_name == 'steam15') {
@@ -630,6 +637,33 @@ const PaymentFlow = ({
                 }
             } else await register();
         }
+    };
+
+    const usePocketPaid = async () => {
+        if (has_subscription && resource_names.length > 0) {
+            for (let i = 0; i < resource_names.length; i++) {
+                const error = undefined;
+
+                if (resource_names[i] == 'steam15')
+                    error = await appDispatch(
+                        create_or_replace_resources(resource_names[i])
+                    );
+                if (error && error.message.includes('405')) {
+                    open_payment();
+                    appDispatch(popup_close());
+                    close();
+                    return;
+                } else if (error instanceof Error) {
+                    toast(`Failed to apply your changes`, {});
+                    appDispatch(popup_close());
+                    close();
+                    return;
+                }
+            }
+        }
+        toast(
+            'Chưa hỗ trợ thanh toán bằng ví với gói này. Liên hệ ADMIN để hỗ trợ thêm!'
+        );
     };
 
     useEffect(() => {
@@ -795,6 +829,77 @@ const PaymentFlow = ({
                     </div>
                 </>
             );
+        case 'usePocket':
+            return (
+                <>
+                    <div className="space-y-4 hidden sm:block">
+                        <div className="space-y-2">
+                            <dl className="flex items-center justify-between gap-4">
+                                <dt className="text-gray-500 dark:text-gray-400">
+                                    Tổng thanh toán
+                                </dt>
+                                <dd className="font-medium text-white">
+                                    {total / 1000}k
+                                </dd>
+                            </dl>
+                            <dl className="flex items-center justify-between gap-4">
+                                <dt className="text-gray-500 dark:text-gray-400">
+                                    Đăng kí dịch vụ
+                                </dt>
+                                <dd className="font-medium text-white">
+                                    {instant_deduction / 1000}k
+                                </dd>
+                            </dl>
+                            <dl className="flex items-center justify-between gap-4">
+                                <dt className="text-gray-500 dark:text-gray-400">
+                                    Nâng cấp cấu hình
+                                </dt>
+                                <dd className="font-medium text-white">
+                                    {gradual_deduction / 1000}k
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                        <dt className="font-bold text-white">
+                            Số tiền phải trả
+                        </dt>
+                        <dd className="font-bold text-white">
+                            {total / 1000 - discount_amount}k
+                        </dd>
+                    </dl>
+                    <dl className="flex items-center justify-between gap-4  pt-10">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                            Số dư trong ví (hiện tại)
+                        </dt>
+                        <dd className="font-medium text-white">
+                            {balance / 1000}k
+                        </dd>
+                    </dl>
+                    <dl className="flex items-center justify-between gap-4 pt-10">
+                        <dt className="text-gray-500 dark:text-gray-400">
+                            Số dư sau khi thanh toán
+                        </dt>
+                        <dd className="font-medium text-white">
+                            {(balance - total) / 1000}k
+                        </dd>
+                    </dl>
+                    <div className="flex flex-row gap-4">
+                        <button
+                            onClick={() => setStep('picking')}
+                            className="flex w-full items-center justify-center rounded-lg bg-gray-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4   focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                        >
+                            Chọn lại
+                        </button>
+                        <button
+                            onClick={usePocketPaid}
+                            className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                        >
+                            Thanh toán bằng ví
+                        </button>
+                    </div>
+                </>
+            );
         case 'picking':
             return (
                 <>
@@ -825,9 +930,11 @@ const PaymentFlow = ({
                         </dd>
                     </dl>
                     <button
-                        onClick={() =>
-                            total > 20000 ? setStep('requestQR') : null
-                        }
+                        onClick={() => {
+                            balance - total > 0
+                                ? setStep('usePocket')
+                                : setStep('requestQR');
+                        }}
                         className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5  py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4   focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                     >
                         Tiếp tục

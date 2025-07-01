@@ -421,6 +421,12 @@ export const replace_payment_pocket = async ({
 };
 
 export const create_or_replace_resources = async (resource_name: string) => {
+    appDispatch(
+        popup_open({
+            type: 'notify',
+            data: { loading: true }
+        })
+    );
     const email = store.getState().user.email;
     const { error } = await GLOBAL().rpc('create_or_replace_resource_payment', {
         email,
@@ -430,21 +436,24 @@ export const create_or_replace_resources = async (resource_name: string) => {
     Promise.all([
         appDispatch(fetch_app_access()),
         appDispatch(fetch_configuration()),
-        appDispatch(fetch_wallet()),
+        appDispatch(fetch_wallet())
     ]);
-    if (resource_name == 'steam15'){
-        await preload()
+    if (resource_name == 'steam15') {
+        await preload();
         await Promise.all([
             appDispatch(popup_close()),
-            appDispatch(app_full({
-                id: 'store',
-                page: 'store',
-                value: {
-                    app: 'steam15'
-                }
-            }))
-        ])
+            appDispatch(
+                app_full({
+                    id: 'store',
+                    page: 'store',
+                    value: {
+                        app: 'steam15'
+                    }
+                })
+            )
+        ]);
     }
+    appDispatch(popup_close());
     if (error) return new Error(error.message);
     return undefined;
 };
