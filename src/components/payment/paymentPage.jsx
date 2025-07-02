@@ -85,9 +85,11 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
     const [promotion, setPromotion] = useState('');
     const [promotionState, setPromotionState] = useState('unknown');
     const [step, setStep] = useState(
-        plan != undefined || template != undefined || account != undefined
-            ? 2
-            : 1
+        resources != undefined
+            ? 3
+            : plan != undefined || template != undefined || account != undefined
+              ? 2
+              : 1
     );
     const picked_resources = [];
 
@@ -662,6 +664,10 @@ const PaymentFlow = ({
                     }
                 }
             }
+        } else if (!has_subscription) {
+            return toast(
+                'Vui lòng đăng ký dịch vụ Thinkmay (gói tuần/ tháng/ cao cấp) trước!'
+            );
         }
         toast(
             'Chưa hỗ trợ thanh toán bằng ví với gói này. Liên hệ ADMIN để hỗ trợ thêm!'
