@@ -95,7 +95,8 @@ const DetailPage = ({
         name,
         short_description,
         path_full,
-        publishers
+        publishers,
+        is_paid
     },
     onConfirmation,
     close
@@ -153,6 +154,19 @@ const DetailPage = ({
         onConfirmation({
             template: code_name
         });
+
+    const handleResourcePayment = (code_name) =>
+        appDispatch(
+            app_full({
+                id: 'payment',
+                page: 'payment',
+                value: {
+                    resource: code_name,
+                    plan: code_name
+                }
+            })
+        );
+
     const handlePayment = () =>
         appDispatch(
             app_full({
@@ -464,6 +478,16 @@ const DetailPage = ({
                                                 Bật máy
                                             </button>
                                         </>
+                                    ) : !is_paid ? (
+                                        <button
+                                            onClick={() =>
+                                                handleResourcePayment(code_name)
+                                            }
+                                            className="text-center w-full px-5 py-4 rounded-[100px] bg-blue-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-blue-700 hover:shadow-blue-400"
+                                        >
+                                            {' '}
+                                            Mua ngay
+                                        </button>
                                     ) : samenode ? (
                                         <button
                                             onClick={handleDownload}

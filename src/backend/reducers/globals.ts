@@ -29,6 +29,7 @@ type IGame = {
         samenode: boolean;
         hasaccount: boolean;
     };
+    is_paid: boolean;
 };
 
 interface Maintain {
@@ -280,7 +281,7 @@ export const globalAsync = {
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
         const email = POCKETBASE().authStore.model.email;
 
-        const { data, error } = await GLOBAL().rpc('get_store_v1', {
+        const { data, error } = await GLOBAL().rpc('get_store_v2', {
             email
         });
 

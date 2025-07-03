@@ -37,7 +37,7 @@ const Taskbar = () => {
     const apps = useAppSelector((state) => state.apps);
     const money = useAppSelector((state) => state.user.balance);
     const [open, setOpen] = useState(true);
-    const [gamepadState, setGamepadState] = useState(null)
+    const [gamepadState, setGamepadState] = useState(null);
     const defaultapps = useAppSelector((state) =>
         state.apps.apps.filter((x) => state.taskbar.apps.includes(x.id))
     );
@@ -68,21 +68,24 @@ const Taskbar = () => {
     };
 
     useEffect(() => {
-        const map = {}
+        const map = {};
         const i = setInterval(() => {
-            const gamepads = navigator.getGamepads().filter(x => x != null)
-            if (gamepads.length == 0) setGamepadState(null)
-            else gamepads.forEach((gamepad, index) => {
-                const val = JSON.stringify(gamepad.axes.map(x => Math.abs(x.toFixed(1))))
-                if (map[index] != val) setGamepadState(true)
-                else setGamepadState(false)
-                map[index] = val
-            })
-        }, 1000)
+            const gamepads = navigator.getGamepads().filter((x) => x != null);
+            if (gamepads.length == 0) setGamepadState(null);
+            else
+                gamepads.forEach((gamepad, index) => {
+                    const val = JSON.stringify(
+                        gamepad.axes.map((x) => Math.abs(x.toFixed(1)))
+                    );
+                    if (map[index] != val) setGamepadState(true);
+                    else setGamepadState(false);
+                    map[index] = val;
+                });
+        }, 1000);
         return () => {
-            clearInterval(i)
-        }
-    }, [])
+            clearInterval(i);
+        };
+    }, []);
 
     const numberFormat = (num) => new Intl.NumberFormat().format(num);
 
@@ -179,7 +182,7 @@ const Taskbar = () => {
                     style={{ '--prefix': 'TASK' }}
                 >
                     <audio src={ringSound}></audio>
-                    {gamepadState == null ? null :
+                    {gamepadState == null ? null : (
                         <div className="containerWalletInfo">
                             <div className="wrapperWallet">
                                 <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">
@@ -191,7 +194,7 @@ const Taskbar = () => {
                                 </div>
                             </div>
                         </div>
-                    }
+                    )}
                     <div className="containerWalletInfo">
                         <div className="wrapperWallet">
                             <div className="flex items-center gap-[4px] text-xs font-semibold lg:text-sm">

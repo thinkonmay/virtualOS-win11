@@ -200,6 +200,7 @@ const updateUI = async () => {
                 id: 'payment',
                 page: 'payment',
                 value: {
+                    resource: originalurl.searchParams.get('resource'),
                     plan: originalurl.searchParams.get('resource')
                 }
             })
