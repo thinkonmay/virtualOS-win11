@@ -1,11 +1,7 @@
-import { MdInfoOutline } from 'react-icons/md';
-import { create_payment_qr } from '../../../backend/actions';
 import {
     appDispatch,
     app_full,
-    app_toggle,
     popup_close,
-    show_chat,
     useAppSelector
 } from '../../../backend/reducers';
 import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
