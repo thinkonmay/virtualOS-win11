@@ -678,7 +678,7 @@ const PaymentFlow = ({
         if (step != 'showQR') return;
         setSecondLeft(300);
         const interval = setInterval(verify, 1000);
-        return async () => {
+        return () => {
             clearInterval(interval);
         };
     }, [step]);
