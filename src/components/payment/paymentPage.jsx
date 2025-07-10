@@ -53,12 +53,6 @@ const subcontents = [
         name: 'ram24'
     },
     {
-        title: 'Tài khoản game 1 tháng',
-        type: 'resource',
-        multiply: 30,
-        name: 'kickey'
-    },
-    {
         title: '20GB RAM 1 tháng',
         type: 'resource',
         multiply: 30,
@@ -69,6 +63,18 @@ const subcontents = [
         type: 'resource',
         multiply: 30,
         name: 'steam15'
+    },
+    {
+        title: 'Tài khoản game',
+        type: 'resource',
+        multiply: 30,
+        name: 'kickey'
+    },
+    {
+        title: 'Backup dữ liệu game',
+        type: 'resource',
+        multiply: 30,
+        name: 'storj'
     }
 ];
 
