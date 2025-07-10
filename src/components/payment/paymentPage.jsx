@@ -287,6 +287,24 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
         );
     };
 
+    const options = [
+        ...plans.map((x) => ({
+            ...x,
+            ...(subcontents.find((y) => y.name == x.name) ?? {})
+        })),
+        ...resources.map((x) => ({
+            ...x,
+            ...(subcontents.find((y) => y.name == x.name) ?? {})
+        })),
+        ...additionalPlans
+    ]
+        .map((x) => ({
+            ...x,
+            ...(x.multiply ? { amount: x.amount * x.multiply } : {})
+        }))
+        .filter((val) => val.title != null)
+        .sort((a, b) => b.amount - a.amount);
+
     return (
         <div
             className="w-full h-full px-1 md:px-5 lg-6 mx-auto relative z-10 rounded"
@@ -301,28 +319,7 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
                                 Lựa chọn
                             </h2>
                         </div>
-                        {[
-                            ...plans.map((x) => ({
-                                ...x,
-                                ...(subcontents.find((y) => y.name == x.name) ??
-                                    {})
-                            })),
-                            ...resources.map((x) => ({
-                                ...x,
-                                ...(subcontents.find((y) => y.name == x.name) ??
-                                    {})
-                            })),
-                            ...additionalPlans
-                        ]
-                            .map((x) => ({
-                                ...x,
-                                ...(x.multiply
-                                    ? { amount: x.amount * x.multiply }
-                                    : {})
-                            }))
-                            .filter((val) => val.title != null)
-                            .sort((a, b) => b.amount - a.amount)
-                            .map(renderPlan)}
+                        {options.map(renderPlan)}
                     </div>
 
                     <div className="mt-6 w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 dark:divide-gray-700 dark:border-gray-700 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
