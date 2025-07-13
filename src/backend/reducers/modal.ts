@@ -23,6 +23,7 @@ type PopupData =
               tips?: boolean;
               text?: any;
               timeProcessing?: number;
+              confirmButton?: boolean;
           };
       }
     | {

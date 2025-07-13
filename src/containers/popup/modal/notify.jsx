@@ -3,9 +3,19 @@ import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
 export function notify({
-    data: { title, tips = true, loading = true, text, timeProcessing = 3.5 }
+    data: {
+        title,
+        tips = true,
+        loading = true,
+        text,
+        timeProcessing = 3.5,
+        circleLoading = true,
+        confirmButton = false
+    }
 }) {
     const t = useAppSelector((state) => state.globals.translation);
+
+    const close = () => appDispatch(popup_close());
 
     return (
         <div
@@ -18,21 +28,23 @@ export function notify({
         >
             <div className="relative p-4 w-full max-w-md max-h-full">
                 <div
-                    className="relative rounded-lg p-4 text-center shadow text-white"
+                    className="relative rounded-lg p-4 pt-6 text-center shadow text-white"
                     style={{
                         background: 'var(--fakeMica)'
                     }}
                 >
-                    <div className="mt-4" id="loader">
-                        <svg
-                            className="progressRing"
-                            height={48}
-                            width={48}
-                            viewBox="0 0 16 16"
-                        >
-                            <circle cx="8px" cy="8px" r="7px"></circle>
-                        </svg>
-                    </div>
+                    {circleLoading ? (
+                        <div className="mt-4" id="loader">
+                            <svg
+                                className="progressRing"
+                                height={48}
+                                width={48}
+                                viewBox="0 0 16 16"
+                            >
+                                <circle cx="8px" cy="8px" r="7px"></circle>
+                            </svg>
+                        </div>
+                    ) : null}
                     <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
                         {title ?? 'Please wait...'}
                     </p>
@@ -41,6 +53,18 @@ export function notify({
                     ) : null}
                     {loading ? (
                         <LoadingProgressBar timeProcessing={timeProcessing} />
+                    ) : null}
+
+                    {confirmButton ? (
+                        <div className="items-center p-6 space-x-4 rounded-b border-gray-600">
+                            <button
+                                type="submit"
+                                className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                                onClick={close}
+                            >
+                                Confirm
+                            </button>
+                        </div>
                     ) : null}
                     {tips ? <Protip /> : null}
                 </div>

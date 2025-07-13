@@ -11,6 +11,7 @@ import {
     change_app_access,
     fetch_wallet,
     popup_close,
+    popup_open,
     useAppSelector
 } from '../../backend/reducers';
 import QRCode from 'react-qr-code';
@@ -558,6 +559,33 @@ const PaymentFlow = ({
     }, [step]);
 
     const requestQR = async () => {
+        console.log(resource_names);
+        if (
+            !has_subscription &&
+            (resource_names.includes('steam15') ||
+                resource_names.includes('kickey') ||
+                resource_names.includes('storj'))
+        ) {
+            // return toast(
+            //     'Gói Game này chưa bao gồm dịch vụ CloudPC. Vui lòng đăng ký dịch vụ Thinkmay (gói tuần/ tháng/ cao cấp) trước!'
+            // );
+            appDispatch(
+                popup_open({
+                    type: 'notify',
+                    data: {
+                        title: 'Lưu ý:  Gói Game này chưa bao gồm các gói Dịch vụ CloudPC.',
+                        text: 'Bạn sẽ cần đăng ký gói Dịch vụ CloudPC (tuần/ tháng/ cao cấp) để có thể bắt đầu trải nghiệm.',
+                        loading: false,
+                        tips: false,
+                        circleLoading: false,
+                        confirmButton: true
+                    }
+                })
+            );
+
+            return setTimeout(() => appDispatch(popup_close()), 5000);
+        }
+
         const { data, error } = await GLOBAL().rpc('create_pocket_deposit_v3', {
             email,
             amount: total,
@@ -621,12 +649,16 @@ const PaymentFlow = ({
             await GLOBAL().rpc('verify_all_deposits');
             await appDispatch(fetch_wallet());
             setStep('deduct');
-            if (has_subscription || plan_name != undefined) {
+            if (
+                has_subscription ||
+                plan_name != undefined ||
+                (resource_names != null && resource_names.length > 0)
+            ) {
                 if (game_license != undefined) {
                     await appDispatch(change_app_access(game_license));
-                } else if (plan_name == 'steam15') {
+                } else if (resource_names.includes('steam15')) {
                     const error = await appDispatch(
-                        create_or_replace_resources(plan_name)
+                        create_or_replace_resources(resource_names[0])
                     );
                     if (error && error.message.includes('405')) {
                         open_payment();

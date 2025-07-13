@@ -277,7 +277,6 @@ export const showConnect = () => {
     );
 };
 
-
 export const cancel_transaction = async ({ id }: { id: number }) => {
     const { error } = await GLOBAL().rpc('cancel_transaction', {
         id
