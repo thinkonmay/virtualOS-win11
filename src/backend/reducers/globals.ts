@@ -279,10 +279,10 @@ export const globalAsync = {
         }
     ),
     fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
-        const email = POCKETBASE().authStore.model.email;
+        const email = POCKETBASE().authStore.model?.email;
 
         const { data, error } = await GLOBAL().rpc('get_store_v2', {
-            email
+            email: email ?? null
         });
 
         if (error != null)
