@@ -132,7 +132,7 @@ const DetailPage = ({
             ? [
                   {
                       code: 'kickey',
-                      name: `Tài khoản game (6.000VND/tháng)`,
+                      name: `Tài khoản game (60.000VND/tháng)`,
                       clicked: false
                   }
               ]
