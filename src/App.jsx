@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
-import { UserEvents } from '../src-tauri/api';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
 import { VirtualGamepad } from './containers/remote/control/gamepad';
@@ -82,7 +81,6 @@ function App() {
         PreloadBackground().finally(async () => {
             const finish_fetch = now();
             const interval = finish_fetch - start_fetch;
-            UserEvents({ type: 'preload/finish', payload: { interval } });
             setLockscreen(false);
         });
     }, []);

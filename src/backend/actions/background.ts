@@ -1,6 +1,5 @@
 import md5 from 'md5';
 import toast from 'react-hot-toast';
-import { UserEvents, UserSession } from '../../../src-tauri/api';
 import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
 import { CLIENT } from '../../../src-tauri/singleton';
 import {
@@ -67,10 +66,6 @@ const setDomain = async () => {
         localStorage.setItem('thinkmay_domain', defaultDomain);
         appDispatch(set_current_address(defaultDomain));
     } else appDispatch(set_current_address(address));
-};
-const startAnalytics = async () => {
-    const email = store.getState().user.email;
-    await UserSession(email);
 };
 
 const fetchBanners = () => appDispatch(fetch_banner());
@@ -290,7 +285,6 @@ export const preloadSilent = async () => {
         fetchAppAccess(),
         loadSettings(),
         fetchPayment(),
-        startAnalytics(),
         fetchDomains(),
         fetchErrorMessages(),
         fetchBanners(),
@@ -307,12 +301,7 @@ export const preload = async () => {
     try {
         await preloadSilent();
         await updateUI();
-    } catch (e) {
-        UserEvents({
-            type: 'preload/rejected',
-            payload: e
-        });
-    }
+    } catch (e) {}
 };
 
 export const PreloadBackground = async () => {

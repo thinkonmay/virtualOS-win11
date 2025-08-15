@@ -142,7 +142,6 @@ export const appSlice = createSlice({
             if (obj == undefined) return;
 
             obj.hide = false;
-            obj.max = true;
             if (obj.z != state.hz) {
                 state.hz += 1;
                 obj.z = state.hz;
