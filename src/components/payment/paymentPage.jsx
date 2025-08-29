@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import QRCode from 'react-qr-code';
+import { GLOBAL } from '../../../src-tauri/api';
 import {
     create_or_replace_resources,
     create_payment_pocket,
@@ -14,9 +17,6 @@ import {
     popup_open,
     useAppSelector
 } from '../../backend/reducers';
-import QRCode from 'react-qr-code';
-import { GLOBAL } from '../../../src-tauri/api';
-import toast from 'react-hot-toast';
 
 const subcontents = [
     {
@@ -95,8 +95,8 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
         resources != undefined
             ? 3
             : plan != undefined || template != undefined || account != undefined
-              ? 2
-              : 1
+                ? 2
+                : 1
     );
     const picked_resources = [];
 
@@ -145,12 +145,12 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
     const additionalPlans =
         template != undefined
             ? [
-                  {
-                      title: `${template.name} đã được cài sẵn`,
-                      name: template.code_name,
-                      amount: 0
-                  }
-              ]
+                {
+                    title: `${template.name} đã được cài sẵn`,
+                    name: template.code_name,
+                    amount: 0
+                }
+            ]
             : [];
 
     const renderPlan = (option, index) => {
@@ -160,7 +160,7 @@ export const PaymentPage = ({ value: { plan, template, account } }) => {
             set(
                 plan == option.name ||
                     additionalPlans.find((x) => x.name == option.name) !=
-                        undefined ||
+                    undefined ||
                     (option.name == 'kickey' && account != undefined)
                     ? 1
                     : 0
@@ -593,7 +593,19 @@ const PaymentFlow = ({
             currency: 'VND',
             discount_code: promotion
         });
-        if (error) setStep(error.message);
+        if (error) {
+            appDispatch(popup_open({
+                type: 'notify', data: {
+                    title: "Lỗi thanh toán!", text: "Vui lòng liên hệ fanpage để hỗ trợ các vấn đề về thanh toán.",
+                    loading: false,
+                    tips: false,
+                    circleLoading: false,
+                    confirmButton: true
+                }
+            }))
+            setStep(error.message);
+            return setTimeout(() => appDispatch(popup_close()), 5000);
+        }
         else {
             const [
                 {
@@ -1001,9 +1013,8 @@ const Stage = ({ step }) => {
         <div className="mt-6 sm:mt-8 lg:mt-12">
             <div className="grid grid-cols-3 divide-y divide-gray-200 text-start dark:divide-gray-700 lg:gap-8 lg:divide-y-0 lg:text-center">
                 <div
-                    className={`py-0 flex justify-center  ${
-                        step >= 1 ? 'text-blue-500' : 'text-gray-400'
-                    }`}
+                    className={`py-0 flex justify-center  ${step >= 1 ? 'text-blue-500' : 'text-gray-400'
+                        }`}
                 >
                     <svg
                         className="w-6 h-6"
@@ -1028,9 +1039,8 @@ const Stage = ({ step }) => {
                     </p>
                 </div>
                 <div
-                    className={`py-0 flex justify-center ${
-                        step >= 2 ? 'text-blue-500' : 'text-gray-400'
-                    }`}
+                    className={`py-0 flex justify-center ${step >= 2 ? 'text-blue-500' : 'text-gray-400'
+                        }`}
                 >
                     <svg
                         className="w-6 h-6"
@@ -1056,9 +1066,8 @@ const Stage = ({ step }) => {
                 </div>
 
                 <div
-                    className={`py-0 flex justify-center ${
-                        step >= 3 ? 'text-blue-500' : 'text-gray-400'
-                    }`}
+                    className={`py-0 flex justify-center ${step >= 3 ? 'text-blue-500' : 'text-gray-400'
+                        }`}
                 >
                     <svg
                         className="w-6 h-6"
@@ -1086,15 +1095,14 @@ const Stage = ({ step }) => {
                 <div
                     className="h-3 rounded-full bg-primary-700 dark:bg-primary-600"
                     style={{
-                        width: `${
-                            step == 1
-                                ? 15
-                                : step == 2
-                                  ? 50
-                                  : step == 3
+                        width: `${step == 1
+                            ? 15
+                            : step == 2
+                                ? 50
+                                : step == 3
                                     ? 85
                                     : 100
-                        }%`
+                            }%`
                     }}
                 ></div>
             </div>
