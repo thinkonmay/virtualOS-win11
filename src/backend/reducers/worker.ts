@@ -509,12 +509,9 @@ export const workerAsync = {
             } = getState() as RootState;
             const computer = data[currentAddress] as innerComputer;
 
-            const vmss = computer.Sessions.filter((x) => x.vm != undefined);
-            const rest = computer.Sessions.filter(
-                (x) => x.thinkmay != undefined || x.ndisk != undefined
-            );
-
-            for (const session of vmss.concat(rest)) {
+            for (const session of computer.Sessions.filter(
+                (x) => x.thinkmay != undefined || x.vm != undefined
+            ).concat(computer.Sessions.filter((x) => x.ndisk != undefined))) {
                 const info = await CloseSession(currentAddress, session);
                 if (info instanceof APIError) {
                     await appDispatch(worker_refresh());
