@@ -15,7 +15,6 @@ import {
     dispatch_generic,
     fetch_app_access,
     fetch_configuration,
-    fetch_store,
     fetch_wallet,
     menu_chng,
     menu_hide,
@@ -328,7 +327,7 @@ export const create_payment_pocket = async (args: {
     let info = undefined;
     while (!(info?.virtReady ?? false)) {
         await new Promise((r) => setTimeout(r, 20000));
-        const result = await GetInfo(args?.cluster_domain);
+        const result = await GetInfo();
         if (result instanceof APIError) throw formatError(error);
         else info = result;
     }

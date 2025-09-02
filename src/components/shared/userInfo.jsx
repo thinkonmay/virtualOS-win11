@@ -7,7 +7,6 @@ import { Contents } from '../../backend/reducers/locales';
 import { formatDate } from '../../backend/utils/date';
 import DomainSwitch from '../../containers/applications/apps/assets/DomainSwitch';
 import LangSwitch from '../../containers/applications/apps/assets/Langswitch';
-import NodeSwitch from '../../containers/applications/apps/assets/NodeSwitch';
 import { Icon } from './general';
 import './index.scss';
 
@@ -92,10 +91,6 @@ function UserInfo() {
                     </div>
                     {subscription != undefined ? (
                         <>
-                            {/* <div className="w-full flex gap-4 justify-between">
-                                <span>Node</span>
-                                <NodeSwitch />
-                            </div> */}
                             <div className="w-full flex gap-4 justify-between">
                                 <Paid />
                             </div>

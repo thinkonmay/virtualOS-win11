@@ -1,20 +1,6 @@
-import { useEffect } from 'react';
-import { UserEvents } from '../src-tauri/api/database.ts';
 import { externalLink } from './backend/utils/constant.ts';
 
 export function ErrorFallback({ error }) {
-    useEffect(
-        () =>
-            UserEvents({
-                type: 'panic',
-                payload: {
-                    message: error.message,
-                    stack: error.stack
-                }
-            }),
-        []
-    );
-
     const action = async () => {
         await navigator.clipboard.writeText(error.stack);
         window.open(externalLink.MESSAGE_LINK, '_blank');

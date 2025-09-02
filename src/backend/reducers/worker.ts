@@ -132,7 +132,7 @@ export const workerAsync = {
                 popup_open({ type: 'notify', data: { loading: true } })
             );
 
-            const info = await GetInfo(currentAddress);
+            const info = await GetInfo();
             if (info instanceof APIError) throw formatError(info);
             else if (!info.virtReady && !info.remoteReady)
                 throw new Error(`no remote capability on ${currentAddress}`);
@@ -203,7 +203,7 @@ export const workerAsync = {
                 worker: { currentAddress }
             } = getState() as RootState;
 
-            const session = await ClaimSteam(currentAddress);
+            const session = await ClaimSteam();
             if (session instanceof APIError) throw session;
             else return session;
         }
@@ -215,7 +215,7 @@ export const workerAsync = {
                 worker: { currentAddress }
             } = getState() as RootState;
 
-            const session = await ClaimStorage(currentAddress);
+            const session = await ClaimStorage();
             if (session instanceof APIError) throw session;
             else return session;
         }
@@ -343,7 +343,7 @@ export const workerAsync = {
     fetch_local_worker: createAsyncThunk(
         'fetch_local_worker',
         async (address: string): Promise<void> => {
-            const result = await GetInfo(address);
+            const result = await GetInfo();
             await appDispatch(
                 workerAsync.update_local_worker(
                     result instanceof APIError

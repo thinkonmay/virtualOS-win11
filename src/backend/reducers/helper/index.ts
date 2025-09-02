@@ -12,7 +12,6 @@ import toast from 'react-hot-toast';
 const filterActions = [
     'change_template',
     'change_app_access',
-    'change_node',
     'unclaim_volume',
     'restore_game',
     'backup_game',

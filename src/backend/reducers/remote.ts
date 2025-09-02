@@ -139,7 +139,12 @@ export const remoteAsync = {
         switch (data[currentAddress].availability) {
             case 'started':
             case 'closable':
-                const log = await GetVmLog(data[currentAddress]);
+                const session = data[currentAddress].Sessions.find(
+                    (x) => x.vm != undefined
+                )?.id;
+                if (session == undefined)
+                    throw new APIError('empty vm sessions');
+                const log = await GetVmLog(session);
                 if (log instanceof APIError) throw log;
                 if (CLIENT?.authFailed()) {
                     appDispatch(close_remote());
