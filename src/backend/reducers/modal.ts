@@ -24,6 +24,7 @@ type PopupData =
               text?: any;
               timeProcessing?: number;
               confirmButton?: boolean;
+              vnc?: string;
           };
       }
     | {

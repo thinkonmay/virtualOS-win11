@@ -278,24 +278,26 @@ export const globalAsync = {
             return samenodes;
         }
     ),
-    fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
-        const email = POCKETBASE().authStore.model?.email;
+    fetch_store: createAsyncThunk(
+        'fetch_store',
+        async (_: void, { getState }): Promise<IGame[]> => {
+            const email = (getState() as RootState).user.email;
+            const { data, error } = await GLOBAL().rpc('get_store_v2', {
+                email
+            });
 
-        const { data, error } = await GLOBAL().rpc('get_store_v2', {
-            email: email ?? null
-        });
+            if (error != null)
+                throw new Error('Failed to fetch store' + error.message);
 
-        if (error != null)
-            throw new Error('Failed to fetch store' + error.message);
-
-        return data.map((x) => ({
-            ...x,
-            tag: {
-                samenode: false,
-                hasaccount: x.kickey == 'true'
-            }
-        }));
-    }),
+            return data.map((x) => ({
+                ...x,
+                tag: {
+                    samenode: false,
+                    hasaccount: x.kickey == 'true'
+                }
+            }));
+        }
+    ),
     fetch_error_message: createAsyncThunk(
         'fetch_error_message',
         async (): Promise<ErrorMessage[]> => {

@@ -23,6 +23,7 @@ import {
     CreateSession,
     GetInfo,
     getRemoteSession,
+    getVmSession,
     GLOBAL,
     ParseRequest,
     POCKETBASE,
@@ -138,6 +139,7 @@ export const workerAsync = {
                 throw new Error(`no remote capability on ${currentAddress}`);
 
             let session = getRemoteSession(info);
+            let vmss = getVmSession(info);
             if (session == undefined) {
                 if (
                     info?.Volumes?.filter((x) => x.pool == 'user_data')
@@ -146,25 +148,34 @@ export const workerAsync = {
                     throw new Error(`you don't have any volume available`);
 
                 let finish = false;
+                let hasvnc = false;
                 const resp = await StartThinkmay(
-                    info.virtReady ? { HideVM: HideVM } : undefined,
+                    { HideVM: HideVM },
                     preferred_codec,
                     preferred_proto,
-                    info.virtReady
-                        ? (status, code) =>
-                              finish
-                                  ? new Promise(() => {})
-                                  : workerAsync.showPosition(
-                                        code != undefined || code != null
-                                            ? formatError(code)
-                                            : status
-                                    )
-                        : undefined
+                    async (status, code) => {
+                        if (hasvnc || finish) return;
+                        else if (!status.includes('broadcasters/vnc'))
+                            workerAsync.showPosition(
+                                code != undefined || code != null
+                                    ? formatError(code)
+                                    : status
+                            );
+                        else {
+                            hasvnc = true;
+                            appDispatch(
+                                popup_open({
+                                    type: 'notify',
+                                    data: { vnc: status, loading: false }
+                                })
+                            );
+                        }
+                    }
                 );
                 finish = true;
+                appDispatch(popup_close());
                 if (resp instanceof APIError) {
                     toast(formatError(resp));
-                    appDispatch(popup_close());
                     return;
                 }
                 appDispatch(
@@ -174,9 +185,10 @@ export const workerAsync = {
                     })
                 );
                 session = getRemoteSession(resp);
+                vmss = getVmSession(resp);
             }
 
-            const result = ParseRequest(session, {
+            const result = ParseRequest(vmss.id, session, {
                 high_mtu: HighMTU,
                 high_queue: HighQueue
             });
