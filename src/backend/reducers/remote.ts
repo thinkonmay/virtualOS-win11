@@ -139,10 +139,7 @@ export const remoteAsync = {
         switch (data[currentAddress].availability) {
             case 'started':
             case 'closable':
-                const log = await GetVmLog(
-                    currentAddress,
-                    data[currentAddress]
-                );
+                const log = await GetVmLog(data[currentAddress]);
                 if (log instanceof APIError) throw log;
                 if (CLIENT?.authFailed()) {
                     appDispatch(close_remote());

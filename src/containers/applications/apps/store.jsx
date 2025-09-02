@@ -446,7 +446,7 @@ const DetailPage = ({
                                 >
                                     {closeText}
                                 </button>
-                                {has_subscription ? (
+                                {true ? (
                                     code == null ? (
                                         cluster != currentAddress ? (
                                             <button

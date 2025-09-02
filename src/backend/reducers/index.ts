@@ -16,17 +16,10 @@ import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { UserEvents } from '../../../src-tauri/api';
 import { DevEnv } from '../../../src-tauri/api/database';
 
-const blacklist = ['framerate', 'bitrate', 'metrics'];
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (DevEnv) console.log({ ...(action as any) });
-    else if (
-        blacklist.filter((x) => (action as any)?.type?.includes(x))?.length == 0
-    )
-        UserEvents(action as any);
-
     return await next(action);
 };
 
@@ -184,7 +177,6 @@ export const {
     update_subscription_metadata,
     get_plans,
     get_resources,
-    change_node,
     change_template
 } = userAsync;
 export const {

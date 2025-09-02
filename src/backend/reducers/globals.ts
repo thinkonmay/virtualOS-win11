@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState, store } from '.';
-import { GLOBAL, POCKETBASE, UserEvents } from '../../../src-tauri/api';
+import { GLOBAL, POCKETBASE } from '../../../src-tauri/api';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 import { externalLink } from '../utils/constant';

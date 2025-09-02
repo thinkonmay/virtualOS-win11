@@ -3,7 +3,6 @@ import { RecordModel } from 'pocketbase';
 import { app_close, app_full, appDispatch, RootState, worker_refresh } from '.';
 import {
     APIError,
-    ChangeNode,
     ChangeTemplate,
     GLOBAL,
     POCKETBASE
@@ -240,29 +239,6 @@ export const userAsync = {
                 );
         }
     ),
-    change_node: createAsyncThunk(
-        'change_node',
-        async (node: string, { getState }): Promise<void> => {
-            const {
-                worker: { currentAddress, data, metadata }
-            } = getState() as RootState;
-
-            const vol = data[currentAddress]?.Volumes?.find(
-                (x) => x.pool == 'user_data'
-            );
-
-            if (vol == undefined) throw new Error('volume is not available');
-            else if (vol.inuse)
-                throw new Error(
-                    'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
-                );
-            else {
-                const resp = await ChangeNode(currentAddress, node, vol.name);
-                if (resp instanceof APIError) throw formatError(resp);
-                appDispatch(worker_refresh());
-            }
-        }
-    ),
     change_template: createAsyncThunk(
         'change_template',
         async (
@@ -282,11 +258,7 @@ export const userAsync = {
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
                 );
             else {
-                const resp = await ChangeTemplate(
-                    currentAddress,
-                    template,
-                    vol.name
-                );
+                const resp = await ChangeTemplate(template, vol.name);
                 if (resp instanceof APIError) throw formatError(resp);
                 appDispatch(app_close('store'));
                 appDispatch(app_full({ id: 'connectPc' }));
@@ -370,10 +342,6 @@ export const userSlice = createSlice({
             },
             {
                 fetch: userAsync.change_template,
-                hander: (state, action) => {}
-            },
-            {
-                fetch: userAsync.change_node,
                 hander: (state, action) => {}
             }
         );

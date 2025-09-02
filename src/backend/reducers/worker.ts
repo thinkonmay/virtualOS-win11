@@ -147,7 +147,6 @@ export const workerAsync = {
 
                 let finish = false;
                 const resp = await StartThinkmay(
-                    currentAddress,
                     info.virtReady ? { HideVM: HideVM } : undefined,
                     preferred_codec,
                     preferred_proto,
@@ -177,7 +176,7 @@ export const workerAsync = {
                 session = getRemoteSession(resp);
             }
 
-            const result = ParseRequest(currentAddress, session, {
+            const result = ParseRequest(session, {
                 high_mtu: HighMTU,
                 high_queue: HighQueue
             });
@@ -224,11 +223,7 @@ export const workerAsync = {
     access_steam: createAsyncThunk(
         'access_steam',
         async (_: void, { getState }): Promise<void> => {
-            const {
-                worker: { currentAddress }
-            } = getState() as RootState;
-
-            const session = await CreateSession(currentAddress, {
+            const session = await CreateSession({
                 id: v4(),
                 app: {} as Steam
             });
@@ -238,11 +233,7 @@ export const workerAsync = {
     access_storage: createAsyncThunk(
         'access_storage',
         async (_: void, { getState }): Promise<void> => {
-            const {
-                worker: { currentAddress }
-            } = getState() as RootState;
-
-            const session = await CreateSession(currentAddress, {
+            const session = await CreateSession({
                 id: v4(),
                 s3bucket: {} as S3Credential
             });
@@ -252,11 +243,7 @@ export const workerAsync = {
     restore_game: createAsyncThunk(
         'restore_game',
         async (_: void, { getState }): Promise<void> => {
-            const {
-                worker: { currentAddress }
-            } = getState() as RootState;
-
-            const session = await CreateSession(currentAddress, {
+            const session = await CreateSession({
                 id: v4(),
                 backup: {}
             });
@@ -276,7 +263,7 @@ export const workerAsync = {
             )?.vm?.Sessions?.find((x) => x.backup != undefined);
             if (session == undefined)
                 throw new Error('no backup session available');
-            const info = await CloseSession(currentAddress, session);
+            const info = await CloseSession(session);
             if (info instanceof APIError) throw info;
             appDispatch(
                 workerAsync.update_local_worker({
@@ -512,7 +499,7 @@ export const workerAsync = {
             for (const session of computer.Sessions.filter(
                 (x) => x.thinkmay != undefined || x.vm != undefined
             ).concat(computer.Sessions.filter((x) => x.ndisk != undefined))) {
-                const info = await CloseSession(currentAddress, session);
+                const info = await CloseSession(session);
                 if (info instanceof APIError) {
                     await appDispatch(worker_refresh());
                     throw formatError(info);
