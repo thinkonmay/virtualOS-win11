@@ -211,10 +211,6 @@ export const workerAsync = {
     claim_steam: createAsyncThunk(
         'claim_steam',
         async (_: void, { getState }): Promise<string> => {
-            const {
-                worker: { currentAddress }
-            } = getState() as RootState;
-
             const session = await ClaimSteam();
             if (session instanceof APIError) throw session;
             else return session;
@@ -223,10 +219,6 @@ export const workerAsync = {
     claim_storage: createAsyncThunk(
         'claim_storage',
         async (_: void, { getState }): Promise<string> => {
-            const {
-                worker: { currentAddress }
-            } = getState() as RootState;
-
             const session = await ClaimStorage();
             if (session instanceof APIError) throw session;
             else return session;
