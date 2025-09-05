@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { VncScreen } from 'react-vnc';
+import { POCKETBASE } from '../../../../src-tauri/api';
+import { getResolution } from '../../../../src-tauri/core/utils/platform';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
-import { getResolution } from '../../../../src-tauri/core/utils/platform';
 
 export function notify({
     data: {
@@ -19,6 +20,8 @@ export function notify({
     const ref = useRef();
     const { width, height } = getResolution();
     const close = () => appDispatch(popup_close());
+    const url = new URL(POCKETBASE().baseURL);
+    const proto = url.protocol == 'https:' ? 'wss' : 'ws';
 
     return (
         <div
@@ -31,7 +34,7 @@ export function notify({
         >
             {vnc ? (
                 <VncScreen
-                    url={`ws://127.0.0.1:8080${vnc}`}
+                    url={`${proto}://${url.hostname}:444${vnc}`}
                     scaleViewport
                     background="#000000"
                     style={{

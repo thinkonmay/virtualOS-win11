@@ -196,8 +196,11 @@ export const workerAsync = {
             await appDispatch(save_reference(result));
 
             appDispatch(remote_connect(result));
-            if ((await ready()) instanceof Error) appDispatch(close_remote());
-            else appDispatch(remote_ready());
+            const readyState = await ready();
+            if (readyState instanceof Error) {
+                appDispatch(close_remote());
+                throw readyState;
+            } else appDispatch(remote_ready());
         }
     ),
     unclaim_steam: createAsyncThunk(
