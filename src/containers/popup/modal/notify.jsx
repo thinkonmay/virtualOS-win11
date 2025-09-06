@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { VncScreen } from 'react-vnc';
 import { POCKETBASE } from '../../../../src-tauri/api';
-import { getResolution } from '../../../../src-tauri/core/utils/platform';
 import { useAppSelector } from '../../../backend/reducers';
 import { Contents } from '../../../backend/reducers/locales';
 
@@ -18,7 +17,15 @@ export function notify({
     }
 }) {
     const ref = useRef();
-    const { width, height } = getResolution();
+    const width = Math.max(
+        document.documentElement.clientWidth || 0,
+        window.innerWidth || 0
+    );
+    const height = Math.max(
+        document.documentElement.clientHeight || 0,
+        window.innerHeight || 0
+    );
+
     const close = () => appDispatch(popup_close());
     const url = new URL(POCKETBASE().baseURL);
     const proto = url.protocol == 'https:' ? 'wss' : 'ws';
