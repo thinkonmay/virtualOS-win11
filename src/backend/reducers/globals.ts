@@ -46,6 +46,7 @@ type Domain = {
 type ContentStyle = {
     content: string;
     style?: 'none' | 'italic' | 'bold' | 'underscore';
+    color?: string;
 };
 
 type Banner = {

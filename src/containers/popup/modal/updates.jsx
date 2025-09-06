@@ -39,7 +39,7 @@ export function versionUpdate() {
                         };
 
                         return (
-                            <span key={index} className={getStyleClasses()}>
+                            <span style={{color: part.color}} key={index} className={getStyleClasses()}>
                                 {part.content}
                             </span>
                         );
