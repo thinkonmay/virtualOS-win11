@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react';
-import Draggable from 'react-draggable';
 import {
     appDispatch,
     select_btn_gamepad,
     useAppSelector
-} from '../../../../../backend/reducers';
+} from '@/backend/reducers';
+import { useRef, useState } from 'react';
+import Draggable from 'react-draggable';
 import './index.scss';
 const GamepadButton = ({
     style,

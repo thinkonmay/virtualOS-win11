@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import Keyboard from 'react-simple-keyboard';
-import 'react-simple-keyboard/build/css/index.css';
-import useSound from 'use-sound';
-import { useShift } from '../../../../../src-tauri/core';
-import { keyboard } from '../../../../../src-tauri/singleton';
+import { useShift } from '#/core';
+import { keyboard } from '#/singleton';
 import {
     appDispatch,
     toggle_keyboard,
     useAppSelector
-} from '../../../../backend/reducers';
+} from '@/backend/reducers';
+import { useState } from 'react';
+import Keyboard from 'react-simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
+import useSound from 'use-sound';
 import './index.scss';
 import ringSound from '/audio/keyboard.mp3';
 

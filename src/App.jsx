@@ -1,12 +1,9 @@
+import { isMobile } from '#/core';
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
 import { PreloadBackground } from './backend/actions/background';
 import { afterMath } from './backend/actions/index';
-import { VirtualGamepad } from './containers/remote/control/gamepad';
-import GamingKeyboard from './containers/remote/control/gamingKeyboard';
-import { Plugin } from './containers/remote/control/plugin';
-import { VirtKeyboard } from './containers/remote/control/keyboard';
 import {
     appDispatch,
     menu_show,
@@ -24,10 +21,13 @@ import { Background, BootScreen } from './containers/background';
 import Popup from './containers/popup';
 import { login as Login } from './containers/popup/modal/login';
 import { Remote } from './containers/remote';
+import { VirtualGamepad } from './containers/remote/control/gamepad';
+import GamingKeyboard from './containers/remote/control/gamingKeyboard';
+import { VirtKeyboard } from './containers/remote/control/keyboard';
+import { Plugin } from './containers/remote/control/plugin';
 import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
-import { isMobile } from '../src-tauri/core';
 
 function App() {
     document.body.dataset.theme = 'dark';

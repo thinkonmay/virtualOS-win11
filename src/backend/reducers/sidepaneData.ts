@@ -1,5 +1,5 @@
+import { DevEnv } from '#/api/database';
 import { v4 as uuidv4 } from 'uuid';
-import { DevEnv } from '../../../src-tauri/api/database';
 import { Contents } from './locales';
 import { Message } from './sidepane';
 

@@ -1,6 +1,6 @@
+import { appDispatch, update_language } from '@/backend/reducers';
+import { localStorageKey } from '@/backend/utils/constant';
 import { useLayoutEffect, useState } from 'react';
-import { appDispatch, update_language } from '../../../../backend/reducers';
-import { localStorageKey } from '../../../../backend/utils/constant';
 
 export const allowed_language = ['ENG', 'VN', 'ID'];
 function LangSwitch() {

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { GetAudioMetric, GetVideoMetric } from '../../../src-tauri/singleton';
+import { GetAudioMetric, GetVideoMetric } from '#/singleton';
 import {
     appDispatch,
     set_status_connection,
     useAppSelector
-} from '../../backend/reducers';
+} from '@/backend/reducers';
+import { useEffect, useState } from 'react';
 import '../remote/remote.scss';
 
 export const Status = () => {

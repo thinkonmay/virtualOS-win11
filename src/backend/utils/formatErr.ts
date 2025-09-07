@@ -1,5 +1,5 @@
-import { APIError } from '../../../src-tauri/api';
-import { allowed_language } from '../../containers/applications/apps/assets/Langswitch';
+import { APIError } from '#/api';
+import { allowed_language } from '@/containers/applications/apps/assets/Langswitch';
 import { store } from '../reducers';
 import { localStorageKey } from './constant';
 

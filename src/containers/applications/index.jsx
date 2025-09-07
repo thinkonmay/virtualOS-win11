@@ -1,4 +1,4 @@
-import { useAppSelector } from '../../backend/reducers';
+import { useAppSelector } from '@/backend/reducers';
 import './tabs.scss';
 import './tabs2.scss';
 import './wnapp.scss';

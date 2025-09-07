@@ -3,8 +3,8 @@ import {
     app_full,
     popup_close,
     useAppSelector
-} from '../../../backend/reducers';
-import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
+} from '@/backend/reducers';
+import { SubscriptionPage } from '@/components/payment/subsriptionPage';
 
 export function extendService({ data: { type, available_time } }) {
     const clean_after = useAppSelector((state) =>

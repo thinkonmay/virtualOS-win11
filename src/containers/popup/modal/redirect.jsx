@@ -1,11 +1,7 @@
+import { preloadSilent } from '@/backend/actions/background';
+import { appDispatch, popup_close, useAppSelector } from '@/backend/reducers';
+import { Contents } from '@/backend/reducers/locales';
 import { MdInfoOutline } from 'react-icons/md';
-import {
-    appDispatch,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
-import { Contents } from '../../../backend/reducers/locales';
-import { preloadSilent } from '../../../backend/actions/background';
 
 export function redirectDomain({ data: { domain } }) {
     const t = useAppSelector((state) => state.globals.translation);

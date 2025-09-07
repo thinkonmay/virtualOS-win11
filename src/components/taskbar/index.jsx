@@ -1,17 +1,4 @@
-import { useEffect, useState } from 'react';
-import { BiSupport } from 'react-icons/bi';
-import useSound from 'use-sound';
-import ringSound from '/audio/ring2.mp3';
-import {
-    MdArrowBackIos,
-    MdArrowForwardIos,
-    MdGamepad,
-    MdOutlineVideoSettings,
-    MdOutlineSportsEsports,
-    MdShare,
-    MdOutlineKeyboard
-} from 'react-icons/md';
-import { afterMath, showLinkShare } from '../../backend/actions';
+import { afterMath, showLinkShare } from '@/backend/actions';
 import {
     appDispatch,
     hide_gaming_keyboard,
@@ -20,14 +7,24 @@ import {
     toggle_gamepad,
     toggle_keyboard,
     useAppSelector
-} from '../../backend/reducers';
-import { Contents } from '../../backend/reducers/locales';
+} from '@/backend/reducers';
+import { Contents } from '@/backend/reducers/locales';
+import { clickDispatch, customClickDispatch } from '@/backend/utils/dispatch';
+import { useEffect, useState } from 'react';
+import { BiSupport } from 'react-icons/bi';
 import {
-    clickDispatch,
-    customClickDispatch
-} from '../../backend/utils/dispatch';
+    MdArrowBackIos,
+    MdArrowForwardIos,
+    MdGamepad,
+    MdOutlineKeyboard,
+    MdOutlineSportsEsports,
+    MdOutlineVideoSettings,
+    MdShare
+} from 'react-icons/md';
+import useSound from 'use-sound';
 import { Icon } from '../shared/general';
 import './taskbar.scss';
+import ringSound from '/audio/ring2.mp3';
 
 const Taskbar = () => {
     const t = useAppSelector((state) => state.globals.translation);

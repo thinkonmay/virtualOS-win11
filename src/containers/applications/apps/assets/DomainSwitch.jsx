@@ -1,5 +1,5 @@
-import { preloadSilent } from '../../../../backend/actions/background';
-import { useAppSelector } from '../../../../backend/reducers';
+import { preloadSilent } from '@/backend/actions/background';
+import { useAppSelector } from '@/backend/reducers';
 
 function DomainSwitch() {
     const domain = useAppSelector((state) => state.worker.currentAddress);

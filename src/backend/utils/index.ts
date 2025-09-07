@@ -1,4 +1,4 @@
-import { DevEnv } from '../../../src-tauri/api/database';
+import { DevEnv } from '#/api/database';
 import { Contents } from '../reducers/locales';
 import { MenuOption } from '../reducers/menu';
 import { externalLink } from './constant';

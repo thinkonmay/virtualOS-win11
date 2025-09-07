@@ -1,5 +1,5 @@
+import { gamepadButton } from '#/singleton';
 import { MdOutlineArrowDropUp } from 'react-icons/md';
-import { gamepadButton } from '../../../../../../src-tauri/singleton';
 import './index.scss';
 
 const DPad = (props) => {

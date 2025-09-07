@@ -1,29 +1,25 @@
+import * as Actions from '@/backend/actions';
+import { getTreeValue } from '@/backend/actions';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import * as fa from 'react-icons/fa';
 import * as fi from 'react-icons/fi';
 import * as md from 'react-icons/md';
-import { MdArrowBack, MdOutlineClose } from 'react-icons/md';
-import * as Actions from '../../backend/actions';
-import { getTreeValue } from '../../backend/actions';
 
-import { isMobile } from '../../../src-tauri/core';
+import { isMobile } from '#/core';
 import {
     MAX_BITRATE,
     MAX_FRAMERATE,
     MIN_BITRATE,
     MIN_FRAMERATE
-} from '../../../src-tauri/singleton';
+} from '#/singleton';
 import {
     appDispatch,
     change_bitrate,
     change_framerate,
     useAppSelector
-} from '../../backend/reducers';
-import {
-    clickDispatch,
-    customClickDispatch
-} from '../../backend/utils/dispatch';
+} from '@/backend/reducers';
+import { clickDispatch, customClickDispatch } from '@/backend/utils/dispatch';
 import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';

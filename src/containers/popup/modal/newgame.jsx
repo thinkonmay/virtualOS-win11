@@ -1,5 +1,5 @@
-import { isMobile } from '../../../../src-tauri/core';
-import { app_full, appDispatch, popup_close } from '../../../backend/reducers';
+import { isMobile } from '#/core';
+import { app_full, appDispatch, popup_close } from '@/backend/reducers';
 
 export function newGame({ data: { app_name, image } }) {
     const close = () => appDispatch(popup_close());

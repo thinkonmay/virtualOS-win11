@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import Keyboard from 'react-simple-keyboard';
-import 'react-simple-keyboard/build/css/index.css';
 import {
     add_key_gamingKeyboard,
     appDispatch,
     useAppSelector
-} from '../../../../../backend/reducers';
+} from '@/backend/reducers';
+import { useState } from 'react';
+import Keyboard from 'react-simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
 import './index.scss';
 
 export const KeyboardPicker = () => {

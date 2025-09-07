@@ -1,10 +1,5 @@
+import { appDispatch, setting_setv, useAppSelector } from '@/backend/reducers';
 import { useEffect } from 'react';
-import {
-    appDispatch,
-    setting_setv,
-    setting_theme,
-    useAppSelector
-} from '../../backend/reducers';
 import './battery.scss';
 
 const Battery = ({ pct, invert }) => {

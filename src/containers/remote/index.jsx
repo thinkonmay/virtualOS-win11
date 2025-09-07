@@ -1,21 +1,21 @@
-import { useEffect, useRef } from 'react';
 import {
     AudioWrapper,
     RemoteDesktopClient,
     VideoWrapper,
     isMobile
-} from '../../../src-tauri/core';
-import { Assign, ready } from '../../../src-tauri/singleton';
-import { showConnect } from '../../backend/actions';
+} from '#/core';
+import { Assign, ready } from '#/singleton';
+import { showConnect } from '@/backend/actions';
 import {
     appDispatch,
     popup_close,
     set_fullscreen,
     toggle_objectfit,
     useAppSelector
-} from '../../backend/reducers';
-import './remote.scss';
+} from '@/backend/reducers';
+import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
+import './remote.scss';
 
 export const Remote = () => {
     const { active, auth, relative_mouse, fullscreen, objectFit } =

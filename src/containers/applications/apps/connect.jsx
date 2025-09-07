@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { create_or_replace_resources } from '../../../backend/actions';
+import { create_or_replace_resources } from '@/backend/actions';
 import {
     appDispatch,
     app_full,
@@ -22,18 +21,15 @@ import {
     useAppSelector,
     wait_and_claim_volume,
     worker_refresh_ui
-} from '../../../backend/reducers';
-import {
-    Icon,
-    LazyComponent,
-    ToolBar
-} from '../../../components/shared/general';
+} from '@/backend/reducers';
+import { Icon, LazyComponent, ToolBar } from '@/components/shared/general';
+import { useEffect, useState } from 'react';
 
+import { isMobile } from '#/core';
+import { preload } from '@/backend/actions/background';
+import { Contents } from '@/backend/reducers/locales';
+import { detectBrowserAndOS } from '@/backend/utils/detectBrower';
 import toast from 'react-hot-toast';
-import { isMobile } from '../../../../src-tauri/core';
-import { preload } from '../../../backend/actions/background';
-import { Contents } from '../../../backend/reducers/locales';
-import { detectBrowserAndOS } from '../../../backend/utils/detectBrower';
 import './assets/connect.scss';
 
 export const ConnectApp = () => {

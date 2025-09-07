@@ -1,3 +1,15 @@
+import { gamepadButton } from '#/singleton';
+import {
+    appDispatch,
+    decrease_btn_gamepad,
+    increase_btn_gamepad,
+    select_btn_gamepad,
+    set_gamepad_button_size,
+    toggle_default_gamepad_position,
+    toggle_gamepad_draggable,
+    useAppSelector
+} from '@/backend/reducers';
+import { localStorageKey } from '@/backend/utils/constant';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import Draggable from 'react-draggable'; // Both at the same time
 import {
@@ -6,19 +18,6 @@ import {
     MdArrowRight,
     MdOutlineRemoveCircleOutline
 } from 'react-icons/md';
-import { gamepadButton } from '../../../../../src-tauri/singleton';
-import {
-    appDispatch,
-    decrease_btn_gamepad,
-    increase_btn_gamepad,
-    select_btn_gamepad,
-    set_gamepad_button_size,
-    toggle_default_gamepad_position,
-    toggle_gamepad,
-    toggle_gamepad_draggable,
-    useAppSelector
-} from '../../../../backend/reducers';
-import { localStorageKey } from '../../../../backend/utils/constant';
 import GamepadButton from './button/defaultBtn';
 import DPad from './button/dpad';
 import './button/index.scss'; // Import your SCSS file

@@ -1,9 +1,9 @@
+import { GLOBAL } from '#/api';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState, store } from '.';
-import { GLOBAL, POCKETBASE } from '../../../src-tauri/api';
+import { externalLink } from '../utils/constant';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
-import { externalLink } from '../utils/constant';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 

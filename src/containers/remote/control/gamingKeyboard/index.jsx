@@ -1,5 +1,3 @@
-import { useEffect, memo, useRef, useState } from 'react';
-import Draggable from 'react-draggable';
 import {
     appDispatch,
     decrease_key_gamingKeyboard,
@@ -12,9 +10,13 @@ import {
     set_gamingKeyboard_data,
     set_keyboard_edit_state,
     useAppSelector
-} from '../../../../backend/reducers';
+} from '@/backend/reducers';
+import { memo, useEffect, useRef, useState } from 'react';
+import Draggable from 'react-draggable';
 import { GamingKeyboardButton } from './components/button';
 
+import { keyboard, virtMouse } from '#/singleton';
+import { localStorageKey } from '@/backend/utils/constant';
 import {
     MdAddCircleOutline,
     MdOutlineArrowBack,
@@ -24,8 +26,6 @@ import {
     MdOutlineRemoveCircleOutline
 } from 'react-icons/md';
 import { PiMouseLeftClickFill, PiMouseRightClickFill } from 'react-icons/pi';
-import { keyboard, virtMouse } from '../../../../../src-tauri/singleton';
-import { localStorageKey } from '../../../../backend/utils/constant';
 import { KeyboardPicker } from './components/keyboardPicker';
 
 const MouseIcons = {

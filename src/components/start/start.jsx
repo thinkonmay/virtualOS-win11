@@ -1,4 +1,4 @@
-import { useAppSelector } from '../../backend/reducers';
+import { useAppSelector } from '@/backend/reducers';
 import UserInfo from '../shared/userInfo';
 
 export const StartMenu = () => {

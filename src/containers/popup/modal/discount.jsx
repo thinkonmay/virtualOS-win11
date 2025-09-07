@@ -1,9 +1,4 @@
-import {
-    app_full,
-    appDispatch,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
+import { appDispatch, popup_close, useAppSelector } from '@/backend/reducers';
 
 export function discount({ data: { from, to, percentage, code } }) {
     const has_subscription = useAppSelector(

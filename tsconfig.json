@@ -24,11 +24,16 @@
     "jsx": "react-jsx",
     /* Linting */
     "strict": false,
+    "paths": {
+      "@/*": [ "./src/*" ],
+      "#/*": [ "./src-tauri/*" ],
+    }
   },
   "include": [
     "src",
-    "src-tauri/**.ts"
-, "src-tauri/api/tree.ts"  ],
+    "src-tauri/**.ts",
+    "src-tauri/api/tree.ts"
+  ],
   "exclude": [
     "core/**"
   ],

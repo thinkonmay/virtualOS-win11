@@ -1,16 +1,16 @@
 import {
+    create_payment_pocket,
+    replace_payment_pocket
+} from '@/backend/actions';
+import { preloadSilent } from '@/backend/actions/background';
+import {
     app_close,
     app_payload,
     app_toggle,
     appDispatch,
     startogg,
     useAppSelector
-} from '../../backend/reducers';
-import {
-    create_payment_pocket,
-    replace_payment_pocket
-} from '../../backend/actions';
-import { preloadSilent } from '../../backend/actions/background';
+} from '@/backend/reducers';
 
 const PaymentButton = ({ template, sub, switchPage }) => {
     const email = useAppSelector((state) => state.user.email);

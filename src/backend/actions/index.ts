@@ -1,7 +1,7 @@
+import { APIError, GetInfo, POCKETBASE } from '#/api';
+import { GLOBAL } from '#/api/database';
+import { keyboard } from '#/singleton';
 import toast from 'react-hot-toast';
-import { APIError, GetInfo, POCKETBASE } from '../../../src-tauri/api';
-import { GLOBAL } from '../../../src-tauri/api/database';
-import { keyboard } from '../../../src-tauri/singleton';
 import '../reducers/index';
 import {
     app_full,

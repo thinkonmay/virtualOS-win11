@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react';
-import Draggable from 'react-draggable';
 import {
     appDispatch,
     select_key_gamingKeyboard,
     useAppSelector
-} from '../../../../../backend/reducers';
+} from '@/backend/reducers';
+import { useRef, useState } from 'react';
+import Draggable from 'react-draggable';
 import './index.scss';
 export const GamingKeyboardButton = ({
     style,

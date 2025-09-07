@@ -1,6 +1,6 @@
+import { isMobile } from '#/core';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { taskApps } from '../utils';
-import { isMobile } from '../../../src-tauri/core';
 
 const initialState = {
     apps: taskApps,

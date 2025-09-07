@@ -1,18 +1,18 @@
-import { LuClipboardCopy, LuClipboardPaste } from 'react-icons/lu';
-import { Icon } from '../../../../components/shared/general';
-import {
-    MdGamepad,
-    MdOutlineKeyboard,
-    MdOutlineSportsEsports
-} from 'react-icons/md';
-import { virtMouseWheel } from '../../../../../src-tauri/singleton';
-import { clickShortCut } from '../../../../backend/actions';
+import { virtMouseWheel } from '#/singleton';
+import { clickShortCut } from '@/backend/actions';
 import {
     appDispatch,
     open_gaming_keyboard,
     toggle_gamepad,
     toggle_keyboard
-} from '../../../../backend/reducers';
+} from '@/backend/reducers';
+import { Icon } from '@/components/shared/general';
+import { LuClipboardCopy, LuClipboardPaste } from 'react-icons/lu';
+import {
+    MdGamepad,
+    MdOutlineKeyboard,
+    MdOutlineSportsEsports
+} from 'react-icons/md';
 
 export const Plugin = () => {
     return (

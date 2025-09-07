@@ -1,11 +1,7 @@
-import {
-    app_payload,
-    appDispatch,
-    useAppSelector
-} from '../../../backend/reducers';
-import { PaymentPage } from '../../../components/payment/paymentPage';
-import { SubscriptionPage } from '../../../components/payment/subsriptionPage';
-import { LazyComponent, ToolBar } from '../../../components/shared/general';
+import { app_payload, appDispatch, useAppSelector } from '@/backend/reducers';
+import { PaymentPage } from '@/components/payment/paymentPage';
+import { SubscriptionPage } from '@/components/payment/subsriptionPage';
+import { LazyComponent, ToolBar } from '@/components/shared/general';
 import './assets/payment.scss';
 import './assets/store.scss';
 

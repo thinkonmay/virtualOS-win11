@@ -1,5 +1,5 @@
-import { useAppSelector } from '../../backend/reducers';
-import { Image } from '../../components/shared/general';
+import { useAppSelector } from '@/backend/reducers';
+import { Image } from '@/components/shared/general';
 import './back.scss';
 import './getstarted.scss';
 

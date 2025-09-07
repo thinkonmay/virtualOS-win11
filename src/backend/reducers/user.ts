@@ -1,14 +1,9 @@
+import { APIError, ChangeTemplate, GLOBAL, POCKETBASE } from '#/api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_close, app_full, appDispatch, RootState, worker_refresh } from '.';
-import {
-    APIError,
-    ChangeTemplate,
-    GLOBAL,
-    POCKETBASE
-} from '../../../src-tauri/api';
-import { BuilderHelper } from './helper';
+import { app_close, app_full, appDispatch, RootState } from '.';
 import { formatError } from '../utils/formatErr';
+import { BuilderHelper } from './helper';
 
 type Metadata = {
     node: string;

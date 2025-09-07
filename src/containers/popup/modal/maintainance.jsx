@@ -1,10 +1,5 @@
-import { isMobile } from '../../../../src-tauri/core';
-import {
-    app_full,
-    appDispatch,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
+import { isMobile } from '#/core';
+import { appDispatch, popup_close, useAppSelector } from '@/backend/reducers';
 
 export function maintainance({ data: {} }) {
     const currentAddress = useAppSelector(

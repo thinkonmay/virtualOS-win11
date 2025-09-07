@@ -1,19 +1,3 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
-import { v4 } from 'uuid';
-import {
-    app_full,
-    appDispatch,
-    close_remote,
-    fetch_app_access,
-    popup_close,
-    popup_open,
-    remote_connect,
-    remote_ready,
-    RootState,
-    save_reference,
-    worker_refresh
-} from '.';
 import {
     APIError,
     ClaimSteam,
@@ -31,8 +15,24 @@ import {
     Session,
     StartThinkmay,
     Steam
-} from '../../../src-tauri/api';
-import { ready } from '../../../src-tauri/singleton';
+} from '#/api';
+import { ready } from '#/singleton';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
+import { v4 } from 'uuid';
+import {
+    app_full,
+    appDispatch,
+    close_remote,
+    fetch_app_access,
+    popup_close,
+    popup_open,
+    remote_connect,
+    remote_ready,
+    RootState,
+    save_reference,
+    worker_refresh
+} from '.';
 import { create_or_replace_resources } from '../actions';
 import { formatError } from '../utils/formatErr';
 import { formatWaitingLog } from '../utils/formatWatingLog';

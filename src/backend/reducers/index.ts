@@ -15,8 +15,8 @@ import { userAsync, userSlice } from './user';
 import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
+import { DevEnv } from '#/api/database';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { DevEnv } from '../../../src-tauri/api/database';
 
 const middleware: ThunkMiddleware = () => (next) => async (action) => {
     if (DevEnv) console.log({ ...(action as any) });

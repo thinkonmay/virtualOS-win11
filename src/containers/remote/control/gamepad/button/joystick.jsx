@@ -1,5 +1,5 @@
+import { gamepadAxis } from '#/singleton';
 import { useRef } from 'react';
-import { gamepadAxis } from '../../../../../../src-tauri/singleton';
 
 const speed = 0.48;
 const knobRadius = 0.6;

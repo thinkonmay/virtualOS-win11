@@ -1,18 +1,18 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
-import {
-    MdCheck,
-    MdKeyboardArrowLeft,
-    MdKeyboardArrowRight
-} from 'react-icons/md';
-import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
-import { isMobile } from '../../../src-tauri/core';
+import { isMobile } from '#/core';
 import {
     appDispatch,
     show_tutorial,
     sidepane_panehide,
     sidepane_paneopen,
     useAppSelector
-} from '../../backend/reducers';
+} from '@/backend/reducers';
+import { useState } from 'react';
+import {
+    MdCheck,
+    MdKeyboardArrowLeft,
+    MdKeyboardArrowRight
+} from 'react-icons/md';
+import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride';
 import { Image } from '../shared/general';
 import './assets/paidUser.scss';
 

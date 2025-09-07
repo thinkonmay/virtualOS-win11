@@ -1,8 +1,8 @@
+import { POCKETBASE } from '#/api';
+import { useAppSelector } from '@/backend/reducers';
+import { Contents } from '@/backend/reducers/locales';
 import { useEffect, useRef, useState } from 'react';
 import { VncScreen } from 'react-vnc';
-import { POCKETBASE } from '../../../../src-tauri/api';
-import { useAppSelector } from '../../../backend/reducers';
-import { Contents } from '../../../backend/reducers/locales';
 
 export function notify({
     data: {

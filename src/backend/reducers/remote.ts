@@ -1,3 +1,24 @@
+import { APIError, GetVmLog, POCKETBASE, RemoteCredential } from '#/api';
+import { isMobile } from '#/core';
+import {
+    Assign,
+    AuthFailed,
+    ChangeBitrate,
+    ChangeFramerate,
+    CloseStreaming,
+    GetVideoMetric,
+    MAX_BITRATE,
+    MAX_FRAMERATE,
+    MIN_BITRATE,
+    MIN_FRAMERATE,
+    NotReady,
+    PointerVisible,
+    ready,
+    ResetKeyStuck,
+    set_hq,
+    SetScancode,
+    Size
+} from '#/singleton';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import {
@@ -20,32 +41,6 @@ import {
     toggle_remote,
     worker_refresh
 } from '.';
-import {
-    APIError,
-    GetVmLog,
-    POCKETBASE,
-    RemoteCredential
-} from '../../../src-tauri/api';
-import { isMobile } from '../../../src-tauri/core';
-import {
-    Assign,
-    AuthFailed,
-    ChangeBitrate,
-    ChangeFramerate,
-    CloseStreaming,
-    GetVideoMetric,
-    MAX_BITRATE,
-    MAX_FRAMERATE,
-    MIN_BITRATE,
-    MIN_FRAMERATE,
-    NotReady,
-    PointerVisible,
-    ready,
-    ResetKeyStuck,
-    set_hq,
-    SetScancode,
-    Size
-} from '../../../src-tauri/singleton';
 import { originalurl } from '../actions/background';
 import { BuilderHelper } from './helper';
 

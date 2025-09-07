@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { isMobile } from '../../../../src-tauri/core';
+import { isMobile } from '#/core';
 import {
     app_external,
     app_full,
     appDispatch,
     popup_close,
     useAppSelector
-} from '../../../backend/reducers';
+} from '@/backend/reducers';
+import { useEffect, useState } from 'react';
 
 export function versionUpdate() {
     const close = () => appDispatch(popup_close());

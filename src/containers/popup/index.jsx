@@ -1,4 +1,4 @@
-import { useAppSelector } from '../../backend/reducers';
+import { useAppSelector } from '@/backend/reducers';
 import * as modalsv2 from './modal/v2';
 
 const Popup = () => {

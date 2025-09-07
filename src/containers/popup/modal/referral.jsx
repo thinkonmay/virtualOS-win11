@@ -1,11 +1,7 @@
+import { isMobile } from '#/core';
+import { originalurl } from '@/backend/actions/background';
+import { appDispatch, popup_close, useAppSelector } from '@/backend/reducers';
 import { useEffect, useState } from 'react';
-import { isMobile } from '../../../../src-tauri/core';
-import {
-    appDispatch,
-    popup_close,
-    useAppSelector
-} from '../../../backend/reducers';
-import { originalurl } from '../../../backend/actions/background';
 
 export function shareBanner() {
     const close = () => appDispatch(popup_close());

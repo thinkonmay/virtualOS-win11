@@ -1,16 +1,16 @@
-import { useState } from 'react';
 import {
     loginAction,
     loginWithEmail,
     signUpWithEmail
-} from '../../../backend/actions';
+} from '@/backend/actions';
+import { preload } from '@/backend/actions/background';
 import {
     appDispatch,
     popup_close,
     popup_open,
     useAppSelector
-} from '../../../backend/reducers';
-import { preload } from '../../../backend/actions/background';
+} from '@/backend/reducers';
+import { useState } from 'react';
 import DomainSwitch from '../../applications/apps/assets/DomainSwitch';
 
 export function login({ loading }) {

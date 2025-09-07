@@ -1,7 +1,7 @@
+import { getBrowser, getOS } from '#/core';
+import { NotReady, SetClipboard } from '#/singleton';
 import md5 from 'md5';
 import toast from 'react-hot-toast';
-import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
-import { NotReady, SetClipboard } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,

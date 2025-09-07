@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import QRCode from 'react-qr-code';
-import { GLOBAL } from '../../../src-tauri/api';
+import { GLOBAL } from '#/api';
 import {
     create_or_replace_resources,
     create_payment_pocket,
     verify_transaction
-} from '../../backend/actions';
+} from '@/backend/actions';
 import {
     app_close,
     app_toggle,
@@ -16,7 +13,10 @@ import {
     popup_close,
     popup_open,
     useAppSelector
-} from '../../backend/reducers';
+} from '@/backend/reducers';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import QRCode from 'react-qr-code';
 
 const subcontents = [
     {

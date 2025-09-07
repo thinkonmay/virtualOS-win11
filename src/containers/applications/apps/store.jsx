@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { preloadSilent } from '@/backend/actions/background';
 import {
     app_close,
     app_full,
@@ -8,12 +8,12 @@ import {
     change_template,
     show_chat,
     useAppSelector
-} from '../../../backend/reducers';
-import { LazyComponent, ToolBar } from '../../../components/shared/general';
-import './assets/store.scss';
+} from '@/backend/reducers';
+import { Contents } from '@/backend/reducers/locales';
+import { LazyComponent, ToolBar } from '@/components/shared/general';
+import { useEffect, useState } from 'react';
 import { MdInfoOutline } from 'react-icons/md';
-import { Contents } from '../../../backend/reducers/locales';
-import { preloadSilent } from '../../../backend/actions/background';
+import './assets/store.scss';
 
 export const MicroStore = () => {
     const wnapp = useAppSelector((state) =>
