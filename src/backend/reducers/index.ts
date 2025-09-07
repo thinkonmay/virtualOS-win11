@@ -106,7 +106,6 @@ export const {
     set_gamepad_button_size,
     toggle_gamepad_draggable,
     toggle_default_gamepad_position,
-    toggle_status_connection,
     hide_status_connection,
     open_status_connection,
     set_status_connection,

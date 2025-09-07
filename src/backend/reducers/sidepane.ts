@@ -342,9 +342,6 @@ export const sidepaneSlice = createSlice({
                 (x) => x.type != 'close'
             );
         },
-        toggle_status_connection: (state) => {
-            state.statusConnection = !state.statusConnection;
-        },
         hide_status_connection: (state) => {
             state.statusConnection = false;
         },

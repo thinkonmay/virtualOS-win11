@@ -29,13 +29,22 @@ import {
 import { isMobile } from '../../../src-tauri/core';
 import {
     Assign,
-    CLIENT,
+    AuthFailed,
+    ChangeBitrate,
+    ChangeFramerate,
+    CloseStreaming,
+    GetVideoMetric,
     MAX_BITRATE,
     MAX_FRAMERATE,
     MIN_BITRATE,
     MIN_FRAMERATE,
+    NotReady,
+    PointerVisible,
     ready,
-    set_hq
+    ResetKeyStuck,
+    set_hq,
+    SetScancode,
+    Size
 } from '../../../src-tauri/singleton';
 import { originalurl } from '../actions/background';
 import { BuilderHelper } from './helper';
@@ -118,9 +127,6 @@ const initialState: Data = {
     objectFit: 'fill'
 };
 
-export const setClipBoard = async (content: string) => {
-    await CLIENT?.SetClipboard(content);
-};
 export const remoteAsync = {
     check_worker: async () => {
         const {
@@ -128,8 +134,7 @@ export const remoteAsync = {
         } = store.getState();
         if (!active) return;
         else if (direct_access) return;
-        else if (CLIENT == undefined) return;
-        else if (CLIENT.Metrics.video.status == 'connected') return;
+        else if (NotReady()) return;
 
         await appDispatch(worker_refresh());
         const {
@@ -145,7 +150,7 @@ export const remoteAsync = {
                     throw new APIError('empty vm sessions');
                 const log = await GetVmLog(session);
                 if (log instanceof APIError) throw log;
-                if (CLIENT?.AuthFailed()) {
+                else if (AuthFailed()) {
                     appDispatch(close_remote());
                     toast(`Streaming auth failure`, {
                         icon: 'ℹ️',
@@ -199,17 +204,18 @@ export const remoteAsync = {
             prev_size
         } = store.getState().remote;
         if (!active) return;
-        else if (CLIENT == undefined || !CLIENT?.Ready()) return;
-        if (isMobile()) CLIENT.PointerVisible(true);
+        else if (NotReady()) return;
+        if (isMobile()) PointerVisible(true);
 
+        const metric = GetVideoMetric();
         appDispatch(
             remoteSlice.actions.metrics({
-                packetloss: CLIENT.Metrics.video.packetloss.last,
-                idrcount: CLIENT.Metrics.video.idrcount.last,
-                bitrate: CLIENT.Metrics.video.bitrate.persecond,
-                fps: CLIENT.Metrics.video.frame.persecond,
-                decodetime: CLIENT.Metrics.video.frame.decodetime,
-                delay: CLIENT.Metrics.video.frame.delay
+                packetloss: metric.packetloss.last,
+                idrcount: metric.idrcount.last,
+                bitrate: metric.bitrate.persecond,
+                fps: metric.frame.persecond,
+                decodetime: metric.frame.decodetime,
+                delay: metric.frame.delay
             })
         );
 
@@ -217,11 +223,11 @@ export const remoteAsync = {
             prev_bitrate != bitrate ||
             prev_framerate != framerate ||
             prev_hq != hq ||
-            prev_size != CLIENT.Size()
+            prev_size != Size()
         )
             appDispatch(remoteSlice.actions.internal_sync());
 
-        CLIENT.SetScancode(scancode);
+        SetScancode(scancode);
     },
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
         const address = url.searchParams.get('host');
@@ -418,7 +424,7 @@ export const remoteSlice = createSlice({
         },
         loose_focus: (state) => {
             state.focus = false;
-            CLIENT?.ResetKeyStuck();
+            ResetKeyStuck();
         },
         have_focus: (state) => {
             state.focus = true;
@@ -427,7 +433,7 @@ export const remoteSlice = createSlice({
             state.active = false;
             state.auth = undefined;
             state.fullscreen = false;
-            CLIENT?.Close();
+            CloseStreaming();
             Assign(null);
         },
         toggle_remote: (state) => {
@@ -435,7 +441,7 @@ export const remoteSlice = createSlice({
                 state.fullscreen = true;
             } else {
                 state.fullscreen = false;
-                CLIENT?.Close();
+                CloseStreaming();
             }
             state.active = !state.active;
         },
@@ -464,7 +470,7 @@ export const remoteSlice = createSlice({
         },
         pointer_lock: (state, action: PayloadAction<boolean>) => {
             state.pointer_lock = action.payload;
-            CLIENT?.PointerVisible(action.payload);
+            PointerVisible(action.payload);
         },
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
@@ -490,11 +496,11 @@ export const remoteSlice = createSlice({
         internal_sync: (state) => {
             if (
                 (state.bitrate != state.prev_bitrate ||
-                    state.prev_size != CLIENT.Size() ||
+                    state.prev_size != Size() ||
                     state.prev_hq != state.hq) &&
-                CLIENT.Size() > 0
+                Size() > 0
             ) {
-                CLIENT.ChangeBitrate(
+                ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
                             state.bitrate +
@@ -502,12 +508,12 @@ export const remoteSlice = createSlice({
                     )
                 );
                 state.prev_bitrate = state.bitrate;
-                state.prev_size = CLIENT.Size();
+                state.prev_size = Size();
                 state.prev_hq = state.hq;
             }
 
             if (state.framerate != state.prev_framerate) {
-                CLIENT.ChangeFramerate(
+                ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
                             state.framerate +

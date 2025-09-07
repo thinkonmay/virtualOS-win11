@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { CLIENT } from '../../../src-tauri/singleton';
+import { GetAudioMetric, GetVideoMetric } from '../../../src-tauri/singleton';
 import {
     appDispatch,
     set_status_connection,
-    toggle_status_connection,
     useAppSelector
 } from '../../backend/reducers';
 import '../remote/remote.scss';
@@ -19,8 +18,8 @@ export const Status = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setVideoConnectivity(CLIENT?.Metrics.video.status);
-            setAudioConnectivity(CLIENT?.Metrics.audio.status);
+            setVideoConnectivity(GetVideoMetric().status);
+            setAudioConnectivity(GetAudioMetric().status);
         }, 1000);
 
         return () => {
@@ -39,9 +38,6 @@ export const Status = () => {
         );
     }, [audioConnectivity, videoConnectivity]);
 
-    const toggleStats = () => {
-        appDispatch(toggle_status_connection());
-    };
     return (
         <>
             <div className="relative">

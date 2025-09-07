@@ -1,7 +1,7 @@
 import md5 from 'md5';
 import toast from 'react-hot-toast';
 import { getBrowser, getOS } from '../../../src-tauri/core/utils/platform.ts';
-import { CLIENT } from '../../../src-tauri/singleton';
+import { NotReady, SetClipboard } from '../../../src-tauri/singleton';
 import {
     RootState,
     appDispatch,
@@ -42,8 +42,7 @@ export const originalurl = new URL(window.location.href);
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (CLIENT == undefined || !CLIENT?.Ready()) return;
-
+        if (NotReady()) return;
         const clipboard = await navigator.clipboard.readText();
         const clipboardHash = md5(clipboard);
         if (!(store.getState() as RootState).remote.focus)
@@ -51,7 +50,7 @@ const handleClipboard = async () => {
         if (clipboardHash == old_clipboard) return;
 
         old_clipboard = clipboardHash;
-        CLIENT?.SetClipboard(clipboard);
+        SetClipboard(clipboard);
     } catch {
         if ((store.getState() as RootState).remote.focus)
             appDispatch(loose_focus());
