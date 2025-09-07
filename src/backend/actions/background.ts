@@ -36,14 +36,13 @@ import {
     update_subscription_metadata,
     worker_refresh
 } from '../reducers';
-import cluster from 'cluster';
 
 export const originalurl = new URL(window.location.href);
 
 let old_clipboard = '';
 const handleClipboard = async () => {
     try {
-        if (CLIENT == undefined || !CLIENT?.ready()) return;
+        if (CLIENT == undefined || !CLIENT?.Ready()) return;
 
         const clipboard = await navigator.clipboard.readText();
         const clipboardHash = md5(clipboard);

@@ -35,8 +35,7 @@ import {
     MIN_BITRATE,
     MIN_FRAMERATE,
     ready,
-    set_hq,
-    SIZE
+    set_hq
 } from '../../../src-tauri/singleton';
 import { originalurl } from '../actions/background';
 import { BuilderHelper } from './helper';
@@ -146,7 +145,7 @@ export const remoteAsync = {
                     throw new APIError('empty vm sessions');
                 const log = await GetVmLog(session);
                 if (log instanceof APIError) throw log;
-                if (CLIENT?.authFailed()) {
+                if (CLIENT?.AuthFailed()) {
                     appDispatch(close_remote());
                     toast(`Streaming auth failure`, {
                         icon: 'ℹ️',
@@ -200,7 +199,7 @@ export const remoteAsync = {
             prev_size
         } = store.getState().remote;
         if (!active) return;
-        else if (CLIENT == undefined || !CLIENT?.ready()) return;
+        else if (CLIENT == undefined || !CLIENT?.Ready()) return;
         if (isMobile()) CLIENT.PointerVisible(true);
 
         appDispatch(
@@ -218,11 +217,11 @@ export const remoteAsync = {
             prev_bitrate != bitrate ||
             prev_framerate != framerate ||
             prev_hq != hq ||
-            prev_size != SIZE()
+            prev_size != CLIENT.Size()
         )
             appDispatch(remoteSlice.actions.internal_sync());
 
-        CLIENT.hid.scancode = scancode;
+        CLIENT.SetScancode(scancode);
     },
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
         const address = url.searchParams.get('host');
@@ -419,7 +418,7 @@ export const remoteSlice = createSlice({
         },
         loose_focus: (state) => {
             state.focus = false;
-            if (CLIENT) CLIENT?.hid?.ResetKeyStuck();
+            CLIENT?.ResetKeyStuck();
         },
         have_focus: (state) => {
             state.focus = true;
@@ -491,11 +490,11 @@ export const remoteSlice = createSlice({
         internal_sync: (state) => {
             if (
                 (state.bitrate != state.prev_bitrate ||
-                    state.prev_size != SIZE() ||
+                    state.prev_size != CLIENT.Size() ||
                     state.prev_hq != state.hq) &&
-                SIZE() > 0
+                CLIENT.Size() > 0
             ) {
-                CLIENT?.ChangeBitrate(
+                CLIENT.ChangeBitrate(
                     Math.round(
                         ((MAX_BITRATE() - MIN_BITRATE()) / 100) *
                             state.bitrate +
@@ -503,12 +502,12 @@ export const remoteSlice = createSlice({
                     )
                 );
                 state.prev_bitrate = state.bitrate;
-                state.prev_size = SIZE();
+                state.prev_size = CLIENT.Size();
                 state.prev_hq = state.hq;
             }
 
             if (state.framerate != state.prev_framerate) {
-                CLIENT?.ChangeFramerate(
+                CLIENT.ChangeFramerate(
                     Math.round(
                         ((MAX_FRAMERATE - MIN_FRAMERATE) / 100) *
                             state.framerate +
