@@ -31,8 +31,7 @@
   },
   "include": [
     "src",
-    "src-tauri/**.ts",
-    "src-tauri/api/tree.ts"
+    "src-tauri/**.ts"
   ],
   "exclude": [
     "core/**"
