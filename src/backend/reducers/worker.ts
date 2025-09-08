@@ -154,14 +154,16 @@ export const workerAsync = {
                     preferred_codec,
                     preferred_proto,
                     async (status, code) => {
-                        if (hasvnc || finish) return;
-                        else if (!status.includes('broadcasters/vnc'))
-                            workerAsync.showPosition(
-                                code != undefined || code != null
-                                    ? formatError(code)
-                                    : status
+                        if (status.includes('broadcasters/websocket')) {
+                            const url = new URL(POCKETBASE().baseURL);
+                            const proto =
+                                url.protocol == 'https:' ? 'wss' : 'ws';
+                            const ws = new WebSocket(
+                                `${proto}://${url.hostname}:444${status}`
                             );
-                        else {
+                            ws.onmessage = async (ev) =>
+                                console.log(await (ev.data as Blob).text());
+                        } else if (status.includes('broadcasters/vnc')) {
                             hasvnc = true;
                             appDispatch(
                                 popup_open({
@@ -169,7 +171,12 @@ export const workerAsync = {
                                     data: { vnc: status, loading: false }
                                 })
                             );
-                        }
+                        } else if (!hasvnc)
+                            workerAsync.showPosition(
+                                code != undefined || code != null
+                                    ? formatError(code)
+                                    : status
+                            );
                     }
                 );
                 finish = true;
