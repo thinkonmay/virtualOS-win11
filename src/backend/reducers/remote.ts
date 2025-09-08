@@ -1,7 +1,6 @@
 import { APIError, GetVmLog, POCKETBASE, RemoteCredential } from '#/api';
 import { isMobile } from '#/core';
 import {
-    Assign,
     AuthFailed,
     ChangeBitrate,
     ChangeFramerate,
@@ -429,7 +428,6 @@ export const remoteSlice = createSlice({
             state.auth = undefined;
             state.fullscreen = false;
             CloseStreaming();
-            Assign(null);
         },
         toggle_remote: (state) => {
             if (!state.active) {
