@@ -16,6 +16,13 @@ export type ExtendMsg =
 
 type PopupData =
     | {
+          type: 'deployWatch';
+          data: {
+              vnc: string;
+              log: string;
+          };
+      }
+    | {
           type: 'notify';
           data: {
               title?: string;
@@ -24,7 +31,6 @@ type PopupData =
               text?: any;
               timeProcessing?: number;
               confirmButton?: boolean;
-              vnc?: string;
           };
       }
     | {
@@ -132,7 +138,6 @@ const initialState: Data = {
 };
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Contents } from './locales';
 export const modalSlice = createSlice({
     name: 'popup',
     initialState,

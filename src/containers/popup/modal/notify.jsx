@@ -1,14 +1,11 @@
-import { POCKETBASE } from '#/api';
 import { useAppSelector } from '@/backend/reducers';
 import { Contents } from '@/backend/reducers/locales';
-import { useEffect, useRef, useState } from 'react';
-import { VncScreen } from 'react-vnc';
+import { useEffect, useState } from 'react';
 
 export function notify({
     data: {
         title,
         text,
-        vnc,
         tips = true,
         loading = true,
         timeProcessing = 3.5,
@@ -16,19 +13,7 @@ export function notify({
         confirmButton = false
     }
 }) {
-    const ref = useRef();
-    const width = Math.max(
-        document.documentElement.clientWidth || 0,
-        window.innerWidth || 0
-    );
-    const height = Math.max(
-        document.documentElement.clientHeight || 0,
-        window.innerHeight || 0
-    );
-
     const close = () => appDispatch(popup_close());
-    const url = new URL(POCKETBASE().baseURL);
-    const proto = url.protocol == 'https:' ? 'wss' : 'ws';
 
     return (
         <div
@@ -39,66 +24,48 @@ export function notify({
                 backdropFilter: 'brightness(0.3)'
             }}
         >
-            {vnc ? (
-                <VncScreen
-                    url={`${proto}://${url.hostname}:444${vnc}`}
-                    scaleViewport
-                    background="#000000"
+            <div className="relative p-4 w-full max-w-md max-h-full">
+                <div
+                    className="relative rounded-lg p-4 pt-6 text-center shadow text-white"
                     style={{
-                        width: width * 0.75 + 'px',
-                        height: height * 0.75 + 'px'
+                        background: 'var(--fakeMica)'
                     }}
-                    ref={ref}
-                />
-            ) : (
-                <div className="relative p-4 w-full max-w-md max-h-full">
-                    <div
-                        className="relative rounded-lg p-4 pt-6 text-center shadow text-white"
-                        style={{
-                            background: 'var(--fakeMica)'
-                        }}
-                    >
-                        {circleLoading ? (
-                            <div className="mt-4" id="loader">
-                                <svg
-                                    className="progressRing"
-                                    height={48}
-                                    width={48}
-                                    viewBox="0 0 16 16"
-                                >
-                                    <circle cx="8px" cy="8px" r="7px"></circle>
-                                </svg>
-                            </div>
-                        ) : null}
-                        <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
-                            {title ?? 'Please wait...'}
-                        </p>
-                        {text ? (
-                            <p className="mb-3 md:text-xl text-center">
-                                {' '}
-                                {text}{' '}
-                            </p>
-                        ) : null}
-                        {loading ? (
-                            <LoadingProgressBar
-                                timeProcessing={timeProcessing}
-                            />
-                        ) : null}
-                        {confirmButton ? (
-                            <div className="items-center p-6 space-x-4 rounded-b border-gray-600">
-                                <button
-                                    type="submit"
-                                    className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
-                                    onClick={close}
-                                >
-                                    Confirm
-                                </button>
-                            </div>
-                        ) : null}
-                        {tips ? <Protip /> : null}
-                    </div>
+                >
+                    {circleLoading ? (
+                        <div className="mt-4" id="loader">
+                            <svg
+                                className="progressRing"
+                                height={48}
+                                width={48}
+                                viewBox="0 0 16 16"
+                            >
+                                <circle cx="8px" cy="8px" r="7px"></circle>
+                            </svg>
+                        </div>
+                    ) : null}
+                    <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
+                        {title ?? 'Please wait...'}
+                    </p>
+                    {text ? (
+                        <p className="mb-3 md:text-xl text-center"> {text} </p>
+                    ) : null}
+                    {loading ? (
+                        <LoadingProgressBar timeProcessing={timeProcessing} />
+                    ) : null}
+                    {confirmButton ? (
+                        <div className="items-center p-6 space-x-4 rounded-b border-gray-600">
+                            <button
+                                type="submit"
+                                className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-700 dark:hover:bg-primary-800 dark:focus:ring-primary-800"
+                                onClick={close}
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    ) : null}
+                    {tips ? <Protip /> : null}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

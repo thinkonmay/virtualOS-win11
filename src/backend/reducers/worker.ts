@@ -147,41 +147,38 @@ export const workerAsync = {
                 )
                     throw new Error(`you don't have any volume available`);
 
-                let finish = false;
-                let hasvnc = false;
-                let ws : WebSocket = undefined
+                let vncURL = undefined;
+                let logURL = undefined;
+                const callback = async (status: string, code?: number) => {
+                    if (status.includes('broadcasters/websocket'))
+                        logURL = status;
+                    else if (status.includes('broadcasters/vnc'))
+                        vncURL = status;
+                    else if (logURL == undefined || vncURL == undefined)
+                        workerAsync.showPosition(
+                            code != undefined || code != null
+                                ? formatError(code)
+                                : status
+                        );
+                    if (logURL != undefined && vncURL != undefined)
+                        appDispatch(
+                            popup_open({
+                                type: 'deployWatch',
+                                data: {
+                                    vnc: vncURL,
+                                    log: logURL
+                                }
+                            })
+                        );
+                };
+
                 const resp = await StartThinkmay(
                     { HideVM: HideVM },
                     preferred_codec,
                     preferred_proto,
-                    async (status, code) => {
-                        if (status.includes('broadcasters/websocket')) {
-                            const url = new URL(POCKETBASE().baseURL);
-                            const proto =
-                                url.protocol == 'https:' ? 'wss' : 'ws';
-                            ws = new WebSocket(
-                                `${proto}://${url.hostname}:444${status}`
-                            );
-                            ws.onmessage = async (ev) =>
-                                console.log(await (ev.data as Blob).text());
-                        } else if (status.includes('broadcasters/vnc')) {
-                            hasvnc = true;
-                            appDispatch(
-                                popup_open({
-                                    type: 'notify',
-                                    data: { vnc: status, loading: false }
-                                })
-                            );
-                        } else if (!hasvnc)
-                            workerAsync.showPosition(
-                                code != undefined || code != null
-                                    ? formatError(code)
-                                    : status
-                            );
-                    }
+                    callback
                 );
-                finish = true;
-                if (ws != undefined) ws.close()
+
                 appDispatch(popup_close());
                 if (resp instanceof APIError) {
                     toast(formatError(resp));
