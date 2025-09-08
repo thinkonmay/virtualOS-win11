@@ -149,6 +149,7 @@ export const workerAsync = {
 
                 let finish = false;
                 let hasvnc = false;
+                let ws : WebSocket = undefined
                 const resp = await StartThinkmay(
                     { HideVM: HideVM },
                     preferred_codec,
@@ -158,7 +159,7 @@ export const workerAsync = {
                             const url = new URL(POCKETBASE().baseURL);
                             const proto =
                                 url.protocol == 'https:' ? 'wss' : 'ws';
-                            const ws = new WebSocket(
+                            ws = new WebSocket(
                                 `${proto}://${url.hostname}:444${status}`
                             );
                             ws.onmessage = async (ev) =>
@@ -180,6 +181,7 @@ export const workerAsync = {
                     }
                 );
                 finish = true;
+                if (ws != undefined) ws.close()
                 appDispatch(popup_close());
                 if (resp instanceof APIError) {
                     toast(formatError(resp));
