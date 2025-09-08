@@ -5,6 +5,7 @@ import {
     ChangeBitrate,
     ChangeFramerate,
     CloseStreaming,
+    Connected,
     GetVideoMetric,
     MAX_BITRATE,
     MAX_FRAMERATE,
@@ -126,9 +127,7 @@ export const remoteAsync = {
         const {
             remote: { active, direct_access }
         } = store.getState();
-        if (!active) return;
-        else if (direct_access) return;
-        else if (NotReady()) return;
+        if (!active || direct_access || Connected()) return;
 
         await appDispatch(worker_refresh());
         const {
