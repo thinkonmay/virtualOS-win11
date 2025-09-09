@@ -13,7 +13,7 @@ export function deployWatch({ data: { vnc, log } }) {
         const ws = new WebSocket(`${proto}://${url.hostname}:444${log}`);
         ws.onmessage = async (ev) => {
             const txt = await ev.data.text();
-            setLog((logs) => [...logs, txt]);
+            setLog((logs) => [txt,...logs]);
         };
 
         return () => {
