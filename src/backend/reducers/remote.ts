@@ -1,4 +1,4 @@
-import { APIError, GetVmLog, POCKETBASE, RemoteCredential } from '#/api';
+import { APIError, POCKETBASE, RemoteCredential } from '#/api';
 import { isMobile } from '#/core';
 import {
     AuthFailed,
@@ -141,8 +141,6 @@ export const remoteAsync = {
                 )?.id;
                 if (session == undefined)
                     throw new APIError('empty vm sessions');
-                const log = await GetVmLog(session);
-                if (log instanceof APIError) throw log;
                 else if (AuthFailed()) {
                     appDispatch(close_remote());
                     toast(`Streaming auth failure`, {
