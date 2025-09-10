@@ -1,9 +1,4 @@
-import {
-    AudioWrapper,
-    RemoteDesktopClient,
-    VideoWrapper,
-    isMobile
-} from '#/core';
+import { AudioWrapper, Thinkmay, VideoWrapper, isMobile } from '#/core';
 import { Assign, ready } from '#/singleton';
 import { showConnect } from '@/backend/actions';
 import {
@@ -59,11 +54,12 @@ export const Remote = () => {
 
     const setupWebRTC = () =>
         Assign(
-            new RemoteDesktopClient(
+            new Thinkmay(
                 new VideoWrapper(remoteVideo.current, auth.videoUrl),
                 new AudioWrapper(remoteAudio.current, auth.audioUrl),
-                auth.dataUrl,
-                auth.microUrl
+                auth.hidUrl,
+                auth.microUrl,
+                auth.logUrl
             )
         );
 

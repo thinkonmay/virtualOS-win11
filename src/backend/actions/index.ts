@@ -1,5 +1,5 @@
 import { APIError, GetInfo, POCKETBASE } from '#/api';
-import { GLOBAL } from '#/api/database';
+import { GLOBAL } from '#/api';
 import { keyboard } from '#/singleton';
 import toast from 'react-hot-toast';
 import '../reducers/index';

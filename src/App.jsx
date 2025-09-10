@@ -28,6 +28,7 @@ import { Plugin } from './containers/remote/control/plugin';
 import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
+import { LogCallback } from '#/singleton';
 
 function App() {
     document.body.dataset.theme = 'dark';
@@ -76,13 +77,8 @@ function App() {
     };
 
     useEffect(() => {
-        const now = () => new Date().getTime();
-        const start_fetch = now();
-        PreloadBackground().finally(async () => {
-            const finish_fetch = now();
-            const interval = finish_fetch - start_fetch;
-            setLockscreen(false);
-        });
+        LogCallback(console.log);
+        PreloadBackground().finally(() => setLockscreen(false));
     }, []);
 
     const fullscreen = async () => {

@@ -1,4 +1,3 @@
-import { DevEnv } from '#/api/database';
 import { v4 as uuidv4 } from 'uuid';
 import { Contents } from './locales';
 import { Message } from './sidepane';
@@ -158,19 +157,7 @@ export const listDesktopSettings = [
         state: 'relative_mouse',
         action: 'remote/relative_mouse',
         explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
-    },
-    ...(!DevEnv
-        ? []
-        : [
-              //   {
-              //       ui: true,
-              //       id: 'toggle_remote_async',
-              //       src: 'FiVideoOff',
-              //       name: [Contents.VIDEO_TOGGLE],
-              //       state: 'active',
-              //       action: 'toggle_remote_async'
-              //   },
-          ])
+    }
 ];
 
 export type IGamingKey =

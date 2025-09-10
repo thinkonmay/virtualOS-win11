@@ -1,4 +1,3 @@
-import { DevEnv } from '#/api/database';
 import { Contents } from '../reducers/locales';
 import { MenuOption } from '../reducers/menu';
 import { externalLink } from './constant';
@@ -97,8 +96,7 @@ var { taskbar, desktop } = {
         'storage',
         'steam',
         'payment',
-        'facebook',
-        ...(DevEnv ? ['worker'] : [])
+        'facebook'
     ]
 };
 

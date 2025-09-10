@@ -255,7 +255,7 @@ export const remoteAsync = {
                 videoUrl: `wss://${address}:444/broadcasters/webrtc?token=${video}${opt}`,
                 audioUrl: `wss://${address}:444/broadcasters/webrtc?token=${audio}`,
                 microUrl: `wss://${address}:444/broadcasters/microphone?token=${mic}`,
-                dataUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
+                hidUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
             })
         );
         if ((await ready()) instanceof Error) appDispatch(close_remote());
@@ -268,8 +268,8 @@ export const remoteAsync = {
             const audio = new URL(info.audioUrl).searchParams.get('token');
             const video = new URL(info.videoUrl).searchParams.get('token');
             const mic = new URL(info.microUrl).searchParams.get('token');
-            const data = new URL(info.dataUrl).searchParams.get('token');
-            const host = new URL(info.dataUrl).hostname;
+            const data = new URL(info.hidUrl).searchParams.get('token');
+            const host = new URL(info.hidUrl).hostname;
 
             const url = new URL(originalurl.toString());
             url.searchParams.set('audio', audio);
