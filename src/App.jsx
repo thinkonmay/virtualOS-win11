@@ -29,6 +29,7 @@ import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
 import { LogCallback } from '#/singleton';
+import { DevEnv } from '#/api/database';
 
 function App() {
     document.body.dataset.theme = 'dark';
@@ -77,7 +78,7 @@ function App() {
     };
 
     useEffect(() => {
-        LogCallback(console.log);
+        if (DevEnv) LogCallback(console.log);
         PreloadBackground().finally(() => setLockscreen(false));
     }, []);
 
