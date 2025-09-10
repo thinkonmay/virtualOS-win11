@@ -22,10 +22,11 @@ const blacklist = ['remote/metrics', 'popup/popup_open', 'popup/popup_close'];
 const middleware: ThunkMiddleware = () => (next) => async (a) => {
     const { type } = a as { type: string };
     if (DevEnv && !blacklist.includes(type)) logAction(a);
+    if (!blacklist.includes(type)) logRybbit(a);
     return await next(a);
 };
 
-const logAction = (a: any) => {
+const logAction = async (a: any) => {
     const { type, payload, error } = a as {
         type: string;
         payload: any;
@@ -38,6 +39,19 @@ const logAction = (a: any) => {
     else if (t[0] == 'fulfilled' && payload != undefined)
         console.log(t.join(' '), payload);
     else console.log(t.join(' '));
+};
+
+const logRybbit = async (a: any) => {
+    const { type, error } = a as {
+        type: string;
+        error: { message: string };
+    };
+    const t = type.split('/').reverse();
+    if (!['rejected', 'fulfilled', 'pending'].includes(t[0]))
+        window.rybbit.event(t[0]);
+    else if (t[0] == 'rejected')
+        window.rybbit.event(t[1], { error: error.message });
+    else window.rybbit.event(t[1], { result: t[0] });
 };
 
 export const store = configureStore({

@@ -28,8 +28,6 @@ import { Plugin } from './containers/remote/control/plugin';
 import { Status } from './containers/status';
 import { ErrorFallback } from './error';
 import './index.css';
-import { LogCallback } from '#/singleton';
-import { DevEnv } from '#/api/database';
 
 function App() {
     document.body.dataset.theme = 'dark';
@@ -78,7 +76,6 @@ function App() {
     };
 
     useEffect(() => {
-        if (DevEnv) LogCallback(console.log);
         PreloadBackground().finally(() => setLockscreen(false));
     }, []);
 

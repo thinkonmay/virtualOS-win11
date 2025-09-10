@@ -1,5 +1,5 @@
 import { getBrowser, getOS } from '#/core';
-import { NotReady, SetClipboard } from '#/singleton';
+import { LogCallback, NotReady, SetClipboard } from '#/singleton';
 import md5 from 'md5';
 import toast from 'react-hot-toast';
 import {
@@ -36,6 +36,7 @@ import {
     update_subscription_metadata,
     worker_refresh
 } from '../reducers';
+import { DevEnv } from '#/api/database';
 
 export const originalurl = new URL(window.location.href);
 
@@ -86,10 +87,11 @@ const updateGametag = () => appDispatch(update_game_tag());
 
 const updateUI = async () => {
     const {
-        user: { subscription, email, discounts },
+        user: { id, subscription, email, discounts },
         worker: { currentAddress, bucket, app_access }
     } = store.getState();
 
+    window.rybbit.identify(id);
     if (bucket == undefined || getOS() != 'Windows')
         appDispatch(app_remove('storage'));
     if (app_access == undefined || getOS() != 'Windows')
@@ -312,4 +314,13 @@ export const PreloadBackground = async () => {
     setInterval(check_worker, 10 * 1000);
     setInterval(handleClipboard, 300);
     setInterval(sync, 2 * 1000);
+    if (DevEnv) LogCallback(console.log);
+    LogCallback((log) => {
+        const data = log.split(':');
+        if (data[0] == 'log') return;
+        else if (['spawned', 'closed'].includes(data[0]))
+            window.rybbit.event(data[1], {
+                content: data[0]
+            });
+    });
 };
