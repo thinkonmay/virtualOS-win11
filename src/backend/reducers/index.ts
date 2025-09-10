@@ -18,10 +18,23 @@ import { workerAsync, workerSlice } from './worker';
 import { DevEnv } from '#/api/database';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
-const middleware: ThunkMiddleware = () => (next) => async (action) => {
-    if (DevEnv) console.log({ ...(action as any) });
-    return await next(action);
+const blacklist = ['remote/metrics']
+const middleware: ThunkMiddleware = () => (next) => async (a) => {
+    const { type } = a as { type: string }
+    if (DevEnv && !blacklist.includes(type)) log(a);
+    return await next(a);
 };
+
+const log = (a: any) => {
+    const { type, payload, error } = a as { type: string, payload: any, error: { message: string } }
+    const t = type.split("/").reverse()
+    if (t[0] == 'rejected')
+        console.log(t.join(' '), error.message)
+    else if (t[0] == 'fulfilled' && payload != undefined)
+        console.log(t.join(' '), payload)
+    else
+        console.log(t.join(' '))
+}
 
 export const store = configureStore({
     devTools: true,
