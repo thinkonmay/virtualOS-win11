@@ -1,5 +1,9 @@
 import { CancelDeployment, POCKETBASE } from '#/api';
-import { appDispatch, worker_refresh_ui } from '@/backend/reducers';
+import {
+    appDispatch,
+    popup_close,
+    worker_refresh_ui
+} from '@/backend/reducers';
 import { useEffect, useState } from 'react';
 import { VncScreen } from 'react-vnc';
 

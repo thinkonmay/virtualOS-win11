@@ -513,16 +513,14 @@ export const workerAsync = {
                 (x) => x.thinkmay != undefined || x.vm != undefined
             ).concat(computer.Sessions.filter((x) => x.ndisk != undefined))) {
                 const info = await CloseSession(session);
-                if (info instanceof APIError) {
-                    await appDispatch(worker_refresh());
-                    throw formatError(info);
-                } else
+                if (!(info instanceof APIError)) {
                     await appDispatch(
                         workerAsync.update_local_worker({
                             info,
                             currentAddress: currentAddress
                         })
                     );
+                }
             }
         }
     )
