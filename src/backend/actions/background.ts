@@ -40,24 +40,6 @@ import { DevEnv } from '#/api/database';
 
 export const originalurl = new URL(window.location.href);
 
-let old_clipboard = '';
-const handleClipboard = async () => {
-    try {
-        if (NotReady()) return;
-        const clipboard = await navigator.clipboard.readText();
-        const clipboardHash = md5(clipboard);
-        if (!(store.getState() as RootState).remote.focus)
-            appDispatch(have_focus());
-        if (clipboardHash == old_clipboard) return;
-
-        old_clipboard = clipboardHash;
-        SetClipboard(clipboard);
-    } catch {
-        if ((store.getState() as RootState).remote.focus)
-            appDispatch(loose_focus());
-    }
-};
-
 const setDomain = async () => {
     const defaultDomain = 'saigon2.thinkmay.net';
     const address = localStorage.getItem('thinkmay_domain');
@@ -312,8 +294,9 @@ export const PreloadBackground = async () => {
 
     await preload();
     setInterval(check_worker, 10 * 1000);
-    setInterval(handleClipboard, 300);
     setInterval(sync, 2 * 1000);
+    window.onfocus = () => appDispatch(have_focus());
+    window.onblur = () => appDispatch(loose_focus());
     if (DevEnv) LogCallback(console.log);
     LogCallback((log) => {
         const data = log.split(':');

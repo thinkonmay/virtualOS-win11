@@ -16,6 +16,7 @@ import {
     ready,
     ResetKeyStuck,
     set_hq,
+    SetClipboard,
     SetScancode,
     Size
 } from '#/singleton';
@@ -123,6 +124,10 @@ const initialState: Data = {
 };
 
 export const remoteAsync = {
+    handleClipboard: async () => {
+        const clipboard = await navigator.clipboard.readText();
+        await SetClipboard(clipboard);
+    },
     check_worker: async () => {
         const {
             remote: { active, direct_access }
@@ -419,6 +424,7 @@ export const remoteSlice = createSlice({
         },
         have_focus: (state) => {
             state.focus = true;
+            remoteAsync.handleClipboard();
         },
         close_remote: (state) => {
             state.active = false;
