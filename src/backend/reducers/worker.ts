@@ -142,8 +142,9 @@ export const workerAsync = {
             let vmss = getVmSession(info);
             if (session == undefined) {
                 if (
-                    info?.Volumes?.filter((x) => x.pool == 'user_data')
-                        .length == 0
+                    info?.Volumes?.filter(
+                        (x) => x.pool == 'user_data' || x.pool == 'unified_data'
+                    ).length == 0
                 )
                     throw new Error(`you don't have any volume available`);
 
@@ -305,7 +306,9 @@ export const workerAsync = {
                 if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
             } else if (info.virtReady) {
-                const volume = info.Volumes?.find((x) => x.pool == 'user_data');
+                const volume = info.Volumes?.find(
+                    (x) => x.pool == 'user_data' || x.pool == 'unified_data'
+                );
                 const inuse = volume?.inuse;
                 const has_vm =
                     info.Sessions?.find((x) => x.vm != undefined) != undefined;
