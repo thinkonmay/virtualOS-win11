@@ -13,10 +13,9 @@ import {
     Session,
     StartThinkmay
 } from '#/api';
-import { BackupVM, ready } from '#/singleton';
+import { BackupGame, ready, RestoreGame } from '#/singleton';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
-import { v4 } from 'uuid';
 import {
     app_full,
     appDispatch,
@@ -234,14 +233,24 @@ export const workerAsync = {
     restore_game: createAsyncThunk(
         'restore_game',
         async (_: void, { getState }): Promise<void> => {
-            BackupVM();
+            RestoreGame();
             await appDispatch(workerAsync.worker_refresh());
         }
     ),
     backup_game: createAsyncThunk(
         'backup_game',
         async (_: void, { getState }): Promise<void> => {
-            // TODO
+            const {
+                worker: { currentAddress, data }
+            } = getState() as RootState;
+
+            const session = data[currentAddress]?.Sessions?.find(
+                (x) => x.vm != undefined
+            )?.vm?.Sessions?.find((x) => x.backup != undefined);
+            if (session == undefined)
+                throw new Error('no backup session available');
+
+            BackupGame(session.id);
         }
     ),
     update_local_worker: createAsyncThunk(
