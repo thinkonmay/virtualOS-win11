@@ -191,8 +191,6 @@ export const {
     wait_and_claim_volume,
     claim_steam,
     claim_storage,
-    access_steam,
-    access_storage,
     restore_game,
     backup_game,
     unclaim_steam,

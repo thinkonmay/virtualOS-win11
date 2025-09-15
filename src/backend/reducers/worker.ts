@@ -4,19 +4,16 @@ import {
     ClaimStorage,
     CloseSession,
     Computer,
-    CreateSession,
     GetInfo,
     getRemoteSession,
     getVmSession,
     GLOBAL,
     ParseRequest,
     POCKETBASE,
-    S3Credential,
     Session,
-    StartThinkmay,
-    Steam
+    StartThinkmay
 } from '#/api';
-import { ready } from '#/singleton';
+import { BackupVM, ready } from '#/singleton';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import { v4 } from 'uuid';
@@ -234,57 +231,17 @@ export const workerAsync = {
             else return session;
         }
     ),
-    access_steam: createAsyncThunk(
-        'access_steam',
-        async (_: void, { getState }): Promise<void> => {
-            const session = await CreateSession({
-                id: v4(),
-                app: {} as Steam
-            });
-            if (session instanceof APIError) throw session;
-        }
-    ),
-    access_storage: createAsyncThunk(
-        'access_storage',
-        async (_: void, { getState }): Promise<void> => {
-            const session = await CreateSession({
-                id: v4(),
-                s3bucket: {} as S3Credential
-            });
-            if (session instanceof APIError) throw session;
-        }
-    ),
     restore_game: createAsyncThunk(
         'restore_game',
         async (_: void, { getState }): Promise<void> => {
-            const session = await CreateSession({
-                id: v4(),
-                backup: {}
-            });
-            if (session instanceof APIError) throw session;
+            BackupVM();
             await appDispatch(workerAsync.worker_refresh());
         }
     ),
     backup_game: createAsyncThunk(
         'backup_game',
         async (_: void, { getState }): Promise<void> => {
-            const {
-                worker: { currentAddress, data }
-            } = getState() as RootState;
-
-            const session = data[currentAddress]?.Sessions?.find(
-                (x) => x.vm != undefined
-            )?.vm?.Sessions?.find((x) => x.backup != undefined);
-            if (session == undefined)
-                throw new Error('no backup session available');
-            const info = await CloseSession(session);
-            if (info instanceof APIError) throw info;
-            appDispatch(
-                workerAsync.update_local_worker({
-                    currentAddress,
-                    info
-                })
-            );
+            // TODO
         }
     ),
     update_local_worker: createAsyncThunk(
