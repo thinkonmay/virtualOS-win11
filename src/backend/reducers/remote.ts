@@ -227,13 +227,20 @@ export const remoteAsync = {
     },
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
         const address = url.searchParams.get('host');
+        const codec = url.searchParams.get('codec');
         const audio = url.searchParams.get('audio');
-        const mic = url.searchParams.get('mic');
         const video = url.searchParams.get('video');
         const data = url.searchParams.get('data');
+        const vmid = url.searchParams.get('vmid');
         const high_queue = store.getState().worker.HighQueue;
         const high_mtu = store.getState().worker.HighMTU;
-        if (address == null || audio == null || video == null || data == null)
+        if (
+            address == null ||
+            audio == null ||
+            video == null ||
+            data == null ||
+            vmid == null
+        )
             return false;
 
         // add demo ref here
@@ -250,15 +257,16 @@ export const remoteAsync = {
                 }
             });
 
-        const opt = `&queue_size=${high_queue ? 64 : 16}&mtu=${
+        const opt = `&vmid=${vmid}&queue_size=${high_queue ? 64 : 16}&mtu=${
             high_mtu ? 1400 : 1200
         }`;
         appDispatch(
             remote_connect({
-                videoUrl: `wss://${address}:444/broadcasters/webrtc?token=${video}${opt}`,
-                audioUrl: `wss://${address}:444/broadcasters/webrtc?token=${audio}`,
-                microUrl: `wss://${address}:444/broadcasters/microphone?token=${mic}`,
-                hidUrl: `wss://${address}:444/broadcasters/websocket?token=${data}`
+                videoUrl: `wss://${address}:444/broadcasters/webrtc/recvonly?token=${video}${opt}&codec=${
+                    codec ?? 'h264'
+                }`,
+                audioUrl: `wss://${address}:444/broadcasters/webrtc/recvonly?token=${audio}${opt}&codec=opus`,
+                hidUrl: `wss://${address}:444/broadcasters/websocket?token=${data}${opt}`
             })
         );
         if ((await ready()) instanceof Error) appDispatch(close_remote());
@@ -268,16 +276,18 @@ export const remoteAsync = {
     save_reference: createAsyncThunk(
         'save_reference',
         async (info: RemoteCredential): Promise<string> => {
-            const audio = new URL(info.audioUrl).searchParams.get('token');
+            const vmid = new URL(info.videoUrl).searchParams.get('vmid');
+            const codec = new URL(info.videoUrl).searchParams.get('codec');
             const video = new URL(info.videoUrl).searchParams.get('token');
-            const mic = new URL(info.microUrl).searchParams.get('token');
+            const audio = new URL(info.audioUrl).searchParams.get('token');
             const data = new URL(info.hidUrl).searchParams.get('token');
             const host = new URL(info.hidUrl).hostname;
 
             const url = new URL(originalurl.toString());
             url.searchParams.set('audio', audio);
+            url.searchParams.set('codec', codec);
             url.searchParams.set('video', video);
-            url.searchParams.set('mic', mic);
+            url.searchParams.set('vmid', vmid);
             url.searchParams.set('data', data);
             url.searchParams.set('host', host);
             return url.toString();

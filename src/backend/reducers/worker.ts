@@ -36,11 +36,11 @@ import { BuilderHelper } from './helper';
 
 type innerComputer = Computer & {
     availability?:
-    | 'no_node'
-    | 'ready'
-    | 'started'
-    | 'waiting_shutdown'
-    | 'closable';
+        | 'no_node'
+        | 'ready'
+        | 'started'
+        | 'waiting_shutdown'
+        | 'closable';
     backup?: 'capable' | 'ongoing';
     network_disk: boolean;
     available_templates: string[];
@@ -208,11 +208,11 @@ export const workerAsync = {
     ),
     unclaim_steam: createAsyncThunk(
         'unclaim_steam',
-        async (_: Session, { getState }): Promise<void> => { }
+        async (_: Session, { getState }): Promise<void> => {}
     ),
     unclaim_storage: createAsyncThunk(
         'unclaim_storage',
-        async (_: Session, { getState }): Promise<void> => { }
+        async (_: Session, { getState }): Promise<void> => {}
     ),
     claim_steam: createAsyncThunk(
         'claim_steam',
@@ -234,7 +234,7 @@ export const workerAsync = {
         'restore_game',
         async (_: void, { getState }): Promise<void> => {
             RestoreGame();
-            await new Promise(r => setTimeout(r, 1000 * 10))
+            await new Promise((r) => setTimeout(r, 1000 * 10));
             await appDispatch(workerAsync.worker_refresh());
         }
     ),
@@ -253,7 +253,7 @@ export const workerAsync = {
                 throw new Error('no backup session available');
 
             BackupGame(session.id);
-            await new Promise(r => setTimeout(r, 1000 * 20))
+            await new Promise((r) => setTimeout(r, 1000 * 20));
             await appDispatch(workerAsync.worker_refresh());
         }
     ),
@@ -334,13 +334,13 @@ export const workerAsync = {
                 workerAsync.update_local_worker(
                     result instanceof APIError
                         ? {
-                            info: {},
-                            currentAddress: address
-                        }
+                              info: {},
+                              currentAddress: address
+                          }
                         : {
-                            info: result,
-                            currentAddress: address
-                        }
+                              info: result,
+                              currentAddress: address
+                          }
                 )
             );
         }
@@ -394,9 +394,9 @@ export const workerAsync = {
         'fetch_app_access',
         async (): Promise<
             | {
-                id: string;
-                app_id: string;
-            }
+                  id: string;
+                  app_id: string;
+              }
             | undefined
         > => {
             const volumes = await POCKETBASE()
@@ -536,7 +536,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.unclaim_volume,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.claim_steam,
@@ -552,7 +552,7 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.worker_refresh_ui,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.fetch_configuration,
@@ -574,15 +574,15 @@ export const workerSlice = createSlice({
             },
             {
                 fetch: workerAsync.change_app_access,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.restore_game,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.backup_game,
-                hander: (state, action) => { }
+                hander: (state, action) => {}
             }
         );
     }
