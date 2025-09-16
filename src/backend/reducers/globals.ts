@@ -268,11 +268,21 @@ export const globalAsync = {
             const volumes = tree[currentAddress]?.Volumes;
             if (volumes == undefined || volumes.length == 0) return [];
 
-            const node = volumes.find((x) => x.pool == 'user_data')?.node;
-            if (node == undefined) return [];
+            const usernode = volumes.find(
+                (x) =>
+                    x.pool == 'user_data' ||
+                    (x.pool == 'unified_data' && !x.name.includes('template'))
+            )?.node;
+            if (usernode == undefined) return [];
 
             const samenodes = volumes
-                .filter((x) => x.node == node && x.pool == 'app_data')
+                .filter(
+                    (x) =>
+                        x.node == usernode &&
+                        (x.pool == 'app_data' ||
+                            (x.pool == 'unified_data' &&
+                                x.name.includes('template')))
+                )
                 .map((x) => x.name);
 
             return samenodes;
