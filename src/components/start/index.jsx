@@ -1,4 +1,4 @@
-import * as Actions from '@/backend/actions';
+import { clickShortCut } from '@/backend/actions';
 import { getTreeValue } from '@/backend/actions';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
@@ -446,7 +446,7 @@ const MobileShortCutBtn = ({ qk }) => {
         <div className="qkGrp">
             <div
                 className={`qkbtn handcr prtclk`}
-                onClick={() => Actions.clickShortCut(qk.val)}
+                onClick={() => clickShortCut([...qk.val])}
                 onTouchEnd={handleTouchEnd}
                 onTouchStart={handleTouchStart}
                 style={{
@@ -627,7 +627,7 @@ function DesktopComponent({
                                 fontSize: '0.8rem'
                             }}
                             className="qkbtn handcr prtclk"
-                            onClick={() => Actions.clickShortCut(qk.val)}
+                            onClick={() => clickShortCut([...qk.val])}
                         >
                             {qk.name}
                         </div>
