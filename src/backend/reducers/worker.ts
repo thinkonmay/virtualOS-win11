@@ -286,7 +286,11 @@ export const workerAsync = {
                 else availability = 'ready';
 
                 info.Volumes?.filter(
-                    (x) => x.pool == 'app_data' && x.name.includes('.template')
+                    (x) =>
+                        (x.pool == 'app_data' ||
+                            (x.pool == 'unified_data' &&
+                                x.name.includes('template'))) &&
+                        x.name.includes('.template')
                 )?.forEach(({ name }) =>
                     !available_templates.includes(name)
                         ? available_templates.push(name)

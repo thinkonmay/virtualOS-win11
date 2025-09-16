@@ -244,7 +244,9 @@ export const userAsync = {
                 worker: { currentAddress, data }
             } = getState() as RootState;
             const vol = data[currentAddress]?.Volumes?.find(
-                (x) => x.pool == 'user_data'
+                (x) =>
+                    x.pool == 'user_data' ||
+                    (x.pool == 'unified_data' && !x.name.includes('template'))
             );
 
             if (vol == undefined) throw new Error('volume is not available');
