@@ -1,20 +1,14 @@
-import { create_or_replace_resources } from '@/backend/actions';
 import {
     appDispatch,
     app_full,
     app_toggle,
     cache_setting,
     change_preferred_codec,
-    change_preferred_proto,
-    fetch_app_access,
-    fetch_configuration,
     popup_close,
     popup_open,
     scancode_toggle,
     show_chat,
-    toggle_hide_vm,
     toggle_high_mtu,
-    toggle_high_queue,
     toggle_hq,
     toggle_microphone,
     unclaim_volume,
@@ -280,42 +274,16 @@ export const ConnectApp = () => {
 
 function Customize({ onClose: close }) {
     const t = useAppSelector((state) => state.globals.translation);
-    const { HideVM, HighQueue, HighMTU, metadata, app_access } = useAppSelector(
-        (state) => state.worker
+    const HighMTU = useAppSelector((state) => state.worker.HighMTU);
+    const { scancode, hq, enable_microphone, preferred_codec } = useAppSelector(
+        (state) => state.remote
     );
-
-    const game = useAppSelector(
-        (state) =>
-            state.globals.games.find(
-                (x) => state.worker.app_access?.app_id == x.id
-            )?.name
-    );
-
-    const { configuration } = metadata ?? { configuration: {} };
-
-    const {
-        scancode,
-        hq,
-        enable_microphone,
-        preferred_codec,
-        preferred_proto
-    } = useAppSelector((state) => state.remote);
 
     const actions = [
-        {
-            name: t[Contents.HIDE_VM],
-            state: HideVM,
-            action: () => appDispatch(toggle_hide_vm())
-        },
         {
             name: t[Contents.HIGH_MTU],
             state: HighMTU,
             action: () => appDispatch(toggle_high_mtu())
-        },
-        {
-            name: t[Contents.HIGH_QUEUE],
-            state: HighQueue,
-            action: () => appDispatch(toggle_high_queue())
         },
         {
             name: `High quality`,
@@ -338,87 +306,11 @@ function Customize({ onClose: close }) {
                 )
         },
         {
-            name: `QUIC proto`,
-            state: preferred_proto == 'quic',
-            action: () =>
-                appDispatch(
-                    change_preferred_proto(
-                        preferred_proto == 'quic' ? 'udp' : 'quic'
-                    )
-                )
-        },
-        {
             name: `Microphone`,
             state: enable_microphone,
             action: () => appDispatch(toggle_microphone())
         }
     ];
-
-    const [hwOptions, setHWOption] = useState([
-        {
-            name: 'ram',
-            min: 16,
-            max: 24,
-            step: 4,
-            value: 16
-        },
-        {
-            name: 'cpu',
-            min: 8,
-            max: 12,
-            step: 2,
-            value: 8
-        },
-        {
-            name: 'disk',
-            min: 150,
-            max: 400,
-            step: 50,
-            value: 150
-        }
-    ]);
-
-    const [gameLicense, setGameLicense] = useState(false);
-
-    const defaultVal = (configuration) => [
-        {
-            name: 'ram',
-            min: 16,
-            max: 24,
-            step: 4,
-            value: configuration?.ram ?? 16
-        },
-        {
-            name: 'cpu',
-            min: 8,
-            max: 12,
-            step: 2,
-            value: configuration?.cpu ?? 8
-        },
-        {
-            name: 'disk',
-            min: configuration?.disk ?? 150,
-            max: 400,
-            step: 50,
-            value: configuration?.disk ?? 150
-        }
-    ];
-
-    const reset = () => {
-        setHWOption(defaultVal(configuration));
-        setGameLicense(app_access != undefined);
-    };
-    useEffect(() => {
-        reset();
-    }, [metadata]);
-
-    const open_payment = () =>
-        appDispatch(
-            app_full({
-                id: 'payment',
-                page: 'payment'
-            })
-        );
 
     const apply = async () => {
         appDispatch(
@@ -430,51 +322,6 @@ function Customize({ onClose: close }) {
             })
         );
 
-        let refresh_conf = false;
-        for (const option of hwOptions) {
-            for (const def of defaultVal(configuration)) {
-                if (option.name == def.name && option.value != def.value) {
-                    refresh_conf = true;
-                    const error = await create_or_replace_resources(
-                        `${option.name}${option.value}`
-                    );
-                    if (error && error.message.includes('405')) {
-                        open_payment();
-                        appDispatch(popup_close());
-                        close();
-                        return;
-                    } else if (error instanceof Error) {
-                        toast(`Failed to apply your changes`, {});
-                        appDispatch(popup_close());
-                        close();
-                        return;
-                    }
-                }
-            }
-        }
-
-        if ((app_access != undefined) != gameLicense) {
-            refresh_conf = true;
-            const error = await create_or_replace_resources(
-                `kickey${gameLicense ? '' : '_none'}`
-            );
-            if (error && error.message.includes('405')) {
-                open_payment();
-                appDispatch(popup_close());
-                close();
-                return;
-            } else if (error instanceof Error) {
-                toast(`Failed to apply your changes`, {});
-                appDispatch(popup_close());
-                close();
-                return;
-            }
-        }
-
-        if (refresh_conf) {
-            await appDispatch(fetch_configuration());
-            await appDispatch(fetch_app_access());
-        }
         appDispatch(cache_setting());
         toast(`Your changes is applied`, {});
         appDispatch(popup_close());
@@ -502,104 +349,6 @@ function Customize({ onClose: close }) {
         </li>
     );
 
-    const GameLicense = () => {
-        return (
-            <div className="w-full h-full">
-                <label className="block mb-2 text-sm font-medium text-white">
-                    tài khoản game
-                </label>
-                <div className="flex items-center ps-4 border border-gray-700 bg-gray-900 rounded-full">
-                    <input
-                        checked={gameLicense}
-                        onChange={() => {}}
-                        onClick={() => setGameLicense((old) => !old)}
-                        id="bordered-radio-2"
-                        type="radio"
-                        name="bordered-radio"
-                        className="w-4 h-4 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"
-                    />
-                    <label
-                        htmlFor="bordered-radio-2"
-                        className="w-full py-4 ms-2 text-sm font-medium text-gray-300"
-                    >
-                        {game ?? 'unknown'}
-                    </label>
-                </div>
-            </div>
-        );
-    };
-
-    const increment = (hw, up) =>
-        setHWOption((old) => {
-            const index = old.findIndex((x) => x.name == hw.name);
-            if (index == -1) return old;
-            const dup = [...old];
-            const newval = dup[index].value + (up ? hw.step : -hw.step);
-            if (newval > hw.max || newval < hw.min) return old;
-            dup[index].value = newval;
-            return dup;
-        });
-
-    const renderHWOption = (hw, index) => {
-        return (
-            <div key={index} className="w-full">
-                <label className="block mb-2 text-sm font-medium text-white">
-                    {hw.name}
-                </label>
-
-                <div className="flex">
-                    <div className="border border-gray-300 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-16 p-2.5 bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 ">
-                        {hw.value}
-                    </div>
-                    <div
-                        onClick={() => increment(hw, false)}
-                        className="bg-gray-600 ml-1 rounded-full w-8 h-8 my-auto cursor-pointer"
-                    >
-                        <svg
-                            className="w-8 h-8 text-gray-800 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 12h14"
-                            />
-                        </svg>
-                    </div>
-                    <div
-                        onClick={() => increment(hw, true)}
-                        className="bg-gray-600 ml-1 rounded-full w-8 h-8 my-auto cursor-pointer"
-                    >
-                        <svg
-                            className="w-8 h-8 text-gray-800 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 12h14m-7 7V5"
-                            />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     return (
         <div
             id="auth-pop-up"
@@ -612,12 +361,6 @@ function Customize({ onClose: close }) {
                 style={{ background: 'var(--fakeMica' }}
             >
                 <div className="px-4 space-y-4 md:px-6">
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div className="flex flex-col md:flex-row items-center justify-between col-span-2 space-x-3">
-                            {hwOptions.map(renderHWOption)}
-                            {app_access == undefined ? null : <GameLicense />}
-                        </div>
-                    </div>
                     <div>
                         <h6 className="mb-2 text-sm font-medium text-white">
                             Advanced setting
@@ -634,13 +377,6 @@ function Customize({ onClose: close }) {
                         onClick={apply}
                     >
                         Apply
-                    </button>
-                    <button
-                        type="reset"
-                        className="py-2.5 px-5 text-sm font-medium focus:outline-none rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 bg-gray-800 text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        onClick={reset}
-                    >
-                        Reset
                     </button>
                     <button
                         type="reset"

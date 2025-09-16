@@ -116,12 +116,7 @@ export const {
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
 export const { setting_load, setting_setv, setting_theme, setting_togg } =
     settSlice.actions;
-export const {
-    toggle_hide_vm,
-    toggle_high_mtu,
-    toggle_high_queue,
-    set_current_address
-} = workerSlice.actions;
+export const { toggle_high_mtu, set_current_address } = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
     sidepane_bandhide,

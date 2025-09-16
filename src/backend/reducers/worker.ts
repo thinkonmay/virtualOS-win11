@@ -66,9 +66,7 @@ type WorkerType = {
     };
 
     currentAddress: string;
-    HideVM: boolean;
     HighMTU: boolean;
-    HighQueue: boolean;
 
     metadata?: Metadata;
     bucket?: string;
@@ -82,9 +80,7 @@ const initialState: WorkerType = {
     data: {},
 
     currentAddress: 'saigon2.thinkmay.net',
-    HideVM: true,
-    HighMTU: false,
-    HighQueue: false
+    HighMTU: false
 };
 
 export const workerAsync = {
@@ -122,7 +118,7 @@ export const workerAsync = {
         async (_: void, { getState }) => {
             const {
                 remote: { preferred_codec, preferred_proto },
-                worker: { HideVM, HighMTU, HighQueue, currentAddress }
+                worker: { HighMTU, currentAddress }
             } = getState() as RootState;
 
             appDispatch(
@@ -170,7 +166,6 @@ export const workerAsync = {
                 };
 
                 const resp = await StartThinkmay(
-                    { HideVM: HideVM },
                     preferred_codec,
                     preferred_proto,
                     callback
@@ -192,8 +187,7 @@ export const workerAsync = {
             }
 
             const result = ParseRequest(vmss.id, session, {
-                high_mtu: HighMTU,
-                high_queue: HighQueue
+                high_mtu: HighMTU
             });
             if (result instanceof APIError) throw formatError(result);
             await appDispatch(save_reference(result));
@@ -503,20 +497,11 @@ export const workerSlice = createSlice({
     name: 'worker',
     initialState,
     reducers: {
-        toggle_high_queue: (
-            state,
-            action: PayloadAction<boolean | undefined>
-        ) => {
-            state.HighQueue = action.payload ?? !state.HighQueue;
-        },
         toggle_high_mtu: (
             state,
             action: PayloadAction<boolean | undefined>
         ) => {
             state.HighMTU = action.payload ?? !state.HighMTU;
-        },
-        toggle_hide_vm: (state, action: PayloadAction<boolean | undefined>) => {
-            state.HideVM = action.payload ?? !state.HideVM;
         },
         set_current_address: (state, payload: PayloadAction<string>) => {
             state.currentAddress = payload.payload;

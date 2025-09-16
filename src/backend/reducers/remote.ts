@@ -34,9 +34,7 @@ import {
     RootState,
     scancode,
     store,
-    toggle_hide_vm,
     toggle_high_mtu,
-    toggle_high_queue,
     toggle_hq,
     toggle_microphone,
     toggle_remote,
@@ -232,7 +230,6 @@ export const remoteAsync = {
         const video = url.searchParams.get('video');
         const data = url.searchParams.get('data');
         const vmid = url.searchParams.get('vmid');
-        const high_queue = store.getState().worker.HighQueue;
         const high_mtu = store.getState().worker.HighMTU;
         if (
             address == null ||
@@ -257,9 +254,7 @@ export const remoteAsync = {
                 }
             });
 
-        const opt = `&vmid=${vmid}&queue_size=${high_queue ? 64 : 16}&mtu=${
-            high_mtu ? 1400 : 1200
-        }`;
+        const opt = `&vmid=${vmid}&mtu=${high_mtu ? 1400 : 1200}`;
         appDispatch(
             remote_connect({
                 videoUrl: `wss://${address}:444/broadcasters/webrtc/recvonly?token=${video}${opt}&codec=${
@@ -297,8 +292,7 @@ export const remoteAsync = {
         'cache_setting',
         async (_: {}, { getState }) => {
             const user = (getState() as RootState).user.id;
-            const { HideVM, HighMTU, HighQueue } = (getState() as RootState)
-                .worker;
+            const HighMTU = (getState() as RootState).worker.HighMTU;
             const {
                 hq,
                 bitrate,
@@ -314,10 +308,8 @@ export const remoteAsync = {
                 preferred_codec,
                 preferred_proto,
                 enable_microphone,
-                HideVM,
                 HighMTU,
                 scancode,
-                HighQueue,
                 bitrate,
                 framerate
             };
@@ -357,9 +349,7 @@ export const remoteAsync = {
                 preferred_codec?: 'h264' | 'h265';
                 preferred_proto?: 'udp' | 'quic';
                 enable_microphone?: boolean;
-                HideVM?: boolean;
                 HighMTU?: boolean;
-                HighQueue?: boolean;
                 scancode?: boolean;
                 bitrate?: number;
                 framerate?: number;
@@ -370,9 +360,7 @@ export const remoteAsync = {
                 {
                     setting: {
                         hq,
-                        HideVM,
                         HighMTU,
-                        HighQueue,
                         preferred_codec,
                         preferred_proto,
                         enable_microphone,
@@ -380,9 +368,7 @@ export const remoteAsync = {
                     }
                 }
             ] = settings;
-            appDispatch(toggle_hide_vm(HideVM));
             appDispatch(toggle_high_mtu(HighMTU));
-            appDispatch(toggle_high_queue(HighQueue));
             appDispatch(toggle_microphone(enable_microphone));
             appDispatch(toggle_hq(hq));
             if (['h264', 'h265'].includes(preferred_codec))

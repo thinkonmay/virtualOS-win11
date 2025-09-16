@@ -81,9 +81,7 @@ export const SidePane = () => {
     const sidepane = useAppSelector((state) => state.sidepane);
     const setting = useAppSelector((state) => state.setting);
     const remote = useAppSelector((state) => state.remote);
-    const { HideVM, HighMTU, HighQueue } = useAppSelector(
-        (state) => state.worker
-    );
+    const HighMTU = useAppSelector((state) => state.worker.HighMTU);
     const { steam, storage } = useAppSelector(
         (state) => state.worker.data[state.worker.currentAddress] ?? {}
     );
@@ -126,9 +124,7 @@ export const SidePane = () => {
                     ...setting,
                     ...remote,
                     ...mobileState,
-                    HideVM,
                     HighMTU,
-                    HighQueue,
                     steam,
                     storage
                 },
@@ -139,7 +135,7 @@ export const SidePane = () => {
         }
 
         setPnstate(tmp);
-    }, [setting, sidepane, remote, HideVM, HighMTU, HighQueue, steam]);
+    }, [setting, sidepane, remote, HighMTU, steam]);
 
     useEffect(() => {
         const framerateSlider = document.querySelector('.framerateSlider');
