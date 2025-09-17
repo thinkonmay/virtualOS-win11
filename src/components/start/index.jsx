@@ -476,9 +476,7 @@ function MobileComponent({
     if (!['started', 'closable'].includes(shutdownable))
         blacklist = ['shutDownVm'];
     if (!remote.active) blacklist.push('close_remote');
-    if (backupable == 'ongoing') blacklist.push('restore_game');
-    else if (backupable == 'capable') blacklist.push('backup_game');
-    else blacklist.push('backup_game', 'restore_game');
+    if (backupable != 'capable') blacklist.push('backup_game', 'restore_game');
 
     const renderList = sidepane.mobileControl.buttons;
     const generalList = sidepane.generalControl.filter(
@@ -512,9 +510,7 @@ function DesktopComponent({
     if (!['started', 'closable'].includes(shutdownable))
         blacklist = ['shutDownVm'];
     if (!remote.active) blacklist.push('close_remote');
-    if (backupable == 'ongoing') blacklist.push('restore_game');
-    else if (backupable == 'capable') blacklist.push('backup_game');
-    else blacklist.push('backup_game', 'restore_game');
+    if (backupable != 'capable') blacklist.push('backup_game', 'restore_game');
 
     const renderList = sidepane.desktopControl.buttons;
     const generalList = sidepane.generalControl.filter(

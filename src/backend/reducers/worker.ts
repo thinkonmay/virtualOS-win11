@@ -256,7 +256,10 @@ export const workerAsync = {
                 else availability = 'ready';
             } else if (info.virtReady) {
                 const volume = info.Volumes?.find(
-                    (x) => x.pool == 'user_data' || x.pool == 'unified_data'
+                    (x) =>
+                        x.pool == 'user_data' ||
+                        (x.pool == 'unified_data' &&
+                            !x.name.includes('template'))
                 );
                 const inuse = volume?.inuse;
                 const has_vm =
@@ -283,13 +286,6 @@ export const workerAsync = {
                 );
 
                 if (
-                    info.Sessions?.find(
-                        (x) => x.vm != undefined
-                    )?.vm?.Sessions?.find((x) => x.backup != undefined) !=
-                    undefined
-                )
-                    backup = 'ongoing';
-                else if (
                     info.Sessions?.find(
                         (x) => x.vm != undefined
                     )?.vm?.Sessions?.find((x) => x.s3bucket != undefined) !=
