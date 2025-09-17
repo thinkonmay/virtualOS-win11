@@ -228,27 +228,12 @@ export const workerAsync = {
         'restore_game',
         async (_: void, { getState }): Promise<void> => {
             RestoreGame();
-            await new Promise((r) => setTimeout(r, 1000 * 10));
-            await appDispatch(workerAsync.worker_refresh());
         }
     ),
     backup_game: createAsyncThunk(
         'backup_game',
         async (_: void, { getState }): Promise<void> => {
-            await appDispatch(workerAsync.worker_refresh());
-            const {
-                worker: { currentAddress, data }
-            } = getState() as RootState;
-
-            const session = data[currentAddress]?.Sessions?.find(
-                (x) => x.vm != undefined
-            )?.vm?.Sessions?.find((x) => x.backup != undefined);
-            if (session == undefined)
-                throw new Error('no backup session available');
-
-            BackupGame(session.id);
-            await new Promise((r) => setTimeout(r, 1000 * 20));
-            await appDispatch(workerAsync.worker_refresh());
+            BackupGame();
         }
     ),
     update_local_worker: createAsyncThunk(
