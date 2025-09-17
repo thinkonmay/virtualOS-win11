@@ -1,5 +1,6 @@
 import {
     APIError,
+    CancelDeployment,
     ClaimSteam,
     ClaimStorage,
     CloseSession,
@@ -148,11 +149,13 @@ export const workerAsync = {
                     else if (status.includes('broadcasters/vnc'))
                         vncURL = status;
                     else if (logURL == undefined || vncURL == undefined)
-                        workerAsync.showPosition(
-                            code != undefined || code != null
-                                ? formatError(code)
-                                : status
-                        );
+                        if (code == undefined)
+                            workerAsync.showPosition(
+                                code != undefined || code != null
+                                    ? formatError(code)
+                                    : status
+                            );
+                        else CancelDeployment();
                     if (logURL != undefined && vncURL != undefined)
                         appDispatch(
                             popup_open({
