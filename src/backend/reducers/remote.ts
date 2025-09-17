@@ -224,7 +224,7 @@ export const remoteAsync = {
         SetScancode(scancode);
     },
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
-        const address = url.searchParams.get('host');
+        const address = url.searchParams.get('server');
         const codec = url.searchParams.get('codec');
         const audio = url.searchParams.get('audio');
         const video = url.searchParams.get('video');
@@ -240,19 +240,19 @@ export const remoteAsync = {
         )
             return false;
 
-        // add demo ref here
-        const record = await POCKETBASE()
-            .collection('users')
-            .getOne(POCKETBASE().authStore.model.id);
+        // // add demo ref here
+        // const record = await POCKETBASE()
+        //     .collection('users')
+        //     .getOne(POCKETBASE().authStore.id);
 
-        await POCKETBASE()
-            .collection('users')
-            .update(POCKETBASE().authStore.model.id, {
-                metadata: {
-                    ...record.metadata,
-                    demo: originalurl.searchParams.get('demo')
-                }
-            });
+        // await POCKETBASE()
+        //     .collection('users')
+        //     .update(POCKETBASE().authStore.model.id, {
+        //         metadata: {
+        //             ...record.metadata,
+        //             demo: originalurl.searchParams.get('demo')
+        //         }
+        //     });
 
         const opt = `&vmid=${vmid}&mtu=${high_mtu ? 1400 : 1200}`;
         appDispatch(
@@ -284,7 +284,7 @@ export const remoteAsync = {
             url.searchParams.set('video', video);
             url.searchParams.set('vmid', vmid);
             url.searchParams.set('data', data);
-            url.searchParams.set('host', host);
+            url.searchParams.set('server', host);
             return url.toString();
         }
     ),
