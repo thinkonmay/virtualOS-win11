@@ -9,6 +9,7 @@ import { VncScreen } from 'react-vnc';
 
 export function deployWatch({ data: { vnc, log } }) {
     const [logs, setLog] = useState([]);
+    const [performtime, setPerformTime] = useState({ minutes: 0, seconds: 0 });
     const url = new URL(POCKETBASE().baseURL);
     const proto = url.protocol == 'https:' ? 'wss' : 'ws';
     const vncURL = `${proto}://${url.hostname}:444${vnc}`;
@@ -20,8 +21,18 @@ export function deployWatch({ data: { vnc, log } }) {
             setLog((logs) => [txt, ...logs]);
         };
 
+        const timer = setInterval(() => {
+            setPerformTime((prev) => {
+                let totalSec = prev.minutes * 60 + prev.seconds + 1;
+                let mins = Math.floor(totalSec / 60);
+                let secs = totalSec % 60;
+                return { minutes: mins, seconds: secs };
+            });
+        }, 1000);
+
         return () => {
             ws.close();
+            clearInterval(timer);
         };
     }, []);
 
@@ -44,7 +55,10 @@ export function deployWatch({ data: { vnc, log } }) {
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                     <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200 rounded-t sm:mb-5 dark:border-gray-700">
                         <h3 className="font-semibold text-gray-900 dark:text-white">
-                            Deployment preview
+                            Deployment preview :{' '}
+                            {String(performtime.minutes).padStart(2, '0')}:
+                            {String(performtime.seconds).padStart(2, '0')}/
+                            10:00 minutes
                         </h3>
                         <button
                             type="button"
