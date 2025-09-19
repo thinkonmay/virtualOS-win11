@@ -222,7 +222,7 @@ export const SnapScreen = (props) => {
                                     borderBottomLeftRadius: (y.br % 7 == 0) * 4
                                 }}
                                 onClick={clickDispatch}
-                                data-action={'apps/app_resize'}
+                                data-action={'apps/app_maximize'}
                                 data-payload={{ id: props.app, ...y.dim }}
                             ></div>
                         ))}
@@ -326,19 +326,6 @@ export const ToolBar = (props) => {
 
         wnapp.classList.remove('notrans');
         wnapp.classList.remove('z9900');
-
-        var action = {
-            type: 'apps/app_resize',
-            payload: {
-                id: props.icon,
-                width: getComputedStyle(wnapp).width,
-                height: getComputedStyle(wnapp).height,
-                top: getComputedStyle(wnapp).top,
-                left: getComputedStyle(wnapp).left
-            }
-        };
-
-        dispatch_generic(action);
     };
 
     return (
