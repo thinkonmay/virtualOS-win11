@@ -38,6 +38,39 @@ import {
 
 export const originalurl = new URL(window.location.href);
 
+const whitelist = [
+    {
+        txt: 'log:shmsunshine info bitrate changed',
+        replace: 'bitrate changed'
+    },
+    {
+        txt: 'log:shmsunshine info framerate changed',
+        replace: 'framerate changed'
+    },
+    {
+        txt: 'closed:shmsunshine:',
+        content: 'Encoder process has been closed',
+        type: 'error'
+    },
+    {
+        txt: 'Failed to create D3D11 device for DD test',
+        content: 'GPU encoder is corrupted',
+        type: 'error'
+    },
+    {
+        txt: 'spawned:ludusavi:',
+        content: 'Backup progress is starting'
+    },
+    {
+        txt: 'closed:ludusavi:',
+        content: 'Backup progress is finished'
+    },
+    {
+        txt: 'log:backup   - ',
+        replace: 'backup: '
+    }
+];
+
 const setDomain = async () => {
     const defaultDomain = 'saigon2.thinkmay.net';
     const address = localStorage.getItem('thinkmay_domain');
@@ -295,30 +328,8 @@ export const PreloadBackground = async () => {
     setInterval(sync, 2 * 1000);
     window.onfocus = () => appDispatch(have_focus());
     window.onblur = () => appDispatch(loose_focus());
-
-    const whitelist = [
-        {
-            txt: 'log:shmsunshine info bitrate changed',
-            replace: 'bitrate changed'
-        },
-        {
-            txt: 'log:shmsunshine info framerate changed',
-            replace: 'framerate changed'
-        },
-        {
-            txt: 'closed:shmsunshine:',
-            content: 'Encoder process has been closed',
-            type: 'error'
-        },
-        {
-            txt: 'Failed to create D3D11 device for DD test',
-            content: 'GPU encoder is corrupted',
-            type: 'error'
-        }
-    ];
-
-    if (DevEnv) LogCallback(console.log);
     LogCallback((log) => {
+        if (DevEnv) console.log(log);
         const t = whitelist.find((x) => log.includes(x.txt));
         const data = log.split(':');
 

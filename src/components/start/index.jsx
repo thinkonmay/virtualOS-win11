@@ -509,7 +509,8 @@ function DesktopComponent({
     let blacklist = [];
     if (!['started', 'closable'].includes(shutdownable))
         blacklist = ['shutDownVm'];
-    if (!remote.active) blacklist.push('close_remote');
+    if (!remote.active)
+        blacklist.push('close_remote', 'backup_game', 'restore_game');
     if (backupable != 'capable') blacklist.push('backup_game', 'restore_game');
 
     const renderList = sidepane.desktopControl.buttons;
