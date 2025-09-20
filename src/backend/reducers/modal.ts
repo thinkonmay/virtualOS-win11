@@ -16,6 +16,12 @@ export type ExtendMsg =
 
 type PopupData =
     | {
+          type: 'vnc';
+          data: {
+              vnc: string;
+          };
+      }
+    | {
           type: 'deployWatch';
           data: {
               vnc: string;

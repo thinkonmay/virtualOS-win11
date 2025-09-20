@@ -75,7 +75,6 @@ export const ConnectApp = () => {
     };
 
     const pay = () => appDispatch(app_toggle('payment'));
-    const reload = () => appDispatch(worker_refresh_ui());
     const redirect = async () => {
         localStorage.setItem('thinkmay_domain', cluster);
         await preload();

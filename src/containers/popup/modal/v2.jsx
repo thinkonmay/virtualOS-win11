@@ -9,3 +9,4 @@ export { newGame } from './newgame';
 export { maintainance } from './maintainance';
 export { shareBanner } from './referral';
 export { versionUpdate } from './updates';
+export { vnc } from './vnc';

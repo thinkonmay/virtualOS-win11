@@ -20,6 +20,7 @@ import {
     menu_hide,
     popup_close,
     popup_open,
+    RootState,
     setting_theme,
     sidepane_panethem,
     store,
@@ -405,4 +406,9 @@ export const create_or_replace_resources = async (resource_name: string) => {
     appDispatch(popup_close());
     if (error) return new Error(error.message);
     return undefined;
+};
+
+export const openVNC = () => {
+    const vnc = (store.getState() as RootState).remote.auth?.vncUrl;
+    appDispatch(popup_open({ type: 'vnc', data: { vnc } }));
 };
