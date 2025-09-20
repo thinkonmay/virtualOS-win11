@@ -1,9 +1,8 @@
+import { DevEnv } from '#/api/database';
 import { getBrowser, getOS } from '#/core';
-import { LogCallback, NotReady, SetClipboard } from '#/singleton';
-import md5 from 'md5';
+import { LogCallback } from '#/singleton';
 import toast from 'react-hot-toast';
 import {
-    RootState,
     appDispatch,
     app_full,
     app_remove,
@@ -36,7 +35,6 @@ import {
     update_subscription_metadata,
     worker_refresh
 } from '../reducers';
-import { DevEnv } from '#/api/database';
 
 export const originalurl = new URL(window.location.href);
 
@@ -297,11 +295,44 @@ export const PreloadBackground = async () => {
     setInterval(sync, 2 * 1000);
     window.onfocus = () => appDispatch(have_focus());
     window.onblur = () => appDispatch(loose_focus());
+
+    const whitelist = [
+        {
+            txt: 'log:shmsunshine info bitrate changed',
+            replace: 'bitrate changed'
+        },
+        {
+            txt: 'log:shmsunshine info framerate changed',
+            replace: 'framerate changed'
+        },
+        {
+            txt: 'closed:shmsunshine:',
+            content: 'Encoder process has been closed',
+            type: 'error'
+        },
+        {
+            txt: 'Failed to create D3D11 device for DD test',
+            content: 'GPU encoder is corrupted',
+            type: 'error'
+        }
+    ];
+
     if (DevEnv) LogCallback(console.log);
     LogCallback((log) => {
+        const t = whitelist.find((x) => log.includes(x.txt));
         const data = log.split(':');
-        if (data[0] == 'log') return;
-        else if (['spawned', 'closed'].includes(data[0]))
+
+        if (t != undefined)
+            toast(t.replace ? log.replaceAll(t.txt, t.replace) : t.content, {
+                icon: 'ℹ️',
+                duration: 2000,
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff'
+                }
+            });
+        if (['spawned', 'closed'].includes(data[0]))
             window.rybbit.event(data[1], {
                 content: data[0]
             });
