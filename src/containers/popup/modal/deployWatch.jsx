@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { VncScreen } from 'react-vnc';
 
+let ws = undefined
 export function deployWatch({ data: { vnc, log } }) {
     const [logs, setLog] = useState([]);
     const [performtime, setPerformTime] = useState({ minutes: 0, seconds: 0 });
@@ -15,7 +16,7 @@ export function deployWatch({ data: { vnc, log } }) {
     const vncURL = `${proto}://${url.hostname}:444${vnc}`;
 
     useEffect(() => {
-        const ws = new WebSocket(`${proto}://${url.hostname}:444${log}`);
+        ws = new WebSocket(`${proto}://${url.hostname}:444${log}`);
         ws.onmessage = async (ev) => {
             const txt = await ev.data.text();
             setLog((logs) => [txt, ...logs]);
@@ -37,6 +38,7 @@ export function deployWatch({ data: { vnc, log } }) {
     }, []);
 
     const close = () => {
+        ws?.close();
         CancelDeployment();
         appDispatch(worker_refresh_ui());
         appDispatch(popup_close());
