@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Contents } from './locales';
 import { Message } from './sidepane';
+import { DevEnv } from '#/api/database';
 
 export type IGamePadSetting = {
     btnSize: 1 | 2 | 3;
@@ -148,7 +149,18 @@ export const listDesktopSettings = [
         state: 'relative_mouse',
         action: 'remote/relative_mouse',
         explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
-    }
+    },
+    ...(DevEnv
+        ? [
+              {
+                  ui: true,
+                  src: 'MdOutlineConnectedTv',
+                  name: [Contents.RELATIVE_MOUSE],
+                  action: 'openVNC',
+                  explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
+              }
+          ]
+        : [])
 ];
 
 export type IGamingKey =

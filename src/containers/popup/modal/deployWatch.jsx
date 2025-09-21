@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { VncScreen } from 'react-vnc';
 
-let ws = undefined
+let ws = undefined;
 export function deployWatch({ data: { vnc, log } }) {
     const [logs, setLog] = useState([]);
     const [performtime, setPerformTime] = useState({ minutes: 0, seconds: 0 });
