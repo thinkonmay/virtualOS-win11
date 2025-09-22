@@ -173,9 +173,7 @@ export function versionUpdate() {
                                             } else if (
                                                 banner.redirect_link != null
                                             ) {
-                                                app_external(
-                                                    banner.redirect_link
-                                                );
+                                                window.location.href = banner.redirect_link
                                             }
                                         }}
                                         type="button"
