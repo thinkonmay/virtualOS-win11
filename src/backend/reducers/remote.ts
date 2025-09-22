@@ -261,7 +261,7 @@ export const remoteAsync = {
                     codec ?? 'h264'
                 }`,
                 audioUrl: `wss://${address}:444/broadcasters/webrtc/recvonly?token=${audio}${opt}&codec=opus`,
-                hidUrl: `wss://${address}:444/broadcasters/websocket?token=${data}${opt}`
+                hidUrl: `wss://${address}:444/broadcasters/webrtc/sendonly?token=${data}${opt}`
             })
         );
         if ((await ready()) instanceof Error) appDispatch(close_remote());
