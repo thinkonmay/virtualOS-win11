@@ -150,17 +150,12 @@ export const listDesktopSettings = [
         action: 'remote/relative_mouse',
         explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
     },
-    ...(DevEnv
-        ? [
-              {
-                  ui: true,
-                  src: 'MdOutlineConnectedTv',
-                  name: [Contents.RELATIVE_MOUSE],
-                  action: 'openVNC',
-                  explain: [Contents.RELATIVE_MOUSE_EXPLAIN]
-              }
-          ]
-        : [])
+    {
+        ui: true,
+        src: 'MdOutlineConnectedTv',
+        name: [Contents.VNC_SCREEN],
+        action: 'openVNC'
+    }
 ];
 
 export type IGamingKey =

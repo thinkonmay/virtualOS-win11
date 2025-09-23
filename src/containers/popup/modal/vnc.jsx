@@ -13,14 +13,16 @@ export function vnc({ data: { vnc } }) {
                 backdropFilter: 'brightness(0.3)'
             }}
         >
-            <div className="relative w-full h-full max-w-3xl p-4 md:h-auto">
+            <div className="relative w-[920px] h-[500px] p-4 md:h-auto">
                 <div className="relative  p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                    <div className="grid h-80 w-80">
+                    <div className="grid ">
                         <VncScreen
                             url={vnc}
                             scaleViewport
-                            width="20rem"
-                            height="20rem"
+                            style={{
+                                width: '854px',
+                                height: '480px'
+                            }}
                             background="#000000"
                         />
                     </div>

@@ -144,6 +144,7 @@ export enum Contents {
     HOMESCREEN,
     FULLSCREEN,
     RELATIVE_MOUSE,
+    VNC_SCREEN,
     RELATIVE_MOUSE_EXPLAIN,
     SCAN_CODE,
     SCAN_CODE_EXPLAIN,
@@ -988,6 +989,10 @@ export function language() {
     en.set(Contents.FULLSCREEN, 'Fullscreen');
     vn.set(Contents.FULLSCREEN, 'Toàn màn hình');
     id.set(Contents.FULLSCREEN, 'Layar penuh');
+
+    en.set(Contents.VNC_SCREEN, 'Debug screen');
+    vn.set(Contents.VNC_SCREEN, 'Màn hình debug');
+    id.set(Contents.VNC_SCREEN, 'Debug screen');
 
     en.set(Contents.RELATIVE_MOUSE, 'Gaming mode');
     vn.set(Contents.RELATIVE_MOUSE, 'Chế độ gaming');
