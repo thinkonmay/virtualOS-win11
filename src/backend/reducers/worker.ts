@@ -32,7 +32,6 @@ import {
 } from '.';
 import { create_or_replace_resources } from '../actions';
 import { formatError } from '../utils/formatErr';
-import { formatWaitingLog } from '../utils/formatWatingLog';
 import { BuilderHelper } from './helper';
 
 type innerComputer = Computer & {
@@ -85,9 +84,9 @@ const initialState: WorkerType = {
 };
 
 export const workerAsync = {
-    showPosition: async (text: string) => {
+    showPosition: async (text: string[]) => {
         appDispatch(popup_close());
-
+        const prefShow = ['started deployment on', 'claimed GPU'];
         appDispatch(
             popup_open({
                 type: 'notify',
@@ -95,8 +94,12 @@ export const workerAsync = {
                     loading: false,
                     tips: true,
                     title: 'Connect to PC',
-                    //text: `Progress: ${text}`
-                    text: formatWaitingLog(text)
+                    textArray: text
+                        .filter(
+                            (x) =>
+                                prefShow.find((y) => x.includes(y)) != undefined
+                        )
+                        .concat(text.slice(-2))
                 }
             })
         );
@@ -143,19 +146,16 @@ export const workerAsync = {
 
                 let vncURL = undefined;
                 let logURL = undefined;
+                const progress = [];
                 const callback = async (status: string, code?: number) => {
+                    progress.push(status);
                     if (status.includes('broadcasters/websocket'))
                         logURL = status;
                     else if (status.includes('broadcasters/vnc'))
                         vncURL = status;
                     else if (logURL == undefined || vncURL == undefined)
-                        if (code == undefined)
-                            workerAsync.showPosition(
-                                code != undefined || code != null
-                                    ? formatError(code)
-                                    : status
-                            );
-                        else CancelDeployment();
+                        if (code != undefined) CancelDeployment();
+                        else await workerAsync.showPosition(progress);
                     if (logURL != undefined && vncURL != undefined)
                         appDispatch(
                             popup_open({

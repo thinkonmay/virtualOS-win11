@@ -35,6 +35,7 @@ type PopupData =
               loading: boolean;
               tips?: boolean;
               text?: any;
+              textArray?: any[];
               timeProcessing?: number;
               confirmButton?: boolean;
           };

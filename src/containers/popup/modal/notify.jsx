@@ -6,6 +6,7 @@ export function notify({
     data: {
         title,
         text,
+        textArray,
         tips = true,
         loading = true,
         timeProcessing = 3.5,
@@ -48,6 +49,15 @@ export function notify({
                     </p>
                     {text ? (
                         <p className="mb-3 md:text-xl text-center"> {text} </p>
+                    ) : null}
+                    {textArray ? (
+                        <p className="mb-3 md:text-xl text-center">
+                            {textArray.map((text) => (
+                                <>
+                                    {text} <br />
+                                </>
+                            ))}
+                        </p>
                     ) : null}
                     {loading ? (
                         <LoadingProgressBar timeProcessing={timeProcessing} />
