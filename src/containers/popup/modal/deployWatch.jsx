@@ -2,6 +2,7 @@ import { CancelDeployment, POCKETBASE } from '#/api';
 import {
     appDispatch,
     popup_close,
+    useAppSelector,
     worker_refresh_ui
 } from '@/backend/reducers';
 import { useEffect, useState } from 'react';
@@ -9,11 +10,18 @@ import { VncScreen } from 'react-vnc';
 
 let ws = undefined;
 export function deployWatch({ data: { vnc, log } }) {
-    const [logs, setLog] = useState([]);
+    const progress = useAppSelector((state) => state.worker.progress);
+    const rev = [...(progress ?? [])].reverse();
+    const [logs, setLog] = useState(rev);
     const [performtime, setPerformTime] = useState({ minutes: 0, seconds: 0 });
     const url = new URL(POCKETBASE().baseURL);
     const proto = url.protocol == 'https:' ? 'wss' : 'ws';
     const vncURL = `${proto}://${url.hostname}:444${vnc}`;
+
+    useEffect(() => {
+        if (progress == undefined) return;
+        setLog((logs) => [progress.at(-1), ...logs]);
+    }, [progress]);
 
     useEffect(() => {
         ws = new WebSocket(`${proto}://${url.hostname}:444${log}`);

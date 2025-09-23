@@ -68,6 +68,7 @@ type WorkerType = {
     currentAddress: string;
     HighMTU: boolean;
 
+    progress?: string[];
     metadata?: Metadata;
     bucket?: string;
     app_access?: {
@@ -146,9 +147,10 @@ export const workerAsync = {
 
                 let vncURL = undefined;
                 let logURL = undefined;
-                const progress = [];
+                appDispatch(workerSlice.actions.clean_progress());
                 const callback = async (status: string, code?: number) => {
-                    progress.push(status);
+                    appDispatch(workerSlice.actions.update_progress(status));
+                    const progress = (getState() as RootState).worker.progress;
                     if (status.includes('broadcasters/websocket'))
                         logURL = status;
                     else if (status.includes('broadcasters/vnc'))
@@ -490,6 +492,12 @@ export const workerSlice = createSlice({
             action: PayloadAction<boolean | undefined>
         ) => {
             state.HighMTU = action.payload ?? !state.HighMTU;
+        },
+        clean_progress: (state) => {
+            state.progress = [];
+        },
+        update_progress: (state, payload: PayloadAction<string>) => {
+            state?.progress.push(payload.payload);
         },
         set_current_address: (state, payload: PayloadAction<string>) => {
             state.currentAddress = payload.payload;
