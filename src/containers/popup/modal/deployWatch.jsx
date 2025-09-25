@@ -1,4 +1,5 @@
 import { CancelDeployment, POCKETBASE } from '#/api';
+import { DevEnv } from '#/api/database';
 import {
     appDispatch,
     popup_close,
@@ -28,6 +29,7 @@ export function deployWatch({ data: { vnc, log } }) {
         ws.onmessage = async (ev) => {
             const txt = await ev.data.text();
             setLog((logs) => [txt, ...logs]);
+            if (DevEnv) console.log(txt)
         };
 
         const timer = setInterval(() => {

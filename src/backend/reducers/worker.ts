@@ -33,6 +33,7 @@ import {
 import { create_or_replace_resources } from '../actions';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
+import { DevEnv } from '#/api/database';
 
 type innerComputer = Computer & {
     availability?:
@@ -151,6 +152,7 @@ export const workerAsync = {
                 const callback = async (status: string, code?: number) => {
                     appDispatch(workerSlice.actions.update_progress(status));
                     const progress = (getState() as RootState).worker.progress;
+                    if (DevEnv) console.log(status)
                     if (status.includes('broadcasters/websocket'))
                         logURL = status;
                     else if (status.includes('broadcasters/vnc'))
