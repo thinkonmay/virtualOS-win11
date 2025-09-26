@@ -158,8 +158,10 @@ export const workerAsync = {
                     else if (status.includes('broadcasters/vnc'))
                         vncURL = status;
                     else if (logURL == undefined || vncURL == undefined)
-                        if (code != undefined) CancelDeployment();
-                        else await workerAsync.showPosition(progress);
+                        if (code != undefined) {
+                            toast(formatError(status));
+                            CancelDeployment();
+                        } else await workerAsync.showPosition(progress);
                     if (logURL != undefined && vncURL != undefined)
                         appDispatch(
                             popup_open({
@@ -196,7 +198,12 @@ export const workerAsync = {
             const result = ParseRequest(vmss.id, session, {
                 high_mtu: HighMTU
             });
-            if (result instanceof APIError) throw formatError(result);
+            if (result instanceof Error) {
+                appDispatch(popup_close());
+                toast(formatError(result));
+                throw formatError(result);
+            }
+
             await appDispatch(save_reference(result));
 
             appDispatch(remote_connect(result));
