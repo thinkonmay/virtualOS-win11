@@ -152,7 +152,7 @@ export const workerAsync = {
                 const callback = async (status: string, code?: number) => {
                     appDispatch(workerSlice.actions.update_progress(status));
                     const progress = (getState() as RootState).worker.progress;
-                    if (DevEnv) console.log(status)
+                    if (DevEnv) console.log(status);
                     if (status.includes('broadcasters/websocket'))
                         logURL = status;
                     else if (status.includes('broadcasters/vnc'))

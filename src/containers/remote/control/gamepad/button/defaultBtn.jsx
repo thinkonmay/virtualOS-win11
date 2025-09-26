@@ -3,7 +3,7 @@ import {
     select_btn_gamepad,
     useAppSelector
 } from '@/backend/reducers';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import './index.scss';
 const GamepadButton = ({
@@ -17,8 +17,6 @@ const GamepadButton = ({
     draggable,
     onStop = () => {},
     onDrag = () => {},
-    posX,
-    posY,
     type = 'circle' //'circle'  - rectangle
 }) => {
     const selected = useAppSelector(
@@ -26,6 +24,22 @@ const GamepadButton = ({
     );
     const [holding, setHolding] = useState(false);
     const buttonRef = useRef(null);
+
+    useEffect(() => {
+        if (buttonRef.current != null) {
+            buttonRef.current.addEventListener('touchstart', handleTouchStart, {
+                passive: false
+            });
+            buttonRef.current.addEventListener('touchend', handleTouchEnd, {
+                passive: false
+            });
+            buttonRef.current.addEventListener(
+                'touchcancel',
+                handleTouchCancel,
+                { passive: false }
+            );
+        }
+    }, []);
 
     const handleTouchStart = (e) => {
         onTouchStart(e);
@@ -63,9 +77,6 @@ const GamepadButton = ({
             >
                 <div
                     id={id}
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
-                    onTouchCancel={handleTouchCancel}
                     className={`${className} defaultButton ${type} ${
                         holding ? 'hold' : ''
                     }`}
