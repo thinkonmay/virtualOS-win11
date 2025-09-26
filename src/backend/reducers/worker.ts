@@ -183,7 +183,7 @@ export const workerAsync = {
                 appDispatch(popup_close());
                 if (resp instanceof APIError) {
                     toast(formatError(resp));
-                    return;
+                    throw resp
                 }
                 appDispatch(
                     workerAsync.update_local_worker({
@@ -193,6 +193,11 @@ export const workerAsync = {
                 );
                 session = getRemoteSession(resp);
                 vmss = getVmSession(resp);
+            }
+
+            if (vmss == undefined || session == undefined) {
+                toast("invalid session");
+                throw new Error("invalid session")
             }
 
             const result = ParseRequest(vmss.id, session, {
