@@ -3,7 +3,7 @@ import {
     select_key_gamingKeyboard,
     useAppSelector
 } from '@/backend/reducers';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import './index.scss';
 export const GamingKeyboardButton = ({
@@ -25,7 +25,21 @@ export const GamingKeyboardButton = ({
     );
     const [holding, setHolding] = useState(false);
     const buttonRef = useRef(null);
-    const buttonChildRef = useRef(null);
+    useEffect(() => {
+        if (buttonRef.current != null) {
+            buttonRef.current.addEventListener('touchstart', handleTouchStart, {
+                passive: false
+            });
+            buttonRef.current.addEventListener('touchend', handleTouchEnd, {
+                passive: false
+            });
+            buttonRef.current.addEventListener(
+                'touchcancel',
+                handleTouchCancel,
+                { passive: false }
+            );
+        }
+    }, []);
 
     const handleTouchStart = (e) => {
         e.preventDefault();
@@ -66,11 +80,6 @@ export const GamingKeyboardButton = ({
             >
                 <div
                     id={id}
-                    //ref={buttonRef}
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
-                    onTouchCancel={handleTouchCancel}
-                    ref={buttonChildRef}
                     className={`${className} defaultGamingKeyButton ${type} ${
                         holding ? 'hold' : ''
                     }`}

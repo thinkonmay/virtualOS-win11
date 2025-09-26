@@ -163,17 +163,10 @@ function GamingKeyboard() {
                             onTouchStart={() =>
                                 draggable
                                     ? null
-                                    : keyboard({
-                                          val: key.value,
-                                          isDown: true
-                                      })
+                                    : keyboard({ val: key.value, isDown: true })
                             }
                             onTouchEnd={() =>
-                                draggable
-                                    ? null
-                                    : keyboard({
-                                          val: key.value
-                                      })
+                                draggable ? null : keyboard({ val: key.value })
                             }
                             onStop={handleStop}
                             onDrag={handleDrag}
