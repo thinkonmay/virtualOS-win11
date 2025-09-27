@@ -160,7 +160,7 @@ export const workerAsync = {
                     else if (logURL == undefined || vncURL == undefined)
                         if (code != undefined) {
                             toast(formatError(status));
-                            CancelDeployment();
+                            CancelDeployment(new APIError(status, code));
                         } else await workerAsync.showPosition(progress);
                     if (logURL != undefined && vncURL != undefined)
                         appDispatch(
@@ -183,7 +183,7 @@ export const workerAsync = {
                 appDispatch(popup_close());
                 if (resp instanceof APIError) {
                     toast(formatError(resp));
-                    throw resp
+                    throw resp;
                 }
                 appDispatch(
                     workerAsync.update_local_worker({
@@ -196,8 +196,8 @@ export const workerAsync = {
             }
 
             if (vmss == undefined || session == undefined) {
-                toast("invalid session");
-                throw new Error("invalid session")
+                toast('invalid session');
+                throw new Error('invalid session');
             }
 
             const result = ParseRequest(vmss.id, session, {

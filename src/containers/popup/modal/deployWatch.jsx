@@ -1,4 +1,4 @@
-import { CancelDeployment, POCKETBASE } from '#/api';
+import { APIError, CancelDeployment, POCKETBASE } from '#/api';
 import { DevEnv } from '#/api/database';
 import {
     appDispatch,
@@ -49,7 +49,7 @@ export function deployWatch({ data: { vnc, log } }) {
 
     const close = () => {
         ws?.close();
-        CancelDeployment();
+        CancelDeployment(new APIError('user manual cancel deployment'));
         appDispatch(worker_refresh_ui());
         appDispatch(popup_close());
     };
