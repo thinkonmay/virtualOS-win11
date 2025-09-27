@@ -132,6 +132,15 @@ export const listDesktopSettings = [
     },
     {
         ui: true,
+        id: 'objectfitBtn',
+        src: 'MdAspectRatio',
+        name: [Contents.SP_PULL_VIDEO],
+        state: 'objectFit',
+        explain: [Contents.SP_PULL_VIDEO_EXPLAIN],
+        action: 'remote/toggle_objectfit'
+    },
+    {
+        ui: true,
         id: 'fixKeyboardBtn',
 
         src: 'MdOutlineKeyboard',

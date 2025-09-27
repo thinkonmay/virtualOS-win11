@@ -73,6 +73,10 @@ export const ButtonGroupRight = (props) => {
     );
 
     const [posBtn, setPosBtn] = useState(defaultButtonGroupRightValue);
+    const joystickWrapperRef = useRef(null);
+    const subBtnRef = useRef(null);
+    const subBtnRef1 = useRef(null);
+    const subBtnRef2 = useRef(null);
 
     useEffect(() => {
         localStorage.removeItem('right_group_pos2');
@@ -157,6 +161,30 @@ export const ButtonGroupRight = (props) => {
     };
 
     useEffect(() => {
+        if (subBtnRef1.current != null) {
+            subBtnRef1.current.addEventListener(
+                'touchstart',
+                gamepadButton(8, true),
+                {
+                    passive: false
+                }
+            );
+            subBtnRef1.current.addEventListener('touchend', gamepadButton(8), {
+                passive: false
+            });
+        }
+        if (subBtnRef2.current != null) {
+            subBtnRef2.current.addEventListener(
+                'touchstart',
+                gamepadButton(9, true),
+                {
+                    passive: false
+                }
+            );
+            subBtnRef2.current.addEventListener('touchend', gamepadButton(9), {
+                passive: false
+            });
+        }
         window.addEventListener('resize', handleResize);
         handleResize();
         return () => window.removeEventListener('resize', handleResize);
@@ -233,8 +261,6 @@ export const ButtonGroupRight = (props) => {
         localStorage.setItem(`right_group_pos3`, JSON.stringify(defaultPos));
     }, [DefaultPosition]);
 
-    const joystickWrapperRef = useRef(null);
-    const subBtnRef = useRef(null);
 
     const handleSelectedBtn = (key) => {
         appDispatch(select_btn_gamepad(key));
@@ -387,18 +413,10 @@ export const ButtonGroupRight = (props) => {
                 nodeRef={subBtnRef}
             >
                 <div ref={subBtnRef} className="containerSubButton" id="subBtn">
-                    <div
-                        className="centerButton"
-                        onTouchStart={gamepadButton(8, true)}
-                        onTouchEnd={gamepadButton(8)}
-                    >
+                    <div ref={subBtnRef1} className="centerButton">
                         <MdArrowLeft />
                     </div>
-                    <div
-                        className="centerButton"
-                        onTouchStart={gamepadButton(9, true)}
-                        onTouchEnd={gamepadButton(9)}
-                    >
+                    <div ref={subBtnRef2} className="centerButton">
                         <MdArrowRight />
                     </div>
                 </div>
