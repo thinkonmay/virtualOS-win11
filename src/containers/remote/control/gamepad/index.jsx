@@ -261,7 +261,6 @@ export const ButtonGroupRight = (props) => {
         localStorage.setItem(`right_group_pos3`, JSON.stringify(defaultPos));
     }, [DefaultPosition]);
 
-
     const handleSelectedBtn = (key) => {
         appDispatch(select_btn_gamepad(key));
     };
