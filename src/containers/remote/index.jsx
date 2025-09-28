@@ -1,6 +1,6 @@
 import { AudioWrapper, Thinkmay, VideoWrapper, isMobile } from '#/core';
 import { Assign, ready } from '#/singleton';
-import { showConnect } from '@/backend/actions';
+import { openVNC, showConnect } from '@/backend/actions';
 import {
     appDispatch,
     popup_close,
@@ -11,6 +11,7 @@ import {
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import './remote.scss';
+import { DevEnv } from '#/api/database';
 
 export const Remote = () => {
     const { active, auth, relative_mouse, fullscreen, objectFit } =
@@ -35,7 +36,8 @@ export const Remote = () => {
         if (!active || auth == undefined) return;
         if (isMobile()) appDispatch(toggle_objectfit());
 
-        showConnect();
+        if (DevEnv) openVNC()
+        else showConnect();
         setupWebRTC();
         ready().then((err) => {
             if (err instanceof Error)
