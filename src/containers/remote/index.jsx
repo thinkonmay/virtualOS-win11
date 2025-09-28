@@ -36,7 +36,7 @@ export const Remote = () => {
         if (!active || auth == undefined) return;
         if (isMobile()) appDispatch(toggle_objectfit());
 
-        if (DevEnv) openVNC()
+        if (DevEnv) openVNC();
         else showConnect();
         setupWebRTC();
         ready().then((err) => {
