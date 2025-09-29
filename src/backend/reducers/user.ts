@@ -1,7 +1,15 @@
 import { APIError, ChangeTemplate, GLOBAL, POCKETBASE } from '#/api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RecordModel } from 'pocketbase';
-import { app_close, app_full, appDispatch, RootState } from '.';
+import toast from 'react-hot-toast';
+import {
+    app_close,
+    app_full,
+    appDispatch,
+    popup_close,
+    popup_open,
+    RootState
+} from '.';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
 
@@ -255,7 +263,31 @@ export const userAsync = {
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
                 );
             else {
-                const resp = await ChangeTemplate(template, vol.name);
+                const callback = async (
+                    finished: boolean,
+                    percentage?: number,
+                    err?: string
+                ) => {
+                    if (finished) toast(`volume allocation success`);
+                    else if (err != undefined) toast(err);
+                    else if (percentage != undefined) {
+                        appDispatch(popup_close());
+                        appDispatch(
+                            popup_open({
+                                type: 'notify',
+                                data: {
+                                    loading: true,
+                                    tips: true,
+                                    title: 'Installing new app',
+                                    text: `progress ${percentage}%`
+                                }
+                            })
+                        );
+                    }
+                };
+
+                const resp = await ChangeTemplate(template, vol.name, callback);
+                appDispatch(popup_close());
                 if (resp instanceof APIError) throw formatError(resp);
                 appDispatch(app_close('store'));
                 appDispatch(app_full({ id: 'connectPc' }));
