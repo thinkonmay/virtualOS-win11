@@ -4,6 +4,7 @@ import { RootState, store } from '.';
 import { externalLink } from '../utils/constant';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
+import { DevEnv } from '#/api/database';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
@@ -383,7 +384,12 @@ export const globalSlice = createSlice({
             {
                 fetch: globalAsync.fetch_domain,
                 hander: (state, action: PayloadAction<Domain[]>) => {
-                    state.domains = action.payload;
+                    if (DevEnv) action.payload.push({
+                        domain: 'dev.thinkmay.net',
+                        free: 0,
+                        allow_pay: false
+                    })
+                    state.domains = action.payload
                 }
             },
             {
