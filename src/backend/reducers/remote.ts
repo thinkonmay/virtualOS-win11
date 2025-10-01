@@ -30,6 +30,7 @@ import {
     change_preferred_proto,
     close_remote,
     remote_connect,
+    remote_domain,
     remote_ready,
     RootState,
     scancode,
@@ -53,6 +54,8 @@ export type Metric = {
 
 type Data = {
     tracker_id?: string;
+
+    domain?: string;
 
     active: boolean;
     ready: boolean;
@@ -224,36 +227,17 @@ export const remoteAsync = {
         SetScancode(scancode);
     },
     direct_access: createAsyncThunk('direct_access', async (url: URL) => {
-        const address = url.searchParams.get('server');
         const codec = url.searchParams.get('codec');
         const audio = url.searchParams.get('audio');
         const video = url.searchParams.get('video');
         const data = url.searchParams.get('data');
         const vmid = url.searchParams.get('vmid');
         const high_mtu = store.getState().worker.HighMTU;
-        if (
-            address == null ||
-            audio == null ||
-            video == null ||
-            data == null ||
-            vmid == null
-        )
+        if (audio == null || video == null || data == null || vmid == null)
             return false;
 
-        // // add demo ref here
-        // const record = await POCKETBASE()
-        //     .collection('users')
-        //     .getOne(POCKETBASE().authStore.id);
-
-        // await POCKETBASE()
-        //     .collection('users')
-        //     .update(POCKETBASE().authStore.model.id, {
-        //         metadata: {
-        //             ...record.metadata,
-        //             demo: originalurl.searchParams.get('demo')
-        //         }
-        //     });
-
+        // TODO: add demo ref here
+        const address = new URL(POCKETBASE().baseURL).host;
         const opt = `&vmid=${vmid}&mtu=${high_mtu ? 1400 : 1200}`;
         appDispatch(
             remote_connect({
@@ -276,7 +260,6 @@ export const remoteAsync = {
             const video = new URL(info.videoUrl).searchParams.get('token');
             const audio = new URL(info.audioUrl).searchParams.get('token');
             const data = new URL(info.hidUrl).searchParams.get('token');
-            const host = new URL(info.hidUrl).hostname;
 
             const url = new URL(originalurl.toString());
             url.searchParams.set('audio', audio);
@@ -284,7 +267,6 @@ export const remoteAsync = {
             url.searchParams.set('video', video);
             url.searchParams.set('vmid', vmid);
             url.searchParams.set('data', data);
-            url.searchParams.set('server', host);
             return url.toString();
         }
     ),
@@ -300,7 +282,8 @@ export const remoteAsync = {
                 scancode,
                 preferred_codec,
                 preferred_proto,
-                enable_microphone
+                enable_microphone,
+                domain
             } = (getState() as RootState).remote;
 
             const setting = {
@@ -311,7 +294,8 @@ export const remoteAsync = {
                 HighMTU,
                 scancode,
                 bitrate,
-                framerate
+                framerate,
+                domain
             };
             const settings = await POCKETBASE()
                 .collection('setting')
@@ -352,6 +336,7 @@ export const remoteAsync = {
                 HighMTU?: boolean;
                 scancode?: boolean;
                 bitrate?: number;
+                domain?: string;
                 framerate?: number;
             };
         }>();
@@ -363,6 +348,7 @@ export const remoteAsync = {
                         HighMTU,
                         preferred_codec,
                         preferred_proto,
+                        domain,
                         enable_microphone,
                         scancode: _scancode
                     }
@@ -370,6 +356,7 @@ export const remoteAsync = {
             ] = settings;
             appDispatch(toggle_high_mtu(HighMTU));
             appDispatch(toggle_microphone(enable_microphone));
+            appDispatch(remote_domain(domain));
             appDispatch(toggle_hq(hq));
             if (['h264', 'h265'].includes(preferred_codec))
                 appDispatch(change_preferred_codec(preferred_codec));
@@ -466,6 +453,9 @@ export const remoteSlice = createSlice({
         },
         relative_mouse: (state) => {
             state.relative_mouse = !state.relative_mouse;
+        },
+        remote_domain: (state, action: PayloadAction<string>) => {
+            state.domain = action.payload;
         },
         metrics: (
             state,

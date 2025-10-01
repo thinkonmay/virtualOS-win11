@@ -123,7 +123,7 @@ export const workerAsync = {
         'wait_and_claim_volume',
         async (_: void, { getState }) => {
             const {
-                remote: { preferred_codec, preferred_proto },
+                remote: { preferred_codec, preferred_proto, domain },
                 worker: { HighMTU, currentAddress }
             } = getState() as RootState;
 
@@ -201,6 +201,7 @@ export const workerAsync = {
             }
 
             const result = ParseRequest(vmss.id, session, {
+                addr_override: domain,
                 high_mtu: HighMTU
             });
             if (result instanceof Error) {

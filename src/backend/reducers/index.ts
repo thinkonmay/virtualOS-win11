@@ -170,6 +170,7 @@ export const {
     toggle_microphone,
     toggle_fullscreen,
     set_fullscreen,
+    remote_domain,
     pointer_lock,
     toggle_hq,
     relative_mouse,

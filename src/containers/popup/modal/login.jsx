@@ -11,7 +11,7 @@ import {
     useAppSelector
 } from '@/backend/reducers';
 import { useState } from 'react';
-import DomainSwitch from '../../applications/apps/assets/DomainSwitch';
+import { DomainSwitch } from '../../applications/apps/assets/DomainSwitch';
 
 export function login({ loading }) {
     const [username, setUsername] = useState('');

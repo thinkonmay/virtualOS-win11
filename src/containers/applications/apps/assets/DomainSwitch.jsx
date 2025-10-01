@@ -1,11 +1,16 @@
 import { preloadSilent } from '@/backend/actions/background';
-import { useAppSelector } from '@/backend/reducers';
+import {
+    appDispatch,
+    cache_setting,
+    remote_domain,
+    useAppSelector
+} from '@/backend/reducers';
 
-function DomainSwitch() {
+export function DomainSwitch() {
     const domain = useAppSelector((state) => state.worker.currentAddress);
     const availableDomains = useAppSelector((state) => state.globals.domains);
 
-    const updateLanguage = async (e) => {
+    const updateDomain = async (e) => {
         const domain = e.target.value;
         localStorage.setItem('thinkmay_domain', domain);
         await preloadSilent();
@@ -13,7 +18,7 @@ function DomainSwitch() {
 
     return (
         <div className="langSwitcher langSwitcherTile">
-            <select value={domain} onChange={updateLanguage} className="w-28">
+            <select value={domain} onChange={updateDomain} className="w-28">
                 {availableDomains.map((domain, index) => (
                     <option key={index} value={domain.domain}>
                         {domain.domain.replaceAll('.thinkmay.net', '')}{' '}
@@ -24,4 +29,25 @@ function DomainSwitch() {
     );
 }
 
-export default DomainSwitch;
+export function Routing() {
+    const domain = useAppSelector((state) => state.remote.domain);
+    const availableDomains = useAppSelector((state) => state.globals.domains);
+
+    const updateRouting = async (e) => {
+        const domain = e.target.value;
+        appDispatch(remote_domain(domain));
+        await appDispatch(cache_setting());
+    };
+
+    return (
+        <div className="langSwitcher langSwitcherTile">
+            <select value={domain} onChange={updateRouting} className="w-28">
+                {availableDomains.map((domain, index) => (
+                    <option key={index} value={domain.domain}>
+                        {domain.domain.replaceAll('.thinkmay.net', '')}{' '}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+}

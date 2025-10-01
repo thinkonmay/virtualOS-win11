@@ -24,6 +24,7 @@ import { Icon } from '../shared/general';
 import './searchpane.scss';
 import './sidepane.scss';
 import './startmenu.scss';
+import { POCKETBASE } from '#/api';
 export * from './start';
 
 export const DesktopApp = () => {
@@ -272,7 +273,22 @@ const ReduceLag = () => (
 );
 
 const SpecsConnectInfo = () => {
-    const remote = useAppSelector((state) => state.remote);
+    let streamRoute = undefined;
+    let vmRoute = undefined;
+    const {
+        packetLoss,
+        idrcount,
+        realfps,
+        realdecodetime,
+        realdelay,
+        realbitrate,
+        auth
+    } = useAppSelector((state) => state.remote);
+    try {
+        vmRoute = new URL(POCKETBASE().baseURL).host.split('.')[0];
+        if (auth?.videoUrl)
+            streamRoute = new URL(auth.videoUrl).host.split('.')[0];
+    } catch {}
 
     return (
         <div className="containerSlider">
@@ -315,22 +331,36 @@ const SpecsConnectInfo = () => {
                 </div>
             </div>
             <p className="sliderName">
-                packetloss: <span> {remote.packetLoss}</span>
-                idr: <span> {remote.idrcount}</span>
-                bitrate: <span> {remote.realbitrate}</span>
+                {vmRoute ? (
+                    <>
+                        {' '}
+                        vm: <span>{vmRoute}</span>{' '}
+                    </>
+                ) : null}
+                {streamRoute ? (
+                    <>
+                        {' '}
+                        routing: <span>{streamRoute}</span>{' '}
+                    </>
+                ) : null}
+            </p>
+            <p className="sliderName">
+                packetloss: <span> {packetLoss}</span>
+                idr: <span> {idrcount}</span>
+                bitrate: <span> {realbitrate}</span>
                 kbps
             </p>
             <p className="sliderName">
-                fps: <span> {remote.realfps}</span>
-                {!isNaN(remote.realdecodetime) ? (
+                fps: <span> {realfps}</span>
+                {!isNaN(realdecodetime) ? (
                     <>
-                        decode: <span> {remote.realdecodetime.toFixed(2)}</span>
+                        decode: <span> {realdecodetime.toFixed(2)}</span>
                         ms{' '}
                     </>
                 ) : null}
-                {!isNaN(remote.realdelay) ? (
+                {!isNaN(realdelay) ? (
                     <>
-                        delay: <span> {remote.realdelay.toFixed(2)}</span>
+                        delay: <span> {realdelay.toFixed(2)}</span>
                         ms
                     </>
                 ) : null}

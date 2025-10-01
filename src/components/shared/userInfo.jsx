@@ -1,7 +1,10 @@
 import { appDispatch, useAppSelector, user_delete } from '@/backend/reducers';
 import { Contents } from '@/backend/reducers/locales';
 import { formatDate } from '@/backend/utils/date';
-import DomainSwitch from '@/containers/applications/apps/assets/DomainSwitch';
+import {
+    DomainSwitch,
+    Routing
+} from '@/containers/applications/apps/assets/DomainSwitch';
 import LangSwitch from '@/containers/applications/apps/assets/Langswitch';
 import { Icon } from './general';
 import './index.scss';
@@ -84,6 +87,10 @@ function UserInfo() {
                     <div className="w-full flex gap-4 justify-between">
                         <span>Server</span>
                         <DomainSwitch />
+                    </div>
+                    <div className="w-full flex gap-4 justify-between">
+                        <span>Routing</span>
+                        <Routing />
                     </div>
                     {subscription != undefined ? (
                         <>
