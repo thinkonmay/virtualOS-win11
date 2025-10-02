@@ -18,8 +18,12 @@ export const Status = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setVideoConnectivity(GetVideoMetric().status);
-            setAudioConnectivity(GetAudioMetric().status);
+            const video_metrics = GetVideoMetric();
+            const audio_metrics = GetAudioMetric();
+            if (video_metrics != undefined)
+                setVideoConnectivity(video_metrics.status);
+            if (audio_metrics != undefined)
+                setAudioConnectivity(audio_metrics.status);
         }, 1000);
 
         return () => {

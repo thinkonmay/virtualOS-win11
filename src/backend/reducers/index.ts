@@ -48,10 +48,10 @@ const logRybbit = async (a: any) => {
     };
     const t = type.split('/').reverse();
     if (!['rejected', 'fulfilled', 'pending'].includes(t[0]))
-        window.rybbit.event(t[0]);
+        window.rybbit?.event(t[0]);
     else if (t[0] == 'rejected')
-        window.rybbit.event(t[1], { error: error.message });
-    else window.rybbit.event(t[1], { result: t[0] });
+        window.rybbit?.event(t[1], { error: error.message });
+    else window.rybbit?.event(t[1], { result: t[0] });
 };
 
 export const store = configureStore({

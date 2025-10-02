@@ -384,12 +384,13 @@ export const globalSlice = createSlice({
             {
                 fetch: globalAsync.fetch_domain,
                 hander: (state, action: PayloadAction<Domain[]>) => {
-                    if (DevEnv) action.payload.push({
-                        domain: 'dev.thinkmay.net',
-                        free: 0,
-                        allow_pay: false
-                    })
-                    state.domains = action.payload
+                    if (DevEnv)
+                        action.payload.push({
+                            domain: 'dev.thinkmay.net',
+                            free: 0,
+                            allow_pay: false
+                        });
+                    state.domains = action.payload;
                 }
             },
             {

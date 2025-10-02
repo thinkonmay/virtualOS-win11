@@ -344,7 +344,7 @@ export const PreloadBackground = async () => {
                 }
             });
         if (['spawned', 'closed'].includes(data[0]))
-            window.rybbit.event(data[1], {
+            window.rybbit?.event(data[1], {
                 content: data[0]
             });
     });
