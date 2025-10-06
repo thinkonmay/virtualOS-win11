@@ -1,5 +1,4 @@
 import {
-    appDispatch,
     dispatch_generic,
     useAppSelector
 } from '@/backend/reducers';
@@ -231,7 +230,6 @@ export const SnapScreen = (props) => {
 };
 
 export const ToolBar = (props) => {
-    const dispatch = appDispatch;
     const [snap, setSnap] = useState(false);
 
     const openSnap = () => {

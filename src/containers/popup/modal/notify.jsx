@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/backend/reducers';
+import { appDispatch, useAppSelector } from '@/backend/reducers';
 import { Contents } from '@/backend/reducers/locales';
 import { useEffect, useState } from 'react';
 
