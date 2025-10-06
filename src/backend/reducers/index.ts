@@ -178,6 +178,7 @@ export const {
 } = remoteSlice.actions;
 
 export const {
+    list_backups,
     worker_refresh,
     worker_refresh_ui,
     fetch_configuration,

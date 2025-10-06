@@ -9,11 +9,13 @@ import {
     getRemoteSession,
     getVmSession,
     GLOBAL,
+    ListObjects,
     ParseRequest,
     POCKETBASE,
     Session,
     StartThinkmay
 } from '#/api';
+import { DevEnv } from '#/api/database';
 import { BackupGame, ready, RestoreGame } from '#/singleton';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
@@ -33,7 +35,6 @@ import {
 import { create_or_replace_resources } from '../actions';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
-import { DevEnv } from '#/api/database';
 
 type innerComputer = Computer & {
     availability?:
@@ -45,6 +46,11 @@ type innerComputer = Computer & {
     backup?: 'capable' | 'ongoing';
     network_disk: boolean;
     available_templates: string[];
+};
+
+type Backup = {
+    timestamp: string;
+    game: string;
 };
 
 type Metadata = {
@@ -69,6 +75,7 @@ type WorkerType = {
     currentAddress: string;
     HighMTU: boolean;
 
+    backups?: Backup[];
     progress?: string[];
     metadata?: Metadata;
     bucket?: string;
@@ -254,6 +261,33 @@ export const workerAsync = {
         'backup_game',
         async (_: void, { getState }): Promise<void> => {
             BackupGame();
+        }
+    ),
+    list_backups: createAsyncThunk(
+        'list_backups',
+        async (_: void, { getState }): Promise<Backup[]> => {
+            if ((getState() as RootState).worker.bucket == undefined) return [];
+            const files = await ListObjects('gamebackup/');
+            if (files instanceof APIError) throw files;
+
+            const result: Backup[] = [];
+            for (const file of files) {
+                const backupContent = await ListObjects(file.key);
+                if (backupContent instanceof APIError) continue;
+                const mapping = backupContent.find((x) =>
+                    x.key.includes('mapping.yaml')
+                );
+                if (mapping == undefined) continue;
+
+                result.push({
+                    game: file.key.split('/')[1],
+                    timestamp: mapping.created
+                        ? new Date(mapping.created).toUTCString()
+                        : undefined
+                });
+            }
+
+            return result;
         }
     ),
     update_local_worker: createAsyncThunk(
@@ -549,6 +583,12 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.worker_refresh_ui,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.list_backups,
+                hander: (state, action) => {
+                    state.backups = action.payload;
+                }
             },
             {
                 fetch: workerAsync.fetch_configuration,

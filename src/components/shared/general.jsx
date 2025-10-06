@@ -1,7 +1,4 @@
-import {
-    dispatch_generic,
-    useAppSelector
-} from '@/backend/reducers';
+import { dispatch_generic, useAppSelector } from '@/backend/reducers';
 import { clickDispatch, customClickDispatch } from '@/backend/utils/dispatch';
 import { useEffect, useState } from 'react';
 import './general.scss';
