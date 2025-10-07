@@ -109,7 +109,13 @@ export const userAsync = {
             const { error, data } = await GLOBAL()
                 .from('discounts')
                 .select(
-                    'code,start_at,end_at,discount_limit_per_user,discount_limit,multiply_rate,apply_for'
+                    `code,
+                    start_at,
+                    end_at,
+                    discount_limit_per_user,
+                    discount_limit,
+                    multiply_rate,
+                    apply_for`
                 );
             if (error != null) throw error;
             else return data;
@@ -209,11 +215,21 @@ export const userAsync = {
     ),
     get_plans: createAsyncThunk(
         'get_plans',
-        async (_: void, { getState }): Promise<Plan[]> => {
+        async (_: void): Promise<Plan[]> => {
             const { data, error } = await GLOBAL()
                 .from('plans')
                 .select(
-                    'name, policy->size, policy->limit_hour, policy->total_days, policy->refund_days, policy->refund_usage, policy->resources->disk, policy->>title, price->amount, metadata->allow_payment, cluster_pool'
+                    `name, 
+                    policy->size, 
+                    policy->limit_hour, 
+                    policy->total_days, 
+                    policy->refund_days, 
+                    policy->refund_usage, 
+                    policy->resources->disk, 
+                    policy->>title, 
+                    price->amount, 
+                    metadata->allow_payment, 
+                    cluster_pool`
                 )
                 .eq('active', true)
                 .is('metadata->>disable', null);

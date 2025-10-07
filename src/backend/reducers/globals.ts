@@ -31,7 +31,6 @@ type IGame = {
         samenode: boolean;
         hasaccount: boolean;
     };
-    is_paid: boolean;
 };
 
 interface Maintain {
@@ -290,11 +289,19 @@ export const globalAsync = {
     fetch_store: createAsyncThunk(
         'fetch_store',
         async (_: void, { getState }): Promise<IGame[]> => {
-            const email = (getState() as RootState).user.email;
-            const { data, error } = await GLOBAL().rpc('get_store_v2', {
-                email
-            });
-
+            const { data, error } = await GLOBAL()
+                .from('stores')
+                .select(
+                    `id,name,code_name,
+                    metadata->publishers,
+                    metadata->short_description,
+                    metadata->screenshots->0->path_full,
+                    management->>kickey
+                    `,
+                    { count: 'exact' }
+                )
+                .order('management->priority', { ascending: true })
+                .range(0, 50);
             if (error != null)
                 throw new Error('Failed to fetch store' + error.message);
 

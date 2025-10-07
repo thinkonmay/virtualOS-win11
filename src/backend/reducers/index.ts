@@ -18,7 +18,16 @@ import { workerAsync, workerSlice } from './worker';
 import { DevEnv } from '#/api/database';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
-const blacklist = ['remote/metrics', 'popup/popup_open', 'popup/popup_close'];
+const blacklist = [
+    'remote/metrics',
+    'remote/change_framerate',
+    'remote/change_bitrate',
+    'fetch_local_worker/pending',
+    'fetch_local_worker/fulfilled',
+    'update_progress',
+    'popup/popup_open',
+    'popup/popup_close'
+];
 const middleware: ThunkMiddleware = () => (next) => async (a) => {
     const { type } = a as { type: string };
     if (DevEnv && !blacklist.includes(type)) logAction(a);
