@@ -275,22 +275,19 @@ export const userAsync = {
                     percentage?: number,
                     err?: string
                 ) => {
-                    if (finished) toast(`volume allocation success`);
-                    else if (err != undefined) toast(err);
-                    else if (percentage != undefined) {
-                        appDispatch(popup_close());
-                        appDispatch(
-                            popup_open({
-                                type: 'notify',
-                                data: {
-                                    loading: true,
-                                    tips: true,
-                                    title: 'Installing new app',
-                                    text: `progress ${percentage}%`
-                                }
-                            })
-                        );
-                    }
+                    if (percentage == undefined) return;
+                    appDispatch(popup_close());
+                    appDispatch(
+                        popup_open({
+                            type: 'notify',
+                            data: {
+                                loading: true,
+                                tips: true,
+                                title: 'Installing new app',
+                                text: `progress ${percentage}%`
+                            }
+                        })
+                    );
                 };
 
                 const resp = await ChangeTemplate(
@@ -299,7 +296,7 @@ export const userAsync = {
                     callback
                 );
                 appDispatch(popup_close());
-                if (resp instanceof APIError) throw formatError(resp);
+                if (resp instanceof APIError) throw resp;
                 appDispatch(fetch_configuration());
                 appDispatch(app_close('store'));
                 appDispatch(app_full({ id: 'connectPc' }));

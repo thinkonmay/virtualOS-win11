@@ -17,6 +17,7 @@ const filterActions = [
     'backup_game',
     'claim_steam',
     'claim_storage',
+    'wait_and_claim_volume',
     'worker_refresh_ui'
 ];
 const uiAction = (acctionType: string) => {

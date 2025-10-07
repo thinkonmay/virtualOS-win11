@@ -18,7 +18,7 @@ import {
 import { DevEnv } from '#/api/database';
 import { BackupGame, ready, RestoreGame } from '#/singleton';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
+import { validate } from 'uuid';
 import {
     app_full,
     appDispatch,
@@ -35,7 +35,6 @@ import {
 import { create_or_replace_resources } from '../actions';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
-import { validate } from 'uuid';
 
 type innerComputer = Computer & {
     availability?:
@@ -130,89 +129,76 @@ export const workerAsync = {
         async (_: void, { getState }) => {
             const {
                 remote: { preferred_codec, preferred_proto, domain },
-                worker: { HighMTU, currentAddress }
+                worker: {
+                    HighMTU,
+                    currentAddress,
+                    metadata: { configuration }
+                }
             } = getState() as RootState;
 
-            appDispatch(
-                popup_open({ type: 'notify', data: { loading: true } })
-            );
+            let vncURL = undefined;
+            let logURL = undefined;
+            const callback = async (status: string, code?: number) => {
+                appDispatch(workerSlice.actions.update_progress(status));
+                const progress = (getState() as RootState).worker.progress;
+                if (DevEnv) console.log(status);
+                if (status.includes('broadcasters/websocket')) logURL = status;
+                else if (status.includes('broadcasters/vnc')) vncURL = status;
+                else if (logURL == undefined || vncURL == undefined)
+                    if (code != undefined)
+                        CancelDeployment(new APIError(status, code));
+                    else await workerAsync.showPosition(progress);
+                if (logURL != undefined && vncURL != undefined)
+                    appDispatch(
+                        popup_open({
+                            type: 'deployWatch',
+                            data: {
+                                vnc: vncURL,
+                                log: logURL
+                            }
+                        })
+                    );
+            };
 
             const info = await GetInfo();
             if (info instanceof APIError) throw formatError(info);
-            else if (!info.virtReady && !info.remoteReady)
-                throw new Error(`no remote capability on ${currentAddress}`);
-
             let session = getRemoteSession(info);
             let vmss = getVmSession(info);
-            if (info?.Volumes?.find((x) => validate(x.name)) == undefined)
+
+            if (!info.virtReady && !info.remoteReady)
+                throw new Error(`no remote capability on ${currentAddress}`);
+            else if (
+                info?.Volumes?.find((x) => validate(x.name)) == undefined &&
+                configuration?.transient != true
+            )
                 throw new Error(`you don't have any volume available`);
             else if (session == undefined) {
-                let vncURL = undefined;
-                let logURL = undefined;
                 appDispatch(workerSlice.actions.clean_progress());
-                const callback = async (status: string, code?: number) => {
-                    appDispatch(workerSlice.actions.update_progress(status));
-                    const progress = (getState() as RootState).worker.progress;
-                    if (DevEnv) console.log(status);
-                    if (status.includes('broadcasters/websocket'))
-                        logURL = status;
-                    else if (status.includes('broadcasters/vnc'))
-                        vncURL = status;
-                    else if (logURL == undefined || vncURL == undefined)
-                        if (code != undefined) {
-                            toast(formatError(status));
-                            CancelDeployment(new APIError(status, code));
-                        } else await workerAsync.showPosition(progress);
-                    if (logURL != undefined && vncURL != undefined)
-                        appDispatch(
-                            popup_open({
-                                type: 'deployWatch',
-                                data: {
-                                    vnc: vncURL,
-                                    log: logURL
-                                }
-                            })
-                        );
-                };
-
                 const resp = await StartThinkmay(
                     preferred_codec,
                     preferred_proto,
                     callback
                 );
-
-                appDispatch(popup_close());
-                if (resp instanceof APIError) {
-                    toast(formatError(resp));
-                    throw resp;
-                }
+                if (resp instanceof APIError) throw resp;
+                session = getRemoteSession(resp);
+                vmss = getVmSession(resp);
                 appDispatch(
                     workerAsync.update_local_worker({
                         currentAddress,
                         info: resp
                     })
                 );
-                session = getRemoteSession(resp);
-                vmss = getVmSession(resp);
             }
 
-            if (vmss == undefined || session == undefined) {
-                toast('invalid session');
+            if (vmss == undefined || session == undefined)
                 throw new Error('invalid session');
-            }
 
             const result = ParseRequest(vmss.id, session, {
                 addr_override: domain,
                 high_mtu: HighMTU
             });
-            if (result instanceof Error) {
-                appDispatch(popup_close());
-                toast(formatError(result));
-                throw formatError(result);
-            }
-
+            if (result instanceof Error) throw formatError(result);
             await appDispatch(save_reference(result));
-
             appDispatch(remote_connect(result));
             const readyState = await ready();
             if (readyState instanceof Error) {
@@ -540,6 +526,10 @@ export const workerSlice = createSlice({
                 hander: (state, action) => {
                     state.backups = action.payload;
                 }
+            },
+            {
+                fetch: workerAsync.wait_and_claim_volume,
+                hander: (state, action) => {}
             },
             {
                 fetch: workerAsync.fetch_configuration,
