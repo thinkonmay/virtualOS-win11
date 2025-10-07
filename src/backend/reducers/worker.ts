@@ -35,6 +35,7 @@ import {
 import { create_or_replace_resources } from '../actions';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
+import { validate } from 'uuid';
 
 type innerComputer = Computer & {
     availability?:
@@ -45,7 +46,6 @@ type innerComputer = Computer & {
         | 'closable';
     backup?: 'capable' | 'ongoing';
     network_disk: boolean;
-    available_templates: string[];
 };
 
 type Backup = {
@@ -59,8 +59,7 @@ type Metadata = {
         template: string;
         transient: boolean;
     };
-    pbid: string;
-    local_id: string;
+    local_id?: string;
     image?: string;
     code?: string;
     name?: string;
@@ -76,7 +75,7 @@ type WorkerType = {
 
     backups?: Backup[];
     progress?: string[];
-    metadata?: Metadata;
+    metadata: Metadata;
     bucket?: string;
     app_access?: {
         id: string;
@@ -88,6 +87,7 @@ const initialState: WorkerType = {
     data: {},
 
     currentAddress: 'saigon2.thinkmay.net',
+    metadata: {},
     HighMTU: false
 };
 
@@ -144,14 +144,9 @@ export const workerAsync = {
 
             let session = getRemoteSession(info);
             let vmss = getVmSession(info);
-            if (session == undefined) {
-                if (
-                    info?.Volumes?.filter(
-                        (x) => x.pool == 'user_data' || x.pool == 'unified_data'
-                    ).length == 0
-                )
-                    throw new Error(`you don't have any volume available`);
-
+            if (info?.Volumes?.find((x) => validate(x.name)) == undefined)
+                throw new Error(`you don't have any volume available`);
+            else if (session == undefined) {
                 let vncURL = undefined;
                 let logURL = undefined;
                 appDispatch(workerSlice.actions.clean_progress());
@@ -298,7 +293,6 @@ export const workerAsync = {
             info: Computer;
             currentAddress: string;
         }): Promise<{ [address: string]: innerComputer }> => {
-            const available_templates: string[] = [];
             let availability = undefined;
             let backup = undefined;
             const network_disk =
@@ -308,12 +302,7 @@ export const workerAsync = {
                 if (info.Sessions?.length > 0) availability = 'started';
                 else availability = 'ready';
             } else if (info.virtReady) {
-                const volume = info.Volumes?.find(
-                    (x) =>
-                        x.pool == 'user_data' ||
-                        (x.pool == 'unified_data' &&
-                            !x.name.includes('template'))
-                );
+                const volume = info.Volumes?.find((x) => validate(x.name));
                 const inuse = volume?.inuse;
                 const has_vm =
                     info.Sessions?.find((x) => x.vm != undefined) != undefined;
@@ -325,18 +314,6 @@ export const workerAsync = {
                         ? 'closable'
                         : 'waiting_shutdown';
                 else availability = 'ready';
-
-                info.Volumes?.filter(
-                    (x) =>
-                        (x.pool == 'app_data' ||
-                            (x.pool == 'unified_data' &&
-                                x.name.includes('template'))) &&
-                        x.name.includes('.template')
-                )?.forEach(({ name }) =>
-                    !available_templates.includes(name)
-                        ? available_templates.push(name)
-                        : null
-                );
 
                 if (
                     info.Sessions?.find(
@@ -352,7 +329,6 @@ export const workerAsync = {
                     ...info,
                     network_disk,
                     availability,
-                    available_templates,
                     backup
                 }
             };
@@ -456,37 +432,30 @@ export const workerAsync = {
                     };
                 }>();
             if (volumes.length == 0) return;
-            const [{ id: pbid, local_id, configuration: conf }] = volumes;
+            const [{ local_id, configuration: conf }] = volumes;
             const configuration = {
                 disk: conf?.disk,
                 transient: conf?.transient ?? false,
                 template: conf?.template ?? 'win11.template'
             };
 
-            const code = configuration.template.replaceAll('.template', '');
+            let result = {
+                configuration,
+                local_id,
+                code: configuration.template.replaceAll('.template', '')
+            } as Metadata;
             const { data: stores, error: err } = await GLOBAL()
                 .from('stores')
                 .select('metadata->screenshots->0->>path_full,name')
-                .eq('code_name', code)
+                .eq('code_name', result.code)
                 .limit(1);
             if (err) throw err;
             else if (stores.length > 0) {
                 const [{ path_full: image, name }] = stores;
-                return {
-                    pbid,
-                    configuration,
-                    local_id,
-                    image,
-                    code,
-                    name
-                };
-            } else
-                return {
-                    pbid,
-                    configuration,
-                    local_id,
-                    code
-                };
+                result = { ...result, image, name };
+            }
+
+            return result;
         }
     ),
     unclaim_volume: createAsyncThunk(

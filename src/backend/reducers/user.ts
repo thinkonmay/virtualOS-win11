@@ -6,12 +6,15 @@ import {
     app_close,
     app_full,
     appDispatch,
+    fetch_configuration,
     popup_close,
     popup_open,
-    RootState
+    RootState,
+    worker_refresh
 } from '.';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
+import { validate } from 'uuid';
 
 type Metadata = {
     node: string;
@@ -249,16 +252,20 @@ export const userAsync = {
             { getState }
         ): Promise<void> => {
             const {
-                worker: { currentAddress, data }
+                worker: {
+                    currentAddress,
+                    data,
+                    metadata: { local_id, configuration }
+                }
             } = getState() as RootState;
-            const vol = data[currentAddress]?.Volumes?.find(
-                (x) =>
-                    x.pool == 'user_data' ||
-                    (x.pool == 'unified_data' && !x.name.includes('template'))
+            const vol = data[currentAddress]?.Volumes?.find((x) =>
+                validate(x.name)
             );
 
-            if (vol == undefined) throw new Error('volume is not available');
-            else if (vol.inuse)
+            const transient = configuration?.transient == true;
+            if (vol == undefined && !transient)
+                throw new Error('volume is not available');
+            else if (vol?.inuse)
                 throw new Error(
                     'Hãy tắt máy trước khi cài đặt game. [Cài đặt -> Shutdown]'
                 );
@@ -286,9 +293,14 @@ export const userAsync = {
                     }
                 };
 
-                const resp = await ChangeTemplate(template, vol.name, callback);
+                const resp = await ChangeTemplate(
+                    template,
+                    !transient ? vol.name : local_id,
+                    callback
+                );
                 appDispatch(popup_close());
                 if (resp instanceof APIError) throw formatError(resp);
+                appDispatch(fetch_configuration());
                 appDispatch(app_close('store'));
                 appDispatch(app_full({ id: 'connectPc' }));
             }

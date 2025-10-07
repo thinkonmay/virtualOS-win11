@@ -5,6 +5,7 @@ import { externalLink } from '../utils/constant';
 import { BuilderHelper } from './helper';
 import { Contents, Languages, language } from './locales';
 import { DevEnv } from '#/api/database';
+import { validate } from 'uuid';
 export type Translation = Map<Languages, Map<Contents, string>>;
 const translation = language();
 
@@ -265,28 +266,25 @@ export const globalAsync = {
     update_game_tag: createAsyncThunk(
         'update_game_tag',
         async (): Promise<string[]> => {
-            const { data: tree, currentAddress } = store.getState().worker;
+            const {
+                data: tree,
+                currentAddress,
+                metadata: { configuration }
+            } = store.getState().worker;
             const volumes = tree[currentAddress]?.Volumes;
             if (volumes == undefined || volumes.length == 0) return [];
-
-            const usernode = volumes.find(
-                (x) =>
-                    x.pool == 'user_data' ||
-                    (x.pool == 'unified_data' && !x.name.includes('template'))
-            )?.node;
-            if (usernode == undefined) return [];
-
-            const samenodes = volumes
-                .filter(
-                    (x) =>
-                        x.node == usernode &&
-                        (x.pool == 'app_data' ||
-                            (x.pool == 'unified_data' &&
-                                x.name.includes('template')))
-                )
-                .map((x) => x.name);
-
-            return samenodes;
+            else if (configuration?.transient)
+                return volumes
+                    .filter((x) => x.pool == 'unified_data')
+                    .map((x) => x.name)
+                    .filter((x) => !validate(x));
+            const user_volume = volumes.find((x) => validate(x.name));
+            if (user_volume == undefined) return [];
+            else
+                return volumes
+                    .filter((x) => x.node == user_volume.node)
+                    .map((x) => x.name)
+                    .filter((x) => !validate(x));
         }
     ),
     fetch_store: createAsyncThunk(

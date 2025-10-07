@@ -53,7 +53,7 @@ export const ConnectApp = () => {
     );
     const addr = useAppSelector((state) => state.worker.currentAddress);
     const transient = useAppSelector(
-        (state) => state.worker.metadata?.configuration?.transient ?? false
+        (state) => state.worker.metadata.configuration?.transient ?? false
     );
     const { reach_time_limit, reach_date_limit } = metadata ?? {};
     const { browser } = detectBrowserAndOS();
