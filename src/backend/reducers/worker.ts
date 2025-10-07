@@ -408,7 +408,7 @@ export const workerAsync = {
                         disk?: number;
                     };
                 }>();
-            if (volumes.length == 0) return;
+            if (volumes.length == 0) return {};
             const [{ local_id, configuration: conf }] = volumes;
             const configuration = {
                 disk: conf?.disk,
