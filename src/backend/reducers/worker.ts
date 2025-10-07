@@ -55,10 +55,9 @@ type Backup = {
 
 type Metadata = {
     configuration?: {
-        ram: number;
-        cpu: number;
-        disk: number;
+        disk?: number;
         template: string;
+        transient: boolean;
     };
     pbid: string;
     local_id: string;
@@ -451,59 +450,42 @@ export const workerAsync = {
                     id: string;
                     local_id: string;
                     configuration?: {
-                        template: string;
-                        cpu: string;
-                        ram: string;
-                        disk: string;
+                        transient?: boolean;
+                        template?: string;
+                        disk?: number;
                     };
                 }>();
-
             if (volumes.length == 0) return;
-
-            const [{ id: pbid, local_id, configuration: _configuration }] =
-                volumes;
+            const [{ id: pbid, local_id, configuration: conf }] = volumes;
             const configuration = {
-                cpu: parseInt(_configuration?.cpu),
-                ram: parseInt(_configuration?.ram),
-                disk: parseInt(_configuration?.disk),
-                template: _configuration?.template
+                disk: conf?.disk,
+                transient: conf?.transient ?? false,
+                template: conf?.template ?? 'win11.template'
             };
-            if (Number.isNaN(configuration.cpu)) configuration.cpu = 8;
-            if (Number.isNaN(configuration.ram)) configuration.ram = 16;
-            if (Number.isNaN(configuration.disk)) configuration.disk = 150;
-            if (configuration.template == undefined)
-                configuration.template = 'win11.template';
-            const code = configuration.template.replaceAll('.template', '');
 
-            if (code != undefined) {
-                const { data: stores, error: err } = await GLOBAL()
-                    .from('stores')
-                    .select('metadata->screenshots->0->>path_full,name')
-                    .eq('code_name', code)
-                    .limit(1);
-                if (err) throw err;
-                else if (stores.length > 0) {
-                    const [{ path_full: image, name }] = stores;
-                    return {
-                        pbid,
-                        configuration,
-                        local_id,
-                        image,
-                        code,
-                        name
-                    };
-                } else
-                    return {
-                        pbid,
-                        configuration,
-                        local_id,
-                        code
-                    };
+            const code = configuration.template.replaceAll('.template', '');
+            const { data: stores, error: err } = await GLOBAL()
+                .from('stores')
+                .select('metadata->screenshots->0->>path_full,name')
+                .eq('code_name', code)
+                .limit(1);
+            if (err) throw err;
+            else if (stores.length > 0) {
+                const [{ path_full: image, name }] = stores;
+                return {
+                    pbid,
+                    configuration,
+                    local_id,
+                    image,
+                    code,
+                    name
+                };
             } else
                 return {
                     pbid,
                     configuration,
-                    local_id
+                    local_id,
+                    code
                 };
         }
     ),

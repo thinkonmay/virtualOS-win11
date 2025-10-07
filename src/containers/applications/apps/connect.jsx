@@ -52,6 +52,9 @@ export const ConnectApp = () => {
         (state) => state.worker.metadata ?? {}
     );
     const addr = useAppSelector((state) => state.worker.currentAddress);
+    const transient = useAppSelector(
+        (state) => state.worker.metadata?.configuration?.transient ?? false
+    );
     const { reach_time_limit, reach_date_limit } = metadata ?? {};
     const { browser } = detectBrowserAndOS();
 
@@ -131,13 +134,13 @@ export const ConnectApp = () => {
                                     </div>
                                 </div>
                             ) : null}
-                            {available == 'ready' ? (
+                            {available == 'started' ? (
                                 <>
                                     <button
                                         onClick={connect}
                                         className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
                                     >
-                                        {t[Contents.CA_TURN_ON_PC]}
+                                        {t[Contents.CA_CONNECT]}
                                     </button>
                                     <p className="text-xs text-center mt-3">
                                         {t[Contents.CA_CONNECT_EXPLAIN]}
@@ -151,13 +154,13 @@ export const ConnectApp = () => {
                                         Tùy chỉnh cấu hình
                                     </button>
                                 </>
-                            ) : available == 'started' ? (
+                            ) : available == 'ready' || transient ? (
                                 <>
                                     <button
                                         onClick={connect}
                                         className="bg-blue-600 text-white text-xl font-light mb-3 h-12 rounded-full shadow-transparent transition-all cursor-pointer active:bg-blue-700"
                                     >
-                                        {t[Contents.CA_CONNECT]}
+                                        {t[Contents.CA_TURN_ON_PC]}
                                     </button>
                                     <p className="text-xs text-center mt-3">
                                         {t[Contents.CA_CONNECT_EXPLAIN]}
