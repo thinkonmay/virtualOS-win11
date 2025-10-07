@@ -21,8 +21,6 @@ import {
     popup_close,
     popup_open,
     RootState,
-    setting_theme,
-    sidepane_panethem,
     store,
     unclaim_volume,
     worker_refresh
@@ -42,8 +40,7 @@ export const afterMath = (event: any) => {
         ['START', 'startmenu/starthid', 'startmenu.hide'], // TODO
         ['BAND', 'sidepane/sidepane_bandhide', 'sidepane.banhide'],
         ['PANE', 'sidepane/sidepane_panehide', 'sidepane.hide'],
-        ['MENU', 'menu/menu_hide', 'menus.hide'],
-        ['QA', 'startmenu/hideQa', 'startmenu.qahide']
+        ['MENU', 'menu/menu_hide', 'menus.hide']
     ];
 
     var actionType = '';
@@ -131,16 +128,6 @@ export const getTreeValue = (obj: any, path: any) => {
     }
 
     return tdir;
-};
-
-export const changeTheme = () => {
-    var thm = store.getState().setting.person.theme,
-        thm = thm == 'light' ? 'dark' : 'light';
-    var icon = thm == 'light' ? 'sun' : 'moon';
-    localStorage.setItem('theme', thm);
-    document.body.dataset.theme = thm;
-    appDispatch(setting_theme(thm));
-    appDispatch(sidepane_panethem(icon));
 };
 
 export const menuDispatch = async (event: Event) => {

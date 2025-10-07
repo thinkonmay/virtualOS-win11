@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Contents } from './locales';
 import { Message } from './sidepane';
-import { DevEnv } from '#/api/database';
 
 export type IGamePadSetting = {
     btnSize: 1 | 2 | 3;

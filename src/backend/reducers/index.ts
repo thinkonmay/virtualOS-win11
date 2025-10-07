@@ -7,12 +7,10 @@ import { globalAsync, globalSlice } from './globals';
 import { menusSlice } from './menu';
 import { modalSlice as popupSlice } from './modal';
 import { remoteAsync, remoteSlice } from './remote.js';
-import { settSlice } from './settings.js';
 import { sidepaneSlice } from './sidepane';
 import { menuSlice } from './startmenu';
 import { taskSlice } from './taskbar';
 import { userAsync, userSlice } from './user';
-import { wallSlice } from './wallpaper';
 import { workerAsync, workerSlice } from './worker';
 
 import { DevEnv } from '#/api/database';
@@ -68,19 +66,19 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(middleware),
     reducer: {
-        user: userSlice.reducer,
-        wallpaper: wallSlice.reducer,
+        // UI data
         taskbar: taskSlice.reducer,
         desktop: deskSlice.reducer,
         startmenu: menuSlice.reducer,
-        apps: appSlice.reducer,
         menus: menusSlice.reducer,
-        globals: globalSlice.reducer,
-        setting: settSlice.reducer,
-        worker: workerSlice.reducer,
-        popup: popupSlice.reducer,
-        remote: remoteSlice.reducer,
-        sidepane: sidepaneSlice.reducer
+        apps: appSlice.reducer,
+
+        user: userSlice.reducer, // user data
+        globals: globalSlice.reducer, // global data
+        worker: workerSlice.reducer, // worker data
+        popup: popupSlice.reducer, // popup data
+        remote: remoteSlice.reducer, // remote data
+        sidepane: sidepaneSlice.reducer // setting data
     }
 });
 
@@ -101,15 +99,7 @@ export const {
     desk_size,
     desk_sort
 } = deskSlice.actions;
-export const {
-    startall,
-    startalpha,
-    starthid,
-    startogg,
-    startpwc,
-    startshw,
-    startsrc
-} = menuSlice.actions;
+export const { starthid, startogg, startshw } = menuSlice.actions;
 export const {
     app_toggle,
     app_full,
@@ -123,8 +113,6 @@ export const {
     app_minimize
 } = appSlice.actions;
 export const { menu_chng, menu_hide, menu_show } = menusSlice.actions;
-export const { setting_load, setting_setv, setting_theme, setting_togg } =
-    settSlice.actions;
 export const { toggle_high_mtu, set_current_address } = workerSlice.actions;
 export const { popup_close, popup_open } = popupSlice.actions;
 export const {
