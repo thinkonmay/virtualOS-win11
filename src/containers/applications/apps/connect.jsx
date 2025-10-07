@@ -22,7 +22,6 @@ import { useEffect, useState } from 'react';
 import { isMobile } from '#/core';
 import { preload } from '@/backend/actions/background';
 import { Contents } from '@/backend/reducers/locales';
-import { detectBrowserAndOS } from '@/backend/utils/detectBrower';
 import toast from 'react-hot-toast';
 import './assets/connect.scss';
 
@@ -56,7 +55,6 @@ export const ConnectApp = () => {
         (state) => state.worker.metadata.configuration?.transient ?? false
     );
     const { reach_time_limit, reach_date_limit } = metadata ?? {};
-    const { browser } = detectBrowserAndOS();
 
     const limit = (type) =>
         popup_open({
@@ -127,13 +125,6 @@ export const ConnectApp = () => {
                         </div>
 
                         <div className="containerSpec">
-                            {!browser.includes('Chrome') ? (
-                                <div className="flex flex-col gap-3">
-                                    <div className="spec my-5">
-                                        {t[Contents.SUGGEST_BROWSER]}
-                                    </div>
-                                </div>
-                            ) : null}
                             {available == 'started' ? (
                                 <>
                                     <button
