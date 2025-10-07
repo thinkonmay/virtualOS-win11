@@ -209,40 +209,31 @@ export const workerAsync = {
     ),
     unclaim_steam: createAsyncThunk(
         'unclaim_steam',
-        async (_: Session, { getState }): Promise<void> => {}
+        async (): Promise<void> => {}
     ),
     unclaim_storage: createAsyncThunk(
         'unclaim_storage',
-        async (_: Session, { getState }): Promise<void> => {}
+        async (): Promise<void> => {}
     ),
-    claim_steam: createAsyncThunk(
-        'claim_steam',
-        async (_: void, { getState }): Promise<string> => {
-            const session = await ClaimSteam();
-            if (session instanceof APIError) throw session;
-            else return session;
-        }
-    ),
+    claim_steam: createAsyncThunk('claim_steam', async (): Promise<string> => {
+        const session = await ClaimSteam();
+        if (session instanceof APIError) throw session;
+        else return session;
+    }),
     claim_storage: createAsyncThunk(
         'claim_storage',
-        async (_: void, { getState }): Promise<string> => {
+        async (): Promise<string> => {
             const session = await ClaimStorage();
             if (session instanceof APIError) throw session;
             else return session;
         }
     ),
-    restore_game: createAsyncThunk(
-        'restore_game',
-        async (_: void, { getState }): Promise<void> => {
-            RestoreGame();
-        }
-    ),
-    backup_game: createAsyncThunk(
-        'backup_game',
-        async (_: void, { getState }): Promise<void> => {
-            BackupGame();
-        }
-    ),
+    restore_game: createAsyncThunk('restore_game', async (): Promise<void> => {
+        RestoreGame();
+    }),
+    backup_game: createAsyncThunk('backup_game', async (): Promise<void> => {
+        BackupGame();
+    }),
     list_backups: createAsyncThunk(
         'list_backups',
         async (_: void, { getState }): Promise<Backup[]> => {

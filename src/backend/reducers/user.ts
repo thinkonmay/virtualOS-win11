@@ -197,7 +197,7 @@ export const userAsync = {
     ),
     get_resources: createAsyncThunk(
         'get_resources',
-        async (_: void): Promise<Resource[]> => {
+        async (): Promise<Resource[]> => {
             const { data, error } = await GLOBAL()
                 .from('resources')
                 .select('daily_price,name,configuration,type')
@@ -213,13 +213,11 @@ export const userAsync = {
                 }));
         }
     ),
-    get_plans: createAsyncThunk(
-        'get_plans',
-        async (_: void): Promise<Plan[]> => {
-            const { data, error } = await GLOBAL()
-                .from('plans')
-                .select(
-                    `name, 
+    get_plans: createAsyncThunk('get_plans', async (): Promise<Plan[]> => {
+        const { data, error } = await GLOBAL()
+            .from('plans')
+            .select(
+                `name, 
                     policy->size, 
                     policy->limit_hour, 
                     policy->total_days, 
@@ -230,37 +228,36 @@ export const userAsync = {
                     price->amount, 
                     metadata->allow_payment, 
                     cluster_pool`
-                )
-                .eq('active', true)
-                .is('metadata->>disable', null);
+            )
+            .eq('active', true)
+            .is('metadata->>disable', null);
 
-            if (error) return [];
-            else
-                return data.map(
-                    (e) =>
-                        ({
-                            name: e.name,
-                            title: e.title,
-                            size: Number(e.size),
-                            limit_hour: Number(e.limit_hour),
-                            total_days: Number(e.total_days),
-                            amount: Number(e.amount),
-                            allow_payment: Boolean(e.allow_payment),
-                            bonus: {
-                                time: Number(e.limit_hour),
-                                storage_limit: Number(e.disk),
-                                // storage_credit: 0,
-                                no_waiting_line:
-                                    e.cluster_pool.length > 0 ? true : false,
-                                multiple_cluster:
-                                    e.cluster_pool.length > 0 ? true : false,
-                                refundtime: Number(e.refund_usage),
-                                refundday: Number(e.refund_days)
-                            }
-                        }) as Plan
-                );
-        }
-    ),
+        if (error) return [];
+        else
+            return data.map(
+                (e) =>
+                    ({
+                        name: e.name,
+                        title: e.title,
+                        size: Number(e.size),
+                        limit_hour: Number(e.limit_hour),
+                        total_days: Number(e.total_days),
+                        amount: Number(e.amount),
+                        allow_payment: Boolean(e.allow_payment),
+                        bonus: {
+                            time: Number(e.limit_hour),
+                            storage_limit: Number(e.disk),
+                            // storage_credit: 0,
+                            no_waiting_line:
+                                e.cluster_pool.length > 0 ? true : false,
+                            multiple_cluster:
+                                e.cluster_pool.length > 0 ? true : false,
+                            refundtime: Number(e.refund_usage),
+                            refundday: Number(e.refund_days)
+                        }
+                    }) as Plan
+            );
+    }),
     change_template: createAsyncThunk(
         'change_template',
         async (

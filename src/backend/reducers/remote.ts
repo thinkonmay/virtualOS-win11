@@ -310,7 +310,7 @@ export const remoteAsync = {
                     .update(settings[0]?.id, { setting });
         }
     ),
-    _load_setting: createAsyncThunk('load_setting', async (_: void) => {
+    _load_setting: createAsyncThunk('load_setting', async () => {
         let bitrateLocal: number = +localStorage.getItem('bitrate');
         let framerateLocal: number = +localStorage.getItem('framerate');
 
@@ -371,12 +371,9 @@ export const remoteAsync = {
     set load_setting(value) {
         this._load_setting = value;
     },
-    toggle_remote_async: createAsyncThunk(
-        'toggle_remote_async',
-        async (_: void, {}) => {
-            appDispatch(toggle_remote());
-        }
-    )
+    toggle_remote_async: createAsyncThunk('toggle_remote_async', async () => {
+        appDispatch(toggle_remote());
+    })
 };
 
 export const remoteSlice = createSlice({

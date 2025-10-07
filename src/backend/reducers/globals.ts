@@ -286,34 +286,31 @@ export const globalAsync = {
                     .filter((x) => !validate(x));
         }
     ),
-    fetch_store: createAsyncThunk(
-        'fetch_store',
-        async (_: void, { getState }): Promise<IGame[]> => {
-            const { data, error } = await GLOBAL()
-                .from('stores')
-                .select(
-                    `id,name,code_name,
+    fetch_store: createAsyncThunk('fetch_store', async (): Promise<IGame[]> => {
+        const { data, error } = await GLOBAL()
+            .from('stores')
+            .select(
+                `id,name,code_name,
                     metadata->publishers,
                     metadata->short_description,
                     metadata->screenshots->0->path_full,
                     management->>kickey
                     `,
-                    { count: 'exact' }
-                )
-                .order('management->priority', { ascending: true })
-                .range(0, 50);
-            if (error != null)
-                throw new Error('Failed to fetch store' + error.message);
+                { count: 'exact' }
+            )
+            .order('management->priority', { ascending: true })
+            .range(0, 50);
+        if (error != null)
+            throw new Error('Failed to fetch store' + error.message);
 
-            return data.map((x) => ({
-                ...x,
-                tag: {
-                    samenode: false,
-                    hasaccount: x.kickey == 'true'
-                }
-            }));
-        }
-    ),
+        return data.map((x) => ({
+            ...x,
+            tag: {
+                samenode: false,
+                hasaccount: x.kickey == 'true'
+            }
+        }));
+    }),
     fetch_error_message: createAsyncThunk(
         'fetch_error_message',
         async (): Promise<ErrorMessage[]> => {
