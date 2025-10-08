@@ -312,7 +312,7 @@ export const create_payment_pocket = async (args: {
         return;
     }
 
-    await GLOBAL().rpc('verify_all_payment');
+    await GLOBAL().rpc('verify_all_payment_v2');
 
     let info = undefined;
     while (!(info?.virtReady ?? false)) {
@@ -352,7 +352,7 @@ export const replace_payment_pocket = async ({
         return;
     }
 
-    await GLOBAL().rpc('verify_all_payment');
+    await GLOBAL().rpc('verify_all_payment_v2');
     await preloadSilent();
     appDispatch(popup_close());
 };
