@@ -100,7 +100,8 @@ export const workerAsync = {
                 data: {
                     loading: false,
                     tips: true,
-                    title: 'Connect to PC',
+                    title: 'Booting up PC',
+                    timeCounter: 15,
                     textArray: text
                         .filter(
                             (x) =>

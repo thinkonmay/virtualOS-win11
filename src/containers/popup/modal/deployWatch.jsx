@@ -70,7 +70,7 @@ export function deployWatch({ data: { vnc, log } }) {
                             Deployment preview :{' '}
                             {String(performtime.minutes).padStart(2, '0')}:
                             {String(performtime.seconds).padStart(2, '0')}/
-                            10:00 minutes
+                            7:00 minutes
                         </h3>
                         <button
                             type="button"

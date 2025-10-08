@@ -38,6 +38,7 @@ type PopupData =
               textArray?: any[];
               timeProcessing?: number;
               confirmButton?: boolean;
+              timeCounter?: number;
           };
       }
     | {

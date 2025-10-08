@@ -11,7 +11,8 @@ export function notify({
         loading = true,
         timeProcessing = 3.5,
         circleLoading = true,
-        confirmButton = false
+        confirmButton = false,
+        timeCounter = 0
     }
 }) {
     const close = () => appDispatch(popup_close());
@@ -47,14 +48,15 @@ export function notify({
                     <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
                         {title ?? 'Please wait...'}
                     </p>
+                    {timeCounter != 0 ? TimeCounter({data: {timeCounter}}) : null}
                     {text ? (
                         <p className="mb-3 md:text-xl text-center"> {text} </p>
                     ) : null}
                     {textArray ? (
-                        <p className="mb-3 md:text-xl text-center">
+                        <p className="mb-3 md:text-sm text-center">
                             {textArray.map((text) => (
                                 <>
-                                    {text} <br />
+                                    {text} <br/>
                                 </>
                             ))}
                         </p>
@@ -78,6 +80,38 @@ export function notify({
             </div>
         </div>
     );
+}
+
+const TimeCounter = ({data: {timeCounter = 0}}) => {
+    const t = useAppSelector((state) => state.globals.translation);
+    const [performtime, setPerformTime] = useState({ minutes: 0, seconds: 0 });
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setPerformTime((prev) => {
+                let totalSec = prev.minutes * 60 + prev.seconds + 1;
+                let mins = Math.floor(totalSec / 60);
+                let secs = totalSec % 60;
+                return { minutes: mins, seconds: secs };
+            });
+        }, 1000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+
+    return (
+            <div className="relative p-4 w-full max-w-md max-h-full">
+            <div key="timeCounter" className="mt-[24px] mb-[10px]">
+               {t[Contents.BOOTING_UP]}{" "}{String(performtime.minutes).padStart(2, '0')}:
+                {String(performtime.seconds).padStart(2, '0')}/
+                {timeCounter}:00 minutes
+                
+            </div>
+                {t[Contents.BOOTING_UP_DESC]}
+        </div>
+    )
+
 }
 
 const LoadingProgressBar = ({ timeProcessing }) => {
