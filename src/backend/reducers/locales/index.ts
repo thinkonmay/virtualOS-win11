@@ -285,11 +285,9 @@ export enum Contents {
     YOU_REGISTERED_AT,
     YOU_ARE_IN,
 
-
     // booting up time
     BOOTING_UP,
     BOOTING_UP_DESC
-
 }
 
 export function language() {
@@ -1119,15 +1117,22 @@ export function language() {
     vn.set(Contents.PAYMENT_POCKET_SUCCESS, 'Hệ thống thanh toán thành công');
     id.set(Contents.PAYMENT_POCKET_SUCCESS, 'Success');
 
-
     en.set(Contents.BOOTING_UP, 'Booting VM time:');
     vn.set(Contents.BOOTING_UP, 'Thời gian khởi động:');
     id.set(Contents.BOOTING_UP, 'Booting VM time:');
 
-    en.set(Contents.BOOTING_UP_DESC, 'This section will take a little time. Please be patient.');
-    vn.set(Contents.BOOTING_UP_DESC, 'Bước này có thể mất chút ít thời gian, nếu vượt qua thời gian khởi động. Liên hệ ADMIN!');
-    id.set(Contents.BOOTING_UP_DESC, 'This section will take a little time. Please be patient.');
-    
-    return t;
+    en.set(
+        Contents.BOOTING_UP_DESC,
+        'This section will take a little time. Please be patient.'
+    );
+    vn.set(
+        Contents.BOOTING_UP_DESC,
+        'Bước này có thể mất chút ít thời gian, nếu vượt qua thời gian khởi động. Liên hệ ADMIN!'
+    );
+    id.set(
+        Contents.BOOTING_UP_DESC,
+        'This section will take a little time. Please be patient.'
+    );
 
+    return t;
 }

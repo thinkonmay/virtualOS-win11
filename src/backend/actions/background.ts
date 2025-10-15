@@ -103,7 +103,7 @@ const updateGametag = () => appDispatch(update_game_tag());
 const updateUI = async () => {
     const {
         user: { id, subscription, email, discounts },
-        worker: { currentAddress, bucket, app_access }
+        worker: { currentAddress, bucket, app_access, backups }
     } = store.getState();
 
     window.rybbit.identify(id);
@@ -253,6 +253,17 @@ const updateUI = async () => {
             }
         }
     );
+
+    for (const { game, timestamp } of backups)
+        toast(`Game ${game} backup at ${timestamp}`, {
+            icon: 'ℹ️',
+            duration: 5000,
+            style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff'
+            }
+        });
 
     if (discounts.length > 0) {
         const [{ start_at, end_at, multiply_rate, code }] = discounts;

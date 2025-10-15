@@ -48,7 +48,9 @@ export function notify({
                     <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
                         {title ?? 'Please wait...'}
                     </p>
-                    {timeCounter != 0 ? TimeCounter({data: {timeCounter}}) : null}
+                    {timeCounter != 0
+                        ? TimeCounter({ data: { timeCounter } })
+                        : null}
                     {text ? (
                         <p className="mb-3 md:text-xl text-center"> {text} </p>
                     ) : null}
@@ -56,7 +58,7 @@ export function notify({
                         <p className="mb-3 md:text-sm text-center">
                             {textArray.map((text) => (
                                 <>
-                                    {text} <br/>
+                                    {text} <br />
                                 </>
                             ))}
                         </p>
@@ -82,7 +84,7 @@ export function notify({
     );
 }
 
-const TimeCounter = ({data: {timeCounter = 0}}) => {
+const TimeCounter = ({ data: { timeCounter = 0 } }) => {
     const t = useAppSelector((state) => state.globals.translation);
     const [performtime, setPerformTime] = useState({ minutes: 0, seconds: 0 });
     useEffect(() => {
@@ -101,18 +103,17 @@ const TimeCounter = ({data: {timeCounter = 0}}) => {
     }, []);
 
     return (
-            <div className="relative p-4 w-full max-w-md max-h-full">
+        <div className="relative p-4 w-full max-w-md max-h-full">
             <div key="timeCounter" className="mt-[24px] mb-[10px]">
-               {t[Contents.BOOTING_UP]}{" "}{String(performtime.minutes).padStart(2, '0')}:
-                {String(performtime.seconds).padStart(2, '0')}/
-                {timeCounter}:00 minutes
-                
+                {t[Contents.BOOTING_UP]}{' '}
+                {String(performtime.minutes).padStart(2, '0')}:
+                {String(performtime.seconds).padStart(2, '0')}/{timeCounter}:00
+                minutes
             </div>
-                {t[Contents.BOOTING_UP_DESC]}
+            {t[Contents.BOOTING_UP_DESC]}
         </div>
-    )
-
-}
+    );
+};
 
 const LoadingProgressBar = ({ timeProcessing }) => {
     const [loading, setLoading] = useState(0);
