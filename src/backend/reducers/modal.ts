@@ -22,6 +22,10 @@ type PopupData =
           };
       }
     | {
+          type: 'connecting';
+          data: {};
+      }
+    | {
           type: 'deployWatch';
           data: {
               vnc: string;

@@ -253,15 +253,8 @@ export const showConnect = () => {
     appDispatch(popup_close());
     appDispatch(
         popup_open({
-            type: 'notify',
-            data: {
-                loading: false,
-                tips: false,
-                title: 'Connecting video & audio',
-                text: store.getState().globals.translation[
-                    Contents.CA_CONNECT_NOTIFY
-                ]
-            }
+            type: 'connecting',
+            data: {}
         })
     );
 };
@@ -397,5 +390,6 @@ export const create_or_replace_resources = async (resource_name: string) => {
 
 export const openVNC = () => {
     const vnc = (store.getState() as RootState).remote.auth?.vncUrl;
+    appDispatch(popup_close());
     appDispatch(popup_open({ type: 'vnc', data: { vnc } }));
 };

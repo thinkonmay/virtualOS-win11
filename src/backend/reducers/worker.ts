@@ -32,7 +32,7 @@ import {
     save_reference,
     worker_refresh
 } from '.';
-import { create_or_replace_resources } from '../actions';
+import { create_or_replace_resources, openVNC, showConnect } from '../actions';
 import { formatError } from '../utils/formatErr';
 import { BuilderHelper } from './helper';
 
@@ -201,6 +201,8 @@ export const workerAsync = {
             if (result instanceof Error) throw formatError(result);
             await appDispatch(save_reference(result));
             appDispatch(remote_connect(result));
+            if (false) openVNC();
+            else showConnect();
             const readyState = await ready();
             if (readyState instanceof Error) {
                 appDispatch(close_remote());

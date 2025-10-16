@@ -1,6 +1,5 @@
 import { AudioWrapper, Thinkmay, VideoWrapper, isMobile } from '#/core';
 import { Assign, ready } from '#/singleton';
-import { openVNC, showConnect } from '@/backend/actions';
 import {
     appDispatch,
     popup_close,
@@ -36,21 +35,18 @@ export const Remote = () => {
         if (!active || auth == undefined) return;
         if (isMobile()) appDispatch(toggle_objectfit());
 
-        if (DevEnv) openVNC();
-        else showConnect();
         setupWebRTC();
         ready().then((err) => {
-            if (err instanceof Error)
-                toast(err.message, {
-                    icon: 'ℹ️',
-                    duration: 15000,
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff'
-                    }
-                });
-            appDispatch(popup_close());
+            if (!(err instanceof Error)) return;
+            toast(err.message, {
+                icon: 'ℹ️',
+                duration: 15000,
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff'
+                }
+            });
         });
     }, [active]);
 

@@ -96,7 +96,7 @@ export async function BuilderHelper<T, U, V>(
                                 data: { loading: true }
                             })
                         ),
-                    100
+                    1
                 );
             }
         )
