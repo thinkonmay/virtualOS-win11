@@ -43,7 +43,6 @@ import {
 } from '.';
 import { originalurl } from '../actions/background';
 import { BuilderHelper } from './helper';
-import { showConnect } from '../actions';
 
 export type Metric = {
     receivefps: number[];
@@ -249,7 +248,6 @@ export const remoteAsync = {
                 hidUrl: `wss://${address}:444/broadcasters/webrtc/sendonly?token=${data}${opt}`
             })
         );
-        showConnect();
         if ((await ready()) instanceof Error) appDispatch(close_remote());
         else appDispatch(remote_ready());
         return true;
