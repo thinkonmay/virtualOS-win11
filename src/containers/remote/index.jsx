@@ -48,7 +48,7 @@ export const Remote = () => {
                 }
             });
         });
-    }, [active]);
+    }, [active, auth]);
 
     const setupWebRTC = () =>
         Assign(

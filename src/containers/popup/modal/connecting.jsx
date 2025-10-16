@@ -1,13 +1,14 @@
 import { CloseStreaming } from '#/singleton';
 import { appDispatch, popup_close, useAppSelector } from '@/backend/reducers';
 import { Contents } from '@/backend/reducers/locales';
+import { Routing } from '@/containers/applications/apps/assets/DomainSwitch';
 import { useEffect, useState } from 'react';
 
 export function connecting() {
     const close = () => {
-        CloseStreaming()
+        CloseStreaming();
         appDispatch(popup_close());
-    }
+    };
     return (
         <div
             id="promo-popup"
@@ -37,6 +38,7 @@ export function connecting() {
                     <p className="text-center text-[1.2rem] md:text-3xl mb-[16px]">
                         Connecting video
                     </p>
+                    <Routing />
                     <div className="items-center p-6 space-x-4 rounded-b border-gray-600">
                         <button
                             type="submit"

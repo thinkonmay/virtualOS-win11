@@ -455,6 +455,14 @@ export const remoteSlice = createSlice({
         },
         remote_domain: (state, action: PayloadAction<string>) => {
             state.domain = action.payload;
+            if (state.auth != undefined) {
+                const video = new URL(state.auth.videoUrl);
+                const audio = new URL(state.auth.audioUrl);
+                video.hostname = action.payload;
+                video.hostname = action.payload;
+                state.auth.videoUrl = video.toString();
+                state.auth.audioUrl = audio.toString();
+            }
         },
         metrics: (
             state,
