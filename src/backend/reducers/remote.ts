@@ -248,8 +248,12 @@ export const remoteAsync = {
                 hidUrl: `wss://${address}:444/broadcasters/webrtc/sendonly?token=${data}${opt}`
             })
         );
-        if ((await ready()) instanceof Error) appDispatch(close_remote());
-        else appDispatch(remote_ready());
+        const readyState = await ready();
+        if (readyState instanceof Error) {
+            appDispatch(close_remote());
+            throw readyState;
+        } else appDispatch(remote_ready());
+
         return true;
     }),
     save_reference: createAsyncThunk(
