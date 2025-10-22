@@ -67,7 +67,10 @@ const Taskbar = () => {
     useEffect(() => {
         const map = {};
         const i = setInterval(() => {
-            const gamepads = navigator.getGamepads().filter((x) => x != null);
+            let gamepads = navigator.getGamepads();
+            gamepads = gamepads
+                ? [...gamepads].filter((gamepad) => gamepad !== null)
+                : [];
             if (gamepads.length == 0) setGamepadState(null);
             else
                 gamepads.forEach((gamepad, index) => {
