@@ -175,8 +175,14 @@ export const workerAsync = {
                 throw new Error(`you don't have any volume available`);
             else if (session == undefined) {
                 appDispatch(workerSlice.actions.clean_progress());
+                const h265capable = RTCRtpReceiver.getCapabilities(
+                    'video'
+                )?.codecs?.find(({ mimeType }) =>
+                    mimeType.toLowerCase().includes('h265')
+                ) != undefined;
+
                 const resp = await StartThinkmay(
-                    preferred_codec,
+                    h265capable ? preferred_codec : 'h264',
                     preferred_proto,
                     callback
                 );
