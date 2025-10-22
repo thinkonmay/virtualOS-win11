@@ -2,7 +2,6 @@ import { AudioWrapper, Thinkmay, VideoWrapper, isMobile } from '#/core';
 import { Assign, ready } from '#/singleton';
 import {
     appDispatch,
-    popup_close,
     set_fullscreen,
     toggle_objectfit,
     useAppSelector
