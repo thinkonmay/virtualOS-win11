@@ -181,14 +181,13 @@ export const {
     fetch_configuration,
     fetch_app_access,
     fetch_buckets,
+    fetch_resource_session,
     change_app_access,
     wait_and_claim_volume,
     claim_steam,
     claim_storage,
     restore_game,
     backup_game,
-    unclaim_steam,
-    unclaim_storage,
     unclaim_volume
 } = workerAsync;
 export const {

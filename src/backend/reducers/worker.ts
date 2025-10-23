@@ -12,8 +12,8 @@ import {
     ListObjects,
     ParseRequest,
     POCKETBASE,
-    Session,
-    StartThinkmay
+    StartThinkmay,
+    UnclaimResource
 } from '#/api';
 import { DevEnv } from '#/api/database';
 import { BackupGame, ready, RestoreGame } from '#/singleton';
@@ -52,6 +52,11 @@ type Backup = {
     game: string;
 };
 
+type ResourceSession = {
+    id: string;
+    internal: any;
+};
+
 type Metadata = {
     configuration?: {
         disk?: number;
@@ -72,6 +77,7 @@ type WorkerType = {
     currentAddress: string;
     HighMTU: boolean;
 
+    sessions?: ResourceSession[];
     backups?: Backup[];
     progress?: string[];
     metadata: Metadata;
@@ -215,14 +221,6 @@ export const workerAsync = {
                 throw readyState;
             } else appDispatch(remote_ready());
         }
-    ),
-    unclaim_steam: createAsyncThunk(
-        'unclaim_steam',
-        async (): Promise<void> => {}
-    ),
-    unclaim_storage: createAsyncThunk(
-        'unclaim_storage',
-        async (): Promise<void> => {}
     ),
     claim_steam: createAsyncThunk('claim_steam', async (): Promise<string> => {
         const session = await ClaimSteam();
@@ -384,6 +382,16 @@ export const workerAsync = {
             return volumes?.[0]?.bucket_name;
         }
     ),
+    fetch_resource_session: createAsyncThunk(
+        'fetch_resource_session',
+        async (): Promise<ResourceSession[]> => {
+            const volumes = await POCKETBASE()
+                .collection('sessions')
+                .getFullList<ResourceSession>();
+
+            return volumes;
+        }
+    ),
     fetch_app_access: createAsyncThunk(
         'fetch_app_access',
         async (): Promise<
@@ -448,7 +456,7 @@ export const workerAsync = {
         'unclaim_volume',
         async (_: void, { getState }): Promise<any> => {
             const {
-                worker: { data, currentAddress }
+                worker: { data, currentAddress, sessions }
             } = getState() as RootState;
             const computer = data[currentAddress] as innerComputer;
 
@@ -465,6 +473,8 @@ export const workerAsync = {
                     );
                 }
             }
+
+            if (sessions?.length > 0) await UnclaimResource();
         }
     )
 };
@@ -520,6 +530,12 @@ export const workerSlice = createSlice({
             {
                 fetch: workerAsync.worker_refresh_ui,
                 hander: (state, action) => {}
+            },
+            {
+                fetch: workerAsync.fetch_resource_session,
+                hander: (state, action) => {
+                    state.sessions = action.payload;
+                }
             },
             {
                 fetch: workerAsync.list_backups,

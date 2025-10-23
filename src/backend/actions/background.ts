@@ -17,6 +17,7 @@ import {
     fetch_configuration,
     fetch_domain,
     fetch_error_message,
+    fetch_resource_session,
     fetch_store,
     fetch_subscription,
     fetch_user,
@@ -24,7 +25,6 @@ import {
     get_plans,
     get_resources,
     have_focus,
-    list_backups,
     load_setting,
     loose_focus,
     popup_open,
@@ -93,9 +93,9 @@ const fetchErrorMessages = () => appDispatch(fetch_error_message());
 const fetchUser = () => appDispatch(fetch_user());
 const fetchDiscounts = () => appDispatch(fetch_active_discounts());
 const fetchApp = () => appDispatch(worker_refresh());
-const fetchBackups = () => appDispatch(list_backups());
 const fetchPlans = () => appDispatch(get_plans());
 const fetchResources = () => appDispatch(get_resources());
+const fetchResourceSessions = () => appDispatch(fetch_resource_session());
 const loadSettings = () => appDispatch(load_setting());
 const updateSubmetadata = () => appDispatch(update_subscription_metadata());
 const updateGametag = () => appDispatch(update_game_tag());
@@ -305,6 +305,7 @@ export const preloadSilent = async () => {
     await setDomain();
     await fetchUser();
     await Promise.all([
+        fetchResourceSessions(),
         fetchSubscription(),
         fetchDiscounts(),
         fetchConfiguration(),
@@ -320,7 +321,7 @@ export const preloadSilent = async () => {
         fetchBuckets(),
         fetchResources()
     ]);
-    await Promise.all([updateSubmetadata(), updateGametag(), fetchBackups()]);
+    await Promise.all([updateSubmetadata(), updateGametag()]);
 };
 
 export const preload = async () => {
