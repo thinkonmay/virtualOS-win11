@@ -230,7 +230,7 @@ export const userAsync = {
                     cluster_pool`
             )
             .eq('active', true)
-            .is('metadata->>disable', null);
+            .is('metadata->>hide', null);
 
         if (error) return [];
         else
