@@ -100,6 +100,14 @@ export const workerAsync = {
     showPosition: async (text: string[]) => {
         appDispatch(popup_close());
         const prefShow = ['started deployment on', 'claimed GPU'];
+
+        const formatText = text
+            .filter((x) => prefShow.find((y) => x.includes(y)) != undefined)
+            .concat(text.slice(-1))
+            .map((z) => z.replace("you are in", "Bạn đang trong hàng chờ vào máy, STT: "))
+            .map((z1) => z1.replace(" position", "/ 30"))
+            .map((w) => w.replace("deployed vm", "Đang chờ mở máy"));
+
         appDispatch(
             popup_open({
                 type: 'notify',
@@ -108,12 +116,7 @@ export const workerAsync = {
                     tips: true,
                     title: 'Booting up PC',
                     timeCounter: 15,
-                    textArray: text
-                        .filter(
-                            (x) =>
-                                prefShow.find((y) => x.includes(y)) != undefined
-                        )
-                        .concat(text.slice(-2))
+                    textArray: formatText
                 }
             })
         );
