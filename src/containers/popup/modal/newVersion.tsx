@@ -91,7 +91,7 @@ export const newVersion: React.FC = () => {
                         </p>
 
                         <a
-                            href="https://official.thinkmay.net"
+                            href="https://official.thinkmay.net?ref=legacy20"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex w-full items-center justify-center gap-x-2 rounded-xl bg-[#0e9384] px-5 py-3 font-semibold text-white shadow-lg shadow-[#29D69F]/10 transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#29D69F]/50"
