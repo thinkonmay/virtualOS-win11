@@ -17,6 +17,7 @@
     "@tauri-apps/api": "^1.5.3",
     "autoprefixer": "^10.4.16",
     "flowbite-react": "^0.11.7",
+    "lucide-react": "^0.553.0",
     "pocketbase": "^0.26.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

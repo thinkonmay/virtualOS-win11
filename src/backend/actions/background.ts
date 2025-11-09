@@ -254,6 +254,13 @@ const updateUI = async () => {
         }
     );
 
+    appDispatch(
+        popup_open({
+            type: 'newVersion',
+            data: {}
+        })
+    );
+
     for (const { game, timestamp } of backups)
         toast(`Game ${game} backup at ${timestamp}`, {
             icon: 'ℹ️',

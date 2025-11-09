@@ -22,6 +22,10 @@ type PopupData =
           };
       }
     | {
+          type: 'newVersion';
+          data: {};
+      }
+    | {
           type: 'connecting';
           data: {};
       }
